@@ -7,3 +7,6 @@ CmakeCache.txt
 # Game stuff not for repos
 Game/
 LD53_Delivery/
+
+# VSCode stuff
+.vscode/
