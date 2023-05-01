@@ -1,0 +1,9 @@
+# Cmake stuff
+build/
+build_web/
+CMakeFiles/
+CmakeCache.txt
+
+# Game stuff not for repos
+Game/
+LD53_Delivery/
