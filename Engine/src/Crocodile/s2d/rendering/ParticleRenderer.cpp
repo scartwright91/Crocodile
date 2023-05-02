@@ -1,11 +1,10 @@
 #include "ParticleRenderer.h"
 
-
 namespace Crocodile
 {
 	namespace s2d
 	{
-		ParticleRenderer::ParticleRenderer(graphics::Shader* shader)
+		ParticleRenderer::ParticleRenderer(graphics::Shader *shader)
 		{
 			this->shader = shader;
 			init();
@@ -21,8 +20,7 @@ namespace Crocodile
 			glm::mat4 model,
 			glm::mat4 view,
 			glm::mat4 projection,
-			glm::vec3 spriteColor
-		)
+			glm::vec3 spriteColor)
 		{
 			// use additive blending to give it a 'glow' effect
 			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
@@ -34,7 +32,7 @@ namespace Crocodile
 
 			for (unsigned int i = 0; i < particles.size(); ++i)
 			{
-				Particle& p = particles[i];
+				Particle &p = particles[i];
 				if (p.life > 0.0f)
 				{
 					shader->setVec2("u_Offset", p.position);
@@ -63,8 +61,7 @@ namespace Crocodile
 
 				0.0f, 1.0f, 0.0f, 1.0f,
 				1.0f, 1.0f, 1.0f, 1.0f,
-				1.0f, 0.0f, 1.0f, 0.0f
-			};
+				1.0f, 0.0f, 1.0f, 0.0f};
 
 			glGenVertexArrays(1, &this->VAO);
 			glGenBuffers(1, &VBO);
@@ -74,7 +71,7 @@ namespace Crocodile
 
 			glBindVertexArray(this->VAO);
 			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+			glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)0);
 			glBindBuffer(GL_ARRAY_BUFFER, 0);
 			glBindVertexArray(0);
 		}

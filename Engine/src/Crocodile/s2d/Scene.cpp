@@ -149,7 +149,6 @@ namespace Crocodile
 
 			if (obj->renderType == Object::SPRITE)
 			{
-				// lights only apply to entity layers (and if enabled)
 				std::vector<Light *> lights;
 				if (enableLighting)
 				{

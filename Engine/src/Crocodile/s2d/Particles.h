@@ -25,7 +25,6 @@ namespace Crocodile
 		{
 
 		public:
-
 			bool active = true;
 			bool screenParticles = false;
 			std::vector<Particle> particles;
@@ -35,31 +34,30 @@ namespace Crocodile
 				float x,
 				float y,
 				float scale,
+				float velocity,
 				unsigned int amount,
-				float duration
-			);
+				float duration);
 			ParticleGenerator(
 				unsigned int width,
 				unsigned int height,
 				float scale,
-				unsigned int amount
-			);
+				float velocity,
+				unsigned int amount);
 			~ParticleGenerator();
 
 			void update(float dt);
-			
+
 			unsigned int getNParticles();
 
 		private:
-
 			bool local;
 			unsigned int amount = 0;
 			float duration = 1.0f;
 			float scale = 1.0f;
+			float velocity = 1.0f;
 
 			Particle createParticle();
 			void init();
-
 		};
 	}
 }

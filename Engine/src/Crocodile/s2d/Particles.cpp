@@ -9,11 +9,13 @@ namespace Crocodile
 			float x,
 			float y,
 			float scale,
+			float velocity,
 			unsigned int amount,
 			float duration) : local(true)
 		{
 			move(x, y);
 			this->scale = scale;
+			this->velocity = velocity;
 			this->size = glm::vec2(1.0f);
 			this->amount = amount;
 			this->duration = duration;
@@ -26,9 +28,11 @@ namespace Crocodile
 			unsigned int width,
 			unsigned int height,
 			float scale,
+			float velocity,
 			unsigned int amount) : local(false), width(width), height(height)
 		{
 			this->scale = scale;
+			this->velocity = velocity;
 			this->size = glm::vec2(1.0f);
 			this->amount = amount;
 			this->duration = 0.f;
@@ -102,7 +106,7 @@ namespace Crocodile
 			float velX = -1.f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 2));
 			float velY = -1.f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 2));
 			float life = 0.5f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 2.5));
-			p.velocity = glm::vec2(100.0f * velX, 100.0f * velY);
+			p.velocity = glm::vec2(100.0f * velX, 100.0f * velY) * velocity;
 			p.life = life;
 			return p;
 		}

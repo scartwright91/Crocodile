@@ -392,11 +392,10 @@ void main()
 		)";
 #else
 		// particle shader
-		vertexCode = R"(#version 300 es
+		vertexCode = R"(
+#version 330 core
 
-precision highp float;
-
-in vec4 vertex;
+layout (location = 0) in vec4 vertex;
 
 out vec4 particleColor;
 
@@ -416,9 +415,8 @@ void main()
 	gl_Position = u_Projection * u_View * u_Model * vec4((vertex.xy * u_Scale) + u_Offset, 0.0, 1.0);
 }
 		)";
-		fragmentCode = R"(#version 300 es
-
-precision mediump float;
+		fragmentCode = R"(
+#version 330 core
 
 in vec4 particleColor;
 out vec4 color;
