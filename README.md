@@ -2,10 +2,10 @@
 # Crocodile Game Engine
 
 *** Fixes
-* Particle effects
 * Fragment shaders not compiling on laptop
 
 *** Improvements
+* add textures to particles
 * move to shader/unique pointers
 * reduce complexity in Object class (especially position attributes)
 * parent-child objects
@@ -14,4 +14,5 @@
 *** Features
 * 2d grid system + pathfinding
 * Level editor (imgui)
+* Particle editor (imgui)
 * Sound emscripten (code to load wav/obj files)

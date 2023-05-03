@@ -4,6 +4,9 @@
 #define GLFW_INCLUDE_ES3
 #include <emscripten/emscripten.h>
 #else
+#include "imgui.h"
+#include "imgui_impl_glfw.h"
+#include "imgui_impl_opengl3.h"
 #include <GL/glew.h>
 #endif
 

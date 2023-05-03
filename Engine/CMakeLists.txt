@@ -42,4 +42,8 @@ if (NOT EMSCRIPTEN)
     find_package(SndFile CONFIG REQUIRED)
     target_link_libraries(${PROJECT_NAME} PRIVATE SndFile::sndfile)
 
+    # ImGui
+    find_package(imgui CONFIG REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PRIVATE imgui::imgui)
+
 endif()
