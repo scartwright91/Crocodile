@@ -14,6 +14,10 @@ target_include_directories(Crocodile PUBLIC src/utils)
 
 ### Dependencies
 
+if (NOT EMSCRIPTEN)
+    add_subdirectory(extern/imgui)
+endif()
+
 ## Cross-platform dependencies
 
 # OpenGL
@@ -41,9 +45,5 @@ if (NOT EMSCRIPTEN)
     # libsndfile
     find_package(SndFile CONFIG REQUIRED)
     target_link_libraries(${PROJECT_NAME} PRIVATE SndFile::sndfile)
-
-    # ImGui
-    find_package(imgui CONFIG REQUIRED)
-    target_link_libraries(${PROJECT_NAME} PRIVATE imgui::imgui)
 
 endif()
