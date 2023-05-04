@@ -11,12 +11,10 @@ add_library(Crocodile::Crocodile ALIAS Crocodile)
 target_include_directories(Crocodile PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
 target_include_directories(Crocodile PUBLIC src)
 target_include_directories(Crocodile PUBLIC src/utils)
+target_include_directories(Crocodile PUBLIC src/utils/imgui)
+target_include_directories(Crocodile PUBLIC src/utils/imgui/backends)
 
 ### Dependencies
-
-if (NOT EMSCRIPTEN)
-    add_subdirectory(extern/imgui)
-endif()
 
 ## Cross-platform dependencies
 
