@@ -37,20 +37,13 @@ namespace Crocodile
 		{
 			clock.tick(60);
 			window.beginRender();
-
 			ImGui_ImplOpenGL3_NewFrame();
 			ImGui_ImplGlfw_NewFrame();
 			ImGui::NewFrame();
-
 			update(clock.deltaTime);
 			scene->update(clock.deltaTime);
 			render();
-
-			ImGui::Begin("My name is window");
-			ImGui::Text("Hello there!");
-			ImGui::End();
-
-			ImGui::Render();
+			renderImGui();
 			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 
 			window.endRender();

@@ -54,6 +54,7 @@ namespace Crocodile
 		void run();
 		void render();
 		virtual void update(float dt){};
+		virtual void renderImGui(){};
 
 	private:
 		static Application *s_Instance;
