@@ -197,6 +197,8 @@ namespace Crocodile
 					pg->calculateModelMatrix(pos),
 					view,
 					projection,
+					pg->texture,
+					pg->useTexture,
 					pg->color);
 			}
 			else if (obj->renderType == Object::TEXT)

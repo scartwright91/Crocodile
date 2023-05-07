@@ -6,8 +6,10 @@ namespace Crocodile
 	{
 		ParticleRenderer::ParticleRenderer(graphics::Shader *shader)
 		{
-			this->shader = shader;
 			init();
+			this->shader = shader;
+			this->shader->use();
+			this->shader->setInt("u_Texture", 0);
 		}
 
 		ParticleRenderer::~ParticleRenderer()
@@ -20,15 +22,27 @@ namespace Crocodile
 			glm::mat4 model,
 			glm::mat4 view,
 			glm::mat4 projection,
+			unsigned int textureID,
+			bool useTexture,
 			glm::vec3 spriteColor)
 		{
 			// use additive blending to give it a 'glow' effect
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE);
+			// glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 			shader->use();
 			shader->setMat4("u_Model", model);
 			shader->setMat4("u_View", view);
 			shader->setMat4("u_Projection", projection);
-			shader->setVec3("u_Color", spriteColor);
+			shader->setBool("u_UseTexture", useTexture);
+
+			if (useTexture)
+			{
+				glActiveTexture(GL_TEXTURE0);
+				glBindTexture(GL_TEXTURE_2D, textureID);
+			}
+			else
+			{
+				shader->setVec3("u_Color", spriteColor);
+			}
 
 			for (unsigned int i = 0; i < particles.size(); ++i)
 			{
@@ -46,7 +60,7 @@ namespace Crocodile
 				}
 			}
 			// reset blending
-			glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+			// aaglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}
 
 		void ParticleRenderer::init()

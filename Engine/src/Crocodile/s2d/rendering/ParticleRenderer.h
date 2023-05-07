@@ -13,8 +13,7 @@ namespace Crocodile
 		{
 
 		public:
-
-			ParticleRenderer(graphics::Shader* shader);
+			ParticleRenderer(graphics::Shader *shader);
 			~ParticleRenderer();
 
 			void render(
@@ -22,16 +21,15 @@ namespace Crocodile
 				glm::mat4 model,
 				glm::mat4 view,
 				glm::mat4 projection,
-				glm::vec3 spriteColor
-			);
+				unsigned int textureID,
+				bool useTexture,
+				glm::vec3 spriteColor);
 
 		private:
-
-			graphics::Shader* shader;
+			graphics::Shader *shader;
 			unsigned int VAO = 0;
 
 			void init();
-
 		};
 	}
 }
