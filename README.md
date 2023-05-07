@@ -14,5 +14,8 @@
 *** Features
 * 2d grid system + pathfinding
 * Level editor (imgui)
-* Particle editor (imgui)
+* Particles
+  * editor: done
+  * textures
+  * screen
 * Sound emscripten (code to load wav/obj files)

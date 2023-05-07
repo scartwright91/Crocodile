@@ -2,11 +2,10 @@
 
 namespace Crocodile
 {
-	namespace graphics
-	{
+    namespace graphics
+    {
         Shader::Shader()
         {
-
         }
 
         Shader::Shader(std::string vertexCode, std::string fragmentCode, bool source)
@@ -14,7 +13,7 @@ namespace Crocodile
             init(vertexCode, fragmentCode);
         }
 
-        Shader::Shader(const char* vertexPath, const char* fragmentPath)
+        Shader::Shader(const char *vertexPath, const char *fragmentPath)
         {
             // 1. retrieve the vertex/fragment source code from filePath
             std::string vertexCode;
@@ -40,18 +39,16 @@ namespace Crocodile
                 vertexCode = vShaderStream.str();
                 fragmentCode = fShaderStream.str();
             }
-            catch (std::ifstream::failure& e)
+            catch (std::ifstream::failure &e)
             {
                 std::cout << "ERROR::SHADER::FILE_NOT_SUCCESFULLY_READ" << std::endl;
             }
 
             init(vertexCode, fragmentCode);
-            
         }
 
         Shader::~Shader()
         {
-
         }
 
         void Shader::use()
@@ -60,60 +57,60 @@ namespace Crocodile
         }
 
         // setting functions
-        void Shader::setBool(const std::string& name, bool value) const
+        void Shader::setBool(const std::string &name, bool value) const
         {
             glUniform1i(glGetUniformLocation(ID, name.c_str()), (int)value);
         }
 
-        void Shader::setInt(const std::string& name, int value) const
+        void Shader::setInt(const std::string &name, int value) const
         {
             glUniform1i(glGetUniformLocation(ID, name.c_str()), value);
         }
 
-        void Shader::setFloat(const std::string& name, float value) const
+        void Shader::setFloat(const std::string &name, float value) const
         {
             glUniform1f(glGetUniformLocation(ID, name.c_str()), value);
         }
 
-        void Shader::setMat4(const std::string& name, glm::mat4 value)
+        void Shader::setMat4(const std::string &name, glm::mat4 value)
         {
             glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
         }
 
-        void Shader::setVec2(const std::string& name, glm::vec2 value)
+        void Shader::setVec2(const std::string &name, glm::vec2 value)
         {
             glUniform2f(glGetUniformLocation(ID, name.c_str()), value.x, value.y);
         }
 
-        void Shader::setVec3(const std::string& name, glm::vec3 value)
+        void Shader::setVec3(const std::string &name, glm::vec3 value)
         {
             glUniform3f(glGetUniformLocation(ID, name.c_str()), value.x, value.y, value.z);
         }
 
-        void Shader::setVec4(const std::string& name, glm::vec4 value)
+        void Shader::setVec4(const std::string &name, glm::vec4 value)
         {
             glUniform4f(glGetUniformLocation(ID, name.c_str()), value.x, value.y, value.z, value.w);
         }
 
-        void Shader::setArrayFloat(const std::string& name, std::vector<float> value)
+        void Shader::setArrayFloat(const std::string &name, std::vector<float> value)
         {
-            glUniform1fv(glGetUniformLocation(ID, name.c_str()), (GLsizei)value.size(), (float*)value.data());
+            glUniform1fv(glGetUniformLocation(ID, name.c_str()), (GLsizei)value.size(), (float *)value.data());
         }
 
-        void Shader::setArrayInt(const std::string& name, std::vector<int> value)
+        void Shader::setArrayInt(const std::string &name, std::vector<int> value)
         {
             glUniform1iv(glGetUniformLocation(ID, name.c_str()), (GLsizei)value.size(), value.data());
         }
 
-        void Shader::setArrayVec2(const std::string& name, std::vector<glm::vec2> value)
+        void Shader::setArrayVec2(const std::string &name, std::vector<glm::vec2> value)
         {
-            glUniform2fv(glGetUniformLocation(ID, name.c_str()), (GLsizei)value.size(), (float*)value.data());
+            glUniform2fv(glGetUniformLocation(ID, name.c_str()), (GLsizei)value.size(), (float *)value.data());
         }
 
         void Shader::init(std::string vertexCode, std::string fragmentCode)
         {
-            const char* vShaderCode = vertexCode.c_str();
-            const char* fShaderCode = fragmentCode.c_str();
+            const char *vShaderCode = vertexCode.c_str();
+            const char *fShaderCode = fragmentCode.c_str();
             // 2. compile shaders
             unsigned int vertex, fragment;
             // vertex shader
@@ -147,7 +144,8 @@ namespace Crocodile
                 if (!success)
                 {
                     glGetShaderInfoLog(shader, 1024, NULL, infoLog);
-                    std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+                    std::cout << "ERROR::SHADER_COMPILATION_ERROR of type: " << type << "\n"
+                              << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
                 }
             }
             else
@@ -156,9 +154,10 @@ namespace Crocodile
                 if (!success)
                 {
                     glGetProgramInfoLog(shader, 1024, NULL, infoLog);
-                    std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n" << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
+                    std::cout << "ERROR::PROGRAM_LINKING_ERROR of type: " << type << "\n"
+                              << infoLog << "\n -- --------------------------------------------------- -- " << std::endl;
                 }
             }
         }
-	}
+    }
 }

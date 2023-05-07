@@ -35,12 +35,14 @@ namespace Crocodile
         void loadShaderFromString(std::string vertexCode, std::string fragmentCode, std::string name)
         {
             graphics::Shader shader(vertexCode, fragmentCode, true);
+            std::cout << "Compiled " << name << " shader\n";
             shaders[name] = shader;
         }
 
         void loadShader(const char *vert_path, const char *frag_path, std::string name)
         {
             graphics::Shader shader(vert_path, frag_path);
+            std::cout << "Compiled " << name << " shader\n";
             shaders[name] = shader;
         }
 
