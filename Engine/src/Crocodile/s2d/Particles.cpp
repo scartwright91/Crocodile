@@ -5,39 +5,11 @@ namespace Crocodile
 	namespace s2d
 	{
 
-		ParticleGenerator::ParticleGenerator(
-			float x,
-			float y,
-			float scale,
-			float velocity,
-			unsigned int amount,
-			float duration) : local(true)
+		ParticleGenerator::ParticleGenerator()
 		{
-			move(x, y);
-			this->scale = scale;
-			this->velocity = velocity;
-			this->size = glm::vec2(1.0f);
-			this->amount = amount;
-			this->duration = duration;
-
-			renderType = PARTICLE;
-			init();
-		}
-
-		ParticleGenerator::ParticleGenerator(
-			unsigned int width,
-			unsigned int height,
-			float scale,
-			float velocity,
-			unsigned int amount) : local(false), width(width), height(height)
-		{
-			this->scale = scale;
-			this->velocity = velocity;
-			this->size = glm::vec2(1.0f);
-			this->amount = amount;
+			this->amount = 50;
 			this->duration = 0.f;
-			this->screenParticles = true;
-
+			this->size = glm::vec2(1.0f);
 			renderType = PARTICLE;
 			init();
 		}
@@ -86,28 +58,20 @@ namespace Crocodile
 
 		Particle ParticleGenerator::createParticle()
 		{
-			std::random_device dev;
-			std::mt19937 rng(dev());
-			std::uniform_int_distribution<int> randomWidth(0, width);
-			std::uniform_int_distribution<int> randomHeight(0, height);
 
 			Particle p;
-			if (local)
-			{
-				p.position = glm::vec2(0.0f);
-				p.scale = scale;
-			}
-			else
-			{
-				p.position = glm::vec2(randomWidth(rng), randomHeight(rng));
-				p.scale = scale * randomWidth(rng) / width;
-			}
-			// random float between -1 and 1
-			float velX = -1.f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 2));
-			float velY = -1.f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 2));
-			float life = 0.5f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 2.5));
-			p.velocity = glm::vec2(100.0f * velX, 100.0f * velY) * velocity;
-			p.life = life;
+
+			// assign particle attributes
+			p.position = glm::vec2(0.0f);
+			p.scale = scale;
+			p.life = 0.5f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 2.5));
+
+			// calculate velocity
+			float dispX = -dispersion + 2 * dispersion * static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
+			float dispY = -dispersion + 2 * dispersion * static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
+
+			p.velocity.x = glm::cos(direction + dispX) * velocity * 100.f;
+			p.velocity.y = glm::sin(direction + dispY) * velocity * 100.f;
 			return p;
 		}
 
