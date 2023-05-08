@@ -4,7 +4,7 @@ in vec2 TexCoords;
 
 uniform sampler2D u_Texture;
 uniform bool u_UseTexture;
-uniform vec3 u_SpriteColor;
+uniform vec3 u_Color;
 uniform float u_Alpha;
 
 out vec4 color;
@@ -18,7 +18,7 @@ void main()
 	}
 	else
 	{
-		result = vec4(u_SpriteColor, u_Alpha);
+		result = vec4(u_Color, u_Alpha);
 	}
 	color = result;
 }

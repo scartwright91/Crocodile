@@ -23,7 +23,8 @@ namespace Crocodile
 				glm::mat4 projection,
 				unsigned int textureID,
 				bool useTexture,
-				glm::vec3 spriteColor);
+				glm::vec3 spriteColor,
+				float alpha);
 
 		private:
 			graphics::Shader *shader;

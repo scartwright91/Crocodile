@@ -27,17 +27,17 @@ namespace Crocodile
 		public:
 			bool active = true;
 			std::vector<Particle> particles;
-			unsigned int width, height;
 
-			ParticleGenerator();
+			ParticleGenerator(unsigned int amount);
 			~ParticleGenerator();
 
 			void update(float dt);
 
 			unsigned int getNParticles();
 
-			// bool local;
 			// Particle attributes
+			float w = 0;
+			float h = 0;
 			float direction = 0.5;
 			float dispersion = 0.1;
 			float scale = 1.0f;

@@ -187,11 +187,6 @@ namespace Crocodile
 			else if (obj->renderType == Object::PARTICLE)
 			{
 				ParticleGenerator *pg = (ParticleGenerator *)obj;
-				// if (pg->screenParticles)
-				// {
-				// 	pg->width = windowWidth * camera->zoom;
-				// 	pg->height = windowHeight * camera->zoom;
-				// }
 				particleRenderer->render(
 					pg->particles,
 					pg->calculateModelMatrix(pos),
@@ -199,7 +194,8 @@ namespace Crocodile
 					projection,
 					pg->texture,
 					pg->useTexture,
-					pg->color);
+					pg->color,
+					pg->alpha);
 			}
 			else if (obj->renderType == Object::TEXT)
 			{

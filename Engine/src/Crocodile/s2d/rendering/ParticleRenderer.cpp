@@ -24,7 +24,8 @@ namespace Crocodile
 			glm::mat4 projection,
 			unsigned int textureID,
 			bool useTexture,
-			glm::vec3 spriteColor)
+			glm::vec3 spriteColor,
+			float alpha)
 		{
 			// use additive blending to give it a 'glow' effect
 			// glBlendFunc(GL_SRC_ALPHA, GL_ONE);
@@ -50,7 +51,7 @@ namespace Crocodile
 				if (p.life > 0.0f)
 				{
 					shader->setVec2("u_Offset", p.position);
-					shader->setFloat("u_Alpha", p.life);
+					shader->setFloat("u_Alpha", alpha * p.life);
 					shader->setFloat("u_Scale", p.scale);
 
 					// draw buffer

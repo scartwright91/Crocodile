@@ -16,6 +16,8 @@
 * Level editor (imgui)
 * Particles
   * editor: done
-  * textures
+  * textures: done
+
+
   * screen
 * Sound emscripten (code to load wav/obj files)

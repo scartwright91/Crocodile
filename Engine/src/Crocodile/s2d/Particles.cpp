@@ -5,9 +5,9 @@ namespace Crocodile
 	namespace s2d
 	{
 
-		ParticleGenerator::ParticleGenerator()
+		ParticleGenerator::ParticleGenerator(unsigned int amount)
 		{
-			this->amount = 50;
+			this->amount = amount;
 			this->duration = 0.f;
 			this->size = glm::vec2(1.0f);
 			renderType = PARTICLE;
@@ -63,6 +63,16 @@ namespace Crocodile
 
 			// assign particle attributes
 			p.position = glm::vec2(0.0f);
+			if (w > 0)
+			{
+				float r = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
+				p.position.x += (r * w);
+			}
+			if (h > 0)
+			{
+				float r = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
+				p.position.y += (r * h);
+			}
 			p.scale = scale;
 			p.life = 0.5f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 2.5));
 
