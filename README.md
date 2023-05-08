@@ -9,9 +9,11 @@
 *** Improvements
 * move to shared/unique pointers
 * reduce complexity in Object class (especially position attributes)
-* parent-child objects
 
 *** Features
 * 2d grid system + pathfinding
 * Level editor (imgui)
 * Custom shaders
+  * default shader assigned to object based on render type
+  * can be overrided with custom shader class
+* Logging

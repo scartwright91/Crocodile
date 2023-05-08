@@ -20,9 +20,16 @@ namespace Crocodile
 
 		void Object::addChild(Object *o)
 		{
-			children.push_back(o);
-			o->addParent(this);
-			nChildren++;
+			if (parent == NULL)
+			{
+				children.push_back(o);
+				o->addParent(this);
+				nChildren++;
+			}
+			else
+			{
+				std::cout << "Cannot be added: object has parent and recursively relationships not implemented.";
+			}
 		}
 
 		void Object::addParent(Object *o)

@@ -1,5 +1,7 @@
 #include "Scene.h"
 
+#include <stack>
+
 namespace Crocodile
 {
 	namespace s2d
