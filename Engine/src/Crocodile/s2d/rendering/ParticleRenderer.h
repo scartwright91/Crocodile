@@ -1,20 +1,18 @@
 #pragma once
 
 #include <vector>
-#include "../../Core.h"
-#include "../../graphics/Shader.h"
+#include "Renderer.h"
 #include "../Particles.h"
 
 namespace Crocodile
 {
 	namespace s2d
 	{
-		class CROCODILE_API ParticleRenderer
+		class CROCODILE_API ParticleRenderer : public Renderer
 		{
 
 		public:
 			ParticleRenderer(graphics::Shader *shader);
-			~ParticleRenderer();
 
 			void render(
 				std::vector<Particle> particles,
@@ -27,10 +25,7 @@ namespace Crocodile
 				float alpha);
 
 		private:
-			graphics::Shader *shader;
-			unsigned int VAO = 0;
-
-			void init();
+			void initShader();
 		};
 	}
 }
