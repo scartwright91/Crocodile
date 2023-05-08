@@ -15,6 +15,10 @@ namespace Crocodile
             glDeleteVertexArrays(1, &this->VAO);
         }
 
+        void Renderer::render()
+        {
+        }
+
         void Renderer::init()
         {
             // configure VAO/VBO
@@ -40,6 +44,10 @@ namespace Crocodile
             glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)0);
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
+        }
+
+        void Renderer::initShader()
+        {
         }
 
     }

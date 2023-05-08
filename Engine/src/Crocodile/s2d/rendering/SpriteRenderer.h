@@ -1,21 +1,19 @@
 #pragma once
 
 #include <glm/glm.hpp>
-#include "../../Core.h"
-#include "../../graphics/Shader.h"
+
+#include "Renderer.h"
 #include "../LightSystem.h"
 
 namespace Crocodile
 {
 	namespace s2d
 	{
-		class CROCODILE_API SpriteRenderer
+		class CROCODILE_API SpriteRenderer : public Renderer
 		{
 
 		public:
-
-			SpriteRenderer(graphics::Shader* shader);
-			~SpriteRenderer();
+			SpriteRenderer(graphics::Shader *shader);
 
 			void render(
 				float time,
@@ -30,7 +28,7 @@ namespace Crocodile
 				glm::vec3 spriteColor,
 				float alpha,
 				float ambientLighting,
-				std::vector<Light*> lights,
+				std::vector<Light *> lights,
 				bool outline,
 				float aspectRatio,
 				unsigned int distortionTexture,
@@ -39,17 +37,10 @@ namespace Crocodile
 				bool scrollDistortionY,
 				float distortionSpeed,
 				bool flipX,
-				bool flipY
-			);
+				bool flipY);
 
 		private:
-
-			graphics::Shader* shader;
-			unsigned int VAO = 0;
-
-			void init();
-
+			void initShader();
 		};
 	}
 }
-

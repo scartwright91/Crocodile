@@ -16,10 +16,10 @@ namespace Crocodile
             virtual void render();
             virtual void initShader();
 
-        private:
             graphics::Shader *shader;
             unsigned int VAO = 0;
 
+        private:
             void init();
         };
     }
