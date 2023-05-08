@@ -7,7 +7,6 @@ namespace Crocodile
 
 		Object::Object() : renderType(SPRITE)
 		{
-
 		}
 
 		Object::Object(float x, float y) : renderType(SPRITE)
@@ -17,23 +16,22 @@ namespace Crocodile
 
 		Object::~Object()
 		{
-
 		}
 
-		void Object::addChild(Object* o)
+		void Object::addChild(Object *o)
 		{
 			children.push_back(o);
 			o->addParent(this);
 			nChildren++;
 		}
 
-		void Object::addParent(Object* o)
+		void Object::addParent(Object *o)
 		{
 			this->parent = o;
-			//syncParentPosition();
+			syncParentPosition();
 		}
 
-		void Object::removeChild(Object* o)
+		void Object::removeChild(Object *o)
 		{
 			o->removeParent();
 			children.erase(std::remove(children.begin(), children.end(), o), children.end());
@@ -63,7 +61,7 @@ namespace Crocodile
 		{
 			startingPosition += glm::vec2(dx, dy);
 			position += glm::vec2(dx, dy);
-			for (Object* child : children)
+			for (Object *child : children)
 			{
 				child->move(dx, dy);
 			}
@@ -180,7 +178,8 @@ namespace Crocodile
 
 		void Object::updateAnimation(float dt)
 		{
-			if (animated) {
+			if (animated)
+			{
 				animation->updateAnimation(dt);
 				if (animation->spritesheetAnimation)
 					textureOffset = animation->getTextureOffset();
@@ -189,7 +188,7 @@ namespace Crocodile
 			}
 		}
 
-		void Object::setAnimation(Animation* animation)
+		void Object::setAnimation(Animation *animation)
 		{
 			animated = true;
 			useTexture = true;
@@ -218,7 +217,7 @@ namespace Crocodile
 		glm::vec2 Object::getAbsolutePosition()
 		{
 			bool parentExists = true;
-			Object* currentParent = parent;
+			Object *currentParent = parent;
 			glm::vec2 absPosition = position;
 			while (parentExists)
 			{
@@ -242,8 +241,7 @@ namespace Crocodile
 				(pos.x * 0.5 + 0.5) * width,
 				height - (pos.y * 0.5 + 0.5) * height,
 				size.x * modelScale.x / zoom,
-				size.y * modelScale.y / zoom
-			);
+				size.y * modelScale.y / zoom);
 		}
 
 		s2d::col::BoundingBox Object::getBoundingBox()

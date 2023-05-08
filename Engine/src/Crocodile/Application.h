@@ -33,7 +33,11 @@ namespace Crocodile
 	{
 
 	public:
-		Application(const char *name, unsigned int width, unsigned int height);
+		Application(
+			const char *name,
+			bool resizeable,
+			unsigned int width,
+			unsigned int height);
 		virtual ~Application();
 
 		ResourceManager resourceManager;
