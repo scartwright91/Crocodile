@@ -56,6 +56,12 @@ namespace Crocodile
 		scene->render();
 	}
 
+	void Application::setCurrentScene(s2d::Scene *scene)
+	{
+		delete this->scene;
+		this->scene = scene;
+	}
+
 	void Application::init() const
 	{
 

@@ -13,7 +13,11 @@
 *** Features
 * 2d grid system + pathfinding
 * Level editor (imgui)
-* Custom shaders
-  * default shader assigned to object based on render type
-  * can be overrided with custom shader class
 * Logging
+* Custom shaders (difficult)
+
+1. Application should be able to change current scene: done
+2. renderType enum should change to string so it can be easily extended
+3. Make `renderObject` method virtual
+4. Test
+
