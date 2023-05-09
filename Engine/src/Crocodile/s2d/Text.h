@@ -7,32 +7,30 @@
 
 namespace Crocodile
 {
-	namespace s2d
-	{
+    namespace s2d
+    {
 
         class CROCODILE_API Text : public Object
         {
 
         public:
-
             std::string fullText = "";
             std::string text = "";
             glm::vec2 textScale = glm::vec2(1.0f);
 
             Text()
             {
-                this->renderType = TEXT;
+                renderMethod = "text";
             }
 
             Text(std::string text, bool unravelByLetter)
             {
                 setText(text, unravelByLetter);
-                this->renderType = TEXT;
+                renderMethod = "text";
             }
 
             ~Text()
             {
-
             }
 
             void update(float dt)
@@ -66,9 +64,7 @@ namespace Crocodile
                 return text == fullText;
             }
 
-
         private:
-
             Font font;
             bool unravelByLetter = false;
 
@@ -83,6 +79,5 @@ namespace Crocodile
                 return font.getTextSize(fullText, textScale);
             }
         };
-	}
+    }
 }
-

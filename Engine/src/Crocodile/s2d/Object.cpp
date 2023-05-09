@@ -5,11 +5,11 @@ namespace Crocodile
 	namespace s2d
 	{
 
-		Object::Object() : renderType(SPRITE)
+		Object::Object() : renderMethod("sprite")
 		{
 		}
 
-		Object::Object(float x, float y) : renderType(SPRITE)
+		Object::Object(float x, float y) : renderMethod("sprite")
 		{
 			move(x, y);
 		}

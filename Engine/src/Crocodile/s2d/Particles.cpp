@@ -10,7 +10,7 @@ namespace Crocodile
 			this->amount = amount;
 			this->duration = 0.f;
 			this->size = glm::vec2(1.0f);
-			renderType = PARTICLE;
+			renderMethod = "particles";
 			init();
 		}
 

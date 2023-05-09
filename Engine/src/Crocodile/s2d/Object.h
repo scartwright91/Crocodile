@@ -22,15 +22,6 @@ namespace Crocodile
 		{
 
 		public:
-			enum RenderTypes
-			{
-				NONE,	  // Will not be rendered
-				SPRITE,	  // Sprite renderer
-				PARTICLE, // Particle renderer
-				TEXT,	  // Text renderer
-				UI		  // UI renderer
-			};
-
 			Object();
 			Object(float x, float y);
 			~Object();
@@ -64,7 +55,7 @@ namespace Crocodile
 			unsigned int nChildren = 0;
 
 			// rendering
-			RenderTypes renderType;
+			std::string renderMethod = "";
 
 			// filters
 			bool outline = false;

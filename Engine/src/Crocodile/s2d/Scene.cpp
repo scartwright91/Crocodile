@@ -149,7 +149,7 @@ namespace Crocodile
 			else
 				pos = obj->getScaledStartingPosition();
 
-			if (obj->renderType == Object::SPRITE)
+			if (obj->renderMethod == "sprite")
 			{
 				std::vector<Light *> lights;
 				if (enableLighting)
@@ -186,7 +186,7 @@ namespace Crocodile
 					obj->flipX,
 					obj->flipY);
 			}
-			else if (obj->renderType == Object::PARTICLE)
+			else if (obj->renderMethod == "particles")
 			{
 				ParticleGenerator *pg = (ParticleGenerator *)obj;
 				particleRenderer->render(
@@ -199,7 +199,7 @@ namespace Crocodile
 					pg->color,
 					pg->alpha);
 			}
-			else if (obj->renderType == Object::TEXT)
+			else if (obj->renderMethod == "text")
 			{
 				Text *text = (Text *)obj;
 				glm::vec2 pos;
@@ -215,6 +215,10 @@ namespace Crocodile
 					text->color,
 					text->alpha,
 					text->textScale);
+			}
+			else
+			{
+				std::cout << "Undefined render method" << std::endl;
 			}
 		}
 
