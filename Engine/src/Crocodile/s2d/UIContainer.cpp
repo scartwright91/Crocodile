@@ -6,7 +6,7 @@ namespace Crocodile
 	{
 		UIContainer::UIContainer() : padding(0.f)
 		{
-			renderType = SPRITE;
+			renderMethod = "sprite";
 			// default settings
 			alignment = TOP;
 			layout = VERTICAL;
@@ -15,7 +15,7 @@ namespace Crocodile
 
 		UIContainer::UIContainer(glm::vec2 padding) : padding(padding)
 		{
-			renderType = SPRITE;
+			renderMethod = "sprite";
 			// default settings
 			alignment = TOP;
 			layout = VERTICAL;
@@ -25,7 +25,7 @@ namespace Crocodile
 
 		UIContainer::UIContainer(glm::vec2 padding, glm::vec2 size) : padding(padding)
 		{
-			renderType = SPRITE;
+			renderMethod = "sprite";
 			// default settings
 			alignment = TOP;
 			layout = VERTICAL;
@@ -36,10 +36,9 @@ namespace Crocodile
 
 		UIContainer::~UIContainer()
 		{
-
 		}
 
-		void UIContainer::addElementToUI(Object* obj)
+		void UIContainer::addElementToUI(Object *obj)
 		{
 			obj->setStartingPosition(getPosition());
 			obj->move(currentElementPosition.x, currentElementPosition.y);

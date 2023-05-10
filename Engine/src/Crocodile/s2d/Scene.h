@@ -29,18 +29,17 @@ namespace Crocodile
 		{
 
 		public:
-
-			Scene(graphics::Window* window, ResourceManager* resourceManager);
+			Scene(graphics::Window *window, ResourceManager *resourceManager);
 			~Scene();
 
-			graphics::Window* window;
-			s2d::Camera* camera;
+			graphics::Window *window;
+			s2d::Camera *camera;
 
 			int windowWidth;
 			int windowHeight;
 
-			void addChild(s2d::Object* object, std::string layerName);
-			void removeChild(s2d::Object* object, std::string layerName);
+			void addChild(s2d::Object *object, std::string layerName);
+			void removeChild(s2d::Object *object, std::string layerName);
 
 			void update(float dt);
 			void updateObjects(float dt);
@@ -64,34 +63,33 @@ namespace Crocodile
 			// lights
 			bool enableLighting = true;
 			float ambientLighting = 1.0f;
-			LightSystem* lightSystem;
+			LightSystem *lightSystem;
 
 			// distortion
 			float time = 0.f;
 			unsigned int distortionTexture;
 
 			// background grid
-			BackgroundGrid* grid;
+			BackgroundGrid *grid;
 
 			// render layers
-			LayerStack* layerStack = nullptr;
-
-		private:
+			LayerStack *layerStack = nullptr;
 
 			// rendering
-			ResourceManager* resourceManager;
-			void renderObject(Object* obj, Layer* layer);
+			ResourceManager *resourceManager;
+			virtual void renderObject(Object *obj, Layer *layer);
 
 			// render pipelines
-			SpriteRenderer* spriteRenderer;
-			ParticleRenderer* particleRenderer;
-			TextRenderer* textRenderer;
+			SpriteRenderer *spriteRenderer;
+			ParticleRenderer *particleRenderer;
+			TextRenderer *textRenderer;
 
+		private:
 			// postprocessing
 			bool greyscale = false;
 			bool wavey = false;
 			bool screenShake = false;
-			PostProcessing* postProcessing;
+			PostProcessing *postProcessing;
 
 			// transitions
 			PostProcessing::TransitionEffect transitionEffect = PostProcessing::NO_TRANSITION;
@@ -101,7 +99,6 @@ namespace Crocodile
 
 			void scaleScene(glm::vec2 s);
 			void init();
-
 		};
 
 	}
