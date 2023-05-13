@@ -13,6 +13,7 @@ target_include_directories(Crocodile PUBLIC src)
 target_include_directories(Crocodile PUBLIC src/utils)
 target_include_directories(Crocodile PUBLIC src/utils/imgui)
 target_include_directories(Crocodile PUBLIC src/utils/imgui/backends)
+target_include_directories(Crocodile PUBLIC src/utils/imgui/dirent)
 
 ### Dependencies
 

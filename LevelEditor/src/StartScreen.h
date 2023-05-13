@@ -3,6 +3,7 @@
 #include <string>
 
 #include "imgui.h"
+#include "ImGuiFileDialog.h"
 
 class StartScreen
 {
@@ -13,7 +14,10 @@ public:
     void renderImGui();
 
 private:
-    std::string projectName{""};
+    char projectName[64] = "";
+    std::string projectFolder = "";
 
     bool renderNewProjectOptions = false;
+
+    std::string getProjectPath();
 };
