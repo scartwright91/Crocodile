@@ -8,9 +8,18 @@ StartScreen::~StartScreen()
 {
 }
 
+Project *StartScreen::getProject()
+{
+    return new Project(projectName, getProjectPath());
+}
+
+bool StartScreen::isActive()
+{
+    return active;
+}
+
 void StartScreen::renderImGui()
 {
-    // ImGui::ShowDemoWindow();
     ImGui::Begin("Project Selection");
     if (ImGui::Button("New Project", ImVec2(100, 50)))
     {
@@ -30,6 +39,9 @@ void StartScreen::renderImGui()
         ImGui::Text("Project path:");
         ImGui::SameLine();
         ImGui::Text(getProjectPath().c_str());
+        ImGui::NewLine();
+        if (ImGui::Button("Create project", ImVec2(100, 50)) && projectName != "")
+            active = false;
     }
     // display
     if (ImGuiFileDialog::Instance()->Display("ChooseDirDlgKey"))
@@ -40,7 +52,6 @@ void StartScreen::renderImGui()
             std::string path = ImGuiFileDialog::Instance()->GetCurrentPath();
             projectFolder = path + "\\";
         }
-
         // close
         ImGuiFileDialog::Instance()->Close();
     }

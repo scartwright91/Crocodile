@@ -2,6 +2,7 @@
 #include "Crocodile.h"
 
 #include "src/StartScreen.h"
+#include "src/Editor.h"
 
 using namespace Crocodile;
 
@@ -9,8 +10,10 @@ class LevelEditor : public Crocodile::Application
 {
 
 public:
+    bool inStartScreen = true;
+
     StartScreen *startScreen = nullptr;
-    std::string projectName = "";
+    Editor *editor = nullptr;
 
     LevelEditor() : Crocodile::Application("Level Editor", true, 1200, 800)
     {
@@ -24,11 +27,20 @@ public:
 
     void update(float dt)
     {
+        if (inStartScreen && !startScreen->isActive())
+        {
+            inStartScreen = false;
+            editor = new Editor(startScreen->getProject(), scene, &resourceManager);
+            return;
+        }
     }
 
     void renderImGui()
     {
-        startScreen->renderImGui();
+        if (inStartScreen)
+            startScreen->renderImGui();
+        else
+            editor->renderImGui();
         ImGui::Render();
     }
 

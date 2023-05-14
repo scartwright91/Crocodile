@@ -1,13 +1,18 @@
+#pragma once
 
 #include <string>
+
+#include "imgui.h"
 
 class Project
 {
 public:
-    Project(std::string path);
-    ~Project();
+    Project(std::string name, std::string path);
 
-private:
+    std::string name = "";
     std::string path = "";
-    void parseProjectData();
+
+    void renderImGui();
+    void save();
+    void load();
 };

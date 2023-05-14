@@ -1,14 +1,20 @@
 #include "Project.h"
 
-Project::Project(std::string path)
+Project::Project(std::string name, std::string path)
 {
+    this->name = name;
     this->path = path;
 }
 
-Project::~Project()
+void Project::renderImGui()
+{
+    ImGui::ShowDemoWindow();
+}
+
+void Project::save()
 {
 }
 
-void Project::parseProjectData()
+void Project::load()
 {
 }
