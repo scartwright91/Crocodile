@@ -27,12 +27,17 @@ public:
 
     void update(float dt)
     {
-        if (inStartScreen && !startScreen->isActive())
+        if (inStartScreen)
         {
-            inStartScreen = false;
-            editor = new Editor(startScreen->getProject(), scene, &resourceManager);
-            return;
+            if (startScreen->isActive())
+                return;
+            else
+            {
+                inStartScreen = false;
+                editor = new Editor(startScreen->getProject(), scene, &resourceManager);
+            }
         }
+        editor->update();
     }
 
     void renderImGui()

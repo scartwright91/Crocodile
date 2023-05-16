@@ -104,14 +104,15 @@ namespace Crocodile
 					camera->zoom);
 			// render scene objects
 			for (Layer *layer : layerStack->layers)
-				for (Object *obj : layer->objects)
-				{
-					std::vector<Object *> objectStack = {obj};
-					for (Object *child : obj->children)
-						objectStack.push_back(child);
-					for (Object *o : objectStack)
-						renderObject(o, layer);
-				}
+				if (!layer->hide)
+					for (Object *obj : layer->objects)
+					{
+						std::vector<Object *> objectStack = {obj};
+						for (Object *child : obj->children)
+							objectStack.push_back(child);
+						for (Object *o : objectStack)
+							renderObject(o, layer);
+					}
 			// finish and render postprocessing
 			postProcessing->endRender();
 			postProcessing->render(

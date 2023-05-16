@@ -28,6 +28,7 @@ namespace Crocodile
 			bool ySort = false;
 			bool cameraScroll = true;
 			bool applyZoom = true;
+			bool hide = false;
 
 			std::vector<Object *> objects = {};
 		};

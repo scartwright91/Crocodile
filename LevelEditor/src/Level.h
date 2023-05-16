@@ -1,6 +1,7 @@
 #pragma once
 
 #include <string>
+#include <map>
 
 #include "Crocodile/s2d/Scene.h"
 
@@ -15,4 +16,9 @@ public:
 
     s2d::Scene *scene = nullptr;
     s2d::Object *canvas = nullptr;
+
+    std::map<std::string, s2d::Object *> edges = {};
+
+private:
+    void createCanvasEdges();
 };
