@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include <map>
+#include <vector>
 
 #include "Crocodile/s2d/Scene.h"
 
@@ -14,11 +14,19 @@ public:
 
     std::string name = "";
 
+    void update();
+
     s2d::Scene *scene = nullptr;
     s2d::Object *canvas = nullptr;
 
-    std::map<std::string, s2d::Object *> edges = {};
+    std::vector<s2d::Object *> edges = {};
 
 private:
-    void createCanvasEdges();
+    float timer = 0.f;
+    s2d::Object *edgeSelected = nullptr;
+
+    void selectEdge();
+    void moveEdge(glm::vec2 mouse);
+    void updateCanvas();
+    void initCanvasEdges();
 };

@@ -20,6 +20,8 @@ void Editor::update()
 {
     zoom();
     move();
+    for (Level *level : levels)
+        level->update();
 }
 
 void Editor::zoom()
@@ -28,11 +30,6 @@ void Editor::zoom()
     float now = glfwGetTime();
     if (scroll != currentZoom)
     {
-        // mouse position
-        glm::vec2 mouse = scene->window->getMouseScreenPosition();
-        glm::vec2 camPos = camera->getPosition();
-        // camera->move(mouse.x - camPos.x, mouse.y - camPos.y);
-        // camera->setPosition(mouse);
         float z = abs(scroll) / 10;
         if (scroll > currentZoom)
             scene->camera->changeZoom(-z);
@@ -64,7 +61,7 @@ void Editor::init()
 {
     camera = new s2d::Object();
     camera->move(scene->windowWidth / 2, scene->windowHeight / 2);
-    scene->camera->setZoom(4.0f);
+    // scene->camera->setZoom(4.0f);
     scene->camera->setTarget(camera, false);
     currentZoom = scene->window->scroll.y;
 }
