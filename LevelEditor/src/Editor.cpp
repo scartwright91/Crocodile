@@ -8,7 +8,7 @@ Editor::Editor(
     init();
     scene->layerStack->addLayer(new s2d::Layer("canvas"));
     scene->layerStack->addLayer(new s2d::Layer("canvas_edges"));
-    levels.push_back(new Level("level0", scene));
+    levels.push_back(new Level("level0", scene, glm::vec2(600.f)));
 }
 
 void Editor::renderImGui()

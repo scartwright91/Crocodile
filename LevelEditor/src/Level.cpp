@@ -1,9 +1,9 @@
 #include "Level.h"
 
-Level::Level(std::string name, s2d::Scene *scene) : name(name), scene(scene)
+Level::Level(std::string name, s2d::Scene *scene, glm::vec2 canvasSize) : name(name), scene(scene)
 {
     canvas = new s2d::Object();
-    canvas->size = glm::vec2(600.f);
+    canvas->size = canvasSize;
     canvas->color = glm::vec3(0.8f, 0.3f, 0.1f);
     scene->addChild(canvas, "canvas");
     initCanvasEdges();
@@ -17,13 +17,11 @@ void Level::update()
 void Level::selectEdge()
 {
     glm::vec2 mouse = scene->window->getMouseScreenPosition();
-
     if (edgeSelected != NULL)
     {
         if (!scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
         {
             moveEdge(mouse);
-            std::cout << "Drop edge" << std::endl;
             edgeSelected = nullptr;
         }
     }
@@ -40,7 +38,6 @@ void Level::selectEdge()
             if (bbox.intersectsPoint(mouse) && scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
             {
                 edgeSelected = obj;
-                std::cout << "Select edge" << std::endl;
                 break;
             }
         }
@@ -49,65 +46,68 @@ void Level::selectEdge()
 
 void Level::moveEdge(glm::vec2 mouse)
 {
-    if (edgeSelected == edges[0])
-    {
-    }
-    else if (edgeSelected == edges[1])
-    {
-        float dx = mouse.x - edges[1]->getPosition().x;
+    glm::vec2 edgeScreenPos = edgeSelected->getScreenPosition(
+        scene->camera->getViewMatrix(),
+        scene->camera->getProjectionMatrix(true),
+        scene->windowWidth,
+        scene->windowHeight);
+    float dx = (mouse.x - edgeScreenPos.x) * scene->camera->zoom;
+    float dy = (mouse.y - edgeScreenPos.y) * scene->camera->zoom;
+    if (edgeSelected == edges[0] || edgeSelected == edges[1])
         edgeSelected->move(dx, 0);
-    }
-    else if (edgeSelected == edges[2])
-    {
-    }
-    else if (edgeSelected == edges[3])
-    {
-    }
+    else if (edgeSelected == edges[2] || edgeSelected == edges[3])
+        edgeSelected->move(0, dy);
     updateCanvas();
+    updateEdges();
 }
 
 void Level::updateCanvas()
 {
-    glm::vec2 pos = edges[0]->getPosition();
+    float minx = edges[0]->getPosition().x;
+    float miny = edges[2]->getPosition().y;
     float canvasWidth = edges[1]->getPosition().x - edges[0]->getPosition().x;
     float canvasHeight = edges[3]->getPosition().y - edges[2]->getPosition().y;
-    canvas->move(pos.x, pos.y);
+    canvas->setPosition(glm::vec2(minx, miny));
     canvas->size = glm::vec2(canvasWidth, canvasHeight);
+}
+
+void Level::updateEdges()
+{
+    glm::vec2 size = canvas->size;
+    edges[0]->size = glm::vec2(edgeWidth, size.y);
+    edges[1]->size = glm::vec2(edgeWidth, size.y);
+    edges[2]->size = glm::vec2(size.x, edgeWidth);
+    edges[3]->size = glm::vec2(size.x, edgeWidth);
+    glm::vec2 pos = canvas->getPosition();
+    edges[0]->setPosition(pos);
+    edges[1]->setPosition(glm::vec2(pos.x + size.x, pos.y));
+    edges[2]->setPosition(pos);
+    edges[3]->setPosition(glm::vec2(pos.x, pos.y + canvas->size.y));
 }
 
 void Level::initCanvasEdges()
 {
-    glm::vec2 pos = glm::vec2(0.f);
-
     // left
     s2d::Object *left = new s2d::Object();
     left->label = "left";
-    left->setPosition(pos);
-    left->size = glm::vec2(20.f, 600.f);
     left->color = glm::vec3(0.f);
     scene->addChild(left, "canvas_edges");
 
     // right
     s2d::Object *right = new s2d::Object();
     right->label = "right";
-    right->setPosition(glm::vec2(pos.x + canvas->size.x, pos.y));
-    right->size = glm::vec2(20.f, 600.f);
     right->color = glm::vec3(0.f);
     scene->addChild(right, "canvas_edges");
 
     // top
     s2d::Object *top = new s2d::Object();
     top->label = "top";
-    top->setPosition(canvas->getPosition());
-    top->size = glm::vec2(600.f, 20.f);
     top->color = glm::vec3(0.f);
     scene->addChild(top, "canvas_edges");
 
     // bottom
     s2d::Object *bottom = new s2d::Object();
     bottom->label = "bottom";
-    bottom->setPosition(glm::vec2(pos.x, pos.y + canvas->size.y));
-    bottom->size = glm::vec2(600.f, 20.f);
     bottom->color = glm::vec3(0.f);
     scene->addChild(bottom, "canvas_edges");
 
@@ -115,4 +115,6 @@ void Level::initCanvasEdges()
     edges.push_back(right);
     edges.push_back(top);
     edges.push_back(bottom);
+
+    updateEdges();
 }

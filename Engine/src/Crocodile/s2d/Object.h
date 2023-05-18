@@ -86,6 +86,7 @@ namespace Crocodile
 			glm::vec2 getAbsolutePosition();
 			glm::vec2 getCenteredPosition();
 			glm::vec2 getScaledCenteredPosition();
+			glm::vec2 getScreenPosition(glm::mat4 view, glm::mat4 projection, float width, float height);
 			float getDistanceFrom(glm::vec2 targetPosition);
 			float getYSortValue();
 			void setStartingPosition(glm::vec2 pos);

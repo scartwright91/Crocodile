@@ -239,6 +239,14 @@ namespace Crocodile
 			return absPosition;
 		}
 
+		glm::vec2 Object::getScreenPosition(glm::mat4 view, glm::mat4 projection, float width, float height)
+		{
+			glm::mat4 model = calculateModelMatrix(position);
+			glm::mat4 mvp = projection * view * model;
+			glm::vec2 pos = mvp * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+			return glm::vec2((pos.x * 0.5 + 0.5) * width, height - (pos.y * 0.5 + 0.5) * height);
+		}
+
 		s2d::col::BoundingBox Object::getScreenBoundingBox(glm::mat4 view, glm::mat4 projection, float zoom, float width, float height)
 		{
 			glm::mat4 model = calculateModelMatrix(position);
