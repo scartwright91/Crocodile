@@ -24,7 +24,7 @@ void Level::renderImGui()
 {
     ImGui::ShowDemoWindow();
     ImGui::Begin("Level options");
-    showImGuiLayers();
+    levelOptions();
 }
 
 void Level::selectEdge()
@@ -132,9 +132,8 @@ void Level::initCanvasEdges()
     updateEdges();
 }
 
-void Level::showImGuiLayers()
+void Level::levelOptions()
 {
-    ImGui::ShowDemoWindow();
     if (ImGui::CollapsingHeader("Layers"))
     {
         addLayer();
@@ -145,9 +144,29 @@ void Level::showImGuiLayers()
     }
     if (ImGui::CollapsingHeader("Entities"))
     {
+        addEntity();
+        createEntitiesTable();
     }
     if (ImGui::CollapsingHeader("Resources"))
     {
+    }
+}
+
+void Level::addLayer()
+{
+    ImGui::InputText("Layer name", tmpLayerName, 64);
+    ImGui::SameLine();
+    if (ImGui::Button("New layer"))
+    {
+        std::string layerName = std::string(tmpLayerName);
+        bool layerExists = false;
+        for (s2d::Layer *layer : layers)
+            if (layer->name == layerName)
+                layerExists = true;
+        if (layerExists)
+            std::cout << "Layer name already exists." << std::endl;
+        else
+            layers.push_back(new s2d::Layer(std::string(tmpLayerName)));
     }
 }
 
@@ -200,9 +219,7 @@ void Level::createLayersTable()
                         move(layers, row, row - 1);
             }
             if (ImGui::TableSetColumnIndex(2))
-            {
-                ImGui::TextUnformatted(std::to_string(layers[row]->depth).c_str());
-            }
+                ImGui::SliderFloat("depth", &layers[row]->depth, 0.0f, 5.0f);
             if (ImGui::TableSetColumnIndex(3))
             {
                 bool hide = layers[row]->hide;
@@ -215,20 +232,68 @@ void Level::createLayersTable()
     }
 }
 
-void Level::addLayer()
+void Level::addEntity()
 {
-    ImGui::InputText("Layer name", tmpLayerName, 64);
-    ImGui::SameLine();
-    if (ImGui::Button("New layer"))
+    if (ImGui::TreeNode("New entity"))
     {
-        std::string layerName = std::string(tmpLayerName);
-        bool layerExists = false;
-        for (s2d::Layer *layer : layers)
-            if (layer->name == layerName)
-                layerExists = true;
-        if (layerExists)
-            std::cout << "Layer name already exists." << std::endl;
-        else
-            layers.push_back(new s2d::Layer(std::string(tmpLayerName)));
+        ImGui::InputText("Entity name", tmpEntityName, 64);
+        ImGui::ColorEdit3("Colour", (float *)&tmpEntityColour);
+        if (tmpWidth <= 0)
+            tmpWidth = 0;
+        if (tmpHeight <= 0)
+            tmpHeight = 0;
+        ImGui::InputInt("Width", &tmpWidth);
+        ImGui::InputInt("Height", &tmpHeight);
+        if (ImGui::Button("Add"))
+        {
+            std::string entityName = std::string(tmpEntityName);
+            s2d::Object *obj = new s2d::Object();
+            obj->label = entityName;
+            obj->size = glm::vec2((float)tmpWidth, (float)tmpHeight);
+            obj->color = tmpEntityColour;
+            entities[entityName] = obj;
+        }
+    }
+}
+
+void Level::createEntitiesTable()
+{
+    ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
+
+    if (ImGui::BeginTable("entities", 4, flags))
+    {
+        ImGui::TableSetupColumn("name");
+        ImGui::TableSetupColumn("size");
+        ImGui::TableSetupColumn("colour");
+        ImGui::TableSetupColumn("texture");
+
+        ImGui::TableHeadersRow();
+
+        std::map<std::string, s2d::Object *>::iterator it;
+        for (it = entities.begin(); it != entities.end(); it++)
+        {
+            ImGui::TableNextRow();
+
+            if (ImGui::TableSetColumnIndex(0))
+            {
+                ImGui::Text(it->first.c_str());
+            }
+            if (ImGui::TableSetColumnIndex(1))
+            {
+                glm::vec2 size = it->second->size;
+                std::string out = "(";
+                out += std::to_string((unsigned int)size.x);
+                out += ", ";
+                out += std::to_string((unsigned int)size.y);
+                out += ")";
+                ImGui::Text(out.c_str());
+            }
+            if (ImGui::TableSetColumnIndex(2))
+                ImGui::Text("placeholder");
+            if (ImGui::TableSetColumnIndex(3))
+                ImGui::Text("placeholder");
+        }
+
+        ImGui::EndTable();
     }
 }

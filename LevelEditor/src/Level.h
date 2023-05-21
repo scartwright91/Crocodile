@@ -2,6 +2,7 @@
 
 #include <string>
 #include <vector>
+#include <map>
 
 #include "Crocodile/s2d/Scene.h"
 #include "imgui.h"
@@ -23,6 +24,7 @@ public:
 
     std::vector<s2d::Object *> edges = {};
     std::vector<s2d::Layer *> layers = {};
+    std::map<std::string, s2d::Object *> entities = {};
 
 private:
     float timer = 0.f;
@@ -37,9 +39,19 @@ private:
     void initCanvasEdges();
 
     // imgui functions
-    void showImGuiLayers();
-    void createLayersTable();
+    void levelOptions();
+
+    // layers
     void addLayer();
+    void createLayersTable();
     char tmpLayerName[64] = "";
     ImVector<int> rowSelection = {};
+
+    // entities
+    void addEntity();
+    void createEntitiesTable();
+    char tmpEntityName[64] = "";
+    glm::vec3 tmpEntityColour = glm::vec3(0.f);
+    int tmpWidth = 0;
+    int tmpHeight = 0;
 };
