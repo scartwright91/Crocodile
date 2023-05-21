@@ -5,14 +5,16 @@
 #include <map>
 
 #include "Crocodile/s2d/Scene.h"
+#include "Crocodile/ResourceManager.h"
 #include "imgui.h"
+#include "ImGuiFileDialog.h"
 
 using namespace Crocodile;
 
 class Level
 {
 public:
-    Level(std::string name, s2d::Scene *scene, glm::vec2 canvasSize);
+    Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2 canvasSize);
 
     std::string name = "";
 
@@ -27,6 +29,8 @@ public:
     std::map<std::string, s2d::Object *> entities = {};
 
 private:
+    ResourceManager *rm = nullptr;
+
     float timer = 0.f;
     s2d::Object *edgeSelected = nullptr;
 
@@ -43,15 +47,25 @@ private:
 
     // layers
     void addLayer();
+    void removeLayer();
     void createLayersTable();
     char tmpLayerName[64] = "";
-    ImVector<int> rowSelection = {};
+    ImVector<int> layerRowSelection = {};
 
     // entities
     void addEntity();
+    void modifyEntity();
+    void removeEntity();
     void createEntitiesTable();
     char tmpEntityName[64] = "";
     glm::vec3 tmpEntityColour = glm::vec3(0.f);
     int tmpWidth = 0;
     int tmpHeight = 0;
+    ImVector<int> entityIndexRowSelection = {};
+    ImVector<std::string> entityRowSelection = {};
+
+    // resources
+    void addResource();
+    char tmpTextureName[64] = "";
+    std::string tmpTexturePath = "";
 };

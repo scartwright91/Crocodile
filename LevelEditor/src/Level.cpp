@@ -1,7 +1,7 @@
 #include "Level.h"
 #include "utils/operations.h"
 
-Level::Level(std::string name, s2d::Scene *scene, glm::vec2 canvasSize) : name(name), scene(scene)
+Level::Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2 canvasSize) : name(name), scene(scene), rm(rm)
 {
     canvas = new s2d::Object();
     canvas->size = canvasSize;
@@ -138,36 +138,47 @@ void Level::levelOptions()
     {
         addLayer();
         createLayersTable();
-        if (rowSelection.size() > 0)
-            if (ImGui::Button("Remove layer"))
-                layers.erase(layers.begin() + rowSelection[0]);
+        removeLayer();
     }
     if (ImGui::CollapsingHeader("Entities"))
     {
         addEntity();
         createEntitiesTable();
+        modifyEntity();
+        removeEntity();
     }
     if (ImGui::CollapsingHeader("Resources"))
     {
+        addResource();
     }
 }
 
 void Level::addLayer()
 {
-    ImGui::InputText("Layer name", tmpLayerName, 64);
-    ImGui::SameLine();
-    if (ImGui::Button("New layer"))
+    if (ImGui::TreeNode("New layer"))
     {
-        std::string layerName = std::string(tmpLayerName);
-        bool layerExists = false;
-        for (s2d::Layer *layer : layers)
-            if (layer->name == layerName)
-                layerExists = true;
-        if (layerExists)
-            std::cout << "Layer name already exists." << std::endl;
-        else
-            layers.push_back(new s2d::Layer(std::string(tmpLayerName)));
+        ImGui::InputText("Layer name", tmpLayerName, 64);
+        if (ImGui::Button("Add"))
+        {
+            std::string layerName = std::string(tmpLayerName);
+            bool layerExists = false;
+            for (s2d::Layer *layer : layers)
+                if (layer->name == layerName)
+                    layerExists = true;
+            if (layerExists)
+                std::cout << "Layer name already exists." << std::endl;
+            else
+                layers.push_back(new s2d::Layer(std::string(tmpLayerName)));
+        }
+        ImGui::TreePop();
     }
+}
+
+void Level::removeLayer()
+{
+    if (layerRowSelection.size() > 0)
+        if (ImGui::Button("Remove layer"))
+            layers.erase(layers.begin() + layerRowSelection[0]);
 }
 
 void Level::createLayersTable()
@@ -186,24 +197,23 @@ void Level::createLayersTable()
         for (int row = 0; row < layers.size(); row++)
         {
             ImGui::TableNextRow();
-            char label[32];
-            const bool item_is_selected = rowSelection.contains(row);
+            const bool item_is_selected = layerRowSelection.contains(row);
             ImGui::PushID(row);
 
             if (ImGui::TableSetColumnIndex(0))
             {
                 if (ImGui::Selectable(layers[row]->name.c_str(), item_is_selected))
                 {
-                    if (rowSelection.size() == 0)
-                        rowSelection.push_back(row);
+                    if (layerRowSelection.size() == 0)
+                        layerRowSelection.push_back(row);
                     else
                     {
-                        if (row == rowSelection[0])
-                            rowSelection.clear();
+                        if (row == layerRowSelection[0])
+                            layerRowSelection.clear();
                         else
                         {
-                            rowSelection.clear();
-                            rowSelection.push_back(row);
+                            layerRowSelection.clear();
+                            layerRowSelection.push_back(row);
                         }
                     }
                 }
@@ -253,7 +263,35 @@ void Level::addEntity()
             obj->color = tmpEntityColour;
             entities[entityName] = obj;
         }
+        ImGui::TreePop();
     }
+}
+
+void Level::modifyEntity()
+{
+    if (entityRowSelection.size() > 0)
+    {
+        if (ImGui::TreeNode("Modify"))
+        {
+            // s2d::Object* obj = entityRowSelection
+            ImGui::InputText("Entity name", tmpEntityName, 64);
+            ImGui::ColorEdit3("Colour", (float *)&tmpEntityColour);
+            if (tmpWidth <= 0)
+                tmpWidth = 0;
+            if (tmpHeight <= 0)
+                tmpHeight = 0;
+            ImGui::InputInt("Width", &tmpWidth);
+            ImGui::InputInt("Height", &tmpHeight);
+            ImGui::TreePop();
+        }
+    }
+}
+
+void Level::removeEntity()
+{
+    if (entityRowSelection.size() > 0)
+        if (ImGui::Button("Remove entity"))
+            entities.erase(entityRowSelection[0]);
 }
 
 void Level::createEntitiesTable()
@@ -273,10 +311,43 @@ void Level::createEntitiesTable()
         for (it = entities.begin(); it != entities.end(); it++)
         {
             ImGui::TableNextRow();
+            const bool item_is_selected = entityRowSelection.contains(it->first);
 
             if (ImGui::TableSetColumnIndex(0))
             {
-                ImGui::Text(it->first.c_str());
+                if (ImGui::Selectable(it->first.c_str(), item_is_selected))
+                {
+                    if (entityRowSelection.size() == 0)
+                        entityRowSelection.push_back(it->first);
+                    else
+                    {
+                        if (it->first == entityRowSelection[0])
+                            entityRowSelection.clear();
+                        else
+                        {
+                            entityRowSelection.clear();
+                            entityRowSelection.push_back(it->first);
+                        }
+                    }
+                }
+            }
+            if (ImGui::TableSetColumnIndex(0))
+            {
+                if (ImGui::Selectable(it->first.c_str(), item_is_selected))
+                {
+                    if (entityRowSelection.size() == 0)
+                        entityRowSelection.push_back(it->first);
+                    else
+                    {
+                        if (it->first == entityRowSelection[0])
+                            entityRowSelection.clear();
+                        else
+                        {
+                            entityRowSelection.clear();
+                            entityRowSelection.push_back(it->first);
+                        }
+                    }
+                }
             }
             if (ImGui::TableSetColumnIndex(1))
             {
@@ -295,5 +366,35 @@ void Level::createEntitiesTable()
         }
 
         ImGui::EndTable();
+    }
+}
+
+void Level::addResource()
+{
+    if (ImGui::TreeNode("Add texture"))
+    {
+        ImGui::InputText("Texture name", tmpTextureName, 64);
+        ImGui::SameLine();
+        if (ImGui::Button("Choose texture"))
+            ImGuiFileDialog::Instance()->OpenDialog("choose_texture", "Choose a texture", ".png,.jpg,.jpeg", ".");
+        // display
+        if (ImGuiFileDialog::Instance()->Display("choose_texture"))
+        {
+            // action if OK
+            if (ImGuiFileDialog::Instance()->IsOk())
+            {
+                std::string path = ImGuiFileDialog::Instance()->GetCurrentPath();
+                tmpTexturePath = path + "\\";
+                rm->loadTexture(tmpTexturePath.c_str(), tmpTextureName, false);
+            }
+            // close
+            ImGuiFileDialog::Instance()->Close();
+        }
+        ImGui::TreePop();
+    }
+    if (ImGui::TreeNode("Add animation"))
+    {
+        ImGui::InputText("Animation name", tmpTextureName, 64);
+        ImGui::TreePop();
     }
 }
