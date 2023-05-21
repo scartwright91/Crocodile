@@ -15,7 +15,7 @@ public:
     StartScreen *startScreen = nullptr;
     Editor *editor = nullptr;
 
-    LevelEditor() : Crocodile::Application("Level Editor", false, 1200, 800)
+    LevelEditor() : Crocodile::Application("Level Editor", true, 1200, 800)
     {
         init();
     }

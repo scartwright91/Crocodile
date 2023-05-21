@@ -13,22 +13,20 @@ namespace Crocodile
 		class CROCODILE_API LayerStack
 		{
 		public:
-
 			LayerStack();
 			~LayerStack();
 
-			void addLayer(Layer* layer);
-			void insertLayer(Layer* layer, unsigned int position);
-			void removeLayer(Layer* layer);
+			void addLayer(Layer *layer);
+			void insertLayer(Layer *layer, unsigned int position);
+			void removeLayer(Layer *layer);
 			void clearLayer(std::string name);
 			void removeAllLayers();
-			Layer* getLayer(std::string name);
+			std::vector<std::string> getLayerNames();
+			Layer *getLayer(std::string name);
 
 			unsigned int inline getLayerNumber() { return layers.size(); }
 
-			std::vector<Layer*> layers = {};
-
+			std::vector<Layer *> layers = {};
 		};
 	}
 }
-

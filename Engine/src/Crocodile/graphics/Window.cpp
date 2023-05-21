@@ -17,8 +17,7 @@ namespace Crocodile
 		bool Window::buttons[MAX_BUTTONS];
 		glm::vec2 Window::scroll = glm::vec2(0.f);
 
-		Window::Window(const char *name, bool resizeable, unsigned int width, unsigned int height) :
-			width(width), height(height), initialWidth(width), initialHeight(height)
+		Window::Window(const char *name, bool resizeable, unsigned int width, unsigned int height) : width(width), height(height), initialWidth(width), initialHeight(height)
 		{
 			this->name = name;
 			this->resizeable = resizeable;

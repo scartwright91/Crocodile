@@ -48,5 +48,13 @@ namespace Crocodile
 			layers = {};
 		}
 
+		std::vector<std::string> LayerStack::getLayerNames()
+		{
+			std::vector<std::string> names = {};
+			for (Layer *layer : layers)
+				names.push_back(layer->name);
+			return names;
+		}
+
 	}
 }

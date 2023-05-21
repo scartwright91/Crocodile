@@ -4,6 +4,7 @@
 #include <vector>
 
 #include "Crocodile/s2d/Scene.h"
+#include "imgui.h"
 
 using namespace Crocodile;
 
@@ -15,11 +16,13 @@ public:
     std::string name = "";
 
     void update();
+    void renderImGui();
 
     s2d::Scene *scene = nullptr;
     s2d::Object *canvas = nullptr;
 
     std::vector<s2d::Object *> edges = {};
+    std::vector<s2d::Layer *> layers = {};
 
 private:
     float timer = 0.f;
@@ -32,4 +35,10 @@ private:
     void updateCanvas();
     void updateEdges();
     void initCanvasEdges();
+
+    // imgui functions
+    void showImGuiLayers();
+    void createLayersTable();
+    void addLayer();
+    char tmpLayerName[64] = "";
 };

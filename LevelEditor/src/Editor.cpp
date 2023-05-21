@@ -13,7 +13,9 @@ Editor::Editor(
 
 void Editor::renderImGui()
 {
-    // ImGui::ShowDemoWindow();
+    showImGuiMainMenu();
+    for (Level *level : levels)
+        level->renderImGui();
 }
 
 void Editor::update()
@@ -64,4 +66,42 @@ void Editor::init()
     // scene->camera->setZoom(4.0f);
     scene->camera->setTarget(camera, false);
     currentZoom = scene->window->scroll.y;
+}
+
+void Editor::showImGuiMainMenu()
+{
+    if (ImGui::BeginMainMenuBar())
+    {
+        if (ImGui::BeginMenu("Project"))
+        {
+            if (ImGui::MenuItem("Open", "CTRL+O"))
+            {
+            }
+            if (ImGui::MenuItem("Save", "CTRL+S"))
+            {
+            }
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("Edit"))
+        {
+            if (ImGui::MenuItem("Undo", "CTRL+Z"))
+            {
+            }
+            if (ImGui::MenuItem("Redo", "CTRL+Y", false, false))
+            {
+            } // Disabled item
+            ImGui::Separator();
+            if (ImGui::MenuItem("Cut", "CTRL+X"))
+            {
+            }
+            if (ImGui::MenuItem("Copy", "CTRL+C"))
+            {
+            }
+            if (ImGui::MenuItem("Paste", "CTRL+V"))
+            {
+            }
+            ImGui::EndMenu();
+        }
+        ImGui::EndMainMenuBar();
+    }
 }

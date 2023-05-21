@@ -36,4 +36,7 @@ private:
     void move();
 
     void init();
+
+    // imgui functions
+    void showImGuiMainMenu();
 };
