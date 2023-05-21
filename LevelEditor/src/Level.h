@@ -41,4 +41,5 @@ private:
     void createLayersTable();
     void addLayer();
     char tmpLayerName[64] = "";
+    ImVector<int> rowSelection = {};
 };

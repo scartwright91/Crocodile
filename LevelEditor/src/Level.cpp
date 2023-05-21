@@ -1,4 +1,5 @@
 #include "Level.h"
+#include "utils/operations.h"
 
 Level::Level(std::string name, s2d::Scene *scene, glm::vec2 canvasSize) : name(name), scene(scene)
 {
@@ -138,8 +139,9 @@ void Level::showImGuiLayers()
     {
         addLayer();
         createLayersTable();
-        if (ImGui::Button("Remove layer"))
-            std::cout << "Layer removed" << std::endl;
+        if (rowSelection.size() > 0)
+            if (ImGui::Button("Remove layer"))
+                layers.erase(layers.begin() + rowSelection[0]);
     }
     if (ImGui::CollapsingHeader("Entities"))
     {
@@ -152,7 +154,6 @@ void Level::showImGuiLayers()
 void Level::createLayersTable()
 {
     ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
-    bool column_selected[4] = {};
 
     if (ImGui::BeginTable("level_layers", 4, flags))
     {
@@ -167,23 +168,36 @@ void Level::createLayersTable()
         {
             ImGui::TableNextRow();
             char label[32];
-            bool selected = false;
+            const bool item_is_selected = rowSelection.contains(row);
+            ImGui::PushID(row);
 
             if (ImGui::TableSetColumnIndex(0))
-                ImGui::TextUnformatted(layers[row]->name.c_str());
+            {
+                if (ImGui::Selectable(layers[row]->name.c_str(), item_is_selected))
+                {
+                    if (rowSelection.size() == 0)
+                        rowSelection.push_back(row);
+                    else
+                    {
+                        if (row == rowSelection[0])
+                            rowSelection.clear();
+                        else
+                        {
+                            rowSelection.clear();
+                            rowSelection.push_back(row);
+                        }
+                    }
+                }
+            }
             if (ImGui::TableSetColumnIndex(1))
             {
                 if (ImGui::SmallButton("+"))
-                {
-                    // TODO: implement position change in vector
-                    std::cout << "Increase position" << std::endl;
-                }
+                    if (row + 1 <= layers.size())
+                        move(layers, row, row + 1);
                 ImGui::SameLine();
                 if (ImGui::SmallButton("-"))
-                {
-                    // TODO: implement position change in vector
-                    std::cout << "Decrease position" << std::endl;
-                }
+                    if (row - 1 >= 0)
+                        move(layers, row, row - 1);
             }
             if (ImGui::TableSetColumnIndex(2))
             {
