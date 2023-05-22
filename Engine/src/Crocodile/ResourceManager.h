@@ -15,6 +15,8 @@ namespace Crocodile
     public:
         struct TextureData
         {
+            std::string name;
+            std::string path;
             unsigned int textureID;
             float width;
             float height;
@@ -126,6 +128,8 @@ namespace Crocodile
             }
 
             TextureData td;
+            td.name = name;
+            td.path = path;
             td.textureID = textureID;
             td.width = (float)width;
             td.height = (float)height;

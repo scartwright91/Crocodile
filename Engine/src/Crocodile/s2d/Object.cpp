@@ -252,11 +252,13 @@ namespace Crocodile
 			glm::mat4 model = calculateModelMatrix(position);
 			glm::mat4 mvp = projection * view * model;
 			glm::vec2 pos = mvp * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
-			return s2d::col::BoundingBox(
+			glm::vec2 scaledSize = getScaledSize();
+			s2d::col::BoundingBox bbox = s2d::col::BoundingBox(
 				(pos.x * 0.5 + 0.5) * width,
 				height - (pos.y * 0.5 + 0.5) * height,
-				size.x * modelScale.x / zoom,
-				size.y * modelScale.y / zoom);
+				scaledSize.x / zoom,
+				scaledSize.y / zoom);
+			return bbox;
 		}
 
 		s2d::col::BoundingBox Object::getBoundingBox()

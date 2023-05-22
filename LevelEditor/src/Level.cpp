@@ -22,15 +22,17 @@ void Level::update()
 
 void Level::renderImGui()
 {
-    // ImGui::ShowDemoWindow();
+    ImGui::ShowDemoWindow();
     ImGui::Begin("Manage");
     levelOptions();
     ImGui::End();
 
     ImGui::Begin("Scene");
+    sceneTree();
     ImGui::End();
 
     ImGui::Begin("Placement");
+    placementUI();
     ImGui::End();
 }
 
@@ -59,6 +61,7 @@ void Level::selectEdge()
             {
                 if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
                 {
+                    std::cout << "edge selected" << std::endl;
                     edgeSelected = obj;
                     break;
                 }
@@ -154,10 +157,30 @@ void Level::levelOptions()
         modifyEntity();
         removeEntity();
     }
-    if (ImGui::CollapsingHeader("Resources"))
+    if (ImGui::CollapsingHeader("Textures"))
     {
-        addResource();
+        addTexture();
+        createTextureTable();
     }
+}
+
+void Level::sceneTree()
+{
+    if (ImGui::TreeNode("Scene"))
+    {
+        for (s2d::Layer *layer : layers)
+        {
+            if (ImGui::TreeNode(layer->name.c_str()))
+            {
+                ImGui::TreePop();
+            }
+        }
+        ImGui::TreePop();
+    }
+}
+
+void Level::placementUI()
+{
 }
 
 void Level::addLayer()
@@ -190,9 +213,7 @@ void Level::removeLayer()
 
 void Level::createLayersTable()
 {
-    ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
-
-    if (ImGui::BeginTable("level_layers", 4, flags))
+    if (ImGui::BeginTable("level_layers", 4, tableFlags, tableSize))
     {
         ImGui::TableSetupColumn("name");
         ImGui::TableSetupColumn("position");
@@ -261,7 +282,7 @@ void Level::addEntity()
             tmpHeight = 0;
         ImGui::InputInt("Width", &tmpWidth);
         ImGui::InputInt("Height", &tmpHeight);
-        // ImGui::Combo("texture", &tmpIntTexture, (char *)&rm->getTextureNames());
+        // ImGui::Combo("texture", &tmpIntTexture, (const char *)getTextureNames());
         if (ImGui::Button("Add"))
         {
             std::string entityName = std::string(tmpEntityName);
@@ -304,9 +325,7 @@ void Level::removeEntity()
 
 void Level::createEntitiesTable()
 {
-    ImGuiTableFlags flags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg;
-
-    if (ImGui::BeginTable("entities", 4, flags))
+    if (ImGui::BeginTable("entities", 4, tableFlags, tableSize))
     {
         ImGui::TableSetupColumn("name");
         ImGui::TableSetupColumn("size");
@@ -321,24 +340,6 @@ void Level::createEntitiesTable()
             ImGui::TableNextRow();
             const bool item_is_selected = entityRowSelection.contains(it->first);
 
-            if (ImGui::TableSetColumnIndex(0))
-            {
-                if (ImGui::Selectable(it->first.c_str(), item_is_selected))
-                {
-                    if (entityRowSelection.size() == 0)
-                        entityRowSelection.push_back(it->first);
-                    else
-                    {
-                        if (it->first == entityRowSelection[0])
-                            entityRowSelection.clear();
-                        else
-                        {
-                            entityRowSelection.clear();
-                            entityRowSelection.push_back(it->first);
-                        }
-                    }
-                }
-            }
             if (ImGui::TableSetColumnIndex(0))
             {
                 if (ImGui::Selectable(it->first.c_str(), item_is_selected))
@@ -377,7 +378,7 @@ void Level::createEntitiesTable()
     }
 }
 
-void Level::addResource()
+void Level::addTexture()
 {
     if (ImGui::TreeNode("Add texture"))
     {
@@ -390,13 +391,17 @@ void Level::addResource()
             // action if OK
             if (ImGuiFileDialog::Instance()->IsOk())
             {
-                std::string path = ImGuiFileDialog::Instance()->GetCurrentPath();
-                tmpTexturePath = path + "\\";
-                // TODO: Add relative file path
-                rm->loadTexture(tmpTexturePath.c_str(), tmpTextureName, false);
+                std::string filename = ImGuiFileDialog::Instance()->GetFilePathName();
+                tmpTexturePath = filename;
             }
             // close
             ImGuiFileDialog::Instance()->Close();
+        }
+        ImGui::Text(tmpTexturePath.c_str());
+        if (ImGui::Button("Add"))
+        {
+            rm->loadTexture(tmpTexturePath.c_str(), tmpTextureName, false);
+            textures.push_back(rm->getTexture(tmpTextureName));
         }
         ImGui::TreePop();
     }
@@ -418,5 +423,46 @@ void Level::addResource()
             ImGuiFileDialog::Instance()->Close();
         }
         ImGui::TreePop();
+    }
+}
+
+ImVector<char *> Level::getTextureNames()
+{
+    ImVector<char *> names = {};
+    for (ResourceManager::TextureData td : textures)
+        names.push_back(const_cast<char *>(td.name.c_str()));
+    return names;
+}
+
+void Level::createTextureTable()
+{
+    if (ImGui::BeginTable("textures_table", 3, tableFlags, tableSize))
+    {
+        ImGui::TableSetupColumn("name");
+        ImGui::TableSetupColumn("size");
+        ImGui::TableSetupColumn("path");
+
+        ImGui::TableHeadersRow();
+
+        for (int row = 0; row < textures.size(); row++)
+        {
+            ImGui::TableNextRow();
+            ResourceManager::TextureData td = textures[row];
+
+            if (ImGui::TableSetColumnIndex(0))
+                ImGui::Text(td.name.c_str());
+            if (ImGui::TableSetColumnIndex(1))
+            {
+                std::string out = "(";
+                out += std::to_string((unsigned int)td.width);
+                out += ", ";
+                out += std::to_string((unsigned int)td.height);
+                out += ")";
+                ImGui::Text(out.c_str());
+            }
+            if (ImGui::TableSetColumnIndex(2))
+                ImGui::Text(td.path.c_str());
+        }
+        ImGui::EndTable();
     }
 }

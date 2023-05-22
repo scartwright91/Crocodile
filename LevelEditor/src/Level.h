@@ -27,6 +27,7 @@ public:
     std::vector<s2d::Object *> edges = {};
     std::vector<s2d::Layer *> layers = {};
     std::map<std::string, s2d::Object *> entities = {};
+    std::vector<ResourceManager::TextureData> textures = {};
 
 private:
     ResourceManager *rm = nullptr;
@@ -43,7 +44,11 @@ private:
     void initCanvasEdges();
 
     // imgui functions
+    ImGuiTableFlags tableFlags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY;
+    ImVec2 tableSize = ImVec2(0.0f, ImGui::GetTextLineHeightWithSpacing() * 8);
     void levelOptions();
+    void sceneTree();
+    void placementUI();
 
     // layers
     void addLayer();
@@ -65,8 +70,10 @@ private:
     ImVector<int> entityIndexRowSelection = {};
     ImVector<std::string> entityRowSelection = {};
 
-    // resources
-    void addResource();
+    // textures
+    void addTexture();
+    void createTextureTable();
     char tmpTextureName[64] = "";
+    ImVector<char *> getTextureNames();
     std::string tmpTexturePath = "";
 };
