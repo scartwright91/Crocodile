@@ -61,7 +61,6 @@ void Level::selectEdge()
             {
                 if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
                 {
-                    std::cout << "edge selected" << std::endl;
                     edgeSelected = obj;
                     break;
                 }
@@ -282,7 +281,7 @@ void Level::addEntity()
             tmpHeight = 0;
         ImGui::InputInt("Width", &tmpWidth);
         ImGui::InputInt("Height", &tmpHeight);
-        // ImGui::Combo("texture", &tmpIntTexture, (const char *)getTextureNames());
+        selectEntityTexture();
         if (ImGui::Button("Add"))
         {
             std::string entityName = std::string(tmpEntityName);
@@ -290,6 +289,7 @@ void Level::addEntity()
             obj->label = entityName;
             obj->size = glm::vec2((float)tmpWidth, (float)tmpHeight);
             obj->color = tmpEntityColour;
+            obj->setTexture(rm->getTexture(std::string(tmpNewTexture)).textureID);
             entities[entityName] = obj;
         }
         ImGui::TreePop();
@@ -311,6 +311,7 @@ void Level::modifyEntity()
                 tmpHeight = 0;
             ImGui::InputInt("Width", &tmpWidth);
             ImGui::InputInt("Height", &tmpHeight);
+            selectEntityTexture();
             ImGui::TreePop();
         }
     }
@@ -321,6 +322,26 @@ void Level::removeEntity()
     if (entityRowSelection.size() > 0)
         if (ImGui::Button("Remove entity"))
             entities.erase(entityRowSelection[0]);
+}
+
+void Level::selectEntityTexture()
+{
+    const char *tmpTextures[textures.size()];
+    for (int i = 0; i < textures.size(); i++)
+        tmpTextures[i] = textures[i].name.c_str();
+
+    if (ImGui::BeginCombo("Choose texture", tmpNewTexture))
+    {
+        for (int n = 0; n < IM_ARRAYSIZE(tmpTextures); n++)
+        {
+            bool is_selected = (tmpNewTexture == tmpTextures[n]);
+            if (ImGui::Selectable(tmpTextures[n], is_selected))
+                tmpNewTexture = tmpTextures[n];
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
+    }
 }
 
 void Level::createEntitiesTable()
