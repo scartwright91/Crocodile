@@ -93,7 +93,8 @@ namespace Crocodile
 		void Scene::render()
 		{
 			// start postprocessing scene capture
-			postProcessing->beginRender();
+			if (enablePostprocessing)
+				postProcessing->beginRender();
 			// render grid
 			if (grid->active)
 				grid->render(
@@ -114,18 +115,21 @@ namespace Crocodile
 							renderObject(o, layer);
 					}
 			// finish and render postprocessing
-			postProcessing->endRender();
-			postProcessing->render(
-				(float)glfwGetTime(),
-				greyscale,
-				wavey,
-				screenShake,
-				transitionEffect,
-				fadeinTransition,
-				fadeoutTransition,
-				transitionCounter,
-				windowWidth,
-				windowHeight);
+			if (enablePostprocessing)
+			{
+				postProcessing->endRender();
+				postProcessing->render(
+					(float)glfwGetTime(),
+					greyscale,
+					wavey,
+					screenShake,
+					transitionEffect,
+					fadeinTransition,
+					fadeoutTransition,
+					transitionCounter,
+					windowWidth,
+					windowHeight);
+			}
 		}
 
 		void Scene::renderObject(Object *obj, Layer *layer)
@@ -305,8 +309,11 @@ namespace Crocodile
 						o->scale(s);
 				}
 			// scale postprocessing texture
-			delete postProcessing;
-			postProcessing = new s2d::PostProcessing(resourceManager->getShader("postprocessing"), window->getWidth(), windowHeight = window->getHeight());
+			if (enablePostprocessing)
+			{
+				delete postProcessing;
+				postProcessing = new s2d::PostProcessing(resourceManager->getShader("postprocessing"), window->getWidth(), windowHeight = window->getHeight());
+			}
 		}
 
 		void Scene::init()

@@ -60,8 +60,11 @@ namespace Crocodile
 			void endSceneTransition();
 			void setTransitionType(PostProcessing::TransitionEffect effect);
 
-			// lights
+			// options
 			bool enableLighting = true;
+			bool enablePostprocessing = true;
+
+			// lights
 			float ambientLighting = 1.0f;
 			LightSystem *lightSystem;
 

@@ -22,9 +22,16 @@ void Level::update()
 
 void Level::renderImGui()
 {
-    ImGui::ShowDemoWindow();
-    ImGui::Begin("Level options");
+    // ImGui::ShowDemoWindow();
+    ImGui::Begin("Manage");
     levelOptions();
+    ImGui::End();
+
+    ImGui::Begin("Scene");
+    ImGui::End();
+
+    ImGui::Begin("Placement");
+    ImGui::End();
 }
 
 void Level::selectEdge()
@@ -254,6 +261,7 @@ void Level::addEntity()
             tmpHeight = 0;
         ImGui::InputInt("Width", &tmpWidth);
         ImGui::InputInt("Height", &tmpHeight);
+        // ImGui::Combo("texture", &tmpIntTexture, (char *)&rm->getTextureNames());
         if (ImGui::Button("Add"))
         {
             std::string entityName = std::string(tmpEntityName);
@@ -374,7 +382,6 @@ void Level::addResource()
     if (ImGui::TreeNode("Add texture"))
     {
         ImGui::InputText("Texture name", tmpTextureName, 64);
-        ImGui::SameLine();
         if (ImGui::Button("Choose texture"))
             ImGuiFileDialog::Instance()->OpenDialog("choose_texture", "Choose a texture", ".png,.jpg,.jpeg", ".");
         // display
@@ -385,6 +392,7 @@ void Level::addResource()
             {
                 std::string path = ImGuiFileDialog::Instance()->GetCurrentPath();
                 tmpTexturePath = path + "\\";
+                // TODO: Add relative file path
                 rm->loadTexture(tmpTexturePath.c_str(), tmpTextureName, false);
             }
             // close
@@ -395,6 +403,20 @@ void Level::addResource()
     if (ImGui::TreeNode("Add animation"))
     {
         ImGui::InputText("Animation name", tmpTextureName, 64);
+        if (ImGui::Button("Choose animation"))
+            ImGuiFileDialog::Instance()->OpenDialog("choose_animation", "Choose an animation", nullptr, ".");
+        // display
+        if (ImGuiFileDialog::Instance()->Display("choose_animation"))
+        {
+            // action if OK
+            if (ImGuiFileDialog::Instance()->IsOk())
+            {
+                std::string path = ImGuiFileDialog::Instance()->GetCurrentPath();
+                tmpTexturePath = path + "\\";
+            }
+            // close
+            ImGuiFileDialog::Instance()->Close();
+        }
         ImGui::TreePop();
     }
 }

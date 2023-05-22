@@ -4,8 +4,7 @@ namespace Crocodile
 {
 	namespace s2d
 	{
-		PostProcessing::PostProcessing(graphics::Shader* shader, unsigned int width, unsigned int height) :
-			width(width), height(height)
+		PostProcessing::PostProcessing(graphics::Shader *shader, unsigned int width, unsigned int height) : width(width), height(height)
 		{
 			this->shader = shader;
 			this->shader->use();
@@ -15,7 +14,6 @@ namespace Crocodile
 
 		PostProcessing::~PostProcessing()
 		{
-
 		}
 
 		void PostProcessing::beginRender()
@@ -39,8 +37,7 @@ namespace Crocodile
 			bool fadeoutTransition,
 			float transitionCounter,
 			float width,
-			float height
-			)
+			float height)
 		{
 			shader->use();
 			shader->setFloat("u_DeltaTime", dt);
@@ -93,24 +90,23 @@ namespace Crocodile
 			// render buffer
 			glGenRenderbuffers(1, &RBO);
 			glBindRenderbuffer(GL_RENDERBUFFER, RBO);
-			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height); // use a single renderbuffer object for both a depth AND stencil buffer.
+			glRenderbufferStorage(GL_RENDERBUFFER, GL_DEPTH24_STENCIL8, width, height);					  // use a single renderbuffer object for both a depth AND stencil buffer.
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO); // now actually attach it
 			// now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
 			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-				std::cout << "ERROR::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+				std::cout << "ERROR::POSTPROCESSING::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 			// create render quad
 			float quadVertices[] = {
 				// positions   // texCoords
-				-1.0f,  1.0f,  0.0f, 1.0f,
-				-1.0f, -1.0f,  0.0f, 0.0f,
-				 1.0f, -1.0f,  1.0f, 0.0f,
+				-1.0f, 1.0f, 0.0f, 1.0f,
+				-1.0f, -1.0f, 0.0f, 0.0f,
+				1.0f, -1.0f, 1.0f, 0.0f,
 
-				-1.0f,  1.0f,  0.0f, 1.0f,
-				 1.0f, -1.0f,  1.0f, 0.0f,
-				 1.0f,  1.0f,  1.0f, 1.0f
-			};
+				-1.0f, 1.0f, 0.0f, 1.0f,
+				1.0f, -1.0f, 1.0f, 0.0f,
+				1.0f, 1.0f, 1.0f, 1.0f};
 
 			unsigned int VBO;
 			glGenVertexArrays(1, &VAO);
@@ -119,10 +115,9 @@ namespace Crocodile
 			glBindBuffer(GL_ARRAY_BUFFER, VBO);
 			glBufferData(GL_ARRAY_BUFFER, sizeof(quadVertices), &quadVertices, GL_STATIC_DRAW);
 			glEnableVertexAttribArray(0);
-			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)0);
+			glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)0);
 			glEnableVertexAttribArray(1);
-			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void*)(2 * sizeof(float)));
-
+			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)(2 * sizeof(float)));
 		}
 	}
 }

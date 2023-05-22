@@ -61,6 +61,7 @@ private:
     glm::vec3 tmpEntityColour = glm::vec3(0.f);
     int tmpWidth = 0;
     int tmpHeight = 0;
+    int tmpIntTexture = 0;
     ImVector<int> entityIndexRowSelection = {};
     ImVector<std::string> entityRowSelection = {};
 

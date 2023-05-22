@@ -4,7 +4,11 @@ namespace Crocodile
 {
 	Application *Application::s_Instance = nullptr;
 
-	Application::Application(const char *name, bool resizeable, unsigned int width, unsigned height) : window(name, resizeable, width, height)
+	Application::Application(
+		const char *name,
+		bool resizeable,
+		unsigned int width,
+		unsigned height) : window(name, resizeable, width, height)
 	{
 		s_Instance = this;
 

@@ -32,6 +32,14 @@ namespace Crocodile
         {
         }
 
+        std::vector<std::string> getTextureNames()
+        {
+            std::vector<std::string> textureNames = {};
+            for (std::map<std::string, TextureData>::iterator it = textureIDs.begin(); it != textureIDs.end(); ++it)
+                textureNames.push_back(it->first);
+            return textureNames;
+        }
+
         void loadShaderFromString(std::string vertexCode, std::string fragmentCode, std::string name)
         {
             graphics::Shader shader(vertexCode, fragmentCode, true);

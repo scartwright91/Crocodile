@@ -8,7 +8,6 @@ Project::Project(std::string name, std::string path)
 
 void Project::renderImGui()
 {
-    ImGui::ShowDemoWindow();
 }
 
 void Project::save()
