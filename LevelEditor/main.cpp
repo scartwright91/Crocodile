@@ -15,7 +15,7 @@ public:
     StartScreen *startScreen = nullptr;
     Editor *editor = nullptr;
 
-    LevelEditor() : Crocodile::Application("Level Editor", false, 1200, 800)
+    LevelEditor() : Crocodile::Application("Level Editor", true, 1200, 800)
     {
         init();
     }
@@ -52,6 +52,7 @@ public:
     void init()
     {
         scene->enablePostprocessing = false;
+        scene->enableScaling = false;
         scene->window->setBackgroundColor(glm::vec3((float)16 / 255, (float)42 / 255, (float)67 / 255));
         startScreen = new StartScreen();
     }

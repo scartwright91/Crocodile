@@ -61,6 +61,7 @@ namespace Crocodile
 			void setTransitionType(PostProcessing::TransitionEffect effect);
 
 			// options
+			bool enableScaling = true;
 			bool enableLighting = true;
 			bool enablePostprocessing = true;
 

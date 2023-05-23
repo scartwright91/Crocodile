@@ -22,7 +22,7 @@ void Level::update()
 
 void Level::renderImGui()
 {
-    ImGui::ShowDemoWindow();
+    // ImGui::ShowDemoWindow();
     ImGui::Begin("Manage");
     levelOptions();
     ImGui::End();
@@ -180,6 +180,19 @@ void Level::sceneTree()
 
 void Level::placementUI()
 {
+    selectPlacementLayer();
+    ImGui::Checkbox("Place mode", &placeMode);
+    if (placeMode)
+    {
+        selectPlacementObject();
+        ImGui::Checkbox("Place multiple", &placeMultiple);
+        float scale = 1.f;
+        ImGui::SliderFloat("scale", &scale, 0.f, 5.f);
+        float rotation = 0.f;
+        ImGui::SliderFloat("rotation", &rotation, -3.14f, 3.14f);
+        float alpha = 0.f;
+        ImGui::SliderFloat("alpha", &alpha, 0.f, 1.f);
+    }
 }
 
 void Level::addLayer()
@@ -290,7 +303,8 @@ void Level::addEntity()
             obj->size = glm::vec2((float)tmpWidth, (float)tmpHeight);
             obj->color = tmpEntityColour;
             obj->setTexture(rm->getTexture(std::string(tmpNewTexture)).textureID);
-            entities[entityName] = obj;
+            entities.push_back(obj);
+            entitiesMap[entityName] = obj;
         }
         ImGui::TreePop();
     }
@@ -312,6 +326,13 @@ void Level::modifyEntity()
             ImGui::InputInt("Width", &tmpWidth);
             ImGui::InputInt("Height", &tmpHeight);
             selectEntityTexture();
+            if (ImGui::Button("Save"))
+            {
+                entities[entityRowSelection[0]]->label = tmpEntityName;
+                entities[entityRowSelection[0]]->color = tmpEntityColour;
+                entities[entityRowSelection[0]]->size = glm::vec2((float)tmpWidth, (float)tmpHeight);
+                entities[entityRowSelection[0]]->setTexture(rm->getTexture(std::string(tmpNewTexture)).textureID);
+            }
             ImGui::TreePop();
         }
     }
@@ -320,8 +341,8 @@ void Level::modifyEntity()
 void Level::removeEntity()
 {
     if (entityRowSelection.size() > 0)
-        if (ImGui::Button("Remove entity"))
-            entities.erase(entityRowSelection[0]);
+        if (ImGui::Button("Remove layer"))
+            entities.erase(entities.begin() + entityRowSelection[0]);
 }
 
 void Level::selectEntityTexture()
@@ -330,13 +351,18 @@ void Level::selectEntityTexture()
     for (int i = 0; i < textures.size(); i++)
         tmpTextures[i] = textures[i].name.c_str();
 
-    if (ImGui::BeginCombo("Choose texture", tmpNewTexture))
+    if (ImGui::BeginCombo("##combo", tmpNewTexture))
     {
         for (int n = 0; n < IM_ARRAYSIZE(tmpTextures); n++)
         {
             bool is_selected = (tmpNewTexture == tmpTextures[n]);
             if (ImGui::Selectable(tmpTextures[n], is_selected))
+            {
                 tmpNewTexture = tmpTextures[n];
+                ResourceManager::TextureData td = rm->getTexture(std::string(tmpNewTexture));
+                tmpWidth = td.width;
+                tmpHeight = td.height;
+            }
             if (is_selected)
                 ImGui::SetItemDefaultFocus();
         }
@@ -355,33 +381,34 @@ void Level::createEntitiesTable()
 
         ImGui::TableHeadersRow();
 
-        std::map<std::string, s2d::Object *>::iterator it;
-        for (it = entities.begin(); it != entities.end(); it++)
+        for (int row = 0; row < entities.size(); row++)
         {
             ImGui::TableNextRow();
-            const bool item_is_selected = entityRowSelection.contains(it->first);
+            const bool item_is_selected = entityRowSelection.contains(row);
+            ImGui::PushID(row);
+            s2d::Object *ent = entities[row];
 
             if (ImGui::TableSetColumnIndex(0))
             {
-                if (ImGui::Selectable(it->first.c_str(), item_is_selected))
+                if (ImGui::Selectable(ent->label.c_str(), item_is_selected))
                 {
                     if (entityRowSelection.size() == 0)
-                        entityRowSelection.push_back(it->first);
+                        entityRowSelection.push_back(row);
                     else
                     {
-                        if (it->first == entityRowSelection[0])
+                        if (row == entityRowSelection[0])
                             entityRowSelection.clear();
                         else
                         {
                             entityRowSelection.clear();
-                            entityRowSelection.push_back(it->first);
+                            entityRowSelection.push_back(row);
                         }
                     }
                 }
             }
             if (ImGui::TableSetColumnIndex(1))
             {
-                glm::vec2 size = it->second->size;
+                glm::vec2 size = ent->size;
                 std::string out = "(";
                 out += std::to_string((unsigned int)size.x);
                 out += ", ";
@@ -390,9 +417,16 @@ void Level::createEntitiesTable()
                 ImGui::Text(out.c_str());
             }
             if (ImGui::TableSetColumnIndex(2))
-                ImGui::Text("placeholder");
+            {
+                std::string out = "(";
+                out += std::to_string(ent->color.r);
+                out += std::to_string(ent->color.g);
+                out += std::to_string(ent->color.b);
+                out += ")";
+                ImGui::Text(out.c_str());
+            }
             if (ImGui::TableSetColumnIndex(3))
-                ImGui::Text("placeholder");
+                ImGui::Text("texture_name");
         }
 
         ImGui::EndTable();
@@ -485,5 +519,45 @@ void Level::createTextureTable()
                 ImGui::Text(td.path.c_str());
         }
         ImGui::EndTable();
+    }
+}
+
+void Level::selectPlacementLayer()
+{
+    const char *tmpLayers[layers.size()];
+    for (int i = 0; i < layers.size(); i++)
+        tmpLayers[i] = layers[i]->name.c_str();
+
+    if (ImGui::BeginCombo("Select layer", tmpPlacementLayer))
+    {
+        for (int n = 0; n < IM_ARRAYSIZE(tmpLayers); n++)
+        {
+            bool is_selected = (tmpPlacementLayer == tmpLayers[n]);
+            if (ImGui::Selectable(tmpLayers[n], is_selected))
+                tmpPlacementLayer = tmpLayers[n];
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
+    }
+}
+
+void Level::selectPlacementObject()
+{
+    const char *tmpEntities[entities.size()];
+    for (int i = 0; i < entities.size(); i++)
+        tmpEntities[i] = entities[i]->label.c_str();
+
+    if (ImGui::BeginCombo("Select entity", tmpPlacementEntity))
+    {
+        for (int n = 0; n < IM_ARRAYSIZE(tmpEntities); n++)
+        {
+            bool is_selected = (tmpPlacementEntity == tmpEntities[n]);
+            if (ImGui::Selectable(tmpEntities[n], is_selected))
+                tmpPlacementEntity = tmpEntities[n];
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
     }
 }

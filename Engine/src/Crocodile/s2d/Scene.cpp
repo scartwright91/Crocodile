@@ -299,6 +299,10 @@ namespace Crocodile
 
 		void Scene::scaleScene(glm::vec2 s)
 		{
+			windowWidth = window->getWidth();
+			windowHeight = window->getHeight();
+			if (!enableScaling)
+				return;
 			for (Layer *layer : layerStack->layers)
 				for (Object *obj : layer->objects)
 				{

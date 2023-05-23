@@ -26,7 +26,8 @@ public:
 
     std::vector<s2d::Object *> edges = {};
     std::vector<s2d::Layer *> layers = {};
-    std::map<std::string, s2d::Object *> entities = {};
+    std::vector<s2d::Object *> entities = {};
+    std::map<std::string, s2d::Object *> entitiesMap = {};
     std::vector<ResourceManager::TextureData> textures = {};
 
 private:
@@ -67,9 +68,8 @@ private:
     glm::vec3 tmpEntityColour = glm::vec3(0.f);
     int tmpWidth = 0;
     int tmpHeight = 0;
-    const char *tmpNewTexture;
-    ImVector<int> entityIndexRowSelection = {};
-    ImVector<std::string> entityRowSelection = {};
+    const char *tmpNewTexture = "";
+    ImVector<int> entityRowSelection = {};
 
     // textures
     void addTexture();
@@ -77,4 +77,13 @@ private:
     char tmpTextureName[64] = "";
     ImVector<char *> getTextureNames();
     std::string tmpTexturePath = "";
+
+    // placement
+    bool placeMode = true;
+    float placementTimer = glfwGetTime();
+    const char *tmpPlacementLayer = "";
+    const char *tmpPlacementEntity = "";
+    bool placeMultiple = true;
+    void selectPlacementLayer();
+    void selectPlacementObject();
 };
