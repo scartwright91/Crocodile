@@ -162,21 +162,21 @@ namespace Crocodile
 			position = pos;
 		}
 
-		void Object::setTexture(unsigned int textureID)
+		void Object::setTexture(ResourceManager::TextureData texture)
 		{
-			this->texture = textureID;
+			this->texture = texture;
 			useTexture = true;
 		}
 
 		void Object::setTileMapTexture(
-			unsigned int textureID,
+			ResourceManager::TextureData texture,
 			float width,
 			float height,
 			unsigned int gridSize,
 			unsigned int x,
 			unsigned int y)
 		{
-			this->texture = textureID;
+			this->texture = texture;
 			useTexture = true;
 			numberOfRows = (float)height / gridSize;
 			numberOfCols = (float)width / gridSize;
@@ -202,7 +202,7 @@ namespace Crocodile
 			this->animation = animation;
 			if (animation->spritesheetAnimation)
 			{
-				this->texture = this->animation->spritesheetID;
+				this->texture = this->animation->spritesheet;
 				numberOfRows = 1.0f;
 				numberOfCols = (float)this->animation->totalFrames;
 				textureOffset = this->animation->getTextureOffset();

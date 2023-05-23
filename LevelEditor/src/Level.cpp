@@ -5,19 +5,21 @@ Level::Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2
 {
     canvas = new s2d::Object();
     canvas->size = canvasSize;
-    canvas->color = glm::vec3(0.8f, 0.3f, 0.1f);
+    canvas->color = canvasColour;
     scene->addChild(canvas, "canvas");
     initCanvasEdges();
-
-    // init some layers
-    layers.push_back(new s2d::Layer("background", 0.f));
-    layers.push_back(new s2d::Layer("entity", 0.f));
-    layers.push_back(new s2d::Layer("foreground", 0.f));
 }
 
 void Level::update()
 {
-    selectEdge();
+    glm::vec2 mouse = scene->window->getMouseScreenPosition();
+    selectEdge(mouse);
+    if (placementObject != nullptr)
+    {
+        movePlacementObject(mouse);
+        if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
+            placementObject = nullptr;
+    }
 }
 
 void Level::renderImGui()
@@ -36,9 +38,8 @@ void Level::renderImGui()
     ImGui::End();
 }
 
-void Level::selectEdge()
+void Level::selectEdge(glm::vec2 mouse)
 {
-    glm::vec2 mouse = scene->window->getMouseScreenPosition();
     if (edgeSelected != NULL)
     {
         if (!scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
@@ -115,22 +116,18 @@ void Level::initCanvasEdges()
     // left
     s2d::Object *left = new s2d::Object();
     left->label = "left";
-    left->color = glm::vec3(0.f);
     scene->addChild(left, "canvas_edges");
     // right
     s2d::Object *right = new s2d::Object();
     right->label = "right";
-    right->color = glm::vec3(0.f);
     scene->addChild(right, "canvas_edges");
     // top
     s2d::Object *top = new s2d::Object();
     top->label = "top";
-    top->color = glm::vec3(0.f);
     scene->addChild(top, "canvas_edges");
     // bottom
     s2d::Object *bottom = new s2d::Object();
     bottom->label = "bottom";
-    bottom->color = glm::vec3(0.f);
     scene->addChild(bottom, "canvas_edges");
 
     edges.push_back(left);
@@ -138,11 +135,19 @@ void Level::initCanvasEdges()
     edges.push_back(top);
     edges.push_back(bottom);
 
+    for (s2d::Object *edge : edges)
+        edge->color = edgeColour;
+
     updateEdges();
 }
 
 void Level::levelOptions()
 {
+    if (ImGui::ColorEdit3("Canvas colour", (float *)&canvasColour))
+        canvas->color = canvasColour;
+    if (ImGui::ColorEdit3("Edge colour", (float *)&edgeColour))
+        for (s2d::Object *edge : edges)
+            edge->color = edgeColour;
     if (ImGui::CollapsingHeader("Layers"))
     {
         addLayer();
@@ -210,7 +215,11 @@ void Level::addLayer()
             if (layerExists)
                 std::cout << "Layer name already exists." << std::endl;
             else
-                layers.push_back(new s2d::Layer(std::string(tmpLayerName)));
+            {
+                s2d::Layer *layer = new s2d::Layer(std::string(tmpLayerName));
+                layers.push_back(layer);
+                scene->layerStack->addLayer(layer);
+            }
         }
         ImGui::TreePop();
     }
@@ -220,7 +229,12 @@ void Level::removeLayer()
 {
     if (layerRowSelection.size() > 0)
         if (ImGui::Button("Remove layer"))
+        {
+            s2d::Layer *layer = layers[layerRowSelection[0]];
             layers.erase(layers.begin() + layerRowSelection[0]);
+            scene->layerStack->removeLayer(layer);
+            delete layer;
+        }
 }
 
 void Level::createLayersTable()
@@ -302,7 +316,7 @@ void Level::addEntity()
             obj->label = entityName;
             obj->size = glm::vec2((float)tmpWidth, (float)tmpHeight);
             obj->color = tmpEntityColour;
-            obj->setTexture(rm->getTexture(std::string(tmpNewTexture)).textureID);
+            obj->setTexture(rm->getTexture(std::string(tmpNewTexture)));
             entities.push_back(obj);
             entitiesMap[entityName] = obj;
         }
@@ -331,7 +345,7 @@ void Level::modifyEntity()
                 entities[entityRowSelection[0]]->label = tmpEntityName;
                 entities[entityRowSelection[0]]->color = tmpEntityColour;
                 entities[entityRowSelection[0]]->size = glm::vec2((float)tmpWidth, (float)tmpHeight);
-                entities[entityRowSelection[0]]->setTexture(rm->getTexture(std::string(tmpNewTexture)).textureID);
+                entities[entityRowSelection[0]]->setTexture(rm->getTexture(std::string(tmpNewTexture)));
             }
             ImGui::TreePop();
         }
@@ -419,14 +433,14 @@ void Level::createEntitiesTable()
             if (ImGui::TableSetColumnIndex(2))
             {
                 std::string out = "(";
-                out += std::to_string(ent->color.r);
-                out += std::to_string(ent->color.g);
-                out += std::to_string(ent->color.b);
+                out += std::to_string((int)ent->color.r * 255) + ", ";
+                out += std::to_string((int)ent->color.g * 255) + ", ";
+                out += std::to_string((int)ent->color.b * 255);
                 out += ")";
                 ImGui::Text(out.c_str());
             }
             if (ImGui::TableSetColumnIndex(3))
-                ImGui::Text("texture_name");
+                ImGui::Text(ent->texture.name.c_str());
         }
 
         ImGui::EndTable();
@@ -457,25 +471,6 @@ void Level::addTexture()
         {
             rm->loadTexture(tmpTexturePath.c_str(), tmpTextureName, false);
             textures.push_back(rm->getTexture(tmpTextureName));
-        }
-        ImGui::TreePop();
-    }
-    if (ImGui::TreeNode("Add animation"))
-    {
-        ImGui::InputText("Animation name", tmpTextureName, 64);
-        if (ImGui::Button("Choose animation"))
-            ImGuiFileDialog::Instance()->OpenDialog("choose_animation", "Choose an animation", nullptr, ".");
-        // display
-        if (ImGuiFileDialog::Instance()->Display("choose_animation"))
-        {
-            // action if OK
-            if (ImGuiFileDialog::Instance()->IsOk())
-            {
-                std::string path = ImGuiFileDialog::Instance()->GetCurrentPath();
-                tmpTexturePath = path + "\\";
-            }
-            // close
-            ImGuiFileDialog::Instance()->Close();
         }
         ImGui::TreePop();
     }
@@ -528,13 +523,13 @@ void Level::selectPlacementLayer()
     for (int i = 0; i < layers.size(); i++)
         tmpLayers[i] = layers[i]->name.c_str();
 
-    if (ImGui::BeginCombo("Select layer", tmpPlacementLayer))
+    if (ImGui::BeginCombo("Select layer", selectedPlacementLayer))
     {
         for (int n = 0; n < IM_ARRAYSIZE(tmpLayers); n++)
         {
-            bool is_selected = (tmpPlacementLayer == tmpLayers[n]);
+            bool is_selected = (selectedPlacementLayer == tmpLayers[n]);
             if (ImGui::Selectable(tmpLayers[n], is_selected))
-                tmpPlacementLayer = tmpLayers[n];
+                selectedPlacementLayer = tmpLayers[n];
             if (is_selected)
                 ImGui::SetItemDefaultFocus();
         }
@@ -554,10 +549,30 @@ void Level::selectPlacementObject()
         {
             bool is_selected = (tmpPlacementEntity == tmpEntities[n]);
             if (ImGui::Selectable(tmpEntities[n], is_selected))
+            {
                 tmpPlacementEntity = tmpEntities[n];
+                if (selectedPlacementLayer != "")
+                {
+                    placementObject = entities[n];
+                    scene->addChild(placementObject, std::string(selectedPlacementLayer));
+                    canvas->addChild(placementObject);
+                }
+            }
             if (is_selected)
                 ImGui::SetItemDefaultFocus();
         }
         ImGui::EndCombo();
     }
+}
+
+void Level::movePlacementObject(glm::vec2 mouse)
+{
+    glm::vec2 objectScreenPos = placementObject->getScreenPosition(
+        scene->camera->getViewMatrix(),
+        scene->camera->getProjectionMatrix(true),
+        scene->windowWidth,
+        scene->windowHeight);
+    float dx = (mouse.x - objectScreenPos.x) * scene->camera->zoom;
+    float dy = (mouse.y - objectScreenPos.y) * scene->camera->zoom;
+    placementObject->move(dx, dy);
 }

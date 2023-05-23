@@ -48,13 +48,13 @@ void Editor::move()
     float dx = 0.f;
     float dy = 0.f;
 
-    if (scene->window->isKeyPressed(GLFW_KEY_W))
+    if (scene->window->isKeyPressed(GLFW_KEY_UP))
         dy = -speed;
-    if (scene->window->isKeyPressed(GLFW_KEY_S))
+    if (scene->window->isKeyPressed(GLFW_KEY_DOWN))
         dy = speed;
-    if (scene->window->isKeyPressed(GLFW_KEY_A))
+    if (scene->window->isKeyPressed(GLFW_KEY_LEFT))
         dx = -speed;
-    if (scene->window->isKeyPressed(GLFW_KEY_D))
+    if (scene->window->isKeyPressed(GLFW_KEY_RIGHT))
         dx = speed;
     camera->move(dx, dy);
 }

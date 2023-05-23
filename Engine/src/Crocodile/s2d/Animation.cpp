@@ -1,14 +1,13 @@
 #include "Animation.h"
 
-
 namespace Crocodile
 {
 	namespace s2d
 	{
-		Animation::Animation(unsigned int spritesheetID, float width, unsigned int gridSize, float frameDuration)
+		Animation::Animation(ResourceManager::TextureData spritesheet, float width, unsigned int gridSize, float frameDuration)
 		{
 			this->spritesheetAnimation = true;
-			this->spritesheetID = spritesheetID;
+			this->spritesheet = spritesheet;
 			this->width = width;
 			this->gridSize = gridSize;
 			this->frameDuration = frameDuration;
@@ -16,7 +15,7 @@ namespace Crocodile
 			this->currentFrame = 0;
 		}
 
-		Animation::Animation(std::vector<unsigned int> textures, float frameDuration)
+		Animation::Animation(std::vector<ResourceManager::TextureData> textures, float frameDuration)
 		{
 			this->spritesheetAnimation = false;
 			this->textures = textures;
@@ -27,7 +26,6 @@ namespace Crocodile
 
 		Animation::~Animation()
 		{
-
 		}
 
 		glm::vec2 Animation::getTextureOffset()

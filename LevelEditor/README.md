@@ -3,9 +3,11 @@
 
 ### Current
 
-- Pass entire texture data to Objects rather than just the texture ID
 - Font resizing
 - Relative paths for textures
+- Docking + viewports
+- disable zoom / keys if on imgui window
+- Place entities in scene
 
 ### Roadmap
 

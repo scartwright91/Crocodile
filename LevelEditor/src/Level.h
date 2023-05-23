@@ -37,8 +37,10 @@ private:
     s2d::Object *edgeSelected = nullptr;
 
     // canvas functions
+    glm::vec3 canvasColour = glm::vec3(0.f);
+    glm::vec3 edgeColour = glm::vec3(0.1f);
     float edgeWidth = 20.f;
-    void selectEdge();
+    void selectEdge(glm::vec2 mouse);
     void moveEdge(glm::vec2 mouse);
     void updateCanvas();
     void updateEdges();
@@ -79,11 +81,13 @@ private:
     std::string tmpTexturePath = "";
 
     // placement
+    s2d::Object *placementObject = nullptr;
     bool placeMode = true;
     float placementTimer = glfwGetTime();
-    const char *tmpPlacementLayer = "";
+    const char *selectedPlacementLayer = "";
     const char *tmpPlacementEntity = "";
     bool placeMultiple = true;
     void selectPlacementLayer();
     void selectPlacementObject();
+    void movePlacementObject(glm::vec2 mouse);
 };

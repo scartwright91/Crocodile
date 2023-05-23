@@ -170,7 +170,7 @@ namespace Crocodile
 					obj->calculateModelMatrix(pos),
 					view,
 					projection,
-					obj->texture,
+					obj->texture.textureID,
 					obj->useTexture,
 					obj->numberOfRows,
 					obj->numberOfCols,
@@ -197,7 +197,7 @@ namespace Crocodile
 					pg->calculateModelMatrix(pos),
 					view,
 					projection,
-					pg->texture,
+					pg->texture.textureID,
 					pg->useTexture,
 					pg->color,
 					pg->alpha);
