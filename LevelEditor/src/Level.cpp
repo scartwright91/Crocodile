@@ -7,12 +7,18 @@ Level::Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2
     canvas->size = canvasSize;
     canvas->color = canvasColour;
     scene->addChild(canvas, "canvas");
+    mouseWorldPosText = new s2d::Text();
+    mouseWorldPosText->move(50.f, 50.f);
+    mouseWorldPosText->color = glm::vec3(1.f);
+    mouseWorldPosText->textScale = glm::vec2(0.5f);
+    scene->addChild(mouseWorldPosText, "hud");
     initCanvasEdges();
 }
 
 void Level::update()
 {
     glm::vec2 mouse = scene->window->getMouseScreenPosition();
+    calculateMouseWorldPos(mouse);
     selectEdge(mouse);
     if (placementObject != nullptr)
     {
@@ -24,7 +30,6 @@ void Level::update()
 
 void Level::renderImGui()
 {
-    // ImGui::ShowDemoWindow();
     ImGui::Begin("Manage");
     levelOptions();
     ImGui::End();
@@ -139,6 +144,26 @@ void Level::initCanvasEdges()
         edge->color = edgeColour;
 
     updateEdges();
+}
+
+void Level::calculateMouseWorldPos(glm::vec2 mouse)
+{
+    s2d::col::BoundingBox bbox = canvas->getScreenBoundingBox(
+        scene->camera->getViewMatrix(),
+        scene->camera->getProjectionMatrix(true),
+        scene->camera->zoom,
+        scene->windowWidth,
+        scene->windowHeight);
+    if (bbox.intersectsPoint(mouse))
+    {
+        glm::vec2 size = canvas->size;
+        float dx = size.x * (mouse.x - bbox.x) / bbox.width;
+        float dy = size.y * (mouse.y - bbox.y) / bbox.height;
+        mouseWorldPos = glm::vec2(dx, dy);
+        mouseWorldPosText->text = std::to_string((int)dx) + ", " + std::to_string((int)dy);
+    }
+    else
+        mouseWorldPosText->text = "";
 }
 
 void Level::levelOptions()

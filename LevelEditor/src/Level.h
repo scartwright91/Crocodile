@@ -46,6 +46,11 @@ private:
     void updateEdges();
     void initCanvasEdges();
 
+    // general ui
+    glm::vec2 mouseWorldPos = glm::vec2(0.f);
+    s2d::Text *mouseWorldPosText = nullptr;
+    void calculateMouseWorldPos(glm::vec2 mouse);
+
     // imgui functions
     ImGuiTableFlags tableFlags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY;
     ImVec2 tableSize = ImVec2(0.0f, ImGui::GetTextLineHeightWithSpacing() * 8);

@@ -8,6 +8,7 @@ Editor::Editor(
     init();
     scene->layerStack->addLayer(new s2d::Layer("canvas"));
     scene->layerStack->addLayer(new s2d::Layer("canvas_edges"));
+    scene->layerStack->addLayer(new s2d::Layer("hud"));
     levels.push_back(new Level("level0", scene, rm, glm::vec2(600.f)));
 }
 
