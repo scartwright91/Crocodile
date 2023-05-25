@@ -11,6 +11,14 @@
 
 using namespace Crocodile;
 
+struct EntityData
+{
+    std::string label;
+    glm::vec2 size;
+    glm::vec3 colour;
+    ResourceManager::TextureData texture;
+};
+
 class Level
 {
 public:
@@ -26,8 +34,9 @@ public:
 
     std::vector<s2d::Object *> edges = {};
     std::vector<s2d::Layer *> layers = {};
-    std::vector<s2d::Object *> entities = {};
-    std::map<std::string, s2d::Object *> entitiesMap = {};
+    std::vector<EntityData> entitiesData = {};
+    std::vector<s2d::Object *> placedEntities = {};
+    std::map<std::string, EntityData> entitiesDataMap = {};
     std::vector<ResourceManager::TextureData> textures = {};
 
 private:

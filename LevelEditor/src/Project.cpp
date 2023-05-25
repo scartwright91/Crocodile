@@ -17,3 +17,11 @@ void Project::save()
 void Project::load()
 {
 }
+
+void Project::undo()
+{
+}
+
+void Project::redo()
+{
+}

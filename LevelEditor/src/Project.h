@@ -15,4 +15,6 @@ public:
     void renderImGui();
     void save();
     void load();
+    void undo();
+    void redo();
 };

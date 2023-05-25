@@ -161,6 +161,7 @@ void Level::calculateMouseWorldPos(glm::vec2 mouse)
         float dy = size.y * (mouse.y - bbox.y) / bbox.height;
         mouseWorldPos = glm::vec2(dx, dy);
         mouseWorldPosText->text = std::to_string((int)dx) + ", " + std::to_string((int)dy);
+        mouseWorldPosText->textScale = glm::vec2(1 + scene->camera->zoom / 5);
     }
     else
         mouseWorldPosText->text = "";
@@ -201,6 +202,14 @@ void Level::sceneTree()
         {
             if (ImGui::TreeNode(layer->name.c_str()))
             {
+                for (s2d::Object *obj : scene->layerStack->getLayer(layer->name)->objects)
+                {
+                    if (ImGui::TreeNode(obj->label.c_str()))
+                    {
+                        ImGui::Text(obj->label.c_str());
+                        ImGui::TreePop();
+                    }
+                }
                 ImGui::TreePop();
             }
         }
@@ -337,13 +346,13 @@ void Level::addEntity()
         if (ImGui::Button("Add"))
         {
             std::string entityName = std::string(tmpEntityName);
-            s2d::Object *obj = new s2d::Object();
-            obj->label = entityName;
-            obj->size = glm::vec2((float)tmpWidth, (float)tmpHeight);
-            obj->color = tmpEntityColour;
-            obj->setTexture(rm->getTexture(std::string(tmpNewTexture)));
-            entities.push_back(obj);
-            entitiesMap[entityName] = obj;
+            EntityData ed;
+            ed.label = entityName;
+            ed.size = glm::vec2((float)tmpWidth, (float)tmpHeight);
+            ed.colour = tmpEntityColour;
+            ed.texture = rm->getTexture(std::string(tmpNewTexture));
+            entitiesData.push_back(ed);
+            entitiesDataMap[entityName] = ed;
         }
         ImGui::TreePop();
     }
@@ -367,10 +376,10 @@ void Level::modifyEntity()
             selectEntityTexture();
             if (ImGui::Button("Save"))
             {
-                entities[entityRowSelection[0]]->label = tmpEntityName;
-                entities[entityRowSelection[0]]->color = tmpEntityColour;
-                entities[entityRowSelection[0]]->size = glm::vec2((float)tmpWidth, (float)tmpHeight);
-                entities[entityRowSelection[0]]->setTexture(rm->getTexture(std::string(tmpNewTexture)));
+                entitiesData[entityRowSelection[0]].label = tmpEntityName;
+                entitiesData[entityRowSelection[0]].colour = tmpEntityColour;
+                entitiesData[entityRowSelection[0]].size = glm::vec2((float)tmpWidth, (float)tmpHeight);
+                entitiesData[entityRowSelection[0]].texture = rm->getTexture(std::string(tmpNewTexture));
             }
             ImGui::TreePop();
         }
@@ -381,7 +390,7 @@ void Level::removeEntity()
 {
     if (entityRowSelection.size() > 0)
         if (ImGui::Button("Remove layer"))
-            entities.erase(entities.begin() + entityRowSelection[0]);
+            entitiesData.erase(entitiesData.begin() + entityRowSelection[0]);
 }
 
 void Level::selectEntityTexture()
@@ -420,16 +429,16 @@ void Level::createEntitiesTable()
 
         ImGui::TableHeadersRow();
 
-        for (int row = 0; row < entities.size(); row++)
+        for (int row = 0; row < entitiesData.size(); row++)
         {
             ImGui::TableNextRow();
             const bool item_is_selected = entityRowSelection.contains(row);
             ImGui::PushID(row);
-            s2d::Object *ent = entities[row];
+            EntityData ed = entitiesData[row];
 
             if (ImGui::TableSetColumnIndex(0))
             {
-                if (ImGui::Selectable(ent->label.c_str(), item_is_selected))
+                if (ImGui::Selectable(ed.label.c_str(), item_is_selected))
                 {
                     if (entityRowSelection.size() == 0)
                         entityRowSelection.push_back(row);
@@ -447,7 +456,7 @@ void Level::createEntitiesTable()
             }
             if (ImGui::TableSetColumnIndex(1))
             {
-                glm::vec2 size = ent->size;
+                glm::vec2 size = ed.size;
                 std::string out = "(";
                 out += std::to_string((unsigned int)size.x);
                 out += ", ";
@@ -458,14 +467,14 @@ void Level::createEntitiesTable()
             if (ImGui::TableSetColumnIndex(2))
             {
                 std::string out = "(";
-                out += std::to_string((int)ent->color.r * 255) + ", ";
-                out += std::to_string((int)ent->color.g * 255) + ", ";
-                out += std::to_string((int)ent->color.b * 255);
+                out += std::to_string((int)ed.colour.r * 255) + ", ";
+                out += std::to_string((int)ed.colour.g * 255) + ", ";
+                out += std::to_string((int)ed.colour.b * 255);
                 out += ")";
                 ImGui::Text(out.c_str());
             }
             if (ImGui::TableSetColumnIndex(3))
-                ImGui::Text(ent->texture.name.c_str());
+                ImGui::Text(ed.texture.name.c_str());
         }
 
         ImGui::EndTable();
@@ -564,9 +573,9 @@ void Level::selectPlacementLayer()
 
 void Level::selectPlacementObject()
 {
-    const char *tmpEntities[entities.size()];
-    for (int i = 0; i < entities.size(); i++)
-        tmpEntities[i] = entities[i]->label.c_str();
+    const char *tmpEntities[entitiesData.size()];
+    for (int i = 0; i < entitiesData.size(); i++)
+        tmpEntities[i] = entitiesData[i].label.c_str();
 
     if (ImGui::BeginCombo("Select entity", tmpPlacementEntity))
     {
@@ -578,7 +587,12 @@ void Level::selectPlacementObject()
                 tmpPlacementEntity = tmpEntities[n];
                 if (selectedPlacementLayer != "")
                 {
-                    placementObject = entities[n];
+                    EntityData ed = entitiesData[n];
+                    placementObject = new s2d::Object();
+                    placementObject->label = ed.label;
+                    placementObject->size = ed.size;
+                    placementObject->color = ed.colour;
+                    placementObject->setTexture(ed.texture);
                     scene->addChild(placementObject, std::string(selectedPlacementLayer));
                     canvas->addChild(placementObject);
                 }
