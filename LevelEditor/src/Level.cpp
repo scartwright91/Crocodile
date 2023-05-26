@@ -245,6 +245,10 @@ void Level::placementUI()
         ImGui::SliderFloat("rotation", &tmpRotation, -3.14f, 3.14f);
         ImGui::SliderFloat("alpha", &tmpAlpha, 0.f, 1.f);
     }
+    else
+    {
+        selectObject();
+    }
 }
 
 void Level::addLayer()
@@ -632,4 +636,24 @@ void Level::movePlacementObject(glm::vec2 mouse)
     float dx = (mouse.x - objectScreenPos.x) * scene->camera->zoom;
     float dy = (mouse.y - objectScreenPos.y) * scene->camera->zoom;
     placementObject->move(dx, dy);
+}
+
+void Level::selectObject()
+{
+    glm::vec2 mouse = scene->window->getMouseScreenPosition();
+    for (s2d::Object *obj : scene->layerStack->getLayer(std::string(selectedPlacementLayer))->objects)
+    {
+        if (obj->getScreenBoundingBox(
+                   scene->camera->getViewMatrix(),
+                   scene->camera->getProjectionMatrix(true),
+                   scene->camera->zoom,
+                   scene->windowWidth,
+                   scene->windowHeight)
+                .intersectsPoint(mouse))
+        {
+            obj->outline = true;
+        }
+        else
+            obj->outline = false;
+    }
 }

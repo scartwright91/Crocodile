@@ -42,6 +42,7 @@ public:
 private:
     ResourceManager *rm = nullptr;
 
+    bool placeMode = true;
     float timer = 0.f;
     s2d::Object *edgeSelected = nullptr;
 
@@ -94,12 +95,12 @@ private:
     char tmpTextureName[64] = "";
     std::string tmpTexturePath = "";
 
-    // placement
+    // Objects
     s2d::Object *placementObject = nullptr;
+    // placement
     float tmpScale = 1.f;
     float tmpAlpha = 1.f;
     float tmpRotation = 0.f;
-    bool placeMode = true;
     float placementTimer = glfwGetTime();
     const char *selectedPlacementLayer = "";
     const char *tmpPlacementEntity = "";
@@ -109,4 +110,6 @@ private:
     void selectPlacementLayer();
     void selectPlacementObject();
     void movePlacementObject(glm::vec2 mouse);
+    // selection
+    void selectObject();
 };
