@@ -10,21 +10,22 @@ Editor::Editor(
     scene->layerStack->addLayer(new s2d::Layer("canvas_edges"));
     scene->layerStack->addLayer(new s2d::Layer("hud"));
     levels.push_back(new Level("level0", scene, rm, glm::vec2(600.f)));
+    activeLevel = levels[0];
 }
 
 void Editor::renderImGui()
 {
     showImGuiMainMenu();
-    for (Level *level : levels)
-        level->renderImGui();
+    if (activeLevel != NULL)
+        activeLevel->renderImGui();
 }
 
 void Editor::update()
 {
     zoom();
     move();
-    for (Level *level : levels)
-        level->update();
+    if (activeLevel != NULL)
+        activeLevel->update();
 }
 
 void Editor::zoom()
@@ -40,6 +41,7 @@ void Editor::zoom()
             scene->camera->changeZoom(z);
         currentZoom = scroll;
         zoomTimer = now;
+        activeLevel->scaleEdges(1 + z);
     }
 }
 

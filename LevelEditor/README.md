@@ -3,14 +3,15 @@
 
 ### Current
 
-- Font resizing
 - Relative paths for textures
 - disable zoom / keys if on imgui window
-- scale edges when zooming
+- move placed objects
+- Load / Save levels
 
 ### Roadmap
 
 - Docking + viewports
 - World / multiple levels
-- Load / Save levels
 - Grids
+- Font resizing
+- undo/redo functionality

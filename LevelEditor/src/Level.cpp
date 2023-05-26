@@ -6,11 +6,6 @@ Level::Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2
     canvas->size = canvasSize;
     canvas->color = canvasColour;
     scene->addChild(canvas, "canvas");
-    mouseWorldPosText = new s2d::Text();
-    mouseWorldPosText->move(50.f, 50.f);
-    mouseWorldPosText->color = glm::vec3(1.f);
-    mouseWorldPosText->textScale = glm::vec2(0.5f);
-    scene->addChild(mouseWorldPosText, "hud");
     initCanvasEdges();
 }
 
@@ -50,7 +45,8 @@ void Level::renderImGui()
     levelOptions();
     ImGui::End();
 
-    ImGui::Begin("Scene");
+    ImGui::Begin("Level");
+    levelInfo();
     sceneTree();
     ImGui::End();
 
@@ -126,10 +122,16 @@ void Level::updateEdges()
     edges[2]->size = glm::vec2(size.x, edgeWidth);
     edges[3]->size = glm::vec2(size.x, edgeWidth);
     glm::vec2 pos = canvas->getPosition();
-    edges[0]->setPosition(pos);
+    edges[0]->setPosition(glm::vec2(pos.x - edgeWidth, pos.y));
     edges[1]->setPosition(glm::vec2(pos.x + size.x, pos.y));
-    edges[2]->setPosition(pos);
+    edges[2]->setPosition(glm::vec2(pos.x, pos.y - edgeWidth));
     edges[3]->setPosition(glm::vec2(pos.x, pos.y + canvas->size.y));
+}
+
+void Level::scaleEdges(float v)
+{
+    edgeWidth = startEdgeWidth * v;
+    updateEdges();
 }
 
 void Level::initCanvasEdges()
@@ -176,11 +178,7 @@ void Level::calculateMouseWorldPos(glm::vec2 mouse)
         float dx = size.x * (mouse.x - bbox.x) / bbox.width;
         float dy = size.y * (mouse.y - bbox.y) / bbox.height;
         mouseWorldPos = glm::vec2(dx, dy);
-        mouseWorldPosText->text = std::to_string((int)dx) + ", " + std::to_string((int)dy);
-        mouseWorldPosText->textScale = glm::vec2(1 + scene->camera->zoom / 5);
     }
-    else
-        mouseWorldPosText->text = "";
 }
 
 void Level::levelOptions()
@@ -208,6 +206,17 @@ void Level::levelOptions()
         addTexture();
         createTextureTable();
     }
+}
+
+void Level::levelInfo()
+{
+    std::string mousePos = "Mouse pos: ";
+    mousePos += "(" + std::to_string((int)mouseWorldPos.x) + ", " + std::to_string((int)mouseWorldPos.y) + ")";
+    ImGui::Text(mousePos.c_str());
+    glm::vec2 size = canvas->size;
+    std::string cs = "Level size: ";
+    cs += "(" + std::to_string((int)size.x) + ", " + std::to_string((int)size.y) + ")";
+    ImGui::Text(cs.c_str());
 }
 
 void Level::sceneTree()

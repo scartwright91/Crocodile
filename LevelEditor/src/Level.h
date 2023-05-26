@@ -39,6 +39,7 @@ public:
     void update();
     void renderImGui();
     LevelData serialise();
+    void scaleEdges(float v);
 
     s2d::Scene *scene = nullptr;
     s2d::Object *canvas = nullptr;
@@ -46,7 +47,6 @@ public:
     std::vector<s2d::Object *> edges = {};
     std::vector<s2d::Layer *> layers = {};
     std::vector<EntityData> entitiesData = {};
-    std::vector<s2d::Object *> placedEntities = {};
     std::map<std::string, EntityData> entitiesDataMap = {};
     std::vector<ResourceManager::TextureData> textures = {};
 
@@ -61,7 +61,7 @@ private:
     glm::vec3 canvasColour = glm::vec3(0.f);
     glm::vec3 edgeColour = glm::vec3(0.1f);
     float edgeWidth = 20.f;
-    void scaleEdge(float v);
+    float startEdgeWidth = 20.f;
     void selectEdge(glm::vec2 mouse);
     void moveEdge(glm::vec2 mouse);
     void updateCanvas();
@@ -70,13 +70,13 @@ private:
 
     // general ui
     glm::vec2 mouseWorldPos = glm::vec2(0.f);
-    s2d::Text *mouseWorldPosText = nullptr;
     void calculateMouseWorldPos(glm::vec2 mouse);
 
     // imgui functions
     ImGuiTableFlags tableFlags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY;
     ImVec2 tableSize = ImVec2(0.0f, ImGui::GetTextLineHeightWithSpacing() * 8);
     void levelOptions();
+    void levelInfo();
     void sceneTree();
     void placementUI();
 
