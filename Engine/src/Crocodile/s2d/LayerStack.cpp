@@ -15,12 +15,18 @@ namespace Crocodile
 
 		void LayerStack::addLayer(Layer *layer)
 		{
-			layers.push_back(layer);
+			if (!layerExists(layer))
+				layers.push_back(layer);
+			else
+				std::cout << "Layer " << layer->name << " already exists in layer stack" << std::endl;
 		}
 
 		void LayerStack::insertLayer(Layer *layer, unsigned int position)
 		{
-			layers.insert(layers.begin() + position, layer);
+			if (!layerExists(layer))
+				layers.insert(layers.begin() + position, layer);
+			else
+				std::cout << "Layer " << layer->name << " already exists in layer stack" << std::endl;
 		}
 
 		void LayerStack::removeLayer(Layer *layer)
@@ -43,6 +49,25 @@ namespace Crocodile
 			return NULL;
 		}
 
+		void LayerStack::moveLayerToPos(std::string name, unsigned int pos)
+		{
+			move(layers, getLayerPosition(name), pos);
+		}
+
+		void LayerStack::moveLayerUp(std::string name)
+		{
+			unsigned int currentPos = getLayerPosition(name);
+			if (currentPos + 1 < layers.size())
+				move(layers, currentPos, currentPos + 1);
+		}
+
+		void LayerStack::moveLayerDown(std::string name)
+		{
+			unsigned int currentPos = getLayerPosition(name);
+			if (currentPos - 1 >= 0)
+				move(layers, currentPos, currentPos - 1);
+		}
+
 		void LayerStack::removeAllLayers()
 		{
 			layers = {};
@@ -56,5 +81,27 @@ namespace Crocodile
 			return names;
 		}
 
+		unsigned int LayerStack::getLayerPosition(std::string name)
+		{
+			unsigned int pos = 0;
+			for (int idx = 0; idx < layers.size(); idx++)
+			{
+				if (layers[idx]->name == name)
+				{
+					pos = idx;
+					break;
+				}
+			}
+			return pos;
+		}
+
+		bool LayerStack::layerExists(Layer *layer)
+		{
+			bool exists = false;
+			for (Layer *l : layers)
+				if (l->name == layer->name)
+					exists = true;
+			return exists;
+		}
 	}
 }

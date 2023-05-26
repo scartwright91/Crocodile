@@ -1,5 +1,4 @@
 #include "Level.h"
-#include "utils/operations.h"
 
 Level::Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2 canvasSize) : name(name), scene(scene), rm(rm)
 {
@@ -18,13 +17,30 @@ Level::Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2
 void Level::update()
 {
     glm::vec2 mouse = scene->window->getMouseScreenPosition();
+    float now = glfwGetTime();
     calculateMouseWorldPos(mouse);
     selectEdge(mouse);
     if (placementObject != nullptr)
     {
         movePlacementObject(mouse);
-        if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
+        if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1) && (now - placementTimer > 0.5f))
+        {
+            placementTimer = now;
+            if (placeMultiple)
+                createEntityFromData(selectedEntityData);
+            else
+            {
+                scene->removeChild(placementObject, std::string(selectedPlacementLayer));
+                delete placementObject;
+                placementObject = nullptr;
+            }
+        }
+        else if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_2))
+        {
+            scene->removeChild(placementObject, std::string(selectedPlacementLayer));
+            delete placementObject;
             placementObject = nullptr;
+        }
     }
 }
 
@@ -225,12 +241,9 @@ void Level::placementUI()
     {
         selectPlacementObject();
         ImGui::Checkbox("Place multiple", &placeMultiple);
-        float scale = 1.f;
-        ImGui::SliderFloat("scale", &scale, 0.f, 5.f);
-        float rotation = 0.f;
-        ImGui::SliderFloat("rotation", &rotation, -3.14f, 3.14f);
-        float alpha = 0.f;
-        ImGui::SliderFloat("alpha", &alpha, 0.f, 1.f);
+        ImGui::SliderFloat("scale", &tmpScale, 0.f, 5.f);
+        ImGui::SliderFloat("rotation", &tmpRotation, -3.14f, 3.14f);
+        ImGui::SliderFloat("alpha", &tmpAlpha, 0.f, 1.f);
     }
 }
 
@@ -309,12 +322,18 @@ void Level::createLayersTable()
             if (ImGui::TableSetColumnIndex(1))
             {
                 if (ImGui::SmallButton("+"))
-                    if (row + 1 <= layers.size())
+                    if (row + 1 < layers.size())
+                    {
                         move(layers, row, row + 1);
+                        scene->layerStack->moveLayerUp(layers[row]->name);
+                    }
                 ImGui::SameLine();
                 if (ImGui::SmallButton("-"))
                     if (row - 1 >= 0)
+                    {
                         move(layers, row, row - 1);
+                        scene->layerStack->moveLayerDown(layers[row]->name);
+                    }
             }
             if (ImGui::TableSetColumnIndex(2))
                 ImGui::SliderFloat("depth", &layers[row]->depth, 0.0f, 5.0f);
@@ -510,14 +529,6 @@ void Level::addTexture()
     }
 }
 
-ImVector<char *> Level::getTextureNames()
-{
-    ImVector<char *> names = {};
-    for (ResourceManager::TextureData td : textures)
-        names.push_back(const_cast<char *>(td.name.c_str()));
-    return names;
-}
-
 void Level::createTextureTable()
 {
     if (ImGui::BeginTable("textures_table", 3, tableFlags, tableSize))
@@ -549,6 +560,19 @@ void Level::createTextureTable()
         }
         ImGui::EndTable();
     }
+}
+
+void Level::createEntityFromData(EntityData entityData)
+{
+    placementObject = new s2d::Object();
+    placementObject->label = entityData.label;
+    placementObject->size = entityData.size;
+    placementObject->color = entityData.colour;
+    placementObject->setTexture(entityData.texture);
+    placementObject->alpha = tmpAlpha;
+    placementObject->rotation = tmpRotation;
+    // placementObject->scale = glm::vec2(tmpScale);
+    scene->addChild(placementObject, std::string(selectedPlacementLayer));
 }
 
 void Level::selectPlacementLayer()
@@ -587,14 +611,8 @@ void Level::selectPlacementObject()
                 tmpPlacementEntity = tmpEntities[n];
                 if (selectedPlacementLayer != "")
                 {
-                    EntityData ed = entitiesData[n];
-                    placementObject = new s2d::Object();
-                    placementObject->label = ed.label;
-                    placementObject->size = ed.size;
-                    placementObject->color = ed.colour;
-                    placementObject->setTexture(ed.texture);
-                    scene->addChild(placementObject, std::string(selectedPlacementLayer));
-                    canvas->addChild(placementObject);
+                    selectedEntityData = entitiesData[n];
+                    createEntityFromData(selectedEntityData);
                 }
             }
             if (is_selected)

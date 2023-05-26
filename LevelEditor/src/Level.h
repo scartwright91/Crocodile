@@ -49,6 +49,7 @@ private:
     glm::vec3 canvasColour = glm::vec3(0.f);
     glm::vec3 edgeColour = glm::vec3(0.1f);
     float edgeWidth = 20.f;
+    void scaleEdge(float v);
     void selectEdge(glm::vec2 mouse);
     void moveEdge(glm::vec2 mouse);
     void updateCanvas();
@@ -91,16 +92,20 @@ private:
     void addTexture();
     void createTextureTable();
     char tmpTextureName[64] = "";
-    ImVector<char *> getTextureNames();
     std::string tmpTexturePath = "";
 
     // placement
     s2d::Object *placementObject = nullptr;
+    float tmpScale = 1.f;
+    float tmpAlpha = 1.f;
+    float tmpRotation = 0.f;
     bool placeMode = true;
     float placementTimer = glfwGetTime();
     const char *selectedPlacementLayer = "";
     const char *tmpPlacementEntity = "";
     bool placeMultiple = true;
+    EntityData selectedEntityData;
+    void createEntityFromData(EntityData entityData);
     void selectPlacementLayer();
     void selectPlacementObject();
     void movePlacementObject(glm::vec2 mouse);

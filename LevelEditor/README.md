@@ -5,12 +5,13 @@
 
 - Font resizing
 - Relative paths for textures
-- Docking + viewports
 - disable zoom / keys if on imgui window
-- Place entities in scene
+- Select entities and change properties
+- scale edges when zooming
 
 ### Roadmap
 
+- Docking + viewports
 - World / multiple levels
 - Load / Save levels
 - Grids
