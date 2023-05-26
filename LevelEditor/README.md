@@ -6,7 +6,6 @@
 - Font resizing
 - Relative paths for textures
 - disable zoom / keys if on imgui window
-- Select entities and change properties
 - scale edges when zooming
 
 ### Roadmap

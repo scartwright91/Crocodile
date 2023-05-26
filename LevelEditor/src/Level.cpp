@@ -236,7 +236,8 @@ void Level::sceneTree()
 void Level::placementUI()
 {
     selectPlacementLayer();
-    ImGui::Checkbox("Place mode", &placeMode);
+    if (ImGui::Checkbox("Place mode", &placeMode))
+        selectedObject = nullptr;
     if (placeMode)
     {
         selectPlacementObject();
@@ -248,6 +249,11 @@ void Level::placementUI()
     else
     {
         selectObject();
+        if (selectedObject != NULL)
+        {
+            ImGui::SliderFloat("rotation", &selectedObject->rotation, -3.14f, 3.14f);
+            ImGui::SliderFloat("alpha", &selectedObject->alpha, 0.f, 1.f);
+        }
     }
 }
 
@@ -575,7 +581,7 @@ void Level::createEntityFromData(EntityData entityData)
     placementObject->setTexture(entityData.texture);
     placementObject->alpha = tmpAlpha;
     placementObject->rotation = tmpRotation;
-    // placementObject->scale = glm::vec2(tmpScale);
+    placementObject->size *= tmpScale;
     scene->addChild(placementObject, std::string(selectedPlacementLayer));
 }
 
@@ -652,8 +658,13 @@ void Level::selectObject()
                 .intersectsPoint(mouse))
         {
             obj->outline = true;
+            if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
+                selectedObject = obj;
+            break;
         }
         else
             obj->outline = false;
     }
+    if (selectedObject != NULL)
+        selectedObject->outline = true;
 }

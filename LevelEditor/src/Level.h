@@ -19,6 +19,16 @@ struct EntityData
     ResourceManager::TextureData texture;
 };
 
+struct LevelData
+{
+    glm::vec2 canvasSize;
+    std::vector<s2d::Layer *> layers;
+    std::vector<EntityData> entitiesData;
+    std::vector<s2d::Object *> placedEntities;
+    std::map<std::string, EntityData> entitiesDataMap;
+    std::vector<ResourceManager::TextureData> textures;
+};
+
 class Level
 {
 public:
@@ -28,6 +38,7 @@ public:
 
     void update();
     void renderImGui();
+    LevelData serialise();
 
     s2d::Scene *scene = nullptr;
     s2d::Object *canvas = nullptr;
@@ -111,5 +122,6 @@ private:
     void selectPlacementObject();
     void movePlacementObject(glm::vec2 mouse);
     // selection
+    s2d::Object *selectedObject = nullptr;
     void selectObject();
 };
