@@ -14,4 +14,4 @@
 - World / multiple levels
 - Grids
 - Font resizing
-- undo/redo functionality
+- undo / redo functionality

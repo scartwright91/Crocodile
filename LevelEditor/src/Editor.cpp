@@ -71,6 +71,48 @@ void Editor::init()
     currentZoom = scene->window->scroll.y;
 }
 
+void Editor::save()
+{
+    LevelData ld = activeLevel->serialise();
+    Json::Value data;
+    // project data
+    data["project"]["name"] = project->name;
+    data["project"]["path"] = project->path;
+    // level data TODO: iterate over all levels
+    Json::Value canvasSize(Json::arrayValue);
+    canvasSize.append((int)ld.canvasSize.x);
+    canvasSize.append((int)ld.canvasSize.y);
+    Json::Value layers(Json::arrayValue);
+    for (s2d::Layer *layer : ld.layers)
+        layers.append(layer->name);
+    Json::Value entities(Json::arrayValue);
+    for (EntityData ed : ld.entitiesData)
+        entities.append(ed.label);
+    Json::Value textures(Json::arrayValue);
+    for (ResourceManager::TextureData td : ld.textures)
+        textures.append(td.name);
+    data["levels"][activeLevel->name]["name"] = ld.name;
+    data["levels"][activeLevel->name]["canvas_size"] = canvasSize;
+    data["levels"][activeLevel->name]["layers"] = layers;
+    data["levels"][activeLevel->name]["entities"] = entities;
+    data["levels"][activeLevel->name]["textures"] = textures;
+    // TODO implement placed entities (add serialise to Object class)
+
+    // write to file
+    // std::ofstream file_id;
+    // file_id.open("file.txt");
+    // Json::StyledWriter styledWriter;
+    // file_id << styledWriter.write(data);
+    // file_id.close();
+
+    std::cout << data << std::endl;
+}
+
+void Editor::load()
+{
+    // read project from file
+}
+
 void Editor::showImGuiMainMenu()
 {
     if (ImGui::BeginMainMenuBar())
@@ -79,9 +121,11 @@ void Editor::showImGuiMainMenu()
         {
             if (ImGui::MenuItem("Open", "CTRL+O"))
             {
+                load();
             }
             if (ImGui::MenuItem("Save", "CTRL+S"))
             {
+                save();
             }
             ImGui::EndMenu();
         }

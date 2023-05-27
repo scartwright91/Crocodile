@@ -6,6 +6,10 @@
 #include "Crocodile/s2d/Scene.h"
 #include "Crocodile/ResourceManager.h"
 #include "imgui.h"
+#include "json/writer.h"
+#include "json/json.h"
+#include <iostream>
+#include <fstream>
 
 #include "Level.h"
 #include "Project.h"
@@ -35,6 +39,8 @@ private:
 
     void zoom();
     void move();
+    void load();
+    void save();
 
     void init();
 

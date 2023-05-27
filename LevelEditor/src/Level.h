@@ -21,17 +21,17 @@ struct EntityData
 
 struct LevelData
 {
+    std::string name;
     glm::vec2 canvasSize;
     std::vector<s2d::Layer *> layers;
     std::vector<EntityData> entitiesData;
-    std::vector<s2d::Object *> placedEntities;
-    std::map<std::string, EntityData> entitiesDataMap;
     std::vector<ResourceManager::TextureData> textures;
 };
 
 class Level
 {
 public:
+    Level(LevelData data, s2d::Scene *scene, ResourceManager *rm);
     Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2 canvasSize);
 
     std::string name = "";
@@ -47,7 +47,6 @@ public:
     std::vector<s2d::Object *> edges = {};
     std::vector<s2d::Layer *> layers = {};
     std::vector<EntityData> entitiesData = {};
-    std::map<std::string, EntityData> entitiesDataMap = {};
     std::vector<ResourceManager::TextureData> textures = {};
 
 private:

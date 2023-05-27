@@ -1,5 +1,17 @@
 #include "Level.h"
 
+Level::Level(LevelData data, s2d::Scene *scene, ResourceManager *rm) : name(data.name), scene(scene), rm(rm)
+{
+    canvas = new s2d::Object();
+    canvas->size = data.canvasSize;
+    canvas->color = canvasColour;
+    entitiesData = data.entitiesData;
+    layers = data.layers;
+    textures = data.textures;
+    scene->addChild(canvas, "canvas");
+    initCanvasEdges();
+}
+
 Level::Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2 canvasSize) : name(name), scene(scene), rm(rm)
 {
     canvas = new s2d::Object();
@@ -37,6 +49,16 @@ void Level::update()
             placementObject = nullptr;
         }
     }
+}
+
+LevelData Level::serialise()
+{
+    LevelData ld = {};
+    ld.canvasSize = canvas->size;
+    ld.entitiesData = entitiesData;
+    ld.layers = layers;
+    ld.textures = textures;
+    return ld;
 }
 
 void Level::renderImGui()
@@ -390,7 +412,6 @@ void Level::addEntity()
             ed.colour = tmpEntityColour;
             ed.texture = rm->getTexture(std::string(tmpNewTexture));
             entitiesData.push_back(ed);
-            entitiesDataMap[entityName] = ed;
         }
         ImGui::TreePop();
     }
@@ -427,7 +448,7 @@ void Level::modifyEntity()
 void Level::removeEntity()
 {
     if (entityRowSelection.size() > 0)
-        if (ImGui::Button("Remove layer"))
+        if (ImGui::Button("Remove entity"))
             entitiesData.erase(entitiesData.begin() + entityRowSelection[0]);
 }
 
