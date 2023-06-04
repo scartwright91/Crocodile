@@ -17,9 +17,12 @@ public:
 
     std::string name = "";
     std::string path = "";
+    bool loadProjectFromFile = false;
+
+    LevelData data;
 
     void save(LevelData ld);
-    void load();
+    LevelData load();
 
     void undo();
     void redo();

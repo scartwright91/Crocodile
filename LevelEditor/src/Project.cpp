@@ -1,11 +1,9 @@
 #include "Project.h"
 
-Project::Project(std::string name, std::string path, bool loadProjectFromFile)
+Project::Project(std::string name, std::string path, bool loadProjectFromFile) : name(name), path(path), loadProjectFromFile(loadProjectFromFile)
 {
-    this->name = name;
-    this->path = path;
     if (loadProjectFromFile)
-        load();
+        data = load();
 }
 
 void Project::save(LevelData ld)
@@ -59,14 +57,38 @@ void Project::save(LevelData ld)
     file_id.close();
 }
 
-void Project::load()
+LevelData Project::load()
 {
     // read project from file
     std::ifstream f("level_data.cld");
     Json::Value data;
     f >> data;
 
+    // unpack into level data struct
+    LevelData ld;
+
+    // canvas
+    const Json::Value canvasSizeData = data["levels"][ld.name]["canvas_size"];
+    ld.canvasSize = glm::vec2(canvasSizeData[0].asFloat(), canvasSizeData[1].asFloat());
+
+    // layers
+    const Json::Value layersData = data["levels"][ld.name]["layers"];
+    std::vector<s2d::Layer *> layers = {};
+    for (int i = 0; i < layersData.size(); i++)
+    {
+        std::string layerName = layersData[i].asString();
+        layers.push_back(new s2d::Layer(layerName));
+    }
+    ld.layers = layers;
+
+    std::vector<EntityData> entitiesData = {};
+    std::vector<ResourceManager::TextureData> textures = {};
+
+    ld.entitiesData = entitiesData;
+    ld.textures = textures;
+
     std::cout << data << std::endl;
+    return ld;
 }
 
 void Project::undo()
