@@ -56,7 +56,12 @@ void Project::save(LevelData ld)
 
     // write to file
     std::ofstream file_id;
-    file_id.open("level_data.cld");
+    std::string projectPath = "";
+    if (loadProjectFromFile)
+        projectPath = path;
+    else
+        projectPath = path + ".cld";
+    file_id.open(projectPath);
     Json::StyledWriter styledWriter;
     file_id << styledWriter.write(data);
     file_id.close();
@@ -65,7 +70,7 @@ void Project::save(LevelData ld)
 LevelData Project::load()
 {
     // read project from file
-    std::ifstream f("level_data.cld");
+    std::ifstream f(path);
     Json::Value data;
     f >> data;
 

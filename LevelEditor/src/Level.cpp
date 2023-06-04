@@ -408,7 +408,7 @@ void Level::addEntity()
         if (ImGui::Button("Add"))
         {
             std::string entityName = std::string(tmpEntityName);
-            EntityData *ed;
+            EntityData *ed = new EntityData();
             ed->label = entityName;
             ed->size = glm::vec2((float)tmpWidth, (float)tmpHeight);
             ed->colour = tmpEntityColour;
