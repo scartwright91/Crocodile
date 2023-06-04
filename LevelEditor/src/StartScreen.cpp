@@ -8,9 +8,9 @@ StartScreen::~StartScreen()
 {
 }
 
-Project *StartScreen::getProject()
+Project *StartScreen::getProject(ResourceManager *rm)
 {
-    return new Project(projectName, getProjectPath(), loadProjectFromFile);
+    return new Project(projectName, getProjectPath(), loadProjectFromFile, rm);
 }
 
 bool StartScreen::isActive()

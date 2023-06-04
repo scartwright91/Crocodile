@@ -1,6 +1,10 @@
 #include "Project.h"
 
-Project::Project(std::string name, std::string path, bool loadProjectFromFile) : name(name), path(path), loadProjectFromFile(loadProjectFromFile)
+Project::Project(
+    std::string name,
+    std::string path,
+    bool loadProjectFromFile,
+    ResourceManager *rm) : name(name), path(path), loadProjectFromFile(loadProjectFromFile), rm(rm)
 {
     if (loadProjectFromFile)
         data = load();
@@ -19,6 +23,7 @@ void Project::save(LevelData ld)
     canvasSize.append((int)ld.canvasSize.x);
     canvasSize.append((int)ld.canvasSize.y);
     data["levels"][ld.name]["canvas_size"] = canvasSize;
+    Json::Value canvasColor(Json::arrayValue);
 
     Json::Value layerKeys(Json::arrayValue);
     Json::Value entityKeys(Json::arrayValue);
@@ -28,13 +33,6 @@ void Project::save(LevelData ld)
     for (s2d::Layer *layer : ld.layers)
         layerKeys.append(layer->name);
 
-    // entities
-    for (EntityData ed : ld.entitiesData)
-    {
-        entityKeys.append(ed.label);
-        data["levels"][ld.name]["entity_data"][ed.label] = ed.texture.name;
-    }
-
     // textures
     Json::Value textures(Json::arrayValue);
     for (ResourceManager::TextureData td : ld.textures)
@@ -43,9 +41,16 @@ void Project::save(LevelData ld)
         data["levels"][ld.name]["textures"][td.name] = td.path;
     }
 
+    // entities
+    for (EntityData ed : ld.entitiesData)
+    {
+        entityKeys.append(ed.label);
+        data["levels"][ld.name]["entity_data"][ed.label] = ed.texture.name;
+    }
+
     data["levels"][ld.name]["layers"] = layerKeys;
-    data["levels"][ld.name]["entity_keys"] = entityKeys;
     data["levels"][ld.name]["texture_keys"] = textureKeys;
+    data["levels"][ld.name]["entity_keys"] = entityKeys;
 
     // TODO implement placed entities (add serialise to Object class)
 
@@ -72,22 +77,46 @@ LevelData Project::load()
     ld.canvasSize = glm::vec2(canvasSizeData[0].asFloat(), canvasSizeData[1].asFloat());
 
     // layers
-    const Json::Value layersData = data["levels"][ld.name]["layers"];
+    const Json::Value levelLayersData = data["levels"][ld.name]["layers"];
     std::vector<s2d::Layer *> layers = {};
-    for (int i = 0; i < layersData.size(); i++)
+    for (int i = 0; i < levelLayersData.size(); i++)
     {
-        std::string layerName = layersData[i].asString();
+        std::string layerName = levelLayersData[i].asString();
         layers.push_back(new s2d::Layer(layerName));
     }
     ld.layers = layers;
 
-    std::vector<EntityData> entitiesData = {};
+    // textures
+    const Json::Value levelTexturesData = data["levels"][ld.name]["texture_keys"];
     std::vector<ResourceManager::TextureData> textures = {};
+    for (int i = 0; i < levelTexturesData.size(); i++)
+    {
+        std::string textureName = levelTexturesData[i].asString();
+        std::string texturePath = data["levels"][ld.name]["textures"][textureName].asString();
+        rm->loadTexture(texturePath.c_str(), textureName, false);
+        textures.push_back(rm->getTexture(textureName));
+    }
+
+    // entities data
+    const Json::Value levelEntitiesData = data["levels"][ld.name]["entities_keys"];
+    std::vector<EntityData> entitiesData = {};
+    for (int i = 0; i < levelEntitiesData.size(); i++)
+    {
+        std::string entityName = levelEntitiesData[i].asString();
+        std::string entityTexture = data["levels"][ld.name]["entity_data"][entityName].asString();
+        EntityData ed;
+        ed.label = entityName;
+        ResourceManager::TextureData td = rm->getTexture(entityTexture);
+        ed.texture = td;
+        ed.size = glm::vec2(td.width, td.height);
+        ed.colour = glm::vec3(0.f);
+        entitiesData.push_back(ed);
+    }
 
     ld.entitiesData = entitiesData;
     ld.textures = textures;
 
-    std::cout << data << std::endl;
+    // std::cout << data << std::endl;
     return ld;
 }
 

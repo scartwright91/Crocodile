@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 
+#include "Crocodile/ResourceManager.h"
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
 
@@ -14,7 +15,7 @@ public:
     StartScreen();
     ~StartScreen();
 
-    Project *getProject();
+    Project *getProject(ResourceManager* rm);
     bool isActive();
     void renderImGui();
 

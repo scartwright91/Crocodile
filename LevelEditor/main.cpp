@@ -34,7 +34,7 @@ public:
             else
             {
                 inStartScreen = false;
-                editor = new Editor(startScreen->getProject(), scene, &resourceManager);
+                editor = new Editor(startScreen->getProject(&resourceManager), scene, &resourceManager);
             }
         }
         editor->update();
