@@ -74,66 +74,12 @@ void Editor::init()
 void Editor::save()
 {
     LevelData ld = activeLevel->serialise();
-    Json::Value data;
-
-    // project data
-    data["project"]["name"] = project->name;
-    data["project"]["path"] = project->path;
-
-    // level data TODO: iterate over all levels
-    Json::Value canvasSize(Json::arrayValue);
-    canvasSize.append((int)ld.canvasSize.x);
-    canvasSize.append((int)ld.canvasSize.y);
-    data["levels"][activeLevel->name]["name"] = ld.name;
-    data["levels"][activeLevel->name]["canvas_size"] = canvasSize;
-
-    Json::Value layerKeys(Json::arrayValue);
-    Json::Value entityKeys(Json::arrayValue);
-    Json::Value textureKeys(Json::arrayValue);
-
-    // layers
-    for (s2d::Layer *layer : ld.layers)
-        layerKeys.append(layer->name);
-
-    // entities
-    for (EntityData ed : ld.entitiesData)
-    {
-        entityKeys.append(ed.label);
-        data["levels"][activeLevel->name]["entity_data"][ed.label] = ed.texture.name;
-    }
-
-    // textures
-    Json::Value textures(Json::arrayValue);
-    for (ResourceManager::TextureData td : ld.textures)
-    {
-        textureKeys.append(td.name);
-        data["levels"][activeLevel->name]["textures"][td.name] = td.path;
-    }
-
-    data["levels"][activeLevel->name]["layers"] = layerKeys;
-    data["levels"][activeLevel->name]["entity_keys"] = entityKeys;
-    data["levels"][activeLevel->name]["texture_keys"] = textureKeys;
-
-    // TODO implement placed entities (add serialise to Object class)
-
-    // write to file
-    std::ofstream file_id;
-    file_id.open("level_data.txt");
-    Json::StyledWriter styledWriter;
-    file_id << styledWriter.write(data);
-    file_id.close();
-
-    // std::cout << data << std::endl;
+    project->save(ld);
 }
 
 void Editor::load()
 {
-    // read project from file
-    std::ifstream f("level_data.txt");
-    Json::Value data;
-    f >> data;
-
-    std::cout << data << std::endl;
+    project->load();
 }
 
 void Editor::showImGuiMainMenu()
@@ -149,7 +95,6 @@ void Editor::showImGuiMainMenu()
             if (ImGui::MenuItem("Save", "CTRL+S"))
             {
                 save();
-                load();
             }
             ImGui::EndMenu();
         }

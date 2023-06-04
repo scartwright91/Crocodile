@@ -20,10 +20,16 @@ public:
 
 private:
     char projectName[64] = "";
+    std::string projectNameFromFile = "";
     std::string projectFolder = "";
 
     bool active = true;
-    bool renderNewProjectOptions = false;
+    bool loadProjectFromFile = false;
+    std::string renderOptions = "recent_projects";
 
     std::string getProjectPath();
+
+    void recentProjects();
+    void newProject();
+    void loadProject();
 };
