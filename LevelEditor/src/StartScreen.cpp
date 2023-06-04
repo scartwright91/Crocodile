@@ -111,6 +111,7 @@ void StartScreen::loadProject()
     ImGui::NewLine();
     ImGui::NewLine();
     ImGui::NewLine();
+    // check if project exists
     if (ImGui::Button("Load project", ImVec2(100, 50)) && projectName != "")
         active = false;
     // display

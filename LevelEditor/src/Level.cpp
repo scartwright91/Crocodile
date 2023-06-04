@@ -7,6 +7,8 @@ Level::Level(LevelData data, s2d::Scene *scene, ResourceManager *rm) : name(data
     canvas->color = canvasColour;
     entitiesData = data.entitiesData;
     layers = data.layers;
+    for (s2d::Layer *l : layers)
+        scene->layerStack->addLayer(l);
     textures = data.textures;
     scene->addChild(canvas, "canvas");
     initCanvasEdges();
@@ -406,11 +408,11 @@ void Level::addEntity()
         if (ImGui::Button("Add"))
         {
             std::string entityName = std::string(tmpEntityName);
-            EntityData ed;
-            ed.label = entityName;
-            ed.size = glm::vec2((float)tmpWidth, (float)tmpHeight);
-            ed.colour = tmpEntityColour;
-            ed.texture = rm->getTexture(std::string(tmpNewTexture));
+            EntityData *ed;
+            ed->label = entityName;
+            ed->size = glm::vec2((float)tmpWidth, (float)tmpHeight);
+            ed->colour = tmpEntityColour;
+            ed->texture = rm->getTexture(std::string(tmpNewTexture));
             entitiesData.push_back(ed);
         }
         ImGui::TreePop();
@@ -435,10 +437,10 @@ void Level::modifyEntity()
             selectEntityTexture();
             if (ImGui::Button("Save"))
             {
-                entitiesData[entityRowSelection[0]].label = tmpEntityName;
-                entitiesData[entityRowSelection[0]].colour = tmpEntityColour;
-                entitiesData[entityRowSelection[0]].size = glm::vec2((float)tmpWidth, (float)tmpHeight);
-                entitiesData[entityRowSelection[0]].texture = rm->getTexture(std::string(tmpNewTexture));
+                entitiesData[entityRowSelection[0]]->label = tmpEntityName;
+                entitiesData[entityRowSelection[0]]->colour = tmpEntityColour;
+                entitiesData[entityRowSelection[0]]->size = glm::vec2((float)tmpWidth, (float)tmpHeight);
+                entitiesData[entityRowSelection[0]]->texture = rm->getTexture(std::string(tmpNewTexture));
             }
             ImGui::TreePop();
         }
@@ -493,11 +495,11 @@ void Level::createEntitiesTable()
             ImGui::TableNextRow();
             const bool item_is_selected = entityRowSelection.contains(row);
             ImGui::PushID(row);
-            EntityData ed = entitiesData[row];
+            EntityData *ed = entitiesData[row];
 
             if (ImGui::TableSetColumnIndex(0))
             {
-                if (ImGui::Selectable(ed.label.c_str(), item_is_selected))
+                if (ImGui::Selectable(ed->label.c_str(), item_is_selected))
                 {
                     if (entityRowSelection.size() == 0)
                         entityRowSelection.push_back(row);
@@ -515,7 +517,7 @@ void Level::createEntitiesTable()
             }
             if (ImGui::TableSetColumnIndex(1))
             {
-                glm::vec2 size = ed.size;
+                glm::vec2 size = ed->size;
                 std::string out = "(";
                 out += std::to_string((unsigned int)size.x);
                 out += ", ";
@@ -526,14 +528,14 @@ void Level::createEntitiesTable()
             if (ImGui::TableSetColumnIndex(2))
             {
                 std::string out = "(";
-                out += std::to_string((int)ed.colour.r * 255) + ", ";
-                out += std::to_string((int)ed.colour.g * 255) + ", ";
-                out += std::to_string((int)ed.colour.b * 255);
+                out += std::to_string((int)ed->colour.r * 255) + ", ";
+                out += std::to_string((int)ed->colour.g * 255) + ", ";
+                out += std::to_string((int)ed->colour.b * 255);
                 out += ")";
                 ImGui::Text(out.c_str());
             }
             if (ImGui::TableSetColumnIndex(3))
-                ImGui::Text(ed.texture.name.c_str());
+                ImGui::Text(ed->texture.name.c_str());
         }
 
         ImGui::EndTable();
@@ -602,13 +604,13 @@ void Level::createTextureTable()
     }
 }
 
-void Level::createEntityFromData(EntityData entityData)
+void Level::createEntityFromData(EntityData *entityData)
 {
     placementObject = new s2d::Object();
-    placementObject->label = entityData.label;
-    placementObject->size = entityData.size;
-    placementObject->color = entityData.colour;
-    placementObject->setTexture(entityData.texture);
+    placementObject->label = entityData->label;
+    placementObject->size = entityData->size;
+    placementObject->color = entityData->colour;
+    placementObject->setTexture(entityData->texture);
     placementObject->alpha = tmpAlpha;
     placementObject->rotation = tmpRotation;
     placementObject->size *= tmpScale;
@@ -639,7 +641,7 @@ void Level::selectPlacementObject()
 {
     const char *tmpEntities[entitiesData.size()];
     for (int i = 0; i < entitiesData.size(); i++)
-        tmpEntities[i] = entitiesData[i].label.c_str();
+        tmpEntities[i] = entitiesData[i]->label.c_str();
 
     if (ImGui::BeginCombo("Select entity", tmpPlacementEntity))
     {

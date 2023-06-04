@@ -24,7 +24,7 @@ struct LevelData
     std::string name;
     glm::vec2 canvasSize;
     std::vector<s2d::Layer *> layers;
-    std::vector<EntityData> entitiesData;
+    std::vector<EntityData *> entitiesData;
     std::vector<ResourceManager::TextureData> textures;
 };
 
@@ -46,7 +46,7 @@ public:
 
     std::vector<s2d::Object *> edges = {};
     std::vector<s2d::Layer *> layers = {};
-    std::vector<EntityData> entitiesData = {};
+    std::vector<EntityData *> entitiesData = {};
     std::vector<ResourceManager::TextureData> textures = {};
 
 private:
@@ -115,8 +115,8 @@ private:
     const char *selectedPlacementLayer = "";
     const char *tmpPlacementEntity = "";
     bool placeMultiple = true;
-    EntityData selectedEntityData;
-    void createEntityFromData(EntityData entityData);
+    EntityData *selectedEntityData;
+    void createEntityFromData(EntityData *entityData);
     void selectPlacementLayer();
     void selectPlacementObject();
     void movePlacementObject(glm::vec2 mouse);
