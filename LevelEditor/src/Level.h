@@ -134,8 +134,9 @@ private:
     void createEntityFromData(EntityData *entityData);
     void selectPlacementLayer();
     void selectPlacementObject();
-    void movePlacementObject(glm::vec2 mouse);
+    void moveObject(s2d::Object *obj, glm::vec2 mouse);
     // selection
     s2d::Object *selectedObject = nullptr;
+    bool moveSelectedObject = false;
     void selectObject();
 };

@@ -42,13 +42,14 @@ void Level::loadPlacedEntities(LevelData data)
 void Level::update()
 {
     glm::vec2 mouse = scene->window->getMouseScreenPosition();
+    bool leftclick = scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1);
     float now = glfwGetTime();
     calculateMouseWorldPos(mouse);
     selectEdge(mouse);
     if (placementObject != nullptr)
     {
-        movePlacementObject(mouse);
-        if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1) && (now - placementTimer > 0.5f))
+        moveObject(placementObject, mouse);
+        if (leftclick && (now - placementTimer > 0.5f))
         {
             placementTimer = now;
             if (placeMultiple)
@@ -65,6 +66,20 @@ void Level::update()
             scene->removeChild(placementObject, std::string(selectedPlacementLayer));
             delete placementObject;
             placementObject = nullptr;
+        }
+    }
+    if (selectedObject != nullptr)
+    {
+        if (moveSelectedObject)
+        {
+            moveObject(selectedObject, mouse);
+            if (leftclick)
+                moveSelectedObject = false;
+        }
+        else
+        {
+            if (scene->window->isKeyPressed(GLFW_KEY_M))
+                moveSelectedObject = true;
         }
     }
 }
@@ -322,6 +337,11 @@ void Level::placementUI()
         {
             ImGui::SliderFloat("rotation", &selectedObject->rotation, -3.14f, 3.14f);
             ImGui::SliderFloat("alpha", &selectedObject->alpha, 0.f, 1.f);
+            if (ImGui::Button("delete"))
+            {
+                scene->removeChild(selectedObject, selectedPlacementLayer);
+                selectedObject = nullptr;
+            }
         }
     }
 }
@@ -700,23 +720,21 @@ void Level::selectPlacementObject()
     }
 }
 
-void Level::movePlacementObject(glm::vec2 mouse)
+void Level::moveObject(s2d::Object *obj, glm::vec2 mouse)
 {
-    glm::vec2 objectScreenPos = placementObject->getScreenPosition(
+    glm::vec2 objectScreenPos = obj->getScreenPosition(
         scene->camera->getViewMatrix(),
         scene->camera->getProjectionMatrix(true),
         scene->windowWidth,
         scene->windowHeight);
     float dx = (mouse.x - objectScreenPos.x) * scene->camera->zoom;
     float dy = (mouse.y - objectScreenPos.y) * scene->camera->zoom;
-    placementObject->move(dx, dy);
+    obj->move(dx, dy);
 }
 
 void Level::selectObject()
 {
     glm::vec2 mouse = scene->window->getMouseScreenPosition();
-    if (selectedPlacementLayer = "")
-        return;
     for (s2d::Object *obj : scene->layerStack->getLayer(std::string(selectedPlacementLayer))->objects)
     {
         if (obj->getScreenBoundingBox(

@@ -5,9 +5,9 @@
 
 - Relative paths for textures
 - disable zoom / keys if on imgui window
-- move placed objects
+- Placed objects
+  - move / delete
   - hotkey and/or toggle
-- Load / Save levels
 
 ### Roadmap
 
