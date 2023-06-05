@@ -28,6 +28,7 @@ void Project::save(LevelData ld)
     Json::Value layerKeys(Json::arrayValue);
     Json::Value entityKeys(Json::arrayValue);
     Json::Value textureKeys(Json::arrayValue);
+    Json::Value placedEntities(Json::arrayValue);
 
     // layers
     for (s2d::Layer *layer : ld.layers)
@@ -48,11 +49,30 @@ void Project::save(LevelData ld)
         data["levels"][ld.name]["entity_data"][ed->label] = ed->texture.name;
     }
 
+    // placed entities
+    for (SceneEntityData *sed : ld.sceneEntityData)
+    {
+        Json::Value entData;
+        entData["label"] = sed->label;
+        entData["layer"] = sed->layer;
+        entData["rotation"] = sed->rotation;
+        entData["alpha"] = sed->alpha;
+        Json::Value pos(Json::arrayValue);
+        pos.append(sed->pos.x);
+        pos.append(sed->pos.y);
+        entData["pos"] = pos;
+        Json::Value size(Json::arrayValue);
+        size.append(sed->size.x);
+        size.append(sed->size.y);
+        entData["size"] = size;
+        entData["texture"] = sed->texture;
+        placedEntities.append(entData);
+    }
+
     data["levels"][ld.name]["layers"] = layerKeys;
     data["levels"][ld.name]["texture_keys"] = textureKeys;
     data["levels"][ld.name]["entity_keys"] = entityKeys;
-
-    // TODO implement placed entities (add serialise to Object class)
+    data["levels"][ld.name]["placed_entity_keys"] = placedEntities;
 
     // write to file
     std::ofstream file_id;
@@ -118,8 +138,26 @@ LevelData Project::load()
         entitiesData.push_back(ed);
     }
 
+    // placed entities data
+    const Json::Value placedEntitiesData = data["levels"][ld.name]["placed_entity_keys"];
+    std::vector<SceneEntityData *> sceneEntitiesData = {};
+    for (int i = 0; i < placedEntitiesData.size(); i++)
+    {
+        Json::Value entData = placedEntitiesData[i];
+        SceneEntityData *sceneEnt = new SceneEntityData();
+        sceneEnt->label = entData["label"].asString();
+        sceneEnt->layer = entData["layer"].asString();
+        sceneEnt->rotation = entData["rotation"].asFloat();
+        sceneEnt->alpha = entData["alpha"].asFloat();
+        sceneEnt->pos = glm::vec2(entData["pos"][0].asFloat(), entData["pos"][1].asFloat());
+        sceneEnt->size = glm::vec2(entData["size"][0].asFloat(), entData["size"][1].asFloat());
+        sceneEnt->texture = entData["texture"].asString();
+        sceneEntitiesData.push_back(sceneEnt);
+    }
+
     ld.entitiesData = entitiesData;
     ld.textures = textures;
+    ld.sceneEntityData = sceneEntitiesData;
 
     // std::cout << data << std::endl;
     return ld;

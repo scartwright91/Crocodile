@@ -12,6 +12,7 @@ Level::Level(LevelData data, s2d::Scene *scene, ResourceManager *rm) : name(data
     textures = data.textures;
     scene->addChild(canvas, "canvas");
     initCanvasEdges();
+    loadPlacedEntities(data);
 }
 
 Level::Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2 canvasSize) : name(name), scene(scene), rm(rm)
@@ -21,6 +22,21 @@ Level::Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2
     canvas->color = canvasColour;
     scene->addChild(canvas, "canvas");
     initCanvasEdges();
+}
+
+void Level::loadPlacedEntities(LevelData data)
+{
+    for (SceneEntityData *sed : data.sceneEntityData)
+    {
+        s2d::Object *obj = new s2d::Object();
+        obj->label = sed->label;
+        obj->rotation = sed->rotation;
+        obj->alpha = sed->alpha;
+        obj->setPosition(sed->pos);
+        obj->size = sed->size;
+        obj->setTexture(rm->getTexture(sed->texture));
+        scene->addChild(obj, sed->layer);
+    }
 }
 
 void Level::update()
@@ -60,6 +76,26 @@ LevelData Level::serialise()
     ld.entitiesData = entitiesData;
     ld.layers = layers;
     ld.textures = textures;
+    std::vector<SceneEntityData *> sceneEntitiesData = {};
+    for (std::string layerName : scene->layerStack->getLayerNames())
+    {
+        if (layerName != "canvas" && layerName != "hud" && layerName != "canvas_edges")
+        {
+            for (s2d::Object *obj : scene->layerStack->getLayer(layerName)->objects)
+            {
+                SceneEntityData *sed = new SceneEntityData();
+                sed->label = obj->label;
+                sed->layer = layerName;
+                sed->pos = obj->getPosition();
+                sed->size = obj->size;
+                sed->rotation = obj->rotation;
+                sed->alpha = obj->alpha;
+                sed->texture = obj->texture.name;
+                sceneEntitiesData.push_back(sed);
+            }
+        }
+    }
+    ld.sceneEntityData = sceneEntitiesData;
     return ld;
 }
 
@@ -679,6 +715,8 @@ void Level::movePlacementObject(glm::vec2 mouse)
 void Level::selectObject()
 {
     glm::vec2 mouse = scene->window->getMouseScreenPosition();
+    if (selectedPlacementLayer = "")
+        return;
     for (s2d::Object *obj : scene->layerStack->getLayer(std::string(selectedPlacementLayer))->objects)
     {
         if (obj->getScreenBoundingBox(

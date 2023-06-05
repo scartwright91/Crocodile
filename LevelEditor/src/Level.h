@@ -11,6 +11,17 @@
 
 using namespace Crocodile;
 
+struct SceneEntityData
+{
+    std::string label;
+    std::string layer;
+    std::string texture;
+    glm::vec2 pos;
+    glm::vec2 size;
+    float rotation;
+    float alpha;
+};
+
 struct EntityData
 {
     std::string label;
@@ -25,6 +36,7 @@ struct LevelData
     glm::vec2 canvasSize;
     std::vector<s2d::Layer *> layers;
     std::vector<EntityData *> entitiesData;
+    std::vector<SceneEntityData *> sceneEntityData;
     std::vector<ResourceManager::TextureData> textures;
 };
 
@@ -66,6 +78,9 @@ private:
     void updateCanvas();
     void updateEdges();
     void initCanvasEdges();
+
+    // load functions
+    void loadPlacedEntities(LevelData data);
 
     // general ui
     glm::vec2 mouseWorldPos = glm::vec2(0.f);
