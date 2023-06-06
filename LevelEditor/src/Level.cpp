@@ -4,6 +4,7 @@ Level::Level(LevelData data, s2d::Scene *scene, ResourceManager *rm) : name(data
 {
     canvas = new s2d::Object();
     canvas->size = data.canvasSize;
+    canvasColour = data.canvasColor;
     canvas->color = canvasColour;
     entitiesData = data.entitiesData;
     layers = data.layers;
@@ -88,6 +89,7 @@ LevelData Level::serialise()
 {
     LevelData ld = {};
     ld.canvasSize = canvas->size;
+    ld.canvasColor = canvasColour;
     ld.entitiesData = entitiesData;
     ld.layers = layers;
     ld.textures = textures;

@@ -18,12 +18,15 @@ void Project::save(LevelData ld)
     data["project"]["name"] = name;
     data["project"]["path"] = path;
 
-    // level data TODO: iterate over all levels
     Json::Value canvasSize(Json::arrayValue);
     canvasSize.append((int)ld.canvasSize.x);
     canvasSize.append((int)ld.canvasSize.y);
     data["levels"][ld.name]["canvas_size"] = canvasSize;
     Json::Value canvasColor(Json::arrayValue);
+    canvasColor.append((float)ld.canvasColor.r);
+    canvasColor.append((float)ld.canvasColor.g);
+    canvasColor.append((float)ld.canvasColor.b);
+    data["levels"][ld.name]["canvas_color"] = canvasColor;
 
     Json::Value layerKeys(Json::arrayValue);
     Json::Value entityKeys(Json::arrayValue);
@@ -100,6 +103,8 @@ LevelData Project::load()
     // canvas
     const Json::Value canvasSizeData = data["levels"][ld.name]["canvas_size"];
     ld.canvasSize = glm::vec2(canvasSizeData[0].asFloat(), canvasSizeData[1].asFloat());
+    const Json::Value canvasColorData = data["levels"][ld.name]["canvas_color"];
+    ld.canvasColor = glm::vec3(canvasColorData[0].asFloat(), canvasColorData[1].asFloat(), canvasColorData[2].asFloat());
 
     // layers
     const Json::Value levelLayersData = data["levels"][ld.name]["layers"];

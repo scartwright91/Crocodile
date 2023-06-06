@@ -34,6 +34,7 @@ struct LevelData
 {
     std::string name;
     glm::vec2 canvasSize;
+    glm::vec3 canvasColor;
     std::vector<s2d::Layer *> layers;
     std::vector<EntityData *> entitiesData;
     std::vector<SceneEntityData *> sceneEntityData;
