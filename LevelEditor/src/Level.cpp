@@ -181,12 +181,12 @@ void Level::moveEdge(glm::vec2 mouse)
 
 void Level::updateCanvas()
 {
-    float minx = edges[0]->getPosition().x;
-    float miny = edges[2]->getPosition().y;
-    float canvasWidth = edges[1]->getPosition().x - edges[0]->getPosition().x;
-    float canvasHeight = edges[3]->getPosition().y - edges[2]->getPosition().y;
+    float minx = edges[0]->getPosition().x + edgeWidth;
+    float maxx = edges[1]->getPosition().x;
+    float miny = edges[2]->getPosition().y + edgeWidth;
+    float maxy = edges[3]->getPosition().y;
     canvas->setPosition(glm::vec2(minx, miny));
-    canvas->size = glm::vec2(canvasWidth, canvasHeight);
+    canvas->size = glm::vec2(maxx - minx, maxy - miny);
 }
 
 void Level::updateEdges()
