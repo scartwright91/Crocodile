@@ -50,18 +50,18 @@ void Editor::zoom()
 
 void Editor::move()
 {
-    float speed = 50.f;
+    float zoomSpeed = speed * (scene->camera->zoom * 0.5);
     float dx = 0.f;
     float dy = 0.f;
 
     if (scene->window->isKeyPressed(GLFW_KEY_UP))
-        dy = -speed;
+        dy = -zoomSpeed;
     if (scene->window->isKeyPressed(GLFW_KEY_DOWN))
-        dy = speed;
+        dy = zoomSpeed;
     if (scene->window->isKeyPressed(GLFW_KEY_LEFT))
-        dx = -speed;
+        dx = -zoomSpeed;
     if (scene->window->isKeyPressed(GLFW_KEY_RIGHT))
-        dx = speed;
+        dx = zoomSpeed;
     camera->move(dx, dy);
 }
 
@@ -69,7 +69,6 @@ void Editor::init()
 {
     camera = new s2d::Object();
     camera->move(scene->windowWidth / 2, scene->windowHeight / 2);
-    // scene->camera->setZoom(4.0f);
     scene->camera->setTarget(camera, false);
     currentZoom = scene->window->scroll.y;
 }
@@ -98,6 +97,9 @@ void Editor::showImGuiMainMenu()
             if (ImGui::MenuItem("Save", "CTRL+S"))
             {
                 save();
+            }
+            if (ImGui::MenuItem("Close"))
+            {
             }
             ImGui::EndMenu();
         }

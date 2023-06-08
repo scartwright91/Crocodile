@@ -322,6 +322,8 @@ void Level::sceneTree()
 void Level::placementUI()
 {
     selectPlacementLayer();
+    if (selectedPlacementLayer == "")
+        return;
     if (ImGui::Checkbox("Place mode", &placeMode))
         selectedObject = nullptr;
     if (placeMode)
@@ -423,17 +425,17 @@ void Level::createLayersTable()
             if (ImGui::TableSetColumnIndex(1))
             {
                 if (ImGui::SmallButton("+"))
-                    if (row + 1 < layers.size())
-                    {
-                        move(layers, row, row + 1);
-                        scene->layerStack->moveLayerUp(layers[row]->name);
-                    }
-                ImGui::SameLine();
-                if (ImGui::SmallButton("-"))
                     if (row - 1 >= 0)
                     {
                         move(layers, row, row - 1);
                         scene->layerStack->moveLayerDown(layers[row]->name);
+                    }
+                ImGui::SameLine();
+                if (ImGui::SmallButton("-"))
+                    if (row + 1 < layers.size())
+                    {
+                        move(layers, row, row + 1);
+                        scene->layerStack->moveLayerUp(layers[row]->name);
                     }
             }
             if (ImGui::TableSetColumnIndex(2))

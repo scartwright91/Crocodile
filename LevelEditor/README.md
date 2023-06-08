@@ -5,6 +5,12 @@
 
 - Relative paths for textures
 - disable zoom / keys if on imgui window
+- customisable entities
+
+### Bugs
+- layers
+  - moving layers up and down
+  - depth
 
 ### Roadmap
 
