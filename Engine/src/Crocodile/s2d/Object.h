@@ -18,6 +18,15 @@ namespace Crocodile
 {
 	namespace s2d
 	{
+
+		struct EntityData
+		{
+			std::string label;
+			glm::vec2 size;
+			glm::vec3 colour;
+			ResourceManager::TextureData texture;
+		};
+
 		class CROCODILE_API Object
 		{
 

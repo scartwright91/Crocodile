@@ -11,33 +11,14 @@
 
 using namespace Crocodile;
 
-struct SceneEntityData
-{
-    std::string label;
-    std::string layer;
-    std::string texture;
-    glm::vec2 pos;
-    glm::vec2 size;
-    float rotation;
-    float alpha;
-};
-
-struct EntityData
-{
-    std::string label;
-    glm::vec2 size;
-    glm::vec3 colour;
-    ResourceManager::TextureData texture;
-};
-
 struct LevelData
 {
     std::string name;
     glm::vec2 canvasSize;
     glm::vec3 canvasColor;
     std::vector<s2d::Layer *> layers;
-    std::vector<EntityData *> entitiesData;
-    std::vector<SceneEntityData *> sceneEntityData;
+    std::vector<s2d::EntityData *> entitiesData;
+    std::vector<s2d::SceneEntityData *> sceneEntityData;
     std::vector<ResourceManager::TextureData> textures;
 };
 
@@ -59,7 +40,7 @@ public:
 
     std::vector<s2d::Object *> edges = {};
     std::vector<s2d::Layer *> layers = {};
-    std::vector<EntityData *> entitiesData = {};
+    std::vector<s2d::EntityData *> entitiesData = {};
     std::vector<ResourceManager::TextureData> textures = {};
 
 private:
@@ -131,8 +112,8 @@ private:
     const char *selectedPlacementLayer = "";
     const char *tmpPlacementEntity = "";
     bool placeMultiple = true;
-    EntityData *selectedEntityData;
-    void createEntityFromData(EntityData *entityData);
+    s2d::EntityData *selectedEntityData;
+    void createEntityFromData(s2d::EntityData *entityData);
     void selectPlacementLayer();
     void selectPlacementObject();
     void moveObject(s2d::Object *obj, glm::vec2 mouse);

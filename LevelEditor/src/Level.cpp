@@ -27,7 +27,7 @@ Level::Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2
 
 void Level::loadPlacedEntities(LevelData data)
 {
-    for (SceneEntityData *sed : data.sceneEntityData)
+    for (s2d::SceneEntityData *sed : data.sceneEntityData)
     {
         s2d::Object *obj = new s2d::Object();
         obj->label = sed->label;
@@ -93,14 +93,14 @@ LevelData Level::serialise()
     ld.entitiesData = entitiesData;
     ld.layers = layers;
     ld.textures = textures;
-    std::vector<SceneEntityData *> sceneEntitiesData = {};
+    std::vector<s2d::SceneEntityData *> sceneEntitiesData = {};
     for (std::string layerName : scene->layerStack->getLayerNames())
     {
         if (layerName != "canvas" && layerName != "hud" && layerName != "canvas_edges")
         {
             for (s2d::Object *obj : scene->layerStack->getLayer(layerName)->objects)
             {
-                SceneEntityData *sed = new SceneEntityData();
+                s2d::SceneEntityData *sed = new s2d::SceneEntityData();
                 sed->label = obj->label;
                 sed->layer = layerName;
                 sed->pos = obj->getPosition();
@@ -468,7 +468,7 @@ void Level::addEntity()
         if (ImGui::Button("Add"))
         {
             std::string entityName = std::string(tmpEntityName);
-            EntityData *ed = new EntityData();
+            s2d::EntityData *ed = new s2d::EntityData();
             ed->label = entityName;
             ed->size = glm::vec2((float)tmpWidth, (float)tmpHeight);
             ed->colour = tmpEntityColour;
@@ -555,7 +555,7 @@ void Level::createEntitiesTable()
             ImGui::TableNextRow();
             const bool item_is_selected = entityRowSelection.contains(row);
             ImGui::PushID(row);
-            EntityData *ed = entitiesData[row];
+            s2d::EntityData *ed = entitiesData[row];
 
             if (ImGui::TableSetColumnIndex(0))
             {
@@ -664,7 +664,7 @@ void Level::createTextureTable()
     }
 }
 
-void Level::createEntityFromData(EntityData *entityData)
+void Level::createEntityFromData(s2d::EntityData *entityData)
 {
     placementObject = new s2d::Object();
     placementObject->label = entityData->label;

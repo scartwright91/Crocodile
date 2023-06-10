@@ -13,6 +13,16 @@ namespace Crocodile
 {
 	namespace s2d
 	{
+
+		struct LevelData
+		{
+			std::string name;
+			glm::vec2 size;
+			glm::vec3 color;
+			std::vector<std::string> layers;
+			std::vector<s2d::SceneEntityData> sceneEntityData;
+		};
+
 		class CROCODILE_API LevelParser
 		{
 		public:
@@ -22,8 +32,7 @@ namespace Crocodile
 			Json::Value project;
 			std::vector<std::string> levelNames = {};
 
-			const Json::Value inline getLevelData(std::string level) { return project[level]; }
-			glm::vec2 getLevelBounds(std::string level);
+			LevelData parseLevel(std::string level);
 
 		private:
 			std::string path;
@@ -31,6 +40,8 @@ namespace Crocodile
 			ResourceManager *resourceManager;
 
 			void parseJson();
+			glm::vec2 getCanvasBounds(std::string level);
+			glm::vec3 getCanvasColor(std::string level);
 		};
 	}
 }

@@ -25,6 +25,18 @@ namespace Crocodile
 {
 	namespace s2d
 	{
+
+		struct SceneEntityData
+		{
+			std::string label;
+			std::string layer;
+			std::string texture;
+			glm::vec2 pos;
+			glm::vec2 size;
+			float rotation;
+			float alpha;
+		};
+
 		class CROCODILE_API Scene
 		{
 

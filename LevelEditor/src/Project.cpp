@@ -50,14 +50,14 @@ void Project::save(LevelData ld)
     }
 
     // entities
-    for (EntityData *ed : ld.entitiesData)
+    for (s2d::EntityData *ed : ld.entitiesData)
     {
         entityKeys.append(ed->label);
         data["levels"][ld.name]["entity_data"][ed->label] = ed->texture.name;
     }
 
     // placed entities
-    for (SceneEntityData *sed : ld.sceneEntityData)
+    for (s2d::SceneEntityData *sed : ld.sceneEntityData)
     {
         Json::Value entData;
         entData["label"] = sed->label;
@@ -133,12 +133,12 @@ LevelData Project::load()
 
     // entities data
     const Json::Value levelEntitiesData = data["levels"][ld.name]["entity_keys"];
-    std::vector<EntityData *> entitiesData = {};
+    std::vector<s2d::EntityData *> entitiesData = {};
     for (int i = 0; i < levelEntitiesData.size(); i++)
     {
         std::string entityName = levelEntitiesData[i].asString();
         std::string entityTexture = data["levels"][ld.name]["entity_data"][entityName].asString();
-        EntityData *ed = new EntityData();
+        s2d::EntityData *ed = new s2d::EntityData();
         ed->label = entityName;
         ResourceManager::TextureData td = rm->getTexture(entityTexture);
         ed->texture = td;
@@ -149,11 +149,11 @@ LevelData Project::load()
 
     // placed entities data
     const Json::Value placedEntitiesData = data["levels"][ld.name]["placed_entity_keys"];
-    std::vector<SceneEntityData *> sceneEntitiesData = {};
+    std::vector<s2d::SceneEntityData *> sceneEntitiesData = {};
     for (int i = 0; i < placedEntitiesData.size(); i++)
     {
         Json::Value entData = placedEntitiesData[i];
-        SceneEntityData *sceneEnt = new SceneEntityData();
+        s2d::SceneEntityData *sceneEnt = new s2d::SceneEntityData();
         sceneEnt->label = entData["label"].asString();
         sceneEnt->layer = entData["layer"].asString();
         sceneEnt->rotation = entData["rotation"].asFloat();
