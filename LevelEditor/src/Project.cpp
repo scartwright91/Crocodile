@@ -18,6 +18,10 @@ void Project::save(LevelData ld)
     data["project"]["name"] = name;
     data["project"]["path"] = path;
 
+    Json::Value levelNames(Json::arrayValue);
+    levelNames.append(ld.name);
+    data["levels"]["level_names"] = levelNames;
+
     Json::Value canvasSize(Json::arrayValue);
     canvasSize.append((int)ld.canvasSize.x);
     canvasSize.append((int)ld.canvasSize.y);

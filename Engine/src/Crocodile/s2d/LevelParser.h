@@ -9,7 +9,6 @@
 #include "../ResourceManager.h"
 #include "Scene.h"
 
-
 namespace Crocodile
 {
 	namespace s2d
@@ -17,27 +16,21 @@ namespace Crocodile
 		class CROCODILE_API LevelParser
 		{
 		public:
-
-			LevelParser(std::string path, ResourceManager* resourceManager);
+			LevelParser(std::string path, ResourceManager *resourceManager);
 			~LevelParser();
 
-			Json::Value root;
-			Json::Value scene_data;
-			unsigned int levelSizeX;
-			unsigned int levelSizeY;
+			Json::Value project;
+			std::vector<std::string> levelNames = {};
 
-			glm::vec2 inline getLevelBounds() { return glm::vec2(levelSizeX, levelSizeY); }
-
-			const Json::Value getLayerData(std::string layer);
+			const Json::Value inline getLevelData(std::string level) { return project[level]; }
+			glm::vec2 getLevelBounds(std::string level);
 
 		private:
 			std::string path;
-			std::vector<s2d::Object*> objects = {};
-			ResourceManager* resourceManager;
+			std::vector<s2d::Object *> objects = {};
+			ResourceManager *resourceManager;
 
 			void parseJson();
-
 		};
 	}
 }
-

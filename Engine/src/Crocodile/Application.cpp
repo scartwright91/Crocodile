@@ -8,7 +8,8 @@ namespace Crocodile
 		const char *name,
 		bool resizeable,
 		unsigned int width,
-		unsigned height) : window(name, resizeable, width, height)
+		unsigned height,
+		bool useImGui) : window(name, resizeable, width, height), useImGui(useImGui)
 	{
 		s_Instance = this;
 
@@ -41,15 +42,20 @@ namespace Crocodile
 		{
 			clock.tick(60);
 			window.beginRender();
-			ImGui_ImplOpenGL3_NewFrame();
-			ImGui_ImplGlfw_NewFrame();
-			ImGui::NewFrame();
+			if (useImGui)
+			{
+				ImGui_ImplOpenGL3_NewFrame();
+				ImGui_ImplGlfw_NewFrame();
+				ImGui::NewFrame();
+			}
 			update(clock.deltaTime);
 			scene->update(clock.deltaTime);
 			render();
-			renderImGui();
-			ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
-
+			if (useImGui)
+			{
+				renderImGui();
+				ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+			}
 			window.endRender();
 		}
 #endif
@@ -70,13 +76,16 @@ namespace Crocodile
 	{
 
 #ifndef CROCODILE_EMSCRIPTEN
-		IMGUI_CHECKVERSION();
-		ImGui::CreateContext();
-		ImGuiIO &io = ImGui::GetIO();
-		(void)io;
-		ImGui::StyleColorsDark();
-		ImGui_ImplGlfw_InitForOpenGL(window.getWindow(), true);
-		ImGui_ImplOpenGL3_Init("#version 330");
+		if (useImGui)
+		{
+			IMGUI_CHECKVERSION();
+			ImGui::CreateContext();
+			ImGuiIO &io = ImGui::GetIO();
+			(void)io;
+			ImGui::StyleColorsDark();
+			ImGui_ImplGlfw_InitForOpenGL(window.getWindow(), true);
+			ImGui_ImplOpenGL3_Init("#version 330");
+		}
 		glewInit();
 #endif
 		glEnable(GL_BLEND);

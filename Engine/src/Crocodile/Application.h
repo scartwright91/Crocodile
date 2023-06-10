@@ -37,7 +37,8 @@ namespace Crocodile
 			const char *name,
 			bool resizeable,
 			unsigned int width,
-			unsigned int height);
+			unsigned int height,
+			bool useImGui);
 		virtual ~Application();
 
 		ResourceManager resourceManager;
@@ -63,6 +64,7 @@ namespace Crocodile
 
 	private:
 		static Application *s_Instance;
+		bool useImGui = false;
 	};
 
 	// to be defined in client
