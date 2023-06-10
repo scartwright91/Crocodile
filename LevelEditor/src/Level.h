@@ -16,6 +16,7 @@ struct LevelData
     std::string name;
     glm::vec2 canvasSize;
     glm::vec3 canvasColor;
+    glm::vec2 canvasOffset;
     std::vector<s2d::Layer *> layers;
     std::vector<s2d::EntityData *> entitiesData;
     std::vector<s2d::SceneEntityData *> sceneEntityData;
@@ -59,6 +60,7 @@ private:
     void moveEdge(glm::vec2 mouse);
     void updateCanvas();
     void updateEdges();
+    void updateCanvasOrigin();
     void initCanvasEdges();
 
     // load functions

@@ -237,9 +237,9 @@ namespace Crocodile
 			return absPosition;
 		}
 
-		glm::vec2 Object::getScreenPosition(glm::mat4 view, glm::mat4 projection, float width, float height)
+		glm::vec2 Object::getScreenPosition(bool centre, glm::mat4 view, glm::mat4 projection, float width, float height)
 		{
-			glm::mat4 model = calculateModelMatrix(position);
+			glm::mat4 model = calculateModelMatrix(centre ? getCenteredPosition() : getPosition());
 			glm::mat4 mvp = projection * view * model;
 			glm::vec2 pos = mvp * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 			return glm::vec2((pos.x * 0.5 + 0.5) * width, height - (pos.y * 0.5 + 0.5) * height);

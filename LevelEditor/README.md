@@ -11,6 +11,7 @@
 - layers
   - moving layers up and down
   - depth
+- highlighted objects
 
 ### Roadmap
 

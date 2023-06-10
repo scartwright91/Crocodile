@@ -167,6 +167,7 @@ void Level::selectEdge(glm::vec2 mouse)
 void Level::moveEdge(glm::vec2 mouse)
 {
     glm::vec2 edgeScreenPos = edgeSelected->getScreenPosition(
+        true,
         scene->camera->getViewMatrix(),
         scene->camera->getProjectionMatrix(true),
         scene->windowWidth,
@@ -177,6 +178,7 @@ void Level::moveEdge(glm::vec2 mouse)
         edgeSelected->move(dx, 0);
     else if (edgeSelected == edges[2] || edgeSelected == edges[3])
         edgeSelected->move(0, dy);
+    // updateCanvasOrigin();
     updateCanvas();
     updateEdges();
 }
@@ -188,6 +190,16 @@ void Level::updateCanvas()
     float miny = edges[2]->getPosition().y + edgeWidth;
     float maxy = edges[3]->getPosition().y;
     canvas->setPosition(glm::vec2(minx, miny));
+    if (minx != 0 || miny != 0)
+    {
+        for (std::string layerName : scene->layerStack->getLayerNames())
+        {
+            s2d::Layer *layer = scene->layerStack->getLayer(layerName);
+            if (layer->cameraScroll)
+                for (s2d::Object *obj : layer->objects)
+                    obj->move(-minx, -miny);
+        }
+    }
     canvas->size = glm::vec2(maxx - minx, maxy - miny);
 }
 
@@ -203,6 +215,22 @@ void Level::updateEdges()
     edges[1]->setPosition(glm::vec2(pos.x + size.x, pos.y));
     edges[2]->setPosition(glm::vec2(pos.x, pos.y - edgeWidth));
     edges[3]->setPosition(glm::vec2(pos.x, pos.y + canvas->size.y));
+}
+
+void Level::updateCanvasOrigin()
+{
+    glm::vec2 pos = canvas->getPosition();
+    if (pos.x != 0.f || pos.y != 0.f)
+    {
+        canvas->move(-pos.x, -pos.y);
+        for (std::string layerName : scene->layerStack->getLayerNames())
+        {
+            s2d::Layer *layer = scene->layerStack->getLayer(layerName);
+            if (layer->cameraScroll)
+                for (s2d::Object *obj : layer->objects)
+                    obj->move(-pos.x, -pos.y);
+        }
+    }
 }
 
 void Level::scaleEdges(float v)
@@ -339,6 +367,10 @@ void Level::placementUI()
         selectObject();
         if (selectedObject != NULL)
         {
+            std::string objPosText = "Object pos: ";
+            glm::vec2 objPos = selectedObject->getPosition();
+            objPosText += "(" + std::to_string((int)objPos.x) + ", " + std::to_string((int)objPos.y) + ")";
+            ImGui::Text(objPosText.c_str());
             ImGui::SliderFloat("rotation", &selectedObject->rotation, -3.14f, 3.14f);
             ImGui::SliderFloat("alpha", &selectedObject->alpha, 0.f, 1.f);
             if (ImGui::Button("delete"))
@@ -727,6 +759,7 @@ void Level::selectPlacementObject()
 void Level::moveObject(s2d::Object *obj, glm::vec2 mouse)
 {
     glm::vec2 objectScreenPos = obj->getScreenPosition(
+        true,
         scene->camera->getViewMatrix(),
         scene->camera->getProjectionMatrix(true),
         scene->windowWidth,
