@@ -10,6 +10,7 @@
 #include "Object.h"
 #include "Particles.h"
 #include "Text.h"
+#include "shapes/Line.h"
 #include "LightSystem.h"
 #include "LayerStack.h"
 
@@ -18,6 +19,7 @@
 #include "rendering/TextRenderer.h"
 #include "rendering/PostProcessing.h"
 #include "rendering/BackgroundGrid.h"
+#include "rendering/LineRenderer.h"
 
 #include "../graphics/Window.h"
 
@@ -100,6 +102,7 @@ namespace Crocodile
 			SpriteRenderer *spriteRenderer;
 			ParticleRenderer *particleRenderer;
 			TextRenderer *textRenderer;
+			LineRenderer *lineRenderer;
 
 		private:
 			// postprocessing

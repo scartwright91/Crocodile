@@ -107,6 +107,7 @@ namespace Crocodile
 		resourceManager.loadShader("assets/shaders/opengl/text_vertex.vs", "assets/shaders/opengl/text_fragment.fs", "text");
 		resourceManager.loadShader("assets/shaders/opengl/postprocessing_vertex.vs", "assets/shaders/opengl/postprocessing_fragment.fs", "postprocessing");
 		resourceManager.loadShader("assets/shaders/opengl/grid_vertex.vs", "assets/shaders/opengl/grid_fragment.fs", "grid");
+		resourceManager.loadShader("assets/shaders/opengl/line_vertex.vs", "assets/shaders/opengl/line_fragment.fs", "line");
 #endif
 	}
 

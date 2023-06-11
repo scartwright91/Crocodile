@@ -219,6 +219,17 @@ namespace Crocodile
 					text->alpha,
 					text->textScale);
 			}
+			else if (obj->renderMethod == "line")
+			{
+				shapes::Line *line = (shapes::Line *)obj;
+				lineRenderer->render(
+					line->p1,
+					line->p2,
+					view,
+					projection,
+					line->color,
+					line->alpha);
+			}
 			else
 			{
 				std::cout << "Undefined render method" << std::endl;
@@ -325,6 +336,7 @@ namespace Crocodile
 			camera = new s2d::Camera(window);
 			spriteRenderer = new s2d::SpriteRenderer(resourceManager->getShader("sprite"));
 			particleRenderer = new s2d::ParticleRenderer(resourceManager->getShader("particle"));
+			lineRenderer = new s2d::LineRenderer(resourceManager->getShader("line"));
 			postProcessing = new s2d::PostProcessing(resourceManager->getShader("postprocessing"), windowWidth, windowHeight);
 			textRenderer = new s2d::TextRenderer("assets/fonts/OpenSans-Regular.ttf", resourceManager->getShader("text"));
 			grid = new s2d::BackgroundGrid(resourceManager->getShader("grid"));
