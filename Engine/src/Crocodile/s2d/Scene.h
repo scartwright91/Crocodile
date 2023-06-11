@@ -35,6 +35,7 @@ namespace Crocodile
 			glm::vec2 size;
 			float rotation;
 			float alpha;
+			std::vector<glm::vec2> path;
 		};
 
 		class CROCODILE_API Scene

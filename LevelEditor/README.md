@@ -2,19 +2,18 @@
 ## TODO
 
 ### Current
-
 - Relative paths for textures
 - disable zoom / keys if on imgui window
 - customisable entities
+- add areas (to be used for camera zones etc)
 
 ### Bugs
 - layers
   - moving layers up and down
   - depth
-- highlighted objects
 
 ### Roadmap
-
+- Other entity types e.g. text, particles
 - Docking + viewports
 - World / multiple levels
   - blueprints?

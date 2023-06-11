@@ -60,7 +60,6 @@ private:
     void moveEdge(glm::vec2 mouse);
     void updateCanvas();
     void updateEdges();
-    void updateCanvasOrigin();
     void initCanvasEdges();
 
     // load functions
@@ -111,11 +110,14 @@ private:
     float tmpAlpha = 1.f;
     float tmpRotation = 0.f;
     float placementTimer = glfwGetTime();
+    const char *selectedPlacementType = "entity";
     const char *selectedPlacementLayer = "";
     const char *tmpPlacementEntity = "";
     bool placeMultiple = true;
     s2d::EntityData *selectedEntityData;
     void createEntityFromData(s2d::EntityData *entityData);
+    const char *placementTypes[2] = {"entity", "mask"};
+    void selectPlacementType();
     void selectPlacementLayer();
     void selectPlacementObject();
     void moveObject(s2d::Object *obj, glm::vec2 mouse);
@@ -123,4 +125,7 @@ private:
     s2d::Object *selectedObject = nullptr;
     bool moveSelectedObject = false;
     void selectObject();
+    float objectPathTimer = 0.f;
+    std::vector<s2d::Object *> objectPath = {};
+    void createObjectPath();
 };

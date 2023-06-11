@@ -44,6 +44,7 @@ void Level::update()
 {
     glm::vec2 mouse = scene->window->getMouseScreenPosition();
     bool leftclick = scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1);
+    bool rightclick = scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_2);
     float now = glfwGetTime();
     calculateMouseWorldPos(mouse);
     selectEdge(mouse);
@@ -62,7 +63,7 @@ void Level::update()
                 placementObject = nullptr;
             }
         }
-        else if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_2))
+        else if (rightclick)
         {
             scene->removeChild(placementObject, std::string(selectedPlacementLayer));
             delete placementObject;
@@ -71,6 +72,11 @@ void Level::update()
     }
     if (selectedObject != nullptr)
     {
+        if (rightclick)
+        {
+            selectedObject->outline = false;
+            selectedObject = nullptr;
+        }
         if (moveSelectedObject)
         {
             moveObject(selectedObject, mouse);
@@ -81,6 +87,7 @@ void Level::update()
         {
             if (scene->window->isKeyPressed(GLFW_KEY_M))
                 moveSelectedObject = true;
+            createObjectPath();
         }
     }
 }
@@ -178,7 +185,6 @@ void Level::moveEdge(glm::vec2 mouse)
         edgeSelected->move(dx, 0);
     else if (edgeSelected == edges[2] || edgeSelected == edges[3])
         edgeSelected->move(0, dy);
-    // updateCanvasOrigin();
     updateCanvas();
     updateEdges();
 }
@@ -215,22 +221,6 @@ void Level::updateEdges()
     edges[1]->setPosition(glm::vec2(pos.x + size.x, pos.y));
     edges[2]->setPosition(glm::vec2(pos.x, pos.y - edgeWidth));
     edges[3]->setPosition(glm::vec2(pos.x, pos.y + canvas->size.y));
-}
-
-void Level::updateCanvasOrigin()
-{
-    glm::vec2 pos = canvas->getPosition();
-    if (pos.x != 0.f || pos.y != 0.f)
-    {
-        canvas->move(-pos.x, -pos.y);
-        for (std::string layerName : scene->layerStack->getLayerNames())
-        {
-            s2d::Layer *layer = scene->layerStack->getLayer(layerName);
-            if (layer->cameraScroll)
-                for (s2d::Object *obj : layer->objects)
-                    obj->move(-pos.x, -pos.y);
-        }
-    }
 }
 
 void Level::scaleEdges(float v)
@@ -315,9 +305,13 @@ void Level::levelOptions()
 
 void Level::levelInfo()
 {
+    // display mouse position
     std::string mousePos = "Mouse pos: ";
     mousePos += "(" + std::to_string((int)mouseWorldPos.x) + ", " + std::to_string((int)mouseWorldPos.y) + ")";
     ImGui::Text(mousePos.c_str());
+    // display camera zoom
+    std::string cameraZoom = "Zoom: " + std::to_string(scene->camera->zoom);
+    ImGui::Text(cameraZoom.c_str());
     glm::vec2 size = canvas->size;
     std::string cs = "Level size: ";
     cs += "(" + std::to_string((int)size.x) + ", " + std::to_string((int)size.y) + ")";
@@ -336,7 +330,6 @@ void Level::sceneTree()
                 {
                     if (ImGui::TreeNode(obj->label.c_str()))
                     {
-                        ImGui::Text(obj->label.c_str());
                         ImGui::TreePop();
                     }
                 }
@@ -349,6 +342,7 @@ void Level::sceneTree()
 
 void Level::placementUI()
 {
+    selectPlacementType();
     selectPlacementLayer();
     if (selectedPlacementLayer == "")
         return;
@@ -471,7 +465,7 @@ void Level::createLayersTable()
                     }
             }
             if (ImGui::TableSetColumnIndex(2))
-                ImGui::SliderFloat("depth", &layers[row]->depth, 0.0f, 5.0f);
+                ImGui::SliderFloat("depth", &layers[row]->depth, 0.f, 1.0f);
             if (ImGui::TableSetColumnIndex(3))
             {
                 bool hide = layers[row]->hide;
@@ -709,6 +703,22 @@ void Level::createEntityFromData(s2d::EntityData *entityData)
     scene->addChild(placementObject, std::string(selectedPlacementLayer));
 }
 
+void Level::selectPlacementType()
+{
+    if (ImGui::BeginCombo("Type", selectedPlacementType))
+    {
+        for (int n = 0; n < IM_ARRAYSIZE(placementTypes); n++)
+        {
+            bool is_selected = (selectedPlacementType == placementTypes[n]);
+            if (ImGui::Selectable(placementTypes[n], is_selected))
+                selectedPlacementType = placementTypes[n];
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
+    }
+}
+
 void Level::selectPlacementLayer()
 {
     const char *tmpLayers[layers.size()];
@@ -792,4 +802,19 @@ void Level::selectObject()
     }
     if (selectedObject != NULL)
         selectedObject->outline = true;
+}
+
+void Level::createObjectPath()
+{
+    float now = glfwGetTime();
+    if (scene->window->isKeyPressed(GLFW_KEY_A) && (objectPathTimer - now > 0.5f))
+    {
+        objectPathTimer = now;
+        s2d::Object *p = new s2d::Object();
+        p->setPosition(mouseWorldPos);
+        p->size = glm::vec2(25.f);
+        p->color = glm::vec3(1.f, 0.f, 0.f);
+        scene->addChild(p, selectedPlacementLayer);
+        objectPath.push_back(p);
+    }
 }
