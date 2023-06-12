@@ -701,6 +701,8 @@ void Level::createEntityFromData(s2d::EntityData *entityData)
     placementObject->rotation = tmpRotation;
     placementObject->size *= tmpScale;
     scene->addChild(placementObject, std::string(selectedPlacementLayer));
+    Entity e(placementObject, std::string(selectedPlacementLayer));
+    placedEntities.push_back(e);
 }
 
 void Level::selectPlacementType()
@@ -807,7 +809,7 @@ void Level::selectObject()
 void Level::createObjectPath()
 {
     float now = glfwGetTime();
-    if (scene->window->isKeyPressed(GLFW_KEY_A) && (objectPathTimer - now > 0.5f))
+    if (scene->window->isKeyPressed(GLFW_KEY_A) && (now - objectPathTimer > 0.5f))
     {
         objectPathTimer = now;
         s2d::Object *p = new s2d::Object();
@@ -816,5 +818,12 @@ void Level::createObjectPath()
         p->color = glm::vec3(1.f, 0.f, 0.f);
         scene->addChild(p, selectedPlacementLayer);
         objectPath.push_back(p);
+        unsigned int n = objectPath.size();
+        if (n > 1)
+        {
+            s2d::shapes::Line *l = new s2d::shapes::Line(objectPath[n - 2]->getPosition(), objectPath[n - 1]->getPosition());
+            l->color = glm::vec3(1.0f, 0.f, 0.f);
+            scene->addChild(l, selectedPlacementLayer);
+        }
     }
 }

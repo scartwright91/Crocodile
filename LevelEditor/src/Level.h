@@ -9,6 +9,8 @@
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
 
+#include "Entity.h"
+
 using namespace Crocodile;
 
 struct LevelData
@@ -106,6 +108,7 @@ private:
     // Objects
     s2d::Object *placementObject = nullptr;
     // placement
+    std::vector<Entity> placedEntities = {};
     float tmpScale = 1.f;
     float tmpAlpha = 1.f;
     float tmpRotation = 0.f;
