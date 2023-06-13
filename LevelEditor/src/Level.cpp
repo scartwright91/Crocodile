@@ -37,6 +37,9 @@ void Level::loadPlacedEntities(LevelData data)
         obj->size = sed->size;
         obj->setTexture(rm->getTexture(sed->texture));
         scene->addChild(obj, sed->layer);
+        Entity *e = new Entity(obj, sed->layer);
+        e->movementPath = sed->path;
+        placedEntities.push_back(e);
     }
 }
 
@@ -74,6 +77,12 @@ void Level::update()
     {
         if (rightclick)
         {
+            for (Entity *e : placedEntities)
+                if (e->obj == selectedObject)
+                {
+                    e->deselect(scene);
+                    break;
+                }
             selectedObject->outline = false;
             selectedObject = nullptr;
         }
@@ -101,23 +110,18 @@ LevelData Level::serialise()
     ld.layers = layers;
     ld.textures = textures;
     std::vector<s2d::SceneEntityData *> sceneEntitiesData = {};
-    for (std::string layerName : scene->layerStack->getLayerNames())
+    for (Entity *ent : placedEntities)
     {
-        if (layerName != "canvas" && layerName != "hud" && layerName != "canvas_edges")
-        {
-            for (s2d::Object *obj : scene->layerStack->getLayer(layerName)->objects)
-            {
-                s2d::SceneEntityData *sed = new s2d::SceneEntityData();
-                sed->label = obj->label;
-                sed->layer = layerName;
-                sed->pos = obj->getPosition();
-                sed->size = obj->size;
-                sed->rotation = obj->rotation;
-                sed->alpha = obj->alpha;
-                sed->texture = obj->texture.name;
-                sceneEntitiesData.push_back(sed);
-            }
-        }
+        s2d::SceneEntityData *sed = new s2d::SceneEntityData();
+        sed->label = ent->obj->label;
+        sed->layer = ent->layer;
+        sed->pos = ent->obj->getPosition();
+        sed->size = ent->obj->size;
+        sed->rotation = ent->obj->rotation;
+        sed->alpha = ent->obj->alpha;
+        sed->texture = ent->obj->texture.name;
+        sed->path = ent->movementPath;
+        sceneEntitiesData.push_back(sed);
     }
     ld.sceneEntityData = sceneEntitiesData;
     return ld;
@@ -369,7 +373,7 @@ void Level::placementUI()
             ImGui::SliderFloat("alpha", &selectedObject->alpha, 0.f, 1.f);
             if (ImGui::Button("delete"))
             {
-                scene->removeChild(selectedObject, selectedPlacementLayer);
+                deleteObject(selectedObject);
                 selectedObject = nullptr;
             }
         }
@@ -701,7 +705,7 @@ void Level::createEntityFromData(s2d::EntityData *entityData)
     placementObject->rotation = tmpRotation;
     placementObject->size *= tmpScale;
     scene->addChild(placementObject, std::string(selectedPlacementLayer));
-    Entity e(placementObject, std::string(selectedPlacementLayer));
+    Entity *e = new Entity(placementObject, std::string(selectedPlacementLayer));
     placedEntities.push_back(e);
 }
 
@@ -768,6 +772,26 @@ void Level::selectPlacementObject()
     }
 }
 
+void Level::deleteObject(s2d::Object *obj)
+{
+    for (Entity *e : placedEntities)
+    {
+        if (obj == e->obj)
+        {
+            scene->removeChild(obj, e->layer);
+            if (e->selected)
+                e->deselect(scene);
+            placedEntities.erase(
+                std::remove(placedEntities.begin(),
+                            placedEntities.end(), e),
+                placedEntities.end());
+            delete e;
+            delete obj;
+            break;
+        }
+    }
+}
+
 void Level::moveObject(s2d::Object *obj, glm::vec2 mouse)
 {
     glm::vec2 objectScreenPos = obj->getScreenPosition(
@@ -796,7 +820,17 @@ void Level::selectObject()
         {
             obj->outline = true;
             if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
+            {
                 selectedObject = obj;
+                for (Entity *e : placedEntities)
+                {
+                    if (e->obj == selectedObject)
+                    {
+                        e->select(scene);
+                        break;
+                    }
+                }
+            }
             break;
         }
         else
@@ -810,20 +844,11 @@ void Level::createObjectPath()
 {
     float now = glfwGetTime();
     if (scene->window->isKeyPressed(GLFW_KEY_A) && (now - objectPathTimer > 0.5f))
-    {
-        objectPathTimer = now;
-        s2d::Object *p = new s2d::Object();
-        p->setPosition(mouseWorldPos);
-        p->size = glm::vec2(25.f);
-        p->color = glm::vec3(1.f, 0.f, 0.f);
-        scene->addChild(p, selectedPlacementLayer);
-        objectPath.push_back(p);
-        unsigned int n = objectPath.size();
-        if (n > 1)
-        {
-            s2d::shapes::Line *l = new s2d::shapes::Line(objectPath[n - 2]->getPosition(), objectPath[n - 1]->getPosition());
-            l->color = glm::vec3(1.0f, 0.f, 0.f);
-            scene->addChild(l, selectedPlacementLayer);
-        }
-    }
+        for (Entity *e : placedEntities)
+            if (selectedObject == e->obj)
+            {
+                objectPathTimer = now;
+                e->movementPath.push_back(mouseWorldPos);
+                break;
+            }
 }

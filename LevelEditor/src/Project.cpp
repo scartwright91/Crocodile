@@ -73,13 +73,24 @@ void Project::save(LevelData ld)
         size.append(sed->size.y);
         entData["size"] = size;
         entData["texture"] = sed->texture;
+        // add movement path
+        Json::Value movementPath(Json::arrayValue);
+        for (glm::vec2 p : sed->path)
+        {
+            Json::Value movementPathPos(Json::arrayValue);
+            movementPathPos.append(p.x);
+            movementPathPos.append(p.y);
+            movementPath.append(movementPathPos);
+        }
+        entData["movement_path"] = movementPath;
+        // add custom attributes
         placedEntities.append(entData);
     }
 
     data["levels"][ld.name]["layers"] = layerKeys;
     data["levels"][ld.name]["texture_keys"] = textureKeys;
     data["levels"][ld.name]["entity_keys"] = entityKeys;
-    data["levels"][ld.name]["placed_entity_keys"] = placedEntities;
+    data["levels"][ld.name]["placed_entities"] = placedEntities;
 
     // write to file
     std::ofstream file_id;
@@ -148,7 +159,7 @@ LevelData Project::load()
     }
 
     // placed entities data
-    const Json::Value placedEntitiesData = data["levels"][ld.name]["placed_entity_keys"];
+    const Json::Value placedEntitiesData = data["levels"][ld.name]["placed_entities"];
     std::vector<s2d::SceneEntityData *> sceneEntitiesData = {};
     for (int i = 0; i < placedEntitiesData.size(); i++)
     {
@@ -161,6 +172,12 @@ LevelData Project::load()
         sceneEnt->pos = glm::vec2(entData["pos"][0].asFloat(), entData["pos"][1].asFloat());
         sceneEnt->size = glm::vec2(entData["size"][0].asFloat(), entData["size"][1].asFloat());
         sceneEnt->texture = entData["texture"].asString();
+        // iterate over movement path
+        const Json::Value entMovementPath = entData["movement_path"];
+        std::vector<glm::vec2> path = {};
+        for (int j = 0; j < entMovementPath.size(); j++)
+            path.push_back(glm::vec2(entMovementPath[j][0].asFloat(), entMovementPath[j][1].asFloat()));
+        sceneEnt->path = path;
         sceneEntitiesData.push_back(sceneEnt);
     }
 

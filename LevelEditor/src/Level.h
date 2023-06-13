@@ -15,13 +15,19 @@ using namespace Crocodile;
 
 struct LevelData
 {
+    // level name
     std::string name;
+    // world size of canvas
     glm::vec2 canvasSize;
+    // background colour of canvas
     glm::vec3 canvasColor;
-    glm::vec2 canvasOffset;
+    // layer information
     std::vector<s2d::Layer *> layers;
+    // Unique entity types to place in the scene
     std::vector<s2d::EntityData *> entitiesData;
+    // Entities that have been placed in the scene (containing scene-specific info such as position etc)
     std::vector<s2d::SceneEntityData *> sceneEntityData;
+    // Textures that have been used by entities
     std::vector<ResourceManager::TextureData> textures;
 };
 
@@ -108,7 +114,7 @@ private:
     // Objects
     s2d::Object *placementObject = nullptr;
     // placement
-    std::vector<Entity> placedEntities = {};
+    std::vector<Entity *> placedEntities = {};
     float tmpScale = 1.f;
     float tmpAlpha = 1.f;
     float tmpRotation = 0.f;
@@ -123,6 +129,7 @@ private:
     void selectPlacementType();
     void selectPlacementLayer();
     void selectPlacementObject();
+    void deleteObject(s2d::Object *obj);
     void moveObject(s2d::Object *obj, glm::vec2 mouse);
     // selection
     s2d::Object *selectedObject = nullptr;
