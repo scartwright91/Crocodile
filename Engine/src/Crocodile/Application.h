@@ -47,6 +47,7 @@ namespace Crocodile
 		s2d::Scene *scene;
 		Clock clock;
 
+		float fontImGuiScale = 1.f;
 		bool mouseOnImGuiWindow = false;
 
 	private:

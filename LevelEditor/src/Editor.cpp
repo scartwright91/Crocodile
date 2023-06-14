@@ -95,11 +95,11 @@ void Editor::showImGuiMainMenu()
     {
         if (ImGui::BeginMenu("Project"))
         {
-            if (ImGui::MenuItem("Open", "CTRL+O"))
+            if (ImGui::MenuItem("Open", "CTRL O"))
             {
                 load();
             }
-            if (ImGui::MenuItem("Save", "CTRL+S"))
+            if (ImGui::MenuItem("Save", "CTRL S"))
             {
                 save();
             }
@@ -110,21 +110,24 @@ void Editor::showImGuiMainMenu()
         }
         if (ImGui::BeginMenu("Edit"))
         {
-            if (ImGui::MenuItem("Undo", "CTRL+Z"))
+            if (ImGui::MenuItem("Undo", "CTRL Z"))
             {
             }
-            if (ImGui::MenuItem("Redo", "CTRL+Y", false, false))
-            {
-            } // Disabled item
-            ImGui::Separator();
-            if (ImGui::MenuItem("Cut", "CTRL+X"))
+            if (ImGui::MenuItem("Redo", "CTRL Y"))
             {
             }
-            if (ImGui::MenuItem("Copy", "CTRL+C"))
+            ImGui::EndMenu();
+        }
+        if (ImGui::BeginMenu("View"))
+        {
+            if (ImGui::MenuItem("Font+", "CTRL+"))
             {
+                fontImGuiScale += 0.2f;
             }
-            if (ImGui::MenuItem("Paste", "CTRL+V"))
+            if (ImGui::MenuItem("Font-", "CTRL-"))
             {
+                if (fontImGuiScale - 0.2 > 0.f)
+                    fontImGuiScale -= 0.2f;
             }
             ImGui::EndMenu();
         }

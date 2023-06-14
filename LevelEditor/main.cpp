@@ -38,6 +38,7 @@ public:
             }
         }
         editor->update(mouseOnImGuiWindow);
+        fontImGuiScale = editor->fontImGuiScale;
     }
 
     void renderImGui()

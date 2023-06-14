@@ -17,5 +17,4 @@
 - World / multiple levels
   - blueprints?
 - Grids
-- Font resizing
 - undo / redo functionality

@@ -29,6 +29,8 @@ public:
     Level *activeLevel = nullptr;
     std::vector<Level *> levels = {};
 
+    float fontImGuiScale = 1.f;
+
 private:
     s2d::Scene *scene = nullptr;
     ResourceManager *rm = nullptr;
