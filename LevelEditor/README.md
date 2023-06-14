@@ -2,8 +2,8 @@
 ## TODO
 
 ### Current
+- Docking + viewports
 - Relative paths for textures
-- disable zoom / keys if on imgui window
 - customisable entities
 - add areas (to be used for camera zones etc)
 
@@ -14,7 +14,6 @@
 
 ### Roadmap
 - Other entity types e.g. text, particles
-- Docking + viewports
 - World / multiple levels
   - blueprints?
 - Grids

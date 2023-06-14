@@ -47,6 +47,8 @@ namespace Crocodile
 		s2d::Scene *scene;
 		Clock clock;
 
+		bool mouseOnImGuiWindow = false;
+
 	private:
 		void loadShaders();
 		void loadTextures();

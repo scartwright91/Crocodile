@@ -23,8 +23,9 @@ void Editor::renderImGui()
         activeLevel->renderImGui();
 }
 
-void Editor::update()
+void Editor::update(bool mouseOnImGuiWindow)
 {
+    this->mouseOnImGuiWindow = mouseOnImGuiWindow;
     zoom();
     move();
     if (activeLevel != NULL)
@@ -33,6 +34,8 @@ void Editor::update()
 
 void Editor::zoom()
 {
+    if (mouseOnImGuiWindow)
+        return;
     float scroll = scene->window->scroll.y;
     float now = glfwGetTime();
     if (scroll != currentZoom)
@@ -50,6 +53,8 @@ void Editor::zoom()
 
 void Editor::move()
 {
+    if (mouseOnImGuiWindow)
+        return;
     float zoomSpeed = speed * (scene->camera->zoom * 0.5);
     float dx = 0.f;
     float dy = 0.f;

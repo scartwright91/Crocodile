@@ -21,7 +21,7 @@ class Editor
 public:
     Editor(Project *project, s2d::Scene *scene, ResourceManager *rm);
 
-    void update();
+    void update(bool mouseOnImGuiWindow);
     void renderImGui();
 
     Project *project = nullptr;
@@ -46,5 +46,6 @@ private:
     void init();
 
     // imgui functions
+    bool mouseOnImGuiWindow = false;
     void showImGuiMainMenu();
 };

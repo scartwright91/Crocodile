@@ -37,7 +37,7 @@ public:
                 editor = new Editor(startScreen->getProject(&resourceManager), scene, &resourceManager);
             }
         }
-        editor->update();
+        editor->update(mouseOnImGuiWindow);
     }
 
     void renderImGui()
