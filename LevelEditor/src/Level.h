@@ -39,7 +39,7 @@ public:
 
     std::string name = "";
 
-    void update();
+    void update(glm::vec2 mouse, glm::vec2 viewport);
     void renderImGui();
     LevelData serialise();
     void scaleEdges(float v);
@@ -51,6 +51,8 @@ public:
     std::vector<s2d::Layer *> layers = {};
     std::vector<s2d::EntityData *> entitiesData = {};
     std::vector<ResourceManager::TextureData> textures = {};
+
+    float tmpTimer = glfwGetTime();
 
 private:
     ResourceManager *rm = nullptr;
@@ -75,7 +77,7 @@ private:
 
     // general ui
     glm::vec2 mouseWorldPos = glm::vec2(0.f);
-    void calculateMouseWorldPos(glm::vec2 mouse);
+    void calculateMouseWorldPos(glm::vec2 mouse, glm::vec2 viewport);
 
     // imgui functions
     ImGuiTableFlags tableFlags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY;

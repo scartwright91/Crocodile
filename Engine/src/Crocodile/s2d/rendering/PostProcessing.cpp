@@ -59,18 +59,11 @@ namespace Crocodile
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 		}
 
-		void PostProcessing::createTexture(unsigned int width, unsigned int height)
+		void PostProcessing::resize(unsigned int width, unsigned int height)
 		{
 			this->width = width;
 			this->height = height;
-
-			// init color buffer
-			glGenTextures(1, &textureColorbuffer);
-			glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);
+			init();
 		}
 
 		void PostProcessing::init()
@@ -82,7 +75,7 @@ namespace Crocodile
 			// init color buffer
 			glGenTextures(1, &textureColorbuffer);
 			glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, this->width, this->height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
+			glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, NULL);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 			glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 			glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0, GL_TEXTURE_2D, textureColorbuffer, 0);

@@ -2,14 +2,16 @@
 
 #include "../../Core.h"
 
-namespace Crocodile {
-	namespace s2d {
-		namespace col {
+namespace Crocodile
+{
+	namespace s2d
+	{
+		namespace col
+		{
 			class CROCODILE_API BoundingBox
 			{
 
 			public:
-
 				float x = 0.0;
 				float y = 0.0;
 				float width = 0.0;
@@ -22,7 +24,6 @@ namespace Crocodile {
 
 				BoundingBox()
 				{
-
 				}
 
 				BoundingBox(float x, float y, float width, float height)
@@ -39,7 +40,6 @@ namespace Crocodile {
 
 				~BoundingBox()
 				{
-
 				}
 
 				bool intersectsBounds(BoundingBox b)
@@ -54,15 +54,13 @@ namespace Crocodile {
 
 				void printVertices()
 				{
-					std::cout << "topleft: [" << xMin << ", " << yMin
-						<< "]; topright: [" << xMax << ", " << yMin
-						<< "]; bottomleft: [" << xMin << ", " << yMax
-						<< "]; bottomright: [" << xMax << ", " << yMax
-						<< "]" << std::endl;
+					std::cout << "topleft: [" << (int)xMin << ", " << (int)yMin
+							  << "]; topright: [" << (int)xMax << ", " << (int)yMin
+							  << "]; bottomleft: [" << (int)xMin << ", " << (int)yMax
+							  << "]; bottomright: [" << (int)xMax << ", " << (int)yMax
+							  << "]" << std::endl;
 				}
-
 			};
 		}
 	}
 }
-

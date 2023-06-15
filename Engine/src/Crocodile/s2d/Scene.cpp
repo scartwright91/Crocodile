@@ -319,6 +319,7 @@ namespace Crocodile
 			windowHeight = window->getHeight();
 			if (!enableScaling)
 				return;
+			std::cout << "scale scene" << std::endl;
 			for (Layer *layer : layerStack->layers)
 				for (Object *obj : layer->objects)
 				{

@@ -46,7 +46,7 @@ namespace Crocodile
 				float width,
 				float height);
 
-			void createTexture(unsigned int width, unsigned int height);
+			void resize(unsigned int width, unsigned int height);
 
 		private:
 			graphics::Shader *shader = nullptr;

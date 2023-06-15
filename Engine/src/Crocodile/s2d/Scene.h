@@ -60,6 +60,7 @@ namespace Crocodile
 			void updateObjects(float dt);
 			void render();
 			void clear();
+			void scaleScene(glm::vec2 s);
 
 			// postprocessing
 			unsigned int getTextureBuffer();
@@ -104,13 +105,13 @@ namespace Crocodile
 			ParticleRenderer *particleRenderer;
 			TextRenderer *textRenderer;
 			LineRenderer *lineRenderer;
+			PostProcessing *postProcessing;
 
 		private:
 			// postprocessing
 			bool greyscale = false;
 			bool wavey = false;
 			bool screenShake = false;
-			PostProcessing *postProcessing;
 
 			// transitions
 			PostProcessing::TransitionEffect transitionEffect = PostProcessing::NO_TRANSITION;
@@ -118,7 +119,6 @@ namespace Crocodile
 			bool fadeinTransition = false;
 			bool fadeoutTransition = false;
 
-			void scaleScene(glm::vec2 s);
 			void init();
 		};
 

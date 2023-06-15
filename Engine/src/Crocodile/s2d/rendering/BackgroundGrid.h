@@ -12,7 +12,7 @@ namespace Crocodile
 		{
 
 		public:
-			BackgroundGrid(graphics::Shader* shader);
+			BackgroundGrid(graphics::Shader *shader);
 			~BackgroundGrid();
 
 			void render(
@@ -20,20 +20,19 @@ namespace Crocodile
 				float height,
 				float offsetX,
 				float offsetY,
-				float zoom
-			);
+				float zoom);
 
 			bool active = false;
 			unsigned int gridSize = 0;
 			float alpha = 1.0f;
+			glm::vec3 color1 = glm::vec3(1.f);
+			glm::vec3 color2 = glm::vec3(.5f);
 
 		private:
-
-			graphics::Shader* shader;
+			graphics::Shader *shader;
 			unsigned int VAO = 0;
 
 			void init();
-
 		};
 	}
 }

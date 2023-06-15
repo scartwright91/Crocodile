@@ -43,13 +43,12 @@ void Level::loadPlacedEntities(LevelData data)
     }
 }
 
-void Level::update()
+void Level::update(glm::vec2 mouse, glm::vec2 viewport)
 {
-    glm::vec2 mouse = scene->window->getMouseScreenPosition();
     bool leftclick = scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1);
     bool rightclick = scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_2);
     float now = glfwGetTime();
-    calculateMouseWorldPos(mouse);
+    calculateMouseWorldPos(mouse, viewport);
     selectEdge(mouse);
     if (placementObject != nullptr)
     {
@@ -263,7 +262,7 @@ void Level::initCanvasEdges()
     updateEdges();
 }
 
-void Level::calculateMouseWorldPos(glm::vec2 mouse)
+void Level::calculateMouseWorldPos(glm::vec2 mouse, glm::vec2 viewport)
 {
     s2d::col::BoundingBox bbox = canvas->getScreenBoundingBox(
         scene->camera->getViewMatrix(),
@@ -271,6 +270,12 @@ void Level::calculateMouseWorldPos(glm::vec2 mouse)
         scene->camera->zoom,
         scene->windowWidth,
         scene->windowHeight);
+    // if (glfwGetTime() - tmpTimer > 1.f)
+    // {
+    //     std::cout << "mouse: " << mouse.x << " " << mouse.y << std::endl;
+    //     bbox.printVertices();
+    //     tmpTimer = glfwGetTime();
+    // }
     if (bbox.intersectsPoint(mouse))
     {
         glm::vec2 size = canvas->size;
