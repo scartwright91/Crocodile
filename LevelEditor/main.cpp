@@ -52,7 +52,7 @@ public:
 
     void init()
     {
-        scene->enablePostprocessing = false;
+        // scene->enablePostprocessing = false;
         scene->enableScaling = false;
         scene->window->setBackgroundColor(glm::vec3((float)16 / 255, (float)42 / 255, (float)67 / 255));
         startScreen = new StartScreen();

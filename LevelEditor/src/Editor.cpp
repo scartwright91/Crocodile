@@ -66,6 +66,11 @@ void Editor::renderImGui()
     showImGuiMainMenu();
     if (activeLevel != NULL)
         activeLevel->renderImGui();
+    ImGui::Begin("Scene");
+    ImVec2 viewportSize = ImGui::GetContentRegionAvail();
+    unsigned int textureID = scene->getTextureBuffer();
+    ImGui::Image((void *)textureID, viewportSize, ImVec2(0, 1), ImVec2(1, 0));
+    ImGui::End();
 }
 
 void Editor::update(bool mouseOnImGuiWindow)
@@ -79,8 +84,8 @@ void Editor::update(bool mouseOnImGuiWindow)
 
 void Editor::zoom()
 {
-    if (mouseOnImGuiWindow)
-        return;
+    // if (mouseOnImGuiWindow)
+    //     return;
     float scroll = scene->window->scroll.y;
     float now = glfwGetTime();
     if (scroll != currentZoom)
@@ -98,8 +103,8 @@ void Editor::zoom()
 
 void Editor::move()
 {
-    if (mouseOnImGuiWindow)
-        return;
+    // if (mouseOnImGuiWindow)
+    //     return;
     float zoomSpeed = speed * (scene->camera->zoom * 0.5);
     float dx = 0.f;
     float dy = 0.f;

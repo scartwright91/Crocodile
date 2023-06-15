@@ -62,6 +62,7 @@ namespace Crocodile
 			void clear();
 
 			// postprocessing
+			unsigned int getTextureBuffer();
 			void setScreenShake(bool v);
 			void setPostProcessingEffect(PostProcessing::PostProcessingEffect effect);
 

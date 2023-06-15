@@ -243,6 +243,11 @@ namespace Crocodile
 				layer->objects.clear();
 		}
 
+		unsigned int Scene::getTextureBuffer()
+		{
+			return postProcessing->textureColorbuffer;
+		}
+
 		void Scene::setScreenShake(bool v)
 		{
 			screenShake = v;

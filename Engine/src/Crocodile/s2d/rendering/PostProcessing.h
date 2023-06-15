@@ -4,7 +4,6 @@
 #include "../../Core.h"
 #include "../../graphics/Shader.h"
 
-
 namespace Crocodile
 {
 	namespace s2d
@@ -13,7 +12,6 @@ namespace Crocodile
 		{
 
 		public:
-
 			enum PostProcessingEffect
 			{
 				None,
@@ -28,9 +26,10 @@ namespace Crocodile
 				DIAMOND
 			};
 
+			unsigned int textureColorbuffer;
 			unsigned int width, height;
 
-			PostProcessing(graphics::Shader* shader, unsigned int width, unsigned int height);
+			PostProcessing(graphics::Shader *shader, unsigned int width, unsigned int height);
 			~PostProcessing();
 
 			void beginRender();
@@ -45,19 +44,16 @@ namespace Crocodile
 				bool fadeoutTransition,
 				float transitionCounter,
 				float width,
-				float height
-			);
+				float height);
 
 			void createTexture(unsigned int width, unsigned int height);
 
 		private:
-
-			graphics::Shader* shader = nullptr;
-			unsigned int framebuffer, textureColorbuffer, RBO;
+			graphics::Shader *shader = nullptr;
+			unsigned int framebuffer, RBO;
 			unsigned int VAO;
 
 			void init();
-
 		};
 	}
 }
