@@ -43,16 +43,17 @@ void Level::loadPlacedEntities(LevelData data)
     }
 }
 
-void Level::update(glm::vec2 mouse, glm::vec2 viewport)
+void Level::update(glm::vec2 mouse)
 {
+    sceneMousePos = mouse;
     bool leftclick = scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1);
     bool rightclick = scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_2);
     float now = glfwGetTime();
-    calculateMouseWorldPos(mouse, viewport);
-    selectEdge(mouse);
+    calculateMouseWorldPos();
+    selectEdge();
     if (placementObject != nullptr)
     {
-        moveObject(placementObject, mouse);
+        moveObject(placementObject);
         if (leftclick && (now - placementTimer > 0.5f))
         {
             placementTimer = now;
@@ -87,7 +88,7 @@ void Level::update(glm::vec2 mouse, glm::vec2 viewport)
         }
         if (moveSelectedObject)
         {
-            moveObject(selectedObject, mouse);
+            moveObject(selectedObject);
             if (leftclick)
                 moveSelectedObject = false;
         }
@@ -142,13 +143,13 @@ void Level::renderImGui()
     ImGui::End();
 }
 
-void Level::selectEdge(glm::vec2 mouse)
+void Level::selectEdge()
 {
     if (edgeSelected != NULL)
     {
         if (!scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
         {
-            moveEdge(mouse);
+            moveEdge();
             edgeSelected = nullptr;
         }
     }
@@ -162,7 +163,7 @@ void Level::selectEdge(glm::vec2 mouse)
                 scene->camera->zoom,
                 scene->windowWidth,
                 scene->windowHeight);
-            if (bbox.intersectsPoint(mouse))
+            if (bbox.intersectsPoint(sceneMousePos))
             {
                 if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
                 {
@@ -174,7 +175,7 @@ void Level::selectEdge(glm::vec2 mouse)
     }
 }
 
-void Level::moveEdge(glm::vec2 mouse)
+void Level::moveEdge()
 {
     glm::vec2 edgeScreenPos = edgeSelected->getScreenPosition(
         true,
@@ -182,8 +183,8 @@ void Level::moveEdge(glm::vec2 mouse)
         scene->camera->getProjectionMatrix(true),
         scene->windowWidth,
         scene->windowHeight);
-    float dx = (mouse.x - edgeScreenPos.x) * scene->camera->zoom;
-    float dy = (mouse.y - edgeScreenPos.y) * scene->camera->zoom;
+    float dx = (sceneMousePos.x - edgeScreenPos.x) * scene->camera->zoom;
+    float dy = (sceneMousePos.y - edgeScreenPos.y) * scene->camera->zoom;
     if (edgeSelected == edges[0] || edgeSelected == edges[1])
         edgeSelected->move(dx, 0);
     else if (edgeSelected == edges[2] || edgeSelected == edges[3])
@@ -262,7 +263,7 @@ void Level::initCanvasEdges()
     updateEdges();
 }
 
-void Level::calculateMouseWorldPos(glm::vec2 mouse, glm::vec2 viewport)
+void Level::calculateMouseWorldPos()
 {
     s2d::col::BoundingBox bbox = canvas->getScreenBoundingBox(
         scene->camera->getViewMatrix(),
@@ -270,17 +271,11 @@ void Level::calculateMouseWorldPos(glm::vec2 mouse, glm::vec2 viewport)
         scene->camera->zoom,
         scene->windowWidth,
         scene->windowHeight);
-    // if (glfwGetTime() - tmpTimer > 1.f)
-    // {
-    //     std::cout << "mouse: " << mouse.x << " " << mouse.y << std::endl;
-    //     bbox.printVertices();
-    //     tmpTimer = glfwGetTime();
-    // }
-    if (bbox.intersectsPoint(mouse))
+    if (bbox.intersectsPoint(sceneMousePos))
     {
         glm::vec2 size = canvas->size;
-        float dx = size.x * (mouse.x - bbox.x) / bbox.width;
-        float dy = size.y * (mouse.y - bbox.y) / bbox.height;
+        float dx = size.x * (sceneMousePos.x - bbox.x) / bbox.width;
+        float dy = size.y * (sceneMousePos.y - bbox.y) / bbox.height;
         mouseWorldPos = glm::vec2(dx, dy);
     }
 }
@@ -797,7 +792,7 @@ void Level::deleteObject(s2d::Object *obj)
     }
 }
 
-void Level::moveObject(s2d::Object *obj, glm::vec2 mouse)
+void Level::moveObject(s2d::Object *obj)
 {
     glm::vec2 objectScreenPos = obj->getScreenPosition(
         true,
@@ -805,14 +800,13 @@ void Level::moveObject(s2d::Object *obj, glm::vec2 mouse)
         scene->camera->getProjectionMatrix(true),
         scene->windowWidth,
         scene->windowHeight);
-    float dx = (mouse.x - objectScreenPos.x) * scene->camera->zoom;
-    float dy = (mouse.y - objectScreenPos.y) * scene->camera->zoom;
+    float dx = (sceneMousePos.x - objectScreenPos.x) * scene->camera->zoom;
+    float dy = (sceneMousePos.y - objectScreenPos.y) * scene->camera->zoom;
     obj->move(dx, dy);
 }
 
 void Level::selectObject()
 {
-    glm::vec2 mouse = scene->window->getMouseScreenPosition();
     for (s2d::Object *obj : scene->layerStack->getLayer(std::string(selectedPlacementLayer))->objects)
     {
         if (obj->getScreenBoundingBox(
@@ -821,7 +815,7 @@ void Level::selectObject()
                    scene->camera->zoom,
                    scene->windowWidth,
                    scene->windowHeight)
-                .intersectsPoint(mouse))
+                .intersectsPoint(sceneMousePos))
         {
             obj->outline = true;
             if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))

@@ -12,7 +12,6 @@ namespace Crocodile
 		bool useImGui) : window(name, resizeable, width, height), useImGui(useImGui)
 	{
 		s_Instance = this;
-
 		init();
 		loadShaders();
 		loadTextures();
@@ -87,7 +86,7 @@ namespace Crocodile
 			ImGuiIO &io = ImGui::GetIO();
 			(void)io;
 			io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
-			// io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+			// ImGui::CustomStyle();
 			ImGui::StyleColorsDark();
 			ImGui_ImplGlfw_InitForOpenGL(window.getWindow(), true);
 			ImGui_ImplOpenGL3_Init("#version 330");

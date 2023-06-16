@@ -39,7 +39,7 @@ public:
 
     std::string name = "";
 
-    void update(glm::vec2 mouse, glm::vec2 viewport);
+    void update(glm::vec2 mouse);
     void renderImGui();
     LevelData serialise();
     void scaleEdges(float v);
@@ -52,6 +52,7 @@ public:
     std::vector<s2d::EntityData *> entitiesData = {};
     std::vector<ResourceManager::TextureData> textures = {};
 
+    glm::vec2 sceneMousePos = glm::vec2(0.f);
     float tmpTimer = glfwGetTime();
 
 private:
@@ -66,8 +67,8 @@ private:
     glm::vec3 edgeColour = glm::vec3(0.1f);
     float edgeWidth = 20.f;
     float startEdgeWidth = 20.f;
-    void selectEdge(glm::vec2 mouse);
-    void moveEdge(glm::vec2 mouse);
+    void selectEdge();
+    void moveEdge();
     void updateCanvas();
     void updateEdges();
     void initCanvasEdges();
@@ -77,7 +78,7 @@ private:
 
     // general ui
     glm::vec2 mouseWorldPos = glm::vec2(0.f);
-    void calculateMouseWorldPos(glm::vec2 mouse, glm::vec2 viewport);
+    void calculateMouseWorldPos();
 
     // imgui functions
     ImGuiTableFlags tableFlags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY;
@@ -132,7 +133,7 @@ private:
     void selectPlacementLayer();
     void selectPlacementObject();
     void deleteObject(s2d::Object *obj);
-    void moveObject(s2d::Object *obj, glm::vec2 mouse);
+    void moveObject(s2d::Object *obj);
     // selection
     s2d::Object *selectedObject = nullptr;
     bool moveSelectedObject = false;

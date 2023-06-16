@@ -13,6 +13,7 @@
   - depth
 
 ### Roadmap
+- Custom style
 - Other entity types e.g. text, particles
 - World / multiple levels
   - blueprints?

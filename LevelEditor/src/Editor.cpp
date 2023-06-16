@@ -21,7 +21,7 @@ void Editor::renderImGui()
     showImGuiMainMenu();
     if (activeLevel != NULL)
         activeLevel->renderImGui();
-    // ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
+    ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
     ImGui::Begin("Scene");
     ImVec2 currentViewportSize = ImGui::GetContentRegionAvail();
     if ((currentViewportSize.x != viewportSize.x) || (currentViewportSize.y != viewportSize.y))
@@ -41,7 +41,7 @@ void Editor::renderImGui()
     else
         mouseOnSceneWindow = false;
     ImGui::End();
-    // ImGui::PopStyleVar();
+    ImGui::PopStyleVar();
 }
 
 void Editor::update(bool mouseOnImGuiWindow)
@@ -50,7 +50,7 @@ void Editor::update(bool mouseOnImGuiWindow)
     zoom();
     move();
     if (activeLevel != NULL)
-        activeLevel->update(sceneMousePosition, viewportSize);
+        activeLevel->update(sceneMousePosition);
 }
 
 void Editor::zoom()
