@@ -228,7 +228,7 @@ void Level::updateEdges()
     edges[3]->setPosition(glm::vec2(pos.x, pos.y + canvas->size.y));
 }
 
-void Level::scaleEdges(float v)
+void Level::scaleEdges()
 {
     edgeWidth = startEdgeWidth * scene->camera->zoom;
     updateEdges();

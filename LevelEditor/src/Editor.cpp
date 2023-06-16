@@ -74,7 +74,7 @@ void Editor::zoom()
             scene->camera->changeZoom(z);
         currentZoom = scroll;
         zoomTimer = now;
-        activeLevel->scaleEdges(1 + z);
+        activeLevel->scaleEdges();
     }
 }
 

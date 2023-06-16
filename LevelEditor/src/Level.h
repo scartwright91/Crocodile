@@ -42,7 +42,7 @@ public:
     void update(glm::vec2 mouse);
     void renderImGui();
     LevelData serialise();
-    void scaleEdges(float v);
+    void scaleEdges();
 
     s2d::Scene *scene = nullptr;
     s2d::Object *canvas = nullptr;
