@@ -148,6 +148,7 @@ void Level::selectEdge()
 {
     if (edgeSelected != NULL)
     {
+        ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
         if (!scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
         {
             moveEdge();
@@ -166,6 +167,7 @@ void Level::selectEdge()
                 scene->windowHeight);
             if (bbox.intersectsPoint(sceneMousePos))
             {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
                 if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
                 {
                     edgeSelected = obj;
