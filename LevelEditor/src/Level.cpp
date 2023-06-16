@@ -43,10 +43,8 @@ void Level::loadPlacedEntities(LevelData data)
     }
 }
 
-void Level::update(glm::vec2 mouse, glm::vec2 viewportSize)
+void Level::update(glm::vec2 mouse)
 {
-    ImGuiStyle &style = ImGui::GetStyle();
-    this->viewportSize = viewportSize;
     sceneMousePos = glm::vec2(mouse.x, scene->window->getMouseScreenPosition().y); // why this works I have no idea
     // sceneMousePos.y
     bool leftclick = scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1);
@@ -232,7 +230,7 @@ void Level::updateEdges()
 
 void Level::scaleEdges(float v)
 {
-    edgeWidth = startEdgeWidth * v;
+    edgeWidth = startEdgeWidth * scene->camera->zoom;
     updateEdges();
 }
 
@@ -323,10 +321,6 @@ void Level::levelInfo()
     std::string cs = "Level size: ";
     cs += "(" + std::to_string((int)size.x) + ", " + std::to_string((int)size.y) + ")";
     ImGui::Text(cs.c_str());
-    // Viewport size
-    std::string vs = "Viewport size: ";
-    vs += "(" + std::to_string((int)viewportSize.x) + ", " + std::to_string((int)viewportSize.y) + ")";
-    ImGui::Text(vs.c_str());
 }
 
 void Level::sceneTree()

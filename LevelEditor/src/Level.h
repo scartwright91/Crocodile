@@ -39,7 +39,7 @@ public:
 
     std::string name = "";
 
-    void update(glm::vec2 mouse, glm::vec2 viewportSize);
+    void update(glm::vec2 mouse);
     void renderImGui();
     LevelData serialise();
     void scaleEdges(float v);

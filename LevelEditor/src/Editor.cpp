@@ -56,7 +56,7 @@ void Editor::update(bool mouseOnImGuiWindow)
     zoom();
     move();
     if (activeLevel != NULL)
-        activeLevel->update(sceneMousePosition, viewportSize);
+        activeLevel->update(sceneMousePosition);
 }
 
 void Editor::zoom()
