@@ -45,8 +45,7 @@ void Level::loadPlacedEntities(LevelData data)
 
 void Level::update(glm::vec2 mouse)
 {
-    sceneMousePos = glm::vec2(mouse.x, scene->window->getMouseScreenPosition().y); // why this works I have no idea
-    // sceneMousePos.y
+    sceneMousePos = glm::vec2(mouse.x, scene->window->getMouseScreenPosition().y + (2 * ImGui::GetStyle().FramePadding.y)); // why this works I have no idea
     bool leftclick = scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1);
     bool rightclick = scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_2);
     float now = glfwGetTime();

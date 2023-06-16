@@ -2,8 +2,6 @@
 ## TODO
 
 ### Current
-- Docking + viewports
-  - mouse position slightly off in y-axis
 - Relative paths for textures
 - customisable entities
 - add areas (to be used for camera zones etc)
@@ -12,6 +10,7 @@
 - layers
   - moving layers up and down
   - depth
+- mouse y slightly off
 
 ### Roadmap
 - Custom style
