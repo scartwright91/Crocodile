@@ -39,7 +39,7 @@ public:
 
     std::string name = "";
 
-    void update(glm::vec2 mouse);
+    void update(glm::vec2 mouse, glm::vec2 viewportSize);
     void renderImGui();
     LevelData serialise();
     void scaleEdges(float v);
@@ -61,6 +61,10 @@ private:
     bool placeMode = true;
     float timer = 0.f;
     s2d::Object *edgeSelected = nullptr;
+
+    // misc stuff
+    glm::vec2 viewportSize = glm::vec2(0.f);
+    float titleBarHeight = 0.f;
 
     // canvas functions
     glm::vec3 canvasColour = glm::vec3(0.f);

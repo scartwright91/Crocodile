@@ -30,12 +30,18 @@ void Editor::renderImGui()
         scene->postProcessing->resize((int)viewportSize.x, (int)viewportSize.y);
     }
     unsigned int textureID = scene->getTextureBuffer();
-    ImGui::Image((void *)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2(0, 1), ImVec2(1, 0));
+    ImGui::Image((void *)(intptr_t)textureID, ImVec2(viewportSize.x, viewportSize.y), ImVec2(0, 1), ImVec2(1, 0));
     if (ImGui::IsItemHovered())
     {
+        // calculate mouse position relative to scene
+        ImVec2 viewportMinRegion = ImGui::GetWindowContentRegionMin();
+        ImVec2 viewportMaxRegion = ImGui::GetWindowContentRegionMax();
+        ImVec2 viewportOffset = ImGui::GetWindowPos();
+        glm::vec2 bounds = glm::vec2(viewportMinRegion.x + viewportOffset.x, viewportMinRegion.y + viewportOffset.y);
         ImVec2 mousePositionAbsolute = ImGui::GetMousePos();
-        ImVec2 screenPositionAbsolute = ImGui::GetItemRectMin();
-        sceneMousePosition = glm::vec2(mousePositionAbsolute.x - screenPositionAbsolute.x, mousePositionAbsolute.y + screenPositionAbsolute.y);
+        sceneMousePosition = glm::vec2(mousePositionAbsolute.x, mousePositionAbsolute.y);
+        sceneMousePosition.x -= bounds.x;
+        sceneMousePosition.y -= bounds.y;
         mouseOnSceneWindow = true;
     }
     else
@@ -50,7 +56,7 @@ void Editor::update(bool mouseOnImGuiWindow)
     zoom();
     move();
     if (activeLevel != NULL)
-        activeLevel->update(sceneMousePosition);
+        activeLevel->update(sceneMousePosition, viewportSize);
 }
 
 void Editor::zoom()

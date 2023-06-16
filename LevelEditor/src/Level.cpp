@@ -43,9 +43,12 @@ void Level::loadPlacedEntities(LevelData data)
     }
 }
 
-void Level::update(glm::vec2 mouse)
+void Level::update(glm::vec2 mouse, glm::vec2 viewportSize)
 {
-    sceneMousePos = mouse;
+    ImGuiStyle &style = ImGui::GetStyle();
+    this->viewportSize = viewportSize;
+    sceneMousePos = glm::vec2(mouse.x, scene->window->getMouseScreenPosition().y); // why this works I have no idea
+    // sceneMousePos.y
     bool leftclick = scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1);
     bool rightclick = scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_2);
     float now = glfwGetTime();
@@ -314,12 +317,16 @@ void Level::levelInfo()
     mousePos += "(" + std::to_string((int)mouseWorldPos.x) + ", " + std::to_string((int)mouseWorldPos.y) + ")";
     ImGui::Text(mousePos.c_str());
     // display camera zoom
-    std::string cameraZoom = "Zoom: " + std::to_string(scene->camera->zoom);
-    ImGui::Text(cameraZoom.c_str());
+    ImGui::SliderFloat("Zoom", &scene->camera->zoom, 1.f, 50.0f);
+    // Level size
     glm::vec2 size = canvas->size;
     std::string cs = "Level size: ";
     cs += "(" + std::to_string((int)size.x) + ", " + std::to_string((int)size.y) + ")";
     ImGui::Text(cs.c_str());
+    // Viewport size
+    std::string vs = "Viewport size: ";
+    vs += "(" + std::to_string((int)viewportSize.x) + ", " + std::to_string((int)viewportSize.y) + ")";
+    ImGui::Text(vs.c_str());
 }
 
 void Level::sceneTree()
