@@ -20,6 +20,7 @@ namespace Crocodile
             unsigned int textureID;
             float width;
             float height;
+            TextureData() : name(""), path(""), textureID(0), width(0.f), height(0.f) {}
         };
 
         // shaders

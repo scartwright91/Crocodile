@@ -507,12 +507,19 @@ void Level::addEntity()
         selectEntityTexture();
         if (ImGui::Button("Add"))
         {
+            std::cout << tmpNewTexture << std::endl;
             std::string entityName = std::string(tmpEntityName);
             s2d::EntityData *ed = new s2d::EntityData();
             ed->label = entityName;
             ed->size = glm::vec2((float)tmpWidth, (float)tmpHeight);
             ed->colour = tmpEntityColour;
-            ed->texture = rm->getTexture(std::string(tmpNewTexture));
+            if (tmpNewTexture != "")
+                ed->texture = rm->getTexture(std::string(tmpNewTexture));
+            else
+            {
+                ResourceManager::TextureData td;
+                ed->texture = td;
+            }
             entitiesData.push_back(ed);
         }
         ImGui::TreePop();
@@ -631,9 +638,9 @@ void Level::createEntitiesTable()
             if (ImGui::TableSetColumnIndex(2))
             {
                 std::string out = "(";
-                out += std::to_string((int)ed->colour.r * 255) + ", ";
-                out += std::to_string((int)ed->colour.g * 255) + ", ";
-                out += std::to_string((int)ed->colour.b * 255);
+                out += std::to_string((int)(ed->colour.r * 255)) + ", ";
+                out += std::to_string((int)(ed->colour.g * 255)) + ", ";
+                out += std::to_string((int)(ed->colour.b * 255));
                 out += ")";
                 ImGui::Text(out.c_str());
             }
@@ -713,7 +720,8 @@ void Level::createEntityFromData(s2d::EntityData *entityData)
     placementObject->label = entityData->label;
     placementObject->size = entityData->size;
     placementObject->color = entityData->colour;
-    placementObject->setTexture(entityData->texture);
+    if (entityData->texture.name != "")
+        placementObject->setTexture(entityData->texture);
     placementObject->alpha = tmpAlpha;
     placementObject->rotation = tmpRotation;
     placementObject->size *= tmpScale;
