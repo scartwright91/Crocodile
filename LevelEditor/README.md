@@ -10,7 +10,6 @@
 - layers
   - moving layers up and down
   - depth
-- mouse y slightly off
 
 ### Roadmap
 - Custom style

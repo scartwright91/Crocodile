@@ -11,6 +11,8 @@ Level::Level(LevelData data, s2d::Scene *scene, ResourceManager *rm) : name(data
     for (s2d::Layer *l : layers)
         scene->layerStack->addLayer(l);
     textures = data.textures;
+    for (ResourceManager::TextureData td : textures)
+        rm->loadTexture(td.path.c_str(), td.name, false);
     scene->addChild(canvas, "canvas");
     initCanvasEdges();
     loadPlacedEntities(data);
@@ -147,7 +149,10 @@ void Level::selectEdge()
 {
     if (edgeSelected != NULL)
     {
-        ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+        if (edgeSelected == edges[0] || edgeSelected == edges[1])
+            ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
+        else
+            ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeNS);
         if (!scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
         {
             moveEdge();
@@ -166,7 +171,10 @@ void Level::selectEdge()
                 scene->windowHeight);
             if (bbox.intersectsPoint(sceneMousePos))
             {
-                ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+                if (obj == edges[0] || obj == edges[1])
+                    ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeEW);
+                else
+                    ImGui::SetMouseCursor(ImGuiMouseCursor_ResizeNS);
                 if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
                 {
                     edgeSelected = obj;
@@ -557,10 +565,13 @@ void Level::selectEntityTexture()
         for (int n = 0; n < IM_ARRAYSIZE(tmpTextures); n++)
         {
             bool is_selected = (tmpNewTexture == tmpTextures[n]);
+            ResourceManager::TextureData td = rm->getTexture(std::string(tmpTextures[n]));
+            float h = ImGui::GetTextLineHeight();
+            ImGui::Image((void *)(intptr_t)td.textureID, ImVec2(h, h));
+            ImGui::SameLine();
             if (ImGui::Selectable(tmpTextures[n], is_selected))
             {
                 tmpNewTexture = tmpTextures[n];
-                ResourceManager::TextureData td = rm->getTexture(std::string(tmpNewTexture));
                 tmpWidth = td.width;
                 tmpHeight = td.height;
             }
@@ -819,6 +830,7 @@ void Level::selectObject()
                    scene->windowHeight)
                 .intersectsPoint(sceneMousePos))
         {
+            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
             obj->outline = true;
             if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
             {
