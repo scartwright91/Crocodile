@@ -37,7 +37,7 @@ public:
     Level(LevelData data, s2d::Scene *scene, ResourceManager *rm);
     Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2 canvasSize);
 
-    std::string name = "";
+    char name[64] = "";
 
     void update(glm::vec2 mouse);
     void renderImGui();

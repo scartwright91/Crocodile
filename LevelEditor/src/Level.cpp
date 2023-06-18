@@ -1,7 +1,8 @@
 #include "Level.h"
 
-Level::Level(LevelData data, s2d::Scene *scene, ResourceManager *rm) : name(data.name), scene(scene), rm(rm)
+Level::Level(LevelData data, s2d::Scene *scene, ResourceManager *rm) : scene(scene), rm(rm)
 {
+    strcpy(name, data.name.c_str());
     canvas = new s2d::Object();
     canvas->size = data.canvasSize;
     canvasColour = data.canvasColor;
@@ -18,8 +19,9 @@ Level::Level(LevelData data, s2d::Scene *scene, ResourceManager *rm) : name(data
     loadPlacedEntities(data);
 }
 
-Level::Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2 canvasSize) : name(name), scene(scene), rm(rm)
+Level::Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2 canvasSize) : scene(scene), rm(rm)
 {
+    strcpy(this->name, name.c_str());
     canvas = new s2d::Object();
     canvas->size = canvasSize;
     canvas->color = canvasColour;
@@ -106,6 +108,7 @@ void Level::update(glm::vec2 mouse)
 LevelData Level::serialise()
 {
     LevelData ld = {};
+    ld.name = std::string(name);
     ld.canvasSize = canvas->size;
     ld.canvasColor = canvasColour;
     ld.entitiesData = entitiesData;
@@ -292,6 +295,7 @@ void Level::calculateMouseWorldPos()
 
 void Level::levelOptions()
 {
+    ImGui::InputText("Level name", name, 64);
     if (ImGui::ColorEdit3("Canvas colour", (float *)&canvasColour))
         canvas->color = canvasColour;
     if (ImGui::ColorEdit3("Edge colour", (float *)&edgeColour))
@@ -375,7 +379,9 @@ void Level::placementUI()
         selectObject();
         if (selectedObject != NULL)
         {
-            std::string objPosText = "Object pos: ";
+            std::string objName = "Name: " + selectedObject->label;
+            ImGui::Text(objName.c_str());
+            std::string objPosText = "Position: ";
             glm::vec2 objPos = selectedObject->getPosition();
             objPosText += "(" + std::to_string((int)objPos.x) + ", " + std::to_string((int)objPos.y) + ")";
             ImGui::Text(objPosText.c_str());
@@ -465,18 +471,18 @@ void Level::createLayersTable()
             if (ImGui::TableSetColumnIndex(1))
             {
                 if (ImGui::SmallButton("+"))
+                    if (row + 1 < layers.size())
+                    {
+                        move(layers, row, row + 1);
+                        scene->layerStack->moveLayerUp(layers[row]->name);
+                    }
+                if (ImGui::SmallButton("-"))
                     if (row - 1 >= 0)
                     {
                         move(layers, row, row - 1);
                         scene->layerStack->moveLayerDown(layers[row]->name);
                     }
                 ImGui::SameLine();
-                if (ImGui::SmallButton("-"))
-                    if (row + 1 < layers.size())
-                    {
-                        move(layers, row, row + 1);
-                        scene->layerStack->moveLayerUp(layers[row]->name);
-                    }
             }
             if (ImGui::TableSetColumnIndex(2))
                 ImGui::SliderFloat("depth", &layers[row]->depth, 0.f, 1.0f);
@@ -507,7 +513,6 @@ void Level::addEntity()
         selectEntityTexture();
         if (ImGui::Button("Add"))
         {
-            std::cout << tmpNewTexture << std::endl;
             std::string entityName = std::string(tmpEntityName);
             s2d::EntityData *ed = new s2d::EntityData();
             ed->label = entityName;
@@ -683,8 +688,9 @@ void Level::addTexture()
 
 void Level::createTextureTable()
 {
-    if (ImGui::BeginTable("textures_table", 3, tableFlags, tableSize))
+    if (ImGui::BeginTable("textures_table", 4, tableFlags, tableSize))
     {
+        ImGui::TableSetupColumn("image");
         ImGui::TableSetupColumn("name");
         ImGui::TableSetupColumn("size");
         ImGui::TableSetupColumn("path");
@@ -695,10 +701,14 @@ void Level::createTextureTable()
         {
             ImGui::TableNextRow();
             ResourceManager::TextureData td = textures[row];
-
             if (ImGui::TableSetColumnIndex(0))
-                ImGui::Text(td.name.c_str());
+            {
+                float h = ImGui::GetTextLineHeight();
+                ImGui::Image((void *)(intptr_t)td.textureID, ImVec2(h, h));
+            }
             if (ImGui::TableSetColumnIndex(1))
+                ImGui::Text(td.name.c_str());
+            if (ImGui::TableSetColumnIndex(2))
             {
                 std::string out = "(";
                 out += std::to_string((unsigned int)td.width);
@@ -707,7 +717,7 @@ void Level::createTextureTable()
                 out += ")";
                 ImGui::Text(out.c_str());
             }
-            if (ImGui::TableSetColumnIndex(2))
+            if (ImGui::TableSetColumnIndex(3))
                 ImGui::Text(td.path.c_str());
         }
         ImGui::EndTable();

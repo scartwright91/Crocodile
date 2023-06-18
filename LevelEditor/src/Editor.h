@@ -39,11 +39,13 @@ private:
     float speed = 50.f;
     float currentZoom = 0.0f;
     float zoomTimer = 0.f;
+    float commandTimer = 0.f;
 
     void zoom();
     void move();
     void load();
     void save();
+    void close();
 
     void init();
 

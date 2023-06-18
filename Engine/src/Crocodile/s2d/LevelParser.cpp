@@ -44,7 +44,7 @@ namespace Crocodile
 				layerNames.push_back(std::string(levelLayersData[i].asString()));
 
 			// get scene entities
-			const Json::Value placedEntitiesData = levelData["placed_entity_keys"];
+			const Json::Value placedEntitiesData = levelData["placed_entities"];
 			std::vector<s2d::SceneEntityData> sceneEntitiesData = {};
 			for (int i = 0; i < placedEntitiesData.size(); i++)
 			{
@@ -63,7 +63,7 @@ namespace Crocodile
 			ld.name = level;
 			ld.size = getCanvasBounds(level);
 			ld.color = getCanvasColor(level);
-			ld.layers = layerNames;
+			ld.layerNames = layerNames;
 			ld.sceneEntityData = sceneEntitiesData;
 
 			return ld;

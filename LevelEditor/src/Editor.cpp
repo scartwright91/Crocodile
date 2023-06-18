@@ -108,30 +108,42 @@ void Editor::init()
 void Editor::save()
 {
     LevelData ld = activeLevel->serialise();
+    std::cout << "Project saved" << std::endl;
     project->save(ld);
 }
 
 void Editor::load()
 {
-    project->load();
+    // project->load();
+    std::cout << "Load not implemented" << std::endl;
+}
+
+void Editor::close()
+{
+    std::cout << "Close not implemented" << std::endl;
 }
 
 void Editor::showImGuiMainMenu()
 {
+    float now = glfwGetTime();
+    // user commands
+    bool uSave = scene->window->isKeyPressed(GLFW_KEY_LEFT_CONTROL) && scene->window->isKeyPressed(GLFW_KEY_S);
     if (ImGui::BeginMainMenuBar())
     {
         if (ImGui::BeginMenu("Project"))
         {
+            if ((ImGui::MenuItem("Save", "CTRL S") || uSave) && (now - commandTimer > 0.5f))
+            {
+                save();
+                commandTimer = now;
+            }
             if (ImGui::MenuItem("Open", "CTRL O"))
             {
                 load();
             }
-            if (ImGui::MenuItem("Save", "CTRL S"))
-            {
-                save();
-            }
             if (ImGui::MenuItem("Close"))
             {
+                close();
             }
             ImGui::EndMenu();
         }

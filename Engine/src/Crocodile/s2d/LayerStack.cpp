@@ -57,15 +57,15 @@ namespace Crocodile
 		void LayerStack::moveLayerUp(std::string name)
 		{
 			unsigned int currentPos = getLayerPosition(name);
-			if (currentPos + 1 < layers.size())
-				move(layers, currentPos, currentPos + 1);
+			if (currentPos - 1 >= 0)
+				move(layers, currentPos, currentPos - 1);
 		}
 
 		void LayerStack::moveLayerDown(std::string name)
 		{
 			unsigned int currentPos = getLayerPosition(name);
-			if (currentPos - 1 >= 0)
-				move(layers, currentPos, currentPos - 1);
+			if (currentPos + 1 < layers.size())
+				move(layers, currentPos, currentPos + 1);
 		}
 
 		void LayerStack::removeAllLayers()

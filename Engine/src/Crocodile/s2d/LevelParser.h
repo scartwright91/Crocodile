@@ -16,11 +16,20 @@ namespace Crocodile
 
 		struct LevelData
 		{
+			// level name
 			std::string name;
+			// world size of canvas
 			glm::vec2 size;
+			// background colour of canvas
 			glm::vec3 color;
-			std::vector<std::string> layers;
+			// layer information
+			std::vector<std::string> layerNames;
+			// Unique entity types to place in the scene
+			std::vector<s2d::EntityData *> entitiesData;
+			// Entities that have been placed in the scene (containing scene-specific info such as position etc)
 			std::vector<s2d::SceneEntityData> sceneEntityData;
+			// Textures that have been used by entities
+			std::vector<ResourceManager::TextureData> textures;
 		};
 
 		class CROCODILE_API LevelParser
