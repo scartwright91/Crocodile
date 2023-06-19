@@ -3,6 +3,7 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <filesystem>
 
 #include "Crocodile/s2d/Scene.h"
 #include "Crocodile/ResourceManager.h"
@@ -12,6 +13,7 @@
 #include "Entity.h"
 
 using namespace Crocodile;
+namespace fs = std::filesystem;
 
 struct LevelData
 {
@@ -57,6 +59,8 @@ public:
 
 private:
     ResourceManager *rm = nullptr;
+
+    fs::path currentPath;
 
     bool placeMode = true;
     float timer = 0.f;

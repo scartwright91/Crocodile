@@ -1,6 +1,6 @@
 #include "Level.h"
 
-Level::Level(LevelData data, s2d::Scene *scene, ResourceManager *rm) : scene(scene), rm(rm)
+Level::Level(LevelData data, s2d::Scene *scene, ResourceManager *rm) : scene(scene), rm(rm), currentPath(fs::current_path())
 {
     strcpy(name, data.name.c_str());
     canvas = new s2d::Object();
@@ -19,7 +19,7 @@ Level::Level(LevelData data, s2d::Scene *scene, ResourceManager *rm) : scene(sce
     loadPlacedEntities(data);
 }
 
-Level::Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2 canvasSize) : scene(scene), rm(rm)
+Level::Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2 canvasSize) : scene(scene), rm(rm), currentPath(fs::current_path())
 {
     strcpy(this->name, name.c_str());
     canvas = new s2d::Object();
@@ -671,7 +671,8 @@ void Level::addTexture()
             if (ImGuiFileDialog::Instance()->IsOk())
             {
                 std::string filename = ImGuiFileDialog::Instance()->GetFilePathName();
-                tmpTexturePath = filename;
+                fs::path relPath = fs::relative(filename, currentPath);
+                tmpTexturePath = relPath.generic_string();
             }
             // close
             ImGuiFileDialog::Instance()->Close();

@@ -1,6 +1,6 @@
 #include "StartScreen.h"
 
-StartScreen::StartScreen()
+StartScreen::StartScreen() : currentPath(fs::current_path())
 {
 }
 
@@ -92,7 +92,8 @@ void StartScreen::newProject()
         if (ImGuiFileDialog::Instance()->IsOk())
         {
             std::string path = ImGuiFileDialog::Instance()->GetCurrentPath();
-            projectFolder = path + "\\";
+            fs::path relPath = fs::relative(path, currentPath);
+            projectFolder = relPath.generic_string() + "\\";
         }
         // close
         ImGuiFileDialog::Instance()->Close();
@@ -122,7 +123,7 @@ void StartScreen::loadProject()
         {
             std::string path = ImGuiFileDialog::Instance()->GetCurrentPath();
             projectNameFromFile = ImGuiFileDialog::Instance()->GetCurrentFileName();
-            projectFolder = path + "\\";
+            projectFolder = path + "/";
         }
         // close
         ImGuiFileDialog::Instance()->Close();
