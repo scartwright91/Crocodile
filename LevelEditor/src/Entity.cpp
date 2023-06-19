@@ -23,6 +23,10 @@ void Entity::select(s2d::Scene *scene)
         scene->addChild(line, layer);
         tmpLines.push_back(line);
     }
+    label = new s2d::Text(obj->label, false);
+    label->setPosition(obj->getPosition());
+    label->color = glm::vec3(1.f);
+    scene->addChild(label, layer);
 }
 
 void Entity::deselect(s2d::Scene *scene)
@@ -40,4 +44,6 @@ void Entity::deselect(s2d::Scene *scene)
         delete line;
     }
     tmpLines.clear();
+    scene->removeChild(label, layer);
+    delete label;
 }

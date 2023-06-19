@@ -55,4 +55,6 @@ private:
     bool mouseOnSceneWindow = false;
     bool mouseOnImGuiWindow = false;
     void showImGuiMainMenu();
+    bool showParticleEditor = false;
+    void showImGuiParticleEditor();
 };

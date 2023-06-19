@@ -16,6 +16,7 @@ public:
     void deselect(s2d::Scene *scene);
 
     s2d::Object *obj = nullptr;
+    s2d::Text *label = nullptr;
     std::string layer = "";
 
     std::vector<glm::vec2> movementPath = {};

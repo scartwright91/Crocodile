@@ -2,8 +2,9 @@
 ## TODO
 
 ### Current
-- Relative paths for textures
 - customisable entities
+  - movement path
+  - area
 - Other entity types e.g. text, particles
   - Define UI
   - Text
@@ -15,6 +16,8 @@
   - depth
 
 ### Roadmap
+- Add camera
+- Particle Editor
 - Custom style
 - World / multiple levels
   - blueprints?

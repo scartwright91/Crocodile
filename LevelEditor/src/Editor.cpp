@@ -19,6 +19,8 @@ Editor::Editor(
 void Editor::renderImGui()
 {
     showImGuiMainMenu();
+    if (showParticleEditor)
+        showImGuiParticleEditor();
     if (activeLevel != NULL)
         activeLevel->renderImGui();
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
@@ -159,17 +161,32 @@ void Editor::showImGuiMainMenu()
         }
         if (ImGui::BeginMenu("View"))
         {
-            if (ImGui::MenuItem("Font+", "CTRL+"))
+            if (ImGui::MenuItem("Font +", "CTRL+"))
             {
                 fontImGuiScale += 0.2f;
             }
-            if (ImGui::MenuItem("Font-", "CTRL-"))
+            if (ImGui::MenuItem("Font -", "CTRL-"))
             {
                 if (fontImGuiScale - 0.2 > 0.f)
                     fontImGuiScale -= 0.2f;
             }
             ImGui::EndMenu();
         }
+        if (ImGui::BeginMenu("Tools"))
+        {
+            if (ImGui::MenuItem("Particle editor"))
+            {
+                showParticleEditor = true;
+            }
+            ImGui::EndMenu();
+        }
         ImGui::EndMainMenuBar();
     }
+}
+
+void Editor::showImGuiParticleEditor()
+{
+    ImGui::Begin("Particle editor");
+    ImGui::Text("...");
+    ImGui::End();
 }

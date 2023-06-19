@@ -93,7 +93,7 @@ void StartScreen::newProject()
         {
             std::string path = ImGuiFileDialog::Instance()->GetCurrentPath();
             fs::path relPath = fs::relative(path, currentPath);
-            projectFolder = relPath.generic_string() + "\\";
+            projectFolder = relPath.generic_string() + "/";
         }
         // close
         ImGuiFileDialog::Instance()->Close();
