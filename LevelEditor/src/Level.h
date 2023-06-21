@@ -28,8 +28,10 @@ struct LevelData
     std::vector<s2d::Layer *> layers;
     // Unique entity types to place in the scene
     std::vector<s2d::EntityData *> entitiesData;
-    // Entities that have been placed in the scene (containing scene-specific info such as position etc)
+    // Entities that have been placed in the scene
     std::vector<s2d::SceneEntityData *> sceneEntityData;
+    // Text Entities that have been placed in the scene
+    std::vector<s2d::SceneTextEntityData *> sceneTextEntityData;
     // Textures that have been used by entities
     std::vector<ResourceManager::TextureData> textures;
 };

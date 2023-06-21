@@ -36,6 +36,7 @@ void Project::save(LevelData ld)
     Json::Value entityKeys(Json::arrayValue);
     Json::Value textureKeys(Json::arrayValue);
     Json::Value placedEntities(Json::arrayValue);
+    Json::Value placedTextEntities(Json::arrayValue);
 
     // layers
     for (s2d::Layer *layer : ld.layers)
@@ -87,10 +88,34 @@ void Project::save(LevelData ld)
         placedEntities.append(entData);
     }
 
+    // placed text entities
+    for (s2d::SceneTextEntityData *ted : ld.sceneTextEntityData)
+    {
+        Json::Value entData;
+        entData["text"] = ted->text;
+        entData["layer"] = ted->layer;
+        entData["alpha"] = ted->alpha;
+        Json::Value pos(Json::arrayValue);
+        pos.append((int)ted->pos.x);
+        pos.append((int)ted->pos.y);
+        entData["pos"] = pos;
+        Json::Value textScale(Json::arrayValue);
+        textScale.append(ted->textScale.x);
+        textScale.append(ted->textScale.y);
+        entData["text_scale"] = textScale;
+        Json::Value color(Json::arrayValue);
+        color.append(ted->color.x);
+        color.append(ted->color.y);
+        color.append(ted->color.z);
+        entData["color"] = color;
+        placedTextEntities.append(entData);
+    }
+
     data["levels"][ld.name]["layers"] = layerKeys;
     data["levels"][ld.name]["texture_keys"] = textureKeys;
     data["levels"][ld.name]["entity_keys"] = entityKeys;
     data["levels"][ld.name]["placed_entities"] = placedEntities;
+    data["levels"][ld.name]["placed_text_entities"] = placedTextEntities;
 
     // write to file
     std::ofstream file_id;
@@ -182,9 +207,29 @@ LevelData Project::load()
         sceneEntitiesData.push_back(sceneEnt);
     }
 
+    // placed text entities data
+    const Json::Value placedTextEntitiesData = data["levels"][ld.name]["placed_text_entities"];
+    std::vector<s2d::SceneTextEntityData *> sceneTextEntitiesData = {};
+    for (int i = 0; i < placedTextEntitiesData.size(); i++)
+    {
+        Json::Value entData = placedTextEntitiesData[i];
+        s2d::SceneTextEntityData *sceneTextEnt = new s2d::SceneTextEntityData();
+        sceneTextEnt->text = entData["text"].asString();
+        sceneTextEnt->layer = entData["layer"].asString();
+        sceneTextEnt->alpha = entData["alpha"].asFloat();
+        sceneTextEnt->pos = glm::vec2(entData["pos"][0].asFloat(), entData["pos"][1].asFloat());
+        sceneTextEnt->color = glm::vec3(
+            entData["color"][0].asFloat(),
+            entData["color"][1].asFloat(),
+            entData["color"][2].asFloat());
+        sceneTextEnt->textScale = glm::vec2(entData["text_scale"][0].asFloat(), entData["text_scale"][1].asFloat());
+        sceneTextEntitiesData.push_back(sceneTextEnt);
+    }
+
     ld.entitiesData = entitiesData;
     ld.textures = textures;
     ld.sceneEntityData = sceneEntitiesData;
+    ld.sceneTextEntityData = sceneTextEntitiesData;
 
     // std::cout << data << std::endl;
     return ld;

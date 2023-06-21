@@ -7,7 +7,6 @@
   - area
 - Other entity types e.g. text, particles
   - Define UI
-  - Text
   - Particles
   - Zones
 

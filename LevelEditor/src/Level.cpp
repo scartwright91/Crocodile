@@ -45,6 +45,17 @@ void Level::loadPlacedEntities(LevelData data)
         e->movementPath = sed->path;
         placedEntities.push_back(e);
     }
+    for (s2d::SceneTextEntityData *ted : data.sceneTextEntityData)
+    {
+        s2d::Text *t = new s2d::Text(ted->text, false);
+        t->alpha = ted->alpha;
+        t->setPosition(ted->pos);
+        t->color = ted->color;
+        t->textScale = ted->textScale;
+        scene->addChild(t, ted->layer);
+        TextEntity *te = new TextEntity(scene, t, ted->layer);
+        placedTextEntities.push_back(te);
+    }
 }
 
 void Level::update(glm::vec2 mouse)
@@ -125,6 +136,19 @@ LevelData Level::serialise()
         sceneEntitiesData.push_back(sed);
     }
     ld.sceneEntityData = sceneEntitiesData;
+    std::vector<s2d::SceneTextEntityData *> sceneTextEntitiesData = {};
+    for (TextEntity *ent : placedTextEntities)
+    {
+        s2d::SceneTextEntityData *tsed = new s2d::SceneTextEntityData();
+        tsed->text = ent->text->text;
+        tsed->layer = ent->layer;
+        tsed->pos = ent->text->getPosition();
+        tsed->color = ent->text->color;
+        tsed->alpha = ent->text->alpha;
+        tsed->textScale = ent->text->textScale;
+        sceneTextEntitiesData.push_back(tsed);
+    }
+    ld.sceneTextEntityData = sceneTextEntitiesData;
     return ld;
 }
 
@@ -384,6 +408,10 @@ void Level::placementUI()
                 placeMultiple = false;
                 createTextEntity();
             }
+        }
+        else if (selectedPlacementObjectType == "particles")
+        {
+            ImGui::Text("Particles");
         }
     }
     else
@@ -760,7 +788,7 @@ void Level::createTextEntity()
     scene->addChild(placementObject, std::string(selectedPlacementLayer));
     s2d::Text *t = (s2d::Text *)placementObject;
     t->textScale = glm::vec2(tmpTextScale);
-    TextEntity *te = new TextEntity(scene, t);
+    TextEntity *te = new TextEntity(scene, t, std::string(selectedPlacementLayer));
     placedTextEntities.push_back(te);
 }
 
@@ -878,6 +906,7 @@ void Level::moveObject(s2d::Object *obj)
 
 void Level::selectObject()
 {
+    float now = glfwGetTime();
     for (s2d::Object *obj : scene->layerStack->getLayer(std::string(selectedPlacementLayer))->objects)
     {
         if (obj->getScreenBoundingBox(
@@ -890,17 +919,24 @@ void Level::selectObject()
         {
             ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
             obj->outline = true;
-            if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
+            if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1) && (now - tmpTimer > 0.5f))
             {
+                tmpTimer = now;
                 selectedObject = obj;
+                // normal objects
                 for (Entity *e : placedEntities)
-                {
                     if (e->obj == selectedObject)
                     {
                         e->select();
                         break;
                     }
-                }
+                // text objects
+                for (TextEntity *te : placedTextEntities)
+                    if (te->text == selectedObject)
+                    {
+                        te->select();
+                        break;
+                    }
             }
             break;
         }

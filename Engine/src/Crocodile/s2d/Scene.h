@@ -40,6 +40,16 @@ namespace Crocodile
 			std::vector<glm::vec2> path;
 		};
 
+		struct SceneTextEntityData
+		{
+			std::string text;
+			std::string layer;
+			glm::vec2 pos;
+			glm::vec3 color;
+			glm::vec2 textScale;
+			float alpha;
+		};
+
 		class CROCODILE_API Scene
 		{
 
