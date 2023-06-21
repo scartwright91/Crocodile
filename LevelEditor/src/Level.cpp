@@ -381,64 +381,71 @@ void Level::sceneTree()
 void Level::placementUI()
 {
     selectPlacementType();
-    selectPlacementLayer();
-    if (selectedPlacementLayer == "")
-        return;
-    if (ImGui::Checkbox("Place mode", &placeMode))
-        selectedObject = nullptr;
-    if (placeMode)
+    if (selectedPlacementType == "entity")
     {
-        selectPlacementObjectType();
-        if (selectedPlacementObjectType == "entity")
+        selectPlacementLayer();
+        if (selectedPlacementLayer == "")
+            return;
+        if (ImGui::Checkbox("Place mode", &placeMode))
+            selectedObject = nullptr;
+        if (placeMode)
         {
-            selectPlacementObject();
-            ImGui::Checkbox("Place multiple", &placeMultiple);
-            ImGui::SliderFloat("scale", &tmpScale, 0.f, 5.f);
-            ImGui::SliderFloat("rotation", &tmpRotation, -3.14f, 3.14f);
-            ImGui::SliderFloat("alpha", &tmpAlpha, 0.f, 1.f);
-            ImGui::Button("Place");
-        }
-        else if (selectedPlacementObjectType == "text")
-        {
-            ImGui::InputText("text", tmpText, 64);
-            ImGui::ColorEdit3("color", (float *)&tmpTextColor);
-            ImGui::SliderFloat("scale", &tmpTextScale, 0.f, 5.f);
-            if (ImGui::Button("Place"))
+            selectPlacementObjectType();
+            if (selectedPlacementObjectType == "entity")
             {
-                placeMultiple = false;
-                createTextEntity();
+                selectPlacementObject();
+                ImGui::Checkbox("Place multiple", &placeMultiple);
+                ImGui::SliderFloat("scale", &tmpScale, 0.f, 5.f);
+                ImGui::SliderFloat("rotation", &tmpRotation, -3.14f, 3.14f);
+                ImGui::SliderFloat("alpha", &tmpAlpha, 0.f, 1.f);
+                ImGui::Button("Place");
+            }
+            else if (selectedPlacementObjectType == "text")
+            {
+                ImGui::InputText("text", tmpText, 64);
+                ImGui::ColorEdit3("color", (float *)&tmpTextColor);
+                ImGui::SliderFloat("scale", &tmpTextScale, 0.f, 5.f);
+                if (ImGui::Button("Place"))
+                {
+                    placeMultiple = false;
+                    createTextEntity();
+                }
+            }
+            else if (selectedPlacementObjectType == "particles")
+            {
+                ImGui::SliderInt("number", &tmpParticleAmount, 0, 100);
+                ImGui::ColorEdit3("color", (float *)&tmpParticleColor);
+                ImGui::SliderFloat("direction", &tmpParticleDirection, -3.14, 3.14);
+                ImGui::SliderFloat("dispersion", &tmpParticleDispersion, 0, 3.14);
+                ImGui::SliderFloat("scale", &tmpParticleScale, 0, 10.f);
+                ImGui::SliderFloat("velocity", &tmpParticleVelocity, 0.f, 10.f);
+                ImGui::Button("Place");
             }
         }
-        else if (selectedPlacementObjectType == "particles")
+        else
         {
-            ImGui::SliderInt("number", &tmpParticleAmount, 0, 100);
-            ImGui::ColorEdit3("color", (float *)&tmpParticleColor);
-            ImGui::SliderFloat("direction", &tmpParticleDirection, -3.14, 3.14);
-            ImGui::SliderFloat("dispersion", &tmpParticleDispersion, 0, 3.14);
-            ImGui::SliderFloat("scale", &tmpParticleScale, 0, 10.f);
-            ImGui::SliderFloat("velocity", &tmpParticleVelocity, 0.f, 10.f);
-            ImGui::Button("Place");
+            selectObject();
+            if (selectedObject != NULL)
+            {
+                std::string objName = "Name: " + selectedObject->label;
+                ImGui::Text(objName.c_str());
+                std::string objPosText = "Position: ";
+                glm::vec2 objPos = selectedObject->getPosition();
+                objPosText += "(" + std::to_string((int)objPos.x) + ", " + std::to_string((int)objPos.y) + ")";
+                ImGui::Text(objPosText.c_str());
+                ImGui::SliderFloat("rotation", &selectedObject->rotation, -3.14f, 3.14f);
+                ImGui::SliderFloat("alpha", &selectedObject->alpha, 0.f, 1.f);
+                if (ImGui::Button("delete"))
+                {
+                    deleteObject(selectedObject);
+                    selectedObject = nullptr;
+                }
+            }
         }
     }
-    else
+    else if (selectedPlacementType == "camera")
     {
-        selectObject();
-        if (selectedObject != NULL)
-        {
-            std::string objName = "Name: " + selectedObject->label;
-            ImGui::Text(objName.c_str());
-            std::string objPosText = "Position: ";
-            glm::vec2 objPos = selectedObject->getPosition();
-            objPosText += "(" + std::to_string((int)objPos.x) + ", " + std::to_string((int)objPos.y) + ")";
-            ImGui::Text(objPosText.c_str());
-            ImGui::SliderFloat("rotation", &selectedObject->rotation, -3.14f, 3.14f);
-            ImGui::SliderFloat("alpha", &selectedObject->alpha, 0.f, 1.f);
-            if (ImGui::Button("delete"))
-            {
-                deleteObject(selectedObject);
-                selectedObject = nullptr;
-            }
-        }
+        ImGui::Text("Camera");
     }
 }
 
@@ -481,11 +488,12 @@ void Level::removeLayer()
 
 void Level::createLayersTable()
 {
-    if (ImGui::BeginTable("level_layers", 4, tableFlags, tableSize))
+    if (ImGui::BeginTable("level_layers", 5, tableFlags, tableSize))
     {
         ImGui::TableSetupColumn("name");
         ImGui::TableSetupColumn("position");
         ImGui::TableSetupColumn("depth");
+        ImGui::TableSetupColumn("alpha");
         ImGui::TableSetupColumn("visible");
 
         ImGui::TableHeadersRow();
@@ -522,17 +530,19 @@ void Level::createLayersTable()
                         move(layers, row, row + 1);
                         scene->layerStack->moveLayerUp(layers[row]->name);
                     }
+                ImGui::SameLine();
                 if (ImGui::SmallButton("-"))
                     if (row - 1 >= 0)
                     {
                         move(layers, row, row - 1);
                         scene->layerStack->moveLayerDown(layers[row]->name);
                     }
-                ImGui::SameLine();
             }
             if (ImGui::TableSetColumnIndex(2))
                 ImGui::SliderFloat("depth", &layers[row]->depth, 0.f, 1.0f);
             if (ImGui::TableSetColumnIndex(3))
+                ImGui::SliderFloat("alpha", &layers[row]->alpha, 0.f, 1.0f);
+            if (ImGui::TableSetColumnIndex(4))
             {
                 bool hide = layers[row]->hide;
                 std::string visible = std::to_string(!hide);

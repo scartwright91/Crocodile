@@ -5,17 +5,20 @@
 - customisable entities
   - movement path
   - area
+- Camera
+- Zones
 - Other entity types e.g. text, particles
-  - Define UI
   - Particles
-  - Zones
 
 ### Bugs
 - layers
   - depth
+  - alpha
+- text
+  - select text
+  - show outline
 
 ### Roadmap
-- Add camera
 - Particle Editor
 - Custom style
 - World / multiple levels

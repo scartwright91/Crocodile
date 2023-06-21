@@ -25,6 +25,7 @@ namespace Crocodile
 			// layer characteristics
 			std::string name = "";
 			float depth = 0.f;
+			float alpha = 1.f;
 			bool ySort = false;
 			bool cameraScroll = true;
 			bool applyZoom = true;
