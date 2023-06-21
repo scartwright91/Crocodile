@@ -411,7 +411,13 @@ void Level::placementUI()
         }
         else if (selectedPlacementObjectType == "particles")
         {
-            ImGui::Text("Particles");
+            ImGui::SliderInt("number", &tmpParticleAmount, 0, 100);
+            ImGui::ColorEdit3("color", (float *)&tmpParticleColor);
+            ImGui::SliderFloat("direction", &tmpParticleDirection, -3.14, 3.14);
+            ImGui::SliderFloat("dispersion", &tmpParticleDispersion, 0, 3.14);
+            ImGui::SliderFloat("scale", &tmpParticleScale, 0, 10.f);
+            ImGui::SliderFloat("velocity", &tmpParticleVelocity, 0.f, 10.f);
+            ImGui::Button("Place");
         }
     }
     else

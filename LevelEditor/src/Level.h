@@ -138,6 +138,13 @@ private:
     char tmpText[64] = "";
     glm::vec3 tmpTextColor = glm::vec3(1.f);
     float tmpTextScale = 1.f;
+    // particle inputs
+    int tmpParticleAmount = 10;
+    glm::vec3 tmpParticleColor = glm::vec3(1.f);
+    float tmpParticleDirection = 0.f;
+    float tmpParticleDispersion = 0.1f;
+    float tmpParticleScale = 1.f;
+    float tmpParticleVelocity = 1.f;
     //
     float placementTimer = glfwGetTime();
     const char *selectedPlacementType = "entity";
