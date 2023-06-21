@@ -1,12 +1,18 @@
 #include "Entity.h"
 
-Entity::Entity(s2d::Object *obj, std::string layer) : obj(obj), layer(layer)
+Entity::Entity(s2d::Scene *scene, s2d::Object *obj, std::string layer) : scene(scene), obj(obj), layer(layer)
 {
+    label = new s2d::Text(obj->label, false);
+    label->setPosition(obj->getPosition());
+    label->color = glm::vec3(1.f);
+    label->alpha = 0.f;
+    scene->addChild(label, layer);
 }
 
-void Entity::select(s2d::Scene *scene)
+void Entity::select()
 {
     selected = true;
+    label->alpha = 1.f;
     for (glm::vec2 p : movementPath)
     {
         s2d::Object *obj = new s2d::Object();
@@ -23,15 +29,12 @@ void Entity::select(s2d::Scene *scene)
         scene->addChild(line, layer);
         tmpLines.push_back(line);
     }
-    label = new s2d::Text(obj->label, false);
-    label->setPosition(obj->getPosition());
-    label->color = glm::vec3(1.f);
-    scene->addChild(label, layer);
 }
 
-void Entity::deselect(s2d::Scene *scene)
+void Entity::deselect()
 {
     selected = false;
+    label->alpha = 0.f;
     for (s2d::Object *obj : tmpMarkers)
     {
         scene->removeChild(obj, layer);
@@ -44,6 +47,4 @@ void Entity::deselect(s2d::Scene *scene)
         delete line;
     }
     tmpLines.clear();
-    scene->removeChild(label, layer);
-    delete label;
 }

@@ -41,7 +41,7 @@ void Level::loadPlacedEntities(LevelData data)
         obj->size = sed->size;
         obj->setTexture(rm->getTexture(sed->texture));
         scene->addChild(obj, sed->layer);
-        Entity *e = new Entity(obj, sed->layer);
+        Entity *e = new Entity(scene, obj, sed->layer);
         e->movementPath = sed->path;
         placedEntities.push_back(e);
     }
@@ -64,11 +64,7 @@ void Level::update(glm::vec2 mouse)
             if (placeMultiple)
                 createEntityFromData(selectedEntityData);
             else
-            {
-                scene->removeChild(placementObject, std::string(selectedPlacementLayer));
-                delete placementObject;
                 placementObject = nullptr;
-            }
         }
         else if (rightclick)
         {
@@ -84,7 +80,7 @@ void Level::update(glm::vec2 mouse)
             for (Entity *e : placedEntities)
                 if (e->obj == selectedObject)
                 {
-                    e->deselect(scene);
+                    e->deselect();
                     break;
                 }
             selectedObject->outline = false;
@@ -368,11 +364,27 @@ void Level::placementUI()
         selectedObject = nullptr;
     if (placeMode)
     {
-        selectPlacementObject();
-        ImGui::Checkbox("Place multiple", &placeMultiple);
-        ImGui::SliderFloat("scale", &tmpScale, 0.f, 5.f);
-        ImGui::SliderFloat("rotation", &tmpRotation, -3.14f, 3.14f);
-        ImGui::SliderFloat("alpha", &tmpAlpha, 0.f, 1.f);
+        selectPlacementObjectType();
+        if (selectedPlacementObjectType == "entity")
+        {
+            selectPlacementObject();
+            ImGui::Checkbox("Place multiple", &placeMultiple);
+            ImGui::SliderFloat("scale", &tmpScale, 0.f, 5.f);
+            ImGui::SliderFloat("rotation", &tmpRotation, -3.14f, 3.14f);
+            ImGui::SliderFloat("alpha", &tmpAlpha, 0.f, 1.f);
+            ImGui::Button("Place");
+        }
+        else if (selectedPlacementObjectType == "text")
+        {
+            ImGui::InputText("text", tmpText, 64);
+            ImGui::ColorEdit3("color", (float *)&tmpTextColor);
+            ImGui::SliderFloat("scale", &tmpTextScale, 0.f, 5.f);
+            if (ImGui::Button("Place"))
+            {
+                placeMultiple = false;
+                createTextEntity();
+            }
+        }
     }
     else
     {
@@ -737,8 +749,19 @@ void Level::createEntityFromData(s2d::EntityData *entityData)
     placementObject->rotation = tmpRotation;
     placementObject->size *= tmpScale;
     scene->addChild(placementObject, std::string(selectedPlacementLayer));
-    Entity *e = new Entity(placementObject, std::string(selectedPlacementLayer));
+    Entity *e = new Entity(scene, placementObject, std::string(selectedPlacementLayer));
     placedEntities.push_back(e);
+}
+
+void Level::createTextEntity()
+{
+    placementObject = new s2d::Text(std::string(tmpText), false);
+    placementObject->color = tmpTextColor;
+    scene->addChild(placementObject, std::string(selectedPlacementLayer));
+    s2d::Text *t = (s2d::Text *)placementObject;
+    t->textScale = glm::vec2(tmpTextScale);
+    TextEntity *te = new TextEntity(scene, t);
+    placedTextEntities.push_back(te);
 }
 
 void Level::selectPlacementType()
@@ -804,6 +827,22 @@ void Level::selectPlacementObject()
     }
 }
 
+void Level::selectPlacementObjectType()
+{
+    if (ImGui::BeginCombo("Object type", selectedPlacementObjectType))
+    {
+        for (int n = 0; n < IM_ARRAYSIZE(placementObjectTypes); n++)
+        {
+            bool is_selected = (selectedPlacementObjectType == placementObjectTypes[n]);
+            if (ImGui::Selectable(placementObjectTypes[n], is_selected))
+                selectedPlacementObjectType = placementObjectTypes[n];
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
+    }
+}
+
 void Level::deleteObject(s2d::Object *obj)
 {
     for (Entity *e : placedEntities)
@@ -812,7 +851,7 @@ void Level::deleteObject(s2d::Object *obj)
         {
             scene->removeChild(obj, e->layer);
             if (e->selected)
-                e->deselect(scene);
+                e->deselect();
             placedEntities.erase(
                 std::remove(placedEntities.begin(),
                             placedEntities.end(), e),
@@ -858,7 +897,7 @@ void Level::selectObject()
                 {
                     if (e->obj == selectedObject)
                     {
-                        e->select(scene);
+                        e->select();
                         break;
                     }
                 }

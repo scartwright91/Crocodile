@@ -65,8 +65,8 @@ void Project::save(LevelData ld)
         entData["rotation"] = sed->rotation;
         entData["alpha"] = sed->alpha;
         Json::Value pos(Json::arrayValue);
-        pos.append(sed->pos.x);
-        pos.append(sed->pos.y);
+        pos.append((int)sed->pos.x);
+        pos.append((int)sed->pos.y);
         entData["pos"] = pos;
         Json::Value size(Json::arrayValue);
         size.append(sed->size.x);
@@ -114,6 +114,7 @@ LevelData Project::load()
 
     // unpack into level data struct
     LevelData ld;
+    ld.name = "level0";
 
     // canvas
     const Json::Value canvasSizeData = data["levels"][ld.name]["canvas_size"];

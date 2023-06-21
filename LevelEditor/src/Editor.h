@@ -56,5 +56,5 @@ private:
     bool mouseOnImGuiWindow = false;
     void showImGuiMainMenu();
     bool showParticleEditor = false;
-    void showImGuiParticleEditor();
+    bool showImGuiParticleEditor(bool show);
 };

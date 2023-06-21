@@ -11,6 +11,7 @@
 #include "ImGuiFileDialog.h"
 
 #include "Entity.h"
+#include "TextEntity.h"
 
 using namespace Crocodile;
 namespace fs = std::filesystem;
@@ -126,20 +127,31 @@ private:
     s2d::Object *placementObject = nullptr;
     // placement
     std::vector<Entity *> placedEntities = {};
+    std::vector<TextEntity *> placedTextEntities = {};
+    // entity inputs
     float tmpScale = 1.f;
     float tmpAlpha = 1.f;
     float tmpRotation = 0.f;
+    // text inputs
+    char tmpText[64] = "";
+    glm::vec3 tmpTextColor = glm::vec3(1.f);
+    float tmpTextScale = 1.f;
+    //
     float placementTimer = glfwGetTime();
     const char *selectedPlacementType = "entity";
+    const char *selectedPlacementObjectType = "entity";
     const char *selectedPlacementLayer = "";
     const char *tmpPlacementEntity = "";
     bool placeMultiple = true;
     s2d::EntityData *selectedEntityData;
     void createEntityFromData(s2d::EntityData *entityData);
-    const char *placementTypes[2] = {"entity", "mask"};
+    void createTextEntity();
+    const char *placementTypes[3] = {"entity", "camera", "mask"};
+    const char *placementObjectTypes[3] = {"entity", "text", "particles"};
     void selectPlacementType();
     void selectPlacementLayer();
     void selectPlacementObject();
+    void selectPlacementObjectType();
     void deleteObject(s2d::Object *obj);
     void moveObject(s2d::Object *obj);
     // selection

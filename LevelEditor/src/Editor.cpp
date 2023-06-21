@@ -20,7 +20,7 @@ void Editor::renderImGui()
 {
     showImGuiMainMenu();
     if (showParticleEditor)
-        showImGuiParticleEditor();
+        showParticleEditor = showImGuiParticleEditor(showParticleEditor);
     if (activeLevel != NULL)
         activeLevel->renderImGui();
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
@@ -184,9 +184,10 @@ void Editor::showImGuiMainMenu()
     }
 }
 
-void Editor::showImGuiParticleEditor()
+bool Editor::showImGuiParticleEditor(bool show)
 {
-    ImGui::Begin("Particle editor");
-    ImGui::Text("...");
+    ImGui::Begin("Particle editor", &show);
+    ImGui::Text("Not implemented");
     ImGui::End();
+    return show;
 }

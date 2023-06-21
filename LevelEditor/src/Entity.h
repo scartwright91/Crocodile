@@ -9,11 +9,11 @@ using namespace Crocodile;
 class Entity
 {
 public:
-    Entity(s2d::Object *obj, std::string layer);
+    Entity(s2d::Scene *scene, s2d::Object *obj, std::string layer);
 
     bool selected = false;
-    void select(s2d::Scene *scene);
-    void deselect(s2d::Scene *scene);
+    void select();
+    void deselect();
 
     s2d::Object *obj = nullptr;
     s2d::Text *label = nullptr;
@@ -23,6 +23,7 @@ public:
     std::map<std::string, std::string> attributes = {};
 
 private:
+    s2d::Scene *scene = nullptr;
     std::vector<s2d::shapes::Line *> tmpLines = {};
     std::vector<s2d::Object *> tmpMarkers = {};
 };
