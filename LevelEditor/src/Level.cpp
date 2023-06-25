@@ -64,6 +64,9 @@ void Level::update(glm::vec2 mouse)
     bool leftclick = scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1);
     bool rightclick = scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_2);
     float now = glfwGetTime();
+    // update particles
+    for (ParticleEntity *pg : placedParticleEntities)
+        pg->update();
     calculateMouseWorldPos();
     selectEdge();
     if (placementObject != nullptr)
@@ -419,7 +422,11 @@ void Level::placementUI()
                 ImGui::SliderFloat("dispersion", &tmpParticleDispersion, 0, 3.14);
                 ImGui::SliderFloat("scale", &tmpParticleScale, 0, 10.f);
                 ImGui::SliderFloat("velocity", &tmpParticleVelocity, 0.f, 10.f);
-                ImGui::Button("Place");
+                if (ImGui::Button("Place"))
+                {
+                    placeMultiple = false;
+                    createParticleEntity();
+                }
             }
         }
         else
@@ -811,6 +818,20 @@ void Level::createTextEntity()
     t->textScale = glm::vec2(tmpTextScale);
     TextEntity *te = new TextEntity(scene, t, std::string(selectedPlacementLayer));
     placedTextEntities.push_back(te);
+}
+
+void Level::createParticleEntity()
+{
+    placementObject = new s2d::ParticleGenerator(tmpParticleAmount);
+    placementObject->color = tmpParticleColor;
+    scene->addChild(placementObject, std::string(selectedPlacementLayer));
+    s2d::ParticleGenerator *pg = (s2d::ParticleGenerator *)placementObject;
+    pg->direction = tmpParticleDirection;
+    pg->dispersion = tmpParticleDispersion;
+    pg->scale = tmpParticleScale;
+    pg->velocity = tmpParticleVelocity;
+    ParticleEntity *pge = new ParticleEntity(scene, pg, std::string(selectedPlacementLayer));
+    placedParticleEntities.push_back(pge);
 }
 
 void Level::selectPlacementType()

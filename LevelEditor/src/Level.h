@@ -12,6 +12,7 @@
 
 #include "Entity.h"
 #include "TextEntity.h"
+#include "ParticleEntity.h"
 
 using namespace Crocodile;
 namespace fs = std::filesystem;
@@ -134,6 +135,7 @@ private:
     // placement
     std::vector<Entity *> placedEntities = {};
     std::vector<TextEntity *> placedTextEntities = {};
+    std::vector<ParticleEntity *> placedParticleEntities = {};
     // entity inputs
     float tmpScale = 1.f;
     float tmpAlpha = 1.f;
@@ -159,6 +161,7 @@ private:
     s2d::EntityData *selectedEntityData;
     void createEntityFromData(s2d::EntityData *entityData);
     void createTextEntity();
+    void createParticleEntity();
     const char *placementTypes[3] = {"entity", "camera", "mask"};
     const char *placementObjectTypes[3] = {"entity", "text", "particles"};
     void selectPlacementType();
