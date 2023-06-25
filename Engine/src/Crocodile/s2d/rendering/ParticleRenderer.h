@@ -22,7 +22,8 @@ namespace Crocodile
 				unsigned int textureID,
 				bool useTexture,
 				glm::vec3 spriteColor,
-				float alpha);
+				float alpha,
+				float layerAlpha);
 
 		private:
 			void initShader();

@@ -16,6 +16,8 @@ uniform float u_TransitionCounter;
 uniform bool u_FadeTransition;
 uniform bool u_DiamondTransition;
 
+uniform float u_LayerAlpha;
+
 void main()
 {
 	color = texture(u_Scene, TexCoords);
@@ -69,5 +71,7 @@ void main()
 			}
 		}
 	}
+
+	color = color * vec4(1, 1, 1, u_LayerAlpha);
 
 }

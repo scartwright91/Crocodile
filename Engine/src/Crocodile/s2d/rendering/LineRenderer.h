@@ -21,7 +21,8 @@ namespace Crocodile
                 glm::mat4 view,
                 glm::mat4 projection,
                 glm::vec3 color,
-                float alpha);
+                float alpha,
+                float layerAlpha);
 
             graphics::Shader *shader;
             unsigned int VAO = 0;

@@ -22,6 +22,7 @@ uniform float u_DistortionSpeed;
 
 uniform vec3 u_SpriteColor;
 uniform float u_Alpha;
+uniform float u_LayerAlpha;
 
 uniform bool u_EnableLighting;
 uniform float u_AmbientLighting;
@@ -96,6 +97,6 @@ void main()
 		}
 	}
 
-	color = result;
+	color = result * vec4(1, 1, 1, u_LayerAlpha);
 
 }

@@ -127,6 +127,10 @@ private:
 
     // Objects
     s2d::Object *placementObject = nullptr;
+
+    // camera
+    float tmpCameraZoom = 1.f;
+
     // placement
     std::vector<Entity *> placedEntities = {};
     std::vector<TextEntity *> placedTextEntities = {};

@@ -7,6 +7,7 @@
   - area
 - Camera
 - Zones
+- Animations
 - Other entity types e.g. text, particles
   - Particles
 

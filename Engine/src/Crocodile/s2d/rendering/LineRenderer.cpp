@@ -20,7 +20,8 @@ namespace Crocodile
             glm::mat4 view,
             glm::mat4 projection,
             glm::vec3 color,
-            float alpha)
+            float alpha,
+            float layerAlpha)
         {
             init(p1, p2);
             // prepare shader
@@ -30,6 +31,7 @@ namespace Crocodile
             shader->setMat4("u_Projection", projection);
             shader->setVec3("u_Color", color);
             shader->setFloat("u_Alpha", alpha);
+            shader->setFloat("u_LayerAlpha", layerAlpha);
             // bind and draw
             glBindVertexArray(VAO);
             glDrawArrays(GL_LINES, 0, 2);

@@ -24,7 +24,8 @@ namespace Crocodile
             glm::mat4 projection,
             glm::vec3 color,
             float alpha,
-            glm::vec2 textScale)
+            glm::vec2 textScale,
+            float layerAlpha)
         {
 
             // activate corresponding render state
@@ -36,6 +37,7 @@ namespace Crocodile
             // fragment
             shader->setVec3("u_TextColor", color);
             shader->setFloat("u_Alpha", alpha);
+            shader->setFloat("u_LayerAlpha", layerAlpha);
 
             glActiveTexture(GL_TEXTURE0);
             glBindVertexArray(VAO);

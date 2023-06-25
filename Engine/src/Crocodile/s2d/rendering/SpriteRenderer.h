@@ -37,7 +37,8 @@ namespace Crocodile
 				bool scrollDistortionY,
 				float distortionSpeed,
 				bool flipX,
-				bool flipY);
+				bool flipY,
+				float layerAlpha);
 
 		private:
 			void initShader();

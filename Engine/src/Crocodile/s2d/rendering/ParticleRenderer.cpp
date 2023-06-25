@@ -17,7 +17,8 @@ namespace Crocodile
 			unsigned int textureID,
 			bool useTexture,
 			glm::vec3 spriteColor,
-			float alpha)
+			float alpha,
+			float layerAlpha)
 		{
 			// use additive blending to give it a 'glow' effect
 			// glBlendFunc(GL_SRC_ALPHA, GL_ONE);
@@ -36,6 +37,7 @@ namespace Crocodile
 			{
 				shader->setVec3("u_Color", spriteColor);
 			}
+			shader->setFloat("u_LayerAlpha", layerAlpha);
 
 			for (unsigned int i = 0; i < particles.size(); ++i)
 			{

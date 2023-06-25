@@ -445,7 +445,12 @@ void Level::placementUI()
     }
     else if (selectedPlacementType == "camera")
     {
-        ImGui::Text("Camera");
+        ImGui::SliderFloat("zoom", &tmpCameraZoom, 0.1f, 10.f);
+        ImGui::Button("Place");
+    }
+    else if (selectedPlacementType == "zone")
+    {
+        ImGui::Button("Place");
     }
 }
 

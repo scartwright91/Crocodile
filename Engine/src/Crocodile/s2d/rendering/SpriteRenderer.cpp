@@ -31,7 +31,8 @@ namespace Crocodile
             bool scrollDistortionY,
             float distortionSpeed,
             bool flipX,
-            bool flipY)
+            bool flipY,
+            float layerAlpha)
         {
             // prepare shader
             shader->use();
@@ -60,6 +61,7 @@ namespace Crocodile
             }
             shader->setVec3("u_SpriteColor", spriteColor);
             shader->setFloat("u_Alpha", alpha);
+            shader->setFloat("u_LayerAlpha", layerAlpha);
             // lighting
             shader->setBool("u_EnableLighting", true);
             shader->setFloat("u_AmbientLighting", ambientLighting);

@@ -43,7 +43,8 @@ namespace Crocodile
 				glm::mat4 projection,
 				glm::vec3 color,
 				float alpha,
-				glm::vec2 textScale);
+				glm::vec2 textScale,
+				float layerAlpha);
 
 		private:
 			FT_Library ft;

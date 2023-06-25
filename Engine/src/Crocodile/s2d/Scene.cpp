@@ -187,7 +187,8 @@ namespace Crocodile
 					obj->scrollDistortionY,
 					obj->distortionSpeed,
 					obj->flipX,
-					obj->flipY);
+					obj->flipY,
+					layer->alpha);
 			}
 			else if (obj->renderMethod == "particles")
 			{
@@ -200,7 +201,8 @@ namespace Crocodile
 					pg->texture.textureID,
 					pg->useTexture,
 					pg->color,
-					pg->alpha);
+					pg->alpha,
+					layer->alpha);
 			}
 			else if (obj->renderMethod == "text")
 			{
@@ -217,7 +219,8 @@ namespace Crocodile
 					projection,
 					text->color,
 					text->alpha,
-					text->textScale);
+					text->textScale,
+					layer->alpha);
 			}
 			else if (obj->renderMethod == "line")
 			{
@@ -228,7 +231,8 @@ namespace Crocodile
 					view,
 					projection,
 					line->color,
-					line->alpha);
+					line->alpha,
+					layer->alpha);
 			}
 			else
 			{
