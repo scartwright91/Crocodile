@@ -33,6 +33,8 @@ struct LevelData
     std::vector<s2d::SceneEntityData *> sceneEntityData;
     // Text Entities that have been placed in the scene
     std::vector<s2d::SceneTextEntityData *> sceneTextEntityData;
+    // particle Entities placed in the scene
+    std::vector<s2d::SceneParticleEntityData *> SceneParticleEntityData;
     // Textures that have been used by entities
     std::vector<ResourceManager::TextureData> textures;
 };
@@ -66,6 +68,7 @@ private:
 
     fs::path currentPath;
 
+    bool updateLevel = true;
     bool placeMode = true;
     float timer = 0.f;
     s2d::Object *edgeSelected = nullptr;
@@ -149,7 +152,7 @@ private:
     glm::vec3 tmpParticleColor = glm::vec3(1.f);
     float tmpParticleDirection = 0.f;
     float tmpParticleDispersion = 0.1f;
-    float tmpParticleScale = 1.f;
+    float tmpParticleScale = 10.f;
     float tmpParticleVelocity = 1.f;
     //
     float placementTimer = glfwGetTime();

@@ -50,6 +50,19 @@ namespace Crocodile
 			float alpha;
 		};
 
+		struct SceneParticleEntityData
+		{
+			std::string layer;
+			glm::vec2 pos;
+			glm::vec3 color;
+			int amount;
+			float alpha;
+			float direction;
+			float dispersion;
+			float scale;
+			float velocity;
+		};
+
 		class CROCODILE_API Scene
 		{
 

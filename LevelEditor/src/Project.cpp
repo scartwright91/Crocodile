@@ -37,6 +37,7 @@ void Project::save(LevelData ld)
     Json::Value textureKeys(Json::arrayValue);
     Json::Value placedEntities(Json::arrayValue);
     Json::Value placedTextEntities(Json::arrayValue);
+    Json::Value placedParticleEntities(Json::arrayValue);
 
     // layers
     for (s2d::Layer *layer : ld.layers)
@@ -111,11 +112,35 @@ void Project::save(LevelData ld)
         placedTextEntities.append(entData);
     }
 
+    // placed particle entities
+    for (s2d::SceneParticleEntityData *ped : ld.SceneParticleEntityData)
+    {
+        Json::Value entData;
+        entData["layer"] = ped->layer;
+        entData["amount"] = ped->amount;
+        entData["alpha"] = ped->alpha;
+        entData["direction"] = ped->direction;
+        entData["dispersion"] = ped->dispersion;
+        entData["scale"] = ped->scale;
+        entData["velocity"] = ped->velocity;
+        Json::Value pos(Json::arrayValue);
+        pos.append((int)ped->pos.x);
+        pos.append((int)ped->pos.y);
+        entData["pos"] = pos;
+        Json::Value color(Json::arrayValue);
+        color.append(ped->color.x);
+        color.append(ped->color.y);
+        color.append(ped->color.z);
+        entData["color"] = color;
+        placedParticleEntities.append(entData);
+    }
+
     data["levels"][ld.name]["layers"] = layerKeys;
     data["levels"][ld.name]["texture_keys"] = textureKeys;
     data["levels"][ld.name]["entity_keys"] = entityKeys;
     data["levels"][ld.name]["placed_entities"] = placedEntities;
     data["levels"][ld.name]["placed_text_entities"] = placedTextEntities;
+    data["levels"][ld.name]["placed_particle_entities"] = placedParticleEntities;
 
     // write to file
     std::ofstream file_id;
@@ -226,10 +251,33 @@ LevelData Project::load()
         sceneTextEntitiesData.push_back(sceneTextEnt);
     }
 
+    // placed particle entities data
+    const Json::Value placedParticleEntitiesData = data["levels"][ld.name]["placed_particle_entities"];
+    std::vector<s2d::SceneParticleEntityData *> sceneParticleEntitiesData = {};
+    for (int i = 0; i < placedParticleEntitiesData.size(); i++)
+    {
+        Json::Value entData = placedParticleEntitiesData[i];
+        s2d::SceneParticleEntityData *sceneParticleEnt = new s2d::SceneParticleEntityData();
+        sceneParticleEnt->layer = entData["layer"].asString();
+        sceneParticleEnt->amount = entData["amount"].asInt();
+        sceneParticleEnt->alpha = entData["alpha"].asFloat();
+        sceneParticleEnt->direction = entData["direction"].asFloat();
+        sceneParticleEnt->dispersion = entData["dispersion"].asFloat();
+        sceneParticleEnt->scale = entData["scale"].asFloat();
+        sceneParticleEnt->velocity = entData["velocity"].asFloat();
+        sceneParticleEnt->pos = glm::vec2(entData["pos"][0].asFloat(), entData["pos"][1].asFloat());
+        sceneParticleEnt->color = glm::vec3(
+            entData["color"][0].asFloat(),
+            entData["color"][1].asFloat(),
+            entData["color"][2].asFloat());
+        sceneParticleEntitiesData.push_back(sceneParticleEnt);
+    }
+
     ld.entitiesData = entitiesData;
     ld.textures = textures;
     ld.sceneEntityData = sceneEntitiesData;
     ld.sceneTextEntityData = sceneTextEntitiesData;
+    ld.SceneParticleEntityData = sceneParticleEntitiesData;
 
     // std::cout << data << std::endl;
     return ld;

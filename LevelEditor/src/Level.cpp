@@ -56,6 +56,19 @@ void Level::loadPlacedEntities(LevelData data)
         TextEntity *te = new TextEntity(scene, t, ted->layer);
         placedTextEntities.push_back(te);
     }
+    for (s2d::SceneParticleEntityData *ped : data.SceneParticleEntityData)
+    {
+        s2d::ParticleGenerator *pg = new s2d::ParticleGenerator(ped->amount);
+        pg->direction = ped->direction;
+        pg->dispersion = ped->dispersion;
+        pg->scale = ped->scale;
+        pg->velocity = ped->velocity;
+        pg->setPosition(ped->pos);
+        pg->color = ped->color;
+        scene->addChild(pg, ped->layer);
+        ParticleEntity *pe = new ParticleEntity(scene, pg, ped->layer);
+        placedParticleEntities.push_back(pe);
+    }
 }
 
 void Level::update(glm::vec2 mouse)
@@ -64,9 +77,12 @@ void Level::update(glm::vec2 mouse)
     bool leftclick = scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1);
     bool rightclick = scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_2);
     float now = glfwGetTime();
-    // update particles
-    for (ParticleEntity *pg : placedParticleEntities)
-        pg->update();
+    if (updateLevel)
+    {
+        // update particles
+        for (ParticleEntity *pg : placedParticleEntities)
+            pg->update();
+    }
     calculateMouseWorldPos();
     selectEdge();
     if (placementObject != nullptr)
@@ -124,6 +140,7 @@ LevelData Level::serialise()
     ld.entitiesData = entitiesData;
     ld.layers = layers;
     ld.textures = textures;
+    // entities
     std::vector<s2d::SceneEntityData *> sceneEntitiesData = {};
     for (Entity *ent : placedEntities)
     {
@@ -139,6 +156,7 @@ LevelData Level::serialise()
         sceneEntitiesData.push_back(sed);
     }
     ld.sceneEntityData = sceneEntitiesData;
+    // text
     std::vector<s2d::SceneTextEntityData *> sceneTextEntitiesData = {};
     for (TextEntity *ent : placedTextEntities)
     {
@@ -152,6 +170,23 @@ LevelData Level::serialise()
         sceneTextEntitiesData.push_back(tsed);
     }
     ld.sceneTextEntityData = sceneTextEntitiesData;
+    // particles
+    std::vector<s2d::SceneParticleEntityData *> sceneParticleEntitiesData = {};
+    for (ParticleEntity *ent : placedParticleEntities)
+    {
+        s2d::SceneParticleEntityData *psed = new s2d::SceneParticleEntityData();
+        psed->layer = ent->layer;
+        psed->pos = ent->pg->getPosition();
+        psed->color = ent->pg->color;
+        psed->amount = ent->pg->amount;
+        psed->alpha = ent->pg->alpha;
+        psed->direction = ent->pg->direction;
+        psed->dispersion = ent->pg->dispersion;
+        psed->scale = ent->pg->scale;
+        psed->velocity = ent->pg->velocity;
+        sceneParticleEntitiesData.push_back(psed);
+    }
+    ld.SceneParticleEntityData = sceneParticleEntitiesData;
     return ld;
 }
 
@@ -319,6 +354,7 @@ void Level::calculateMouseWorldPos()
 void Level::levelOptions()
 {
     ImGui::InputText("Level name", name, 64);
+    ImGui::Checkbox("Update level:", &updateLevel);
     if (ImGui::ColorEdit3("Canvas colour", (float *)&canvasColour))
         canvas->color = canvasColour;
     if (ImGui::ColorEdit3("Edge colour", (float *)&edgeColour))
@@ -420,7 +456,7 @@ void Level::placementUI()
                 ImGui::ColorEdit3("color", (float *)&tmpParticleColor);
                 ImGui::SliderFloat("direction", &tmpParticleDirection, -3.14, 3.14);
                 ImGui::SliderFloat("dispersion", &tmpParticleDispersion, 0, 3.14);
-                ImGui::SliderFloat("scale", &tmpParticleScale, 0, 10.f);
+                ImGui::SliderFloat("scale", &tmpParticleScale, 0, 100.f);
                 ImGui::SliderFloat("velocity", &tmpParticleVelocity, 0.f, 10.f);
                 if (ImGui::Button("Place"))
                 {
