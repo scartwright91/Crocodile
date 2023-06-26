@@ -8,8 +8,9 @@
 - Camera
 - Zones
 - Animations
-- Other entity types e.g. text, particles
-  - Particles
+- Particles
+  - add textures
+  - select to modify
 
 ### Bugs
 - layers

@@ -52,6 +52,26 @@ namespace Crocodile
 					return (p.x <= xMax && p.x >= xMin && p.y <= yMax && p.y >= yMin);
 				}
 
+				void inflate(float dx, float dy, bool centre)
+				{
+					if (centre)
+					{
+						x -= dx / 2;
+						y -= dy / 2;
+					}
+					else
+					{
+						x -= dx;
+						y -= dy;
+					}
+					width += dx;
+					height += dy;
+					xMin = x;
+					xMax = x + width;
+					yMin = y;
+					yMax = y + height;
+				}
+
 				void printVertices()
 				{
 					std::cout << "topleft: [" << (int)xMin << ", " << (int)yMin

@@ -470,18 +470,35 @@ void Level::placementUI()
             selectObject();
             if (selectedObject != NULL)
             {
-                std::string objName = "Name: " + selectedObject->label;
-                ImGui::Text(objName.c_str());
-                std::string objPosText = "Position: ";
-                glm::vec2 objPos = selectedObject->getPosition();
-                objPosText += "(" + std::to_string((int)objPos.x) + ", " + std::to_string((int)objPos.y) + ")";
-                ImGui::Text(objPosText.c_str());
-                ImGui::SliderFloat("rotation", &selectedObject->rotation, -3.14f, 3.14f);
-                ImGui::SliderFloat("alpha", &selectedObject->alpha, 0.f, 1.f);
-                if (ImGui::Button("delete"))
+                if (selectedObjectType == "entity")
                 {
-                    deleteObject(selectedObject);
-                    selectedObject = nullptr;
+                    std::string objName = "Name: " + selectedObject->label;
+                    ImGui::Text(objName.c_str());
+                    std::string objPosText = "Position: ";
+                    glm::vec2 objPos = selectedObject->getPosition();
+                    objPosText += "(" + std::to_string((int)objPos.x) + ", " + std::to_string((int)objPos.y) + ")";
+                    ImGui::Text(objPosText.c_str());
+                    ImGui::SliderFloat("rotation", &selectedObject->rotation, -3.14f, 3.14f);
+                    ImGui::SliderFloat("alpha", &selectedObject->alpha, 0.f, 1.f);
+                    if (ImGui::Button("delete"))
+                    {
+                        deleteObject(selectedObject);
+                        selectedObject = nullptr;
+                    }
+                }
+                else if (selectedObjectType == "particles")
+                {
+                    s2d::ParticleGenerator *pg = (s2d::ParticleGenerator *)selectedObject;
+                    ImGui::ColorEdit3("color", (float *)&selectedObject->color);
+                    ImGui::SliderFloat("direction", &pg->direction, -3.14, 3.14);
+                    ImGui::SliderFloat("dispersion", &pg->dispersion, 0, 3.14);
+                    ImGui::SliderFloat("scale", &pg->scale, 0, 100.f);
+                    ImGui::SliderFloat("velocity", &pg->velocity, 0.f, 10.f);
+                    if (ImGui::Button("delete"))
+                    {
+                        deleteObject(selectedObject);
+                        selectedObject = nullptr;
+                    }
                 }
             }
         }
@@ -951,20 +968,40 @@ void Level::selectPlacementObjectType()
 
 void Level::deleteObject(s2d::Object *obj)
 {
-    for (Entity *e : placedEntities)
+    if (selectedPlacementObjectType == "entity")
     {
-        if (obj == e->obj)
+        for (Entity *e : placedEntities)
         {
-            scene->removeChild(obj, e->layer);
-            if (e->selected)
-                e->deselect();
-            placedEntities.erase(
-                std::remove(placedEntities.begin(),
-                            placedEntities.end(), e),
-                placedEntities.end());
-            delete e;
-            delete obj;
-            break;
+            if (obj == e->obj)
+            {
+                scene->removeChild(obj, e->layer);
+                if (e->selected)
+                    e->deselect();
+                placedEntities.erase(
+                    std::remove(placedEntities.begin(),
+                                placedEntities.end(), e),
+                    placedEntities.end());
+                delete e;
+                delete obj;
+                break;
+            }
+        }
+    }
+    else if (selectedPlacementObjectType == "particles")
+    {
+        for (ParticleEntity *e : placedParticleEntities)
+        {
+            if (obj == e->pg)
+            {
+                scene->removeChild(obj, e->layer);
+                placedParticleEntities.erase(
+                    std::remove(placedParticleEntities.begin(),
+                                placedParticleEntities.end(), e),
+                    placedParticleEntities.end());
+                delete e;
+                delete obj;
+                break;
+            }
         }
     }
 }
@@ -985,42 +1022,55 @@ void Level::moveObject(s2d::Object *obj)
 void Level::selectObject()
 {
     float now = glfwGetTime();
-    for (s2d::Object *obj : scene->layerStack->getLayer(std::string(selectedPlacementLayer))->objects)
-    {
-        if (obj->getScreenBoundingBox(
-                   scene->camera->getViewMatrix(),
-                   scene->camera->getProjectionMatrix(true),
-                   scene->camera->zoom,
-                   scene->windowWidth,
-                   scene->windowHeight)
-                .intersectsPoint(sceneMousePos))
+    // regular entities
+    for (Entity *e : placedEntities)
+        if (e->layer == std::string(selectedPlacementLayer))
         {
-            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
-            obj->outline = true;
-            if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1) && (now - tmpTimer > 0.5f))
+            if (e->obj->getScreenBoundingBox(
+                          scene->camera->getViewMatrix(),
+                          scene->camera->getProjectionMatrix(true),
+                          scene->camera->zoom,
+                          scene->windowWidth,
+                          scene->windowHeight)
+                    .intersectsPoint(sceneMousePos))
             {
-                tmpTimer = now;
-                selectedObject = obj;
-                // normal objects
-                for (Entity *e : placedEntities)
-                    if (e->obj == selectedObject)
-                    {
-                        e->select();
-                        break;
-                    }
-                // text objects
-                for (TextEntity *te : placedTextEntities)
-                    if (te->text == selectedObject)
-                    {
-                        te->select();
-                        break;
-                    }
+                ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+                e->obj->outline = true;
+                if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1) && (now - tmpTimer > 0.5f))
+                {
+                    tmpTimer = now;
+                    selectedObject = e->obj;
+                    selectedObjectType = "entity";
+                    e->select();
+                    break;
+                }
             }
-            break;
+            else
+                e->obj->outline = false;
         }
-        else
-            obj->outline = false;
-    }
+    // particle entities
+    for (ParticleEntity *pe : placedParticleEntities)
+        if (pe->layer == std::string(selectedPlacementLayer))
+        {
+            s2d::col::BoundingBox bbox = pe->pg->getScreenBoundingBox(
+                scene->camera->getViewMatrix(),
+                scene->camera->getProjectionMatrix(true),
+                scene->camera->zoom,
+                scene->windowWidth,
+                scene->windowHeight);
+            bbox.inflate(100.f, 100.f, true);
+            if (bbox.intersectsPoint(sceneMousePos))
+            {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+                if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1) && (now - tmpTimer > 0.5f))
+                {
+                    tmpTimer = now;
+                    selectedObject = pe->pg;
+                    selectedObjectType = "particles";
+                    break;
+                }
+            }
+        }
     if (selectedObject != NULL)
         selectedObject->outline = true;
 }

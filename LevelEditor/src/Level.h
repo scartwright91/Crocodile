@@ -175,6 +175,7 @@ private:
     void moveObject(s2d::Object *obj);
     // selection
     s2d::Object *selectedObject = nullptr;
+    std::string selectedObjectType = "entity";
     bool moveSelectedObject = false;
     void selectObject();
     float objectPathTimer = 0.f;
