@@ -8,7 +8,7 @@ namespace Crocodile
 		const char *name,
 		bool resizeable,
 		unsigned int width,
-		unsigned height,
+		unsigned int height,
 		bool useImGui) : window(name, resizeable, width, height), useImGui(useImGui)
 	{
 		s_Instance = this;

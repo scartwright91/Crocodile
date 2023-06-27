@@ -106,13 +106,13 @@ namespace Crocodile
 		{
 			glClearColor(color.x, color.y, color.z, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glfwPollEvents();
 			glfwGetFramebufferSize(window, &width, &height);
 		}
 
 		void Window::endRender()
 		{
 			glfwSwapBuffers(window);
+			glfwPollEvents();
 		}
 
 		bool Window::isKeyPressed(unsigned int keycode)
