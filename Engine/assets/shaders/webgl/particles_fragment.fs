@@ -2,10 +2,12 @@
 
 precision mediump float;
 
-in vec4 particleColor;
 out vec4 color;
+
+uniform vec3 u_Color;
+uniform float u_Alpha;
 
 void main()
 {
-	color = particleColor;
+	color = vec4(u_Color, u_Alpha);
 }

@@ -1,18 +1,47 @@
 
 # Crocodile Game Engine
 
-*** Fixes
-* Fragment shaders not compiling on laptop
-* Sound emscripten (code to load wav/obj files)
-* Unify framerate across devices
+## Project structure
 
-*** Improvements
-* move to shared/unique pointers
-* reduce complexity in Object class (especially position attributes)
-* fullscreen / resizing
-  * Problem with level parser (doesn't scale with screen size)
-* Logging
+### Engine
 
-*** Features
-* 2d grid system + pathfinding
-* Level editor (imgui)
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+### LevelEditor
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+### Examples
+
+Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.
+
+## Build
+
+### Emscripten
+
+1. Open emsdk terminal
+   * clone https://github.com/emscripten-core/emsdk and run emcmdprompt.bat
+
+2. Navigate to `build_web` directory (create if missing)
+
+```
+$ cd build_web
+```
+
+3. Build makefile using emcmake
+
+```
+$ emcmake cmake ..
+```
+
+4. Build application
+
+```
+$ emmake make
+```
+
+5. Run application
+
+```
+emrun <PROJECT>.html
+```

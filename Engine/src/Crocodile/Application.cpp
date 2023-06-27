@@ -102,10 +102,12 @@ namespace Crocodile
 	{
 #ifdef CROCODILE_EMSCRIPTEN
 		resourceManager.loadShader("assets/shaders/webgl/sprite_vertex.vs", "assets/shaders/webgl/sprite_fragment.fs", "sprite");
-		resourceManager.loadShader("assets/shaders/webgl/particle_vertex.vs", "assets/shaders/webgl/particle_fragment.fs", "particle");
+		// TODO: fix particle shader for webgl
+		// resourceManager.loadShader("assets/shaders/webgl/particle_vertex.vs", "assets/shaders/webgl/particle_fragment.fs", "particle");
 		resourceManager.loadShader("assets/shaders/webgl/text_vertex.vs", "assets/shaders/webgl/text_fragment.fs", "text");
 		resourceManager.loadShader("assets/shaders/webgl/postprocessing_vertex.vs", "assets/shaders/webgl/postprocessing_fragment.fs", "postprocessing");
 		resourceManager.loadShader("assets/shaders/webgl/grid_vertex.vs", "assets/shaders/webgl/grid_fragment.fs", "grid");
+		resourceManager.loadShader("assets/shaders/webgl/line_vertex.vs", "assets/shaders/webgl/line_fragment.fs", "line");
 #else
 		resourceManager.loadShader("assets/shaders/opengl/sprite_vertex.vs", "assets/shaders/opengl/sprite_fragment.fs", "sprite");
 		resourceManager.loadShader("assets/shaders/opengl/particles_vertex.vs", "assets/shaders/opengl/particles_fragment.fs", "particle");
