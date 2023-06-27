@@ -10,7 +10,6 @@
 - Animations
 - Particles
   - add textures
-  - select to modify
 
 ### Bugs
 - layers

@@ -60,11 +60,54 @@ namespace Crocodile
 				sceneEntitiesData.push_back(sceneEnt);
 			}
 
+			// placed text entities data
+			const Json::Value placedTextEntitiesData = levelData["placed_text_entities"];
+			std::vector<s2d::SceneTextEntityData *> sceneTextEntitiesData = {};
+			for (int i = 0; i < placedTextEntitiesData.size(); i++)
+			{
+				Json::Value entData = placedTextEntitiesData[i];
+				s2d::SceneTextEntityData *sceneTextEnt = new s2d::SceneTextEntityData();
+				sceneTextEnt->text = entData["text"].asString();
+				sceneTextEnt->layer = entData["layer"].asString();
+				sceneTextEnt->alpha = entData["alpha"].asFloat();
+				sceneTextEnt->pos = glm::vec2(entData["pos"][0].asFloat(), entData["pos"][1].asFloat());
+				sceneTextEnt->color = glm::vec3(
+					entData["color"][0].asFloat(),
+					entData["color"][1].asFloat(),
+					entData["color"][2].asFloat());
+				sceneTextEnt->textScale = glm::vec2(entData["text_scale"][0].asFloat(), entData["text_scale"][1].asFloat());
+				sceneTextEntitiesData.push_back(sceneTextEnt);
+			}
+
+			// placed particle entities data
+			const Json::Value placedParticleEntitiesData = levelData["placed_particle_entities"];
+			std::vector<s2d::SceneParticleEntityData *> sceneParticleEntitiesData = {};
+			for (int i = 0; i < placedParticleEntitiesData.size(); i++)
+			{
+				Json::Value entData = placedParticleEntitiesData[i];
+				s2d::SceneParticleEntityData *sceneParticleEnt = new s2d::SceneParticleEntityData();
+				sceneParticleEnt->layer = entData["layer"].asString();
+				sceneParticleEnt->amount = entData["amount"].asInt();
+				sceneParticleEnt->alpha = entData["alpha"].asFloat();
+				sceneParticleEnt->direction = entData["direction"].asFloat();
+				sceneParticleEnt->dispersion = entData["dispersion"].asFloat();
+				sceneParticleEnt->scale = entData["scale"].asFloat();
+				sceneParticleEnt->velocity = entData["velocity"].asFloat();
+				sceneParticleEnt->pos = glm::vec2(entData["pos"][0].asFloat(), entData["pos"][1].asFloat());
+				sceneParticleEnt->color = glm::vec3(
+					entData["color"][0].asFloat(),
+					entData["color"][1].asFloat(),
+					entData["color"][2].asFloat());
+				sceneParticleEntitiesData.push_back(sceneParticleEnt);
+			}
+
 			ld.name = level;
 			ld.size = getCanvasBounds(level);
 			ld.color = getCanvasColor(level);
 			ld.layerNames = layerNames;
 			ld.sceneEntityData = sceneEntitiesData;
+			ld.sceneTextEntityData = sceneTextEntitiesData;
+			ld.SceneParticleEntityData = sceneParticleEntitiesData;
 
 			return ld;
 		}
