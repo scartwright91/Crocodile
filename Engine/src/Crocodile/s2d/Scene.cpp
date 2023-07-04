@@ -143,9 +143,7 @@ namespace Crocodile
 
 			// calculating projection matrix
 			glm::mat4 projection = camera->getProjectionMatrix(layer->applyZoom);
-
-			bool zeroDepth = layer->depth == 0.f;
-
+			// get object position
 			glm::vec2 pos = obj->getScaledPosition();
 
 			if (obj->renderMethod == "sprite")
@@ -153,7 +151,7 @@ namespace Crocodile
 				std::vector<Light *> lights;
 				if (enableLighting)
 				{
-					if (zeroDepth)
+					if (layer->depth == 0.f)
 						lights = lightSystem->getScaledLights(obj->modelScale);
 					else
 						lights = {};
@@ -203,11 +201,6 @@ namespace Crocodile
 			else if (obj->renderMethod == "text")
 			{
 				Text *text = (Text *)obj;
-				glm::vec2 pos;
-				if (zeroDepth)
-					pos = text->getScaledPosition();
-				else
-					pos = text->getScaledStartingPosition();
 				textRenderer->render(
 					text->text,
 					text->calculateModelMatrix(pos),
