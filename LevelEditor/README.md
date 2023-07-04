@@ -10,6 +10,7 @@
 - Animations
 - Particles
   - add textures
+- Autosaves
 
 ### Bugs
 - layers

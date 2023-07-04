@@ -146,11 +146,7 @@ namespace Crocodile
 
 			bool zeroDepth = layer->depth == 0.f;
 
-			glm::vec2 pos;
-			if (zeroDepth)
-				pos = obj->getScaledPosition();
-			else
-				pos = obj->getScaledStartingPosition();
+			glm::vec2 pos = obj->getScaledPosition();
 
 			if (obj->renderMethod == "sprite")
 			{

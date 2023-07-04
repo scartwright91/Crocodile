@@ -140,53 +140,63 @@ LevelData Level::serialise()
     ld.entitiesData = entitiesData;
     ld.layers = layers;
     ld.textures = textures;
-    // entities
-    std::vector<s2d::SceneEntityData *> sceneEntitiesData = {};
-    for (Entity *ent : placedEntities)
+    try
     {
-        s2d::SceneEntityData *sed = new s2d::SceneEntityData();
-        sed->label = ent->obj->label;
-        sed->layer = ent->layer;
-        sed->pos = ent->obj->getPosition();
-        sed->size = ent->obj->size;
-        sed->rotation = ent->obj->rotation;
-        sed->alpha = ent->obj->alpha;
-        sed->texture = ent->obj->texture.name;
-        sed->path = ent->movementPath;
-        sceneEntitiesData.push_back(sed);
+        {
+            // entities
+            std::vector<s2d::SceneEntityData *> sceneEntitiesData = {};
+            for (Entity *ent : placedEntities)
+            {
+                s2d::SceneEntityData *sed = new s2d::SceneEntityData();
+                sed->label = ent->obj->label;
+                sed->layer = ent->layer;
+                sed->pos = ent->obj->getPosition();
+                sed->size = ent->obj->size;
+                sed->rotation = ent->obj->rotation;
+                sed->alpha = ent->obj->alpha;
+                sed->texture = ent->obj->texture.name;
+                sed->path = ent->movementPath;
+                sceneEntitiesData.push_back(sed);
+            }
+            ld.sceneEntityData = sceneEntitiesData;
+            // text
+            std::vector<s2d::SceneTextEntityData *> sceneTextEntitiesData = {};
+            for (TextEntity *ent : placedTextEntities)
+            {
+                s2d::SceneTextEntityData *tsed = new s2d::SceneTextEntityData();
+                tsed->text = ent->text->text;
+                tsed->layer = ent->layer;
+                tsed->pos = ent->text->getPosition();
+                tsed->color = ent->text->color;
+                tsed->alpha = ent->text->alpha;
+                tsed->textScale = ent->text->textScale;
+                sceneTextEntitiesData.push_back(tsed);
+            }
+            ld.sceneTextEntityData = sceneTextEntitiesData;
+            // particles
+            std::vector<s2d::SceneParticleEntityData *> sceneParticleEntitiesData = {};
+            for (ParticleEntity *ent : placedParticleEntities)
+            {
+                s2d::SceneParticleEntityData *psed = new s2d::SceneParticleEntityData();
+                psed->layer = ent->layer;
+                psed->pos = ent->pg->getPosition();
+                psed->color = ent->pg->color;
+                psed->amount = ent->pg->amount;
+                psed->alpha = ent->pg->alpha;
+                psed->direction = ent->pg->direction;
+                psed->dispersion = ent->pg->dispersion;
+                psed->scale = ent->pg->scale;
+                psed->velocity = ent->pg->velocity;
+                sceneParticleEntitiesData.push_back(psed);
+            }
+            ld.SceneParticleEntityData = sceneParticleEntitiesData;
+        }
     }
-    ld.sceneEntityData = sceneEntitiesData;
-    // text
-    std::vector<s2d::SceneTextEntityData *> sceneTextEntitiesData = {};
-    for (TextEntity *ent : placedTextEntities)
+    catch (const std::exception &e)
     {
-        s2d::SceneTextEntityData *tsed = new s2d::SceneTextEntityData();
-        tsed->text = ent->text->text;
-        tsed->layer = ent->layer;
-        tsed->pos = ent->text->getPosition();
-        tsed->color = ent->text->color;
-        tsed->alpha = ent->text->alpha;
-        tsed->textScale = ent->text->textScale;
-        sceneTextEntitiesData.push_back(tsed);
+        std::cerr << e.what() << '\n';
     }
-    ld.sceneTextEntityData = sceneTextEntitiesData;
-    // particles
-    std::vector<s2d::SceneParticleEntityData *> sceneParticleEntitiesData = {};
-    for (ParticleEntity *ent : placedParticleEntities)
-    {
-        s2d::SceneParticleEntityData *psed = new s2d::SceneParticleEntityData();
-        psed->layer = ent->layer;
-        psed->pos = ent->pg->getPosition();
-        psed->color = ent->pg->color;
-        psed->amount = ent->pg->amount;
-        psed->alpha = ent->pg->alpha;
-        psed->direction = ent->pg->direction;
-        psed->dispersion = ent->pg->dispersion;
-        psed->scale = ent->pg->scale;
-        psed->velocity = ent->pg->velocity;
-        sceneParticleEntitiesData.push_back(psed);
-    }
-    ld.SceneParticleEntityData = sceneParticleEntitiesData;
+
     return ld;
 }
 

@@ -19,6 +19,8 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor i
 
 ### Emscripten
 
+Note to build using emscripten, you need to remove the ImGuiFileDialog files.
+
 1. Open emsdk terminal
    * clone https://github.com/emscripten-core/emsdk and run emcmdprompt.bat
 
