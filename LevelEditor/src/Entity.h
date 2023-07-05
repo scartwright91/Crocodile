@@ -14,6 +14,7 @@ public:
     bool selected = false;
     void select();
     void deselect();
+    void addMovementPathPos(glm::vec2 pos);
 
     s2d::Object *obj = nullptr;
     s2d::Text *label = nullptr;

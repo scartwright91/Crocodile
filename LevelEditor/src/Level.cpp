@@ -1149,7 +1149,7 @@ void Level::createObjectPath()
             if (selectedObject == e->obj)
             {
                 objectPathTimer = now;
-                e->movementPath.push_back(mouseWorldPos);
+                e->addMovementPathPos(mouseWorldPos);
                 break;
             }
 }

@@ -11,6 +11,7 @@ Entity::Entity(s2d::Scene *scene, s2d::Object *obj, std::string layer) : scene(s
 
 void Entity::select()
 {
+    label->setPosition(obj->getPosition());
     selected = true;
     label->alpha = 1.f;
     for (glm::vec2 p : movementPath)
@@ -47,4 +48,27 @@ void Entity::deselect()
         delete line;
     }
     tmpLines.clear();
+}
+
+void Entity::addMovementPathPos(glm::vec2 pos)
+{
+    movementPath.push_back(pos);
+
+    // Add new marker
+    s2d::Object *obj = new s2d::Object();
+    obj->setPosition(pos);
+    obj->size = glm::vec2(25.f);
+    obj->color = glm::vec3(1.f, 0.f, 0.f);
+    scene->addChild(obj, layer);
+    tmpMarkers.push_back(obj);
+
+    // add new line
+    unsigned int n = movementPath.size() - 1;
+    if (n >= 1)
+    {
+        s2d::shapes::Line *line = new s2d::shapes::Line(movementPath[n - 1], movementPath[n]);
+        line->color = glm::vec3(1.f, 0.f, 0.f);
+        scene->addChild(line, layer);
+        tmpLines.push_back(line);
+    }
 }
