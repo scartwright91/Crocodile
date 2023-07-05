@@ -453,7 +453,7 @@ void Level::placementUI()
             {
                 ImGui::InputText("text", tmpText, 64);
                 ImGui::ColorEdit3("color", (float *)&tmpTextColor);
-                ImGui::SliderFloat("scale", &tmpTextScale, 0.f, 5.f);
+                ImGui::SliderFloat("scale", &tmpTextScale, 0.f, 20.f);
                 if (ImGui::Button("Place"))
                 {
                     placeMultiple = false;
@@ -513,9 +513,12 @@ void Level::placementUI()
                 else if (selectedObjectType == "text")
                 {
                     s2d::Text *te = (s2d::Text *)selectedObject;
-                    // ImGui::InputText("text", te->text, 64);
+                    // std::string t{te->text};
+                    // ImGui::InputText("text", &t, 64);
                     ImGui::ColorEdit3("color", (float *)&te->color);
-                    // ImGui::SliderFloat("scale", &te->textScale, 0.f, 5.f);
+                    float ts = te->textScale.x;
+                    ImGui::SliderFloat("scale", &ts, 0.f, 20.f);
+                    te->textScale = glm::vec2(ts, ts);
                     if (ImGui::Button("delete"))
                     {
                         deleteObject(selectedObject);
@@ -626,7 +629,7 @@ void Level::createLayersTable()
                     }
             }
             if (ImGui::TableSetColumnIndex(2))
-                ImGui::SliderFloat("depth", &layers[row]->depth, 0.f, 1.0f);
+                ImGui::SliderFloat("depth", &layers[row]->depth, -1.f, 1.0f);
             if (ImGui::TableSetColumnIndex(3))
                 ImGui::SliderFloat("alpha", &layers[row]->alpha, 0.f, 1.0f);
             if (ImGui::TableSetColumnIndex(4))

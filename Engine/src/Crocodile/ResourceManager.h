@@ -2,10 +2,13 @@
 
 #include <map>
 #include <string>
+#include <filesystem>
 
 #include "Core.h"
 #include "graphics/Shader.h"
 #include "../utils/stb_image.h"
+
+namespace fs = std::filesystem;
 
 namespace Crocodile
 {
@@ -27,6 +30,8 @@ namespace Crocodile
         std::map<std::string, graphics::Shader> shaders = {};
         // textures
         std::map<std::string, TextureData> textureIDs = {};
+        // animations
+        std::map<std::string, std::vector<std::string>> animations = {};
 
         ResourceManager()
         {
@@ -81,6 +86,27 @@ namespace Crocodile
         bool textureExists(std::string name)
         {
             return textureIDs.count(name);
+        }
+
+        void loadAnimation(const char *dir, std::string name)
+        {
+            std::vector<std::string> animImageNames = {};
+            for (const auto &entry : fs::directory_iterator(dir))
+            {
+                std::string filePath = entry.path().string();
+                std::string fileName = entry.path().filename().string();
+                loadTexture(filePath.c_str(), fileName, false);
+                animImageNames.push_back(fileName);
+            }
+            animations[name] = animImageNames;
+        }
+
+        std::vector<TextureData> getAnimation(std::string name)
+        {
+            std::vector<TextureData> animation = {};
+            for (std::string animImageName : animations[name])
+                animation.push_back(getTexture(animImageName));
+            return animation;
         }
 
     private:
