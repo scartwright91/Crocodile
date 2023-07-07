@@ -477,7 +477,6 @@ void Level::placementUI()
         }
         else
         {
-            selectObject();
             if (selectedObject != NULL)
             {
                 if (selectedObjectType == "entity")
@@ -525,6 +524,10 @@ void Level::placementUI()
                         selectedObject = nullptr;
                     }
                 }
+            }
+            else
+            {
+                selectObject();
             }
         }
     }

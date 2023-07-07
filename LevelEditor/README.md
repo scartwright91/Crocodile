@@ -2,15 +2,13 @@
 ## TODO
 
 ### Current
-- customisable entities
-  - movement path
-  - area
 - Camera
 - Zones
 - Animations
 - Particles
   - add textures
 - Autosaves
+- Lights
 
 ### Bugs
 - layers
