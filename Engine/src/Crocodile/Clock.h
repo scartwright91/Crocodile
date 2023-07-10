@@ -14,11 +14,9 @@ namespace Crocodile
 
 		Clock()
 		{
-
 		}
 		~Clock()
 		{
-
 		}
 
 		bool tick(unsigned int fps)
@@ -40,7 +38,5 @@ namespace Crocodile
 
 	private:
 		float lastFrame = 0.0f;
-
 	};
 }
-

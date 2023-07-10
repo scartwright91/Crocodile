@@ -63,12 +63,11 @@ namespace Crocodile
 			else
 				glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-			// glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
+			glfwWindowHint(GLFW_SCALE_TO_MONITOR, 1);
 
 			// create window
 			int count;
 			GLFWmonitor **monitors = glfwGetMonitors(&count);
-			// window = glfwCreateWindow(width, height, name, monitors[1], NULL);
 			window = glfwCreateWindow(width, height, name, NULL, NULL);
 
 			if (!window)
@@ -77,11 +76,7 @@ namespace Crocodile
 				return false;
 			}
 
-			// get content scale
-			float xscale, yscale;
-			glfwGetMonitorContentScale(monitors[0], &xscale, &yscale);
-			contentScale = glm::vec2(xscale, yscale);
-
+			glfwGetWindowSize(window, &width, &height);
 			glfwSetWindowSize(window, width, height);
 			glViewport(0, 0, width, height);
 
