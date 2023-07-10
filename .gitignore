@@ -6,9 +6,7 @@ CMakeFiles/
 CmakeCache.txt
 
 # Game stuff not for repos
-Game/
 TestGame/
-LD53_Delivery/
 
 # VSCode stuff
 .vscode/

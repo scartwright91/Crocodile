@@ -69,11 +69,13 @@ namespace Crocodile
 			// filters
 			bool outline = false;
 
+			// animation
+			Animation *animation = nullptr;
+
 		private:
 			glm::vec2 startingPosition = glm::vec2(0.0f);
 			glm::vec2 position = glm::vec2(0.0f);
 			bool animated = false;
-			Animation *animation = nullptr;
 
 		public:
 			void addChild(Object *o);

@@ -57,6 +57,13 @@ namespace Crocodile
 				sceneEnt.pos = glm::vec2(entData["pos"][0].asFloat(), entData["pos"][1].asFloat());
 				sceneEnt.size = glm::vec2(entData["size"][0].asFloat(), entData["size"][1].asFloat());
 				sceneEnt.texture = entData["texture"].asString();
+				std::vector<glm::vec2> path = {};
+				for (int j = 0; j < entData["movement_path"].size(); j++)
+				{
+					Json::Value p = entData["movement_path"][j];
+					path.push_back(glm::vec2(p[0].asFloat(), p[1].asFloat()));
+				}
+				sceneEnt.path = path;
 				sceneEntitiesData.push_back(sceneEnt);
 			}
 

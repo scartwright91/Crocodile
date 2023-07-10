@@ -98,10 +98,6 @@ namespace Crocodile
 
         soundEffects[name] = buffer;
     }
-#else
-    void SoundBuffer::addSoundEffect(const char *filename, std::string name)
-    {
-    }
 #endif
 
     void SoundBuffer::removeSoundEffect(std::string name)

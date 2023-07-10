@@ -15,6 +15,7 @@ namespace Crocodile
 		{
 		public:
 			bool spritesheetAnimation = false;
+			bool freezeAnimation = false;
 			ResourceManager::TextureData spritesheet = {};
 			unsigned int gridSize;
 			float frameDuration;

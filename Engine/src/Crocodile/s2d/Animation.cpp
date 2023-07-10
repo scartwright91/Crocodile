@@ -35,11 +35,14 @@ namespace Crocodile
 
 		void Animation::updateAnimation(float dt)
 		{
-			timer += dt;
-			if (timer > frameDuration)
+			if (!freezeAnimation)
 			{
-				currentFrame = (currentFrame + 1) % totalFrames;
-				timer = 0.0f;
+				timer += dt;
+				if (timer > frameDuration)
+				{
+					currentFrame = (currentFrame + 1) % totalFrames;
+					timer = 0.0f;
+				}
 			}
 		}
 	}
