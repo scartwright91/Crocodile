@@ -55,7 +55,18 @@ void Project::save(LevelData ld)
     for (s2d::EntityData *ed : ld.entitiesData)
     {
         entityKeys.append(ed->label);
-        data["levels"][ld.name]["entity_data"][ed->label] = ed->texture.name;
+        Json::Value entData;
+        entData["texture"] = ed->texture.name;
+        Json::Value size(Json::arrayValue);
+        size.append(ed->size.x);
+        size.append(ed->size.y);
+        entData["size"] = size;
+        Json::Value color(Json::arrayValue);
+        color.append(ed->colour.x);
+        color.append(ed->colour.y);
+        color.append(ed->colour.z);
+        entData["color"] = color;
+        data["levels"][ld.name]["entity_data"][ed->label] = entData;
     }
 
     // placed entities
@@ -199,13 +210,17 @@ LevelData Project::load()
     for (int i = 0; i < levelEntitiesData.size(); i++)
     {
         std::string entityName = levelEntitiesData[i].asString();
-        std::string entityTexture = data["levels"][ld.name]["entity_data"][entityName].asString();
+        Json::Value entData = data["levels"][ld.name]["entity_data"][entityName];
+        std::string entityTexture = entData["texture"].asString();
         s2d::EntityData *ed = new s2d::EntityData();
         ed->label = entityName;
         ResourceManager::TextureData td = rm->getTexture(entityTexture);
         ed->texture = td;
-        ed->size = glm::vec2(td.width, td.height);
-        ed->colour = glm::vec3(0.f);
+        ed->size = glm::vec2(entData["size"][0].asFloat(), entData["size"][1].asFloat());
+        ed->colour = glm::vec3(
+            entData["color"][0].asFloat(),
+            entData["color"][1].asFloat(),
+            entData["color"][2].asFloat());
         entitiesData.push_back(ed);
     }
 

@@ -39,7 +39,8 @@ void Level::loadPlacedEntities(LevelData data)
         obj->alpha = sed->alpha;
         obj->setPosition(sed->pos);
         obj->size = sed->size;
-        obj->setTexture(rm->getTexture(sed->texture));
+        if (sed->texture != "")
+            obj->setTexture(rm->getTexture(sed->texture));
         scene->addChild(obj, sed->layer);
         Entity *e = new Entity(scene, obj, sed->layer);
         e->movementPath = sed->path;
@@ -98,8 +99,9 @@ void Level::update(glm::vec2 mouse)
         }
         else if (rightclick)
         {
-            scene->removeChild(placementObject, std::string(selectedPlacementLayer));
-            delete placementObject;
+            deleteObject(placementObject);
+            // scene->removeChild(placementObject, std::string(selectedPlacementLayer));
+            // delete placementObject;
             placementObject = nullptr;
         }
     }
