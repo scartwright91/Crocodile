@@ -8,7 +8,8 @@ namespace Crocodile
 	{
 
 		// callbacks
-		void windowResize(GLFWwindow *window, int width, int height);
+		void window_resize(GLFWwindow *window, int width, int height);
+		// void framebuffer_size_callback(GlfWwindow *window, int width, int height);
 		void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 		void mouse_button_callback(GLFWwindow *window, int button, int action, int mods);
 		void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
@@ -76,13 +77,19 @@ namespace Crocodile
 				return false;
 			}
 
-			glfwGetWindowSize(window, &width, &height);
-			glfwSetWindowSize(window, width, height);
-			glViewport(0, 0, width, height);
+			// viewport sizing
+			glfwGetFramebufferSize(window, &viewportWidth, &viewportHeight);
+			glViewport(0, 0, viewportWidth, viewportHeight);
+
+			viewportScale = glm::vec2(
+				(float)viewportWidth / initialWidth,
+				(float)viewportHeight / initialHeight);
 
 			// set callbacks
 			glfwMakeContextCurrent(window);
-			glfwSetWindowSizeCallback(window, windowResize);
+			// glfwSetWindowSizeCallback(window, windowResize);
+			glfwSetWindowSizeCallback(window, window_resize);
+			glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 			glfwSetKeyCallback(window, key_callback);
 			glfwSetMouseButtonCallback(window, mouse_button_callback);
 			glfwSetScrollCallback(window, scroll_callback);
@@ -136,7 +143,12 @@ namespace Crocodile
 			this->color = color;
 		}
 
-		void windowResize(GLFWwindow *window, int width, int height)
+		void window_resize(GLFWwindow *window, int width, int height)
+		{
+			// glViewport(0, 0, width, height);
+		}
+
+		void framebuffer_size_callback(GLFWwindow *window, int width, int height)
 		{
 			glViewport(0, 0, width, height);
 		}

@@ -47,8 +47,8 @@ namespace Crocodile
 				time = 0.0;
 			camera->update();
 			// screen resizing
-			if ((window->getWidth() != windowWidth) || (window->getHeight() != windowHeight))
-				scaleScene(window->getScale());
+			if ((window->getViewportWidth() != windowWidth) || (window->getViewportHeight() != windowHeight))
+				scaleScene(window->getviewportScale());
 			// objects
 			updateObjects(dt);
 			// transitions
@@ -308,11 +308,11 @@ namespace Crocodile
 
 		void Scene::scaleScene(glm::vec2 s)
 		{
-			windowWidth = window->getWidth();
-			windowHeight = window->getHeight();
+			windowWidth = window->getViewportWidth();
+			windowHeight = window->getViewportHeight();
 			if (!enableScaling)
 				return;
-			std::cout << "scale scene" << std::endl;
+			std::cout << "Scale scene: (" << s.x << ", " << s.y << ")" << std::endl;
 			for (Layer *layer : layerStack->layers)
 				for (Object *obj : layer->objects)
 				{
@@ -326,7 +326,7 @@ namespace Crocodile
 			if (enablePostprocessing)
 			{
 				delete postProcessing;
-				postProcessing = new s2d::PostProcessing(resourceManager->getShader("postprocessing"), window->getWidth(), windowHeight = window->getHeight());
+				postProcessing = new s2d::PostProcessing(resourceManager->getShader("postprocessing"), windowWidth, windowHeight);
 			}
 		}
 

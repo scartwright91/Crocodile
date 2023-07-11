@@ -23,7 +23,8 @@ namespace Crocodile
 #define MAX_BUTTONS 32
 
 		// callbacks
-		void windowResize(GLFWwindow *window, int width, int height);
+		void window_resize(GLFWwindow *window, int width, int height);
+		void framebuffer_size_callback(GLFWwindow *window, int width, int height);
 		void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 		void mouse_button_callback(GLFWwindow *window, int button, int action, int mods);
 		void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
@@ -33,7 +34,10 @@ namespace Crocodile
 
 		private:
 			bool resizeable;
-			int width, height, initialWidth, initialHeight;
+			int width, height;
+			int viewportWidth, viewportHeight;
+			const int initialWidth, initialHeight;
+			glm::vec2 viewportScale;
 			const char *name;
 			GLFWwindow *window;
 
@@ -48,6 +52,9 @@ namespace Crocodile
 
 			inline int getWidth() const { return width; }
 			inline int getHeight() const { return height; }
+			inline int getViewportWidth() const { return viewportWidth; }
+			inline int getViewportHeight() const { return viewportHeight; }
+			inline glm::vec2 getviewportScale() const { return viewportScale; }
 			inline glm::vec2 getScale() const { return glm::vec2((float)width / initialWidth, (float)height / initialHeight); }
 			inline glm::vec2 getScroll() const { return scroll; }
 			inline glm::vec2 getContentScale() const { return contentScale; }
