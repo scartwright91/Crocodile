@@ -72,6 +72,16 @@ namespace Crocodile
 					yMax = y + height;
 				}
 
+				std::vector<glm::vec2> getVertices()
+				{
+					std::vector<glm::vec2> vertices = {};
+					vertices.push_back(glm::vec2(xMin, yMin));
+					vertices.push_back(glm::vec2(xMax, yMin));
+					vertices.push_back(glm::vec2(xMax, yMax));
+					vertices.push_back(glm::vec2(xMin, yMax));
+					return vertices;
+				}
+
 				void printVertices()
 				{
 					std::cout << "topleft: [" << (int)xMin << ", " << (int)yMin

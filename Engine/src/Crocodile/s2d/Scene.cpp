@@ -208,7 +208,7 @@ namespace Crocodile
 					projection,
 					text->color,
 					text->alpha,
-					text->textScale,
+					text->textScale * glm::vec2(text->modelScale.x, text->modelScale.y),
 					layer->alpha);
 			}
 			else if (obj->renderMethod == "line")
@@ -226,6 +226,31 @@ namespace Crocodile
 			else
 			{
 				std::cout << "Undefined render method" << std::endl;
+			}
+
+			if (obj->showBoundingBox)
+			{
+				col::BoundingBox bbox = obj->getBoundingBox();
+				std::vector<glm::vec2> vertices = bbox.getVertices();
+				for (unsigned int i = 1; i < 4; i++)
+				{
+					lineRenderer->render(
+						vertices[i - 1] * glm::vec2(1.5f),
+						vertices[i] * glm::vec2(1.5f),
+						view,
+						projection,
+						obj->color,
+						obj->alpha,
+						layer->alpha);
+				}
+				lineRenderer->render(
+					vertices[3] * glm::vec2(1.5f),
+					vertices[0] * glm::vec2(1.5f),
+					view,
+					projection,
+					obj->color,
+					obj->alpha,
+					layer->alpha);
 			}
 		}
 
