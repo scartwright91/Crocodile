@@ -263,19 +263,20 @@ namespace Crocodile
 				(pos.x * 0.5 + 0.5) * width,
 				height - (pos.y * 0.5 + 0.5) * height,
 				scaledSize.x / zoom,
-				scaledSize.y / zoom);
+				scaledSize.y / zoom,
+				rotation);
 			return bbox;
 		}
 
 		s2d::col::BoundingBox Object::getBoundingBox()
 		{
 			// Returns a bounding box with the same position and size as the entity in world coordinates
-			return s2d::col::BoundingBox(position.x, position.y, size.x, size.y);
+			return s2d::col::BoundingBox(position.x, position.y, size.x, size.y, rotation);
 		}
 
 		s2d::col::BoundingBox Object::getShiftedBoundingBox(float dx, float dy)
 		{
-			return s2d::col::BoundingBox(position.x + dx, position.y + dy, size.x, size.y);
+			return s2d::col::BoundingBox(position.x + dx, position.y + dy, size.x, size.y, rotation);
 		}
 
 		void Object::syncParentPosition()

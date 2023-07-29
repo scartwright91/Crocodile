@@ -228,6 +228,7 @@ namespace Crocodile
 				std::cout << "Undefined render method" << std::endl;
 			}
 
+			// render lines to display object's bounding box
 			if (obj->showBoundingBox)
 			{
 				col::BoundingBox bbox = obj->getBoundingBox();

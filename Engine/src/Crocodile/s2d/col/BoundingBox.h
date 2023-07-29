@@ -22,11 +22,14 @@ namespace Crocodile
 				float yMin = y;
 				float yMax = y + height;
 
+				glm::vec2 center = glm::vec2(0.f);
+				float rotation = 0.0;
+
 				BoundingBox()
 				{
 				}
 
-				BoundingBox(float x, float y, float width, float height)
+				BoundingBox(float x, float y, float width, float height, float rotation)
 				{
 					this->x = x;
 					this->y = y;
@@ -36,6 +39,8 @@ namespace Crocodile
 					this->xMax = x + width;
 					this->yMin = y;
 					this->yMax = y + height;
+					this->center = glm::vec2(x + width / 2, y + height / 2);
+					this->rotation = rotation;
 				}
 
 				~BoundingBox()
@@ -79,6 +84,19 @@ namespace Crocodile
 					vertices.push_back(glm::vec2(xMax, yMin));
 					vertices.push_back(glm::vec2(xMax, yMax));
 					vertices.push_back(glm::vec2(xMin, yMax));
+					// rotate vertices around bbox center
+					if (rotation != 0.0)
+					{
+						for (unsigned int i = 0; i < 4; i++)
+						{
+							glm::vec2 p = vertices[i];
+							p.x -= center.x;
+							p.y -= center.y;
+							float newX = p.x * glm::cos(rotation) - p.y * glm::sin(rotation);
+							float newY = p.y * glm::cos(rotation) + p.x * glm::sin(rotation);
+							vertices[i] = glm::vec2(newX + center.x, newY + center.y);
+						}
+					}
 					return vertices;
 				}
 
