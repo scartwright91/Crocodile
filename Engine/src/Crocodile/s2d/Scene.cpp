@@ -233,6 +233,19 @@ namespace Crocodile
 			{
 				col::BoundingBox bbox = obj->getBoundingBox();
 				std::vector<glm::vec2> vertices = bbox.getVertices();
+				// axes lines
+				for (glm::vec2 v : bbox.getAxes())
+				{
+					lineRenderer->render(
+						bbox.center * glm::vec2(1.5f),
+						v * glm::vec2(1.5f),
+						view,
+						projection,
+						glm::vec3(0.f, 0.f, 1.f),
+						0.5f,
+						layer->alpha);
+				}
+				// connect bbox vertices
 				for (unsigned int i = 1; i < 4; i++)
 				{
 					lineRenderer->render(
