@@ -12,6 +12,18 @@ namespace Crocodile
 		namespace col
 		{
 
+			class Line
+			{
+			public:
+				glm::vec2 origin;
+				glm::vec2 direction;
+				Line(glm::vec2 origin, glm::vec2 direction)
+				{
+					this->origin = origin;
+					this->direction = direction;
+				};
+			};
+
 			class Vector
 			{
 			public:
@@ -22,12 +34,32 @@ namespace Crocodile
 					this->x = x;
 					this->y = y;
 				};
+				float getMagnitude()
+				{
+					return glm::sqrt(x * x + y * y);
+				};
 				void rotate(float rotation)
 				{
 					float newX = x * glm::cos(rotation) - y * glm::sin(rotation);
 					float newY = y * glm::cos(rotation) + x * glm::sin(rotation);
 					this->x = newX;
 					this->y = newY;
+				}
+				void add(float v)
+				{
+					x += v;
+					y += v;
+				}
+				void multiply(float v)
+				{
+					x *= v;
+					y *= v;
+				}
+				void project(Line line)
+				{
+					float dot = line.direction.x * (x - line.origin.x) + line.direction.y * (y - line.origin.y);
+					x = line.origin.x + line.direction.x * dot;
+					y = line.origin.y + line.direction.y * dot;
 				}
 			};
 
@@ -47,6 +79,10 @@ namespace Crocodile
 				glm::vec2 center = glm::vec2(0.f);
 				float rotation = 0.0;
 
+				std::vector<glm::vec2> vertices = {};
+				Vector xAxis = Vector(1.f, 0.f);
+				Vector yAxis = Vector(0.f, 1.f);
+
 				BoundingBox();
 				BoundingBox(float x, float y, float width, float height, float rotation);
 
@@ -58,11 +94,11 @@ namespace Crocodile
 				void inflate(float dx, float dy, bool centre);
 
 				// vertices
-				std::vector<glm::vec2> getVertices();
 				void printVertices();
 				std::vector<glm::vec2> getAxes();
 
 			private:
+				std::vector<glm::vec2> getVertices();
 				bool intersectsRotatedBounds(BoundingBox b);
 			};
 		}

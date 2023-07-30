@@ -12,6 +12,7 @@ namespace Crocodile
                 this->xMax = x + width;
                 this->yMin = y;
                 this->yMax = y + height;
+                vertices = getVertices();
             }
 
             BoundingBox::BoundingBox(float x, float y, float width, float height, float rotation)
@@ -26,6 +27,9 @@ namespace Crocodile
                 this->yMax = y + height;
                 this->center = glm::vec2(x + width / 2, y + height / 2);
                 this->rotation = rotation;
+                vertices = getVertices();
+                xAxis.rotate(rotation);
+                yAxis.rotate(rotation);
             }
 
             bool BoundingBox::intersectsBounds(BoundingBox b)
@@ -86,22 +90,18 @@ namespace Crocodile
             std::vector<glm::vec2> BoundingBox::getAxes()
             {
                 std::vector<glm::vec2> axes = {};
-                Vector ox = Vector(1.f, 0.f);
-                Vector oy = Vector(0.f, 1.f);
-                ox.rotate(rotation);
-                oy.rotate(rotation);
                 glm::vec2 px1 = glm::vec2(
-                    center.x + width * 0.75 * ox.x,
-                    center.y + width * 0.75 * ox.y);
+                    center.x + width * 0.75 * xAxis.x,
+                    center.y + width * 0.75 * xAxis.y);
                 glm::vec2 px2 = glm::vec2(
-                    center.x - width * 0.75 * ox.x,
-                    center.y - width * 0.75 * ox.y);
+                    center.x - width * 0.75 * xAxis.x,
+                    center.y - width * 0.75 * xAxis.y);
                 glm::vec2 py1 = glm::vec2(
-                    center.x + height * 0.75 * oy.x,
-                    center.y + height * 0.75 * oy.y);
+                    center.x + height * 0.75 * yAxis.x,
+                    center.y + height * 0.75 * yAxis.y);
                 glm::vec2 py2 = glm::vec2(
-                    center.x - height * 0.75 * oy.x,
-                    center.y - height * 0.75 * oy.y);
+                    center.x - height * 0.75 * yAxis.x,
+                    center.y - height * 0.75 * yAxis.y);
                 axes.push_back(px1);
                 axes.push_back(px2);
                 axes.push_back(py1);
@@ -120,6 +120,8 @@ namespace Crocodile
 
             bool BoundingBox::intersectsRotatedBounds(BoundingBox b)
             {
+                // rects axes
+                // rect corners
                 return false;
             }
 

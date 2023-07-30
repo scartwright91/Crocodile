@@ -232,7 +232,7 @@ namespace Crocodile
 			if (obj->showBoundingBox)
 			{
 				col::BoundingBox bbox = obj->getBoundingBox();
-				std::vector<glm::vec2> vertices = bbox.getVertices();
+				std::vector<glm::vec2> vertices = bbox.vertices;
 				// axes lines
 				for (glm::vec2 v : bbox.getAxes())
 				{
