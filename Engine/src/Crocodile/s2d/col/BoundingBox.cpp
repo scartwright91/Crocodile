@@ -34,7 +34,7 @@ namespace Crocodile
 
             bool BoundingBox::intersectsBounds(BoundingBox b)
             {
-                if (rotation != 0.0 || b.rotation != 0.0)
+                if (rotation != 0.0)
                     return intersectsRotatedBounds(b);
                 return !(xMin >= b.xMax || yMin >= b.yMax || xMax <= b.xMin || yMax <= b.yMin);
             }
@@ -87,7 +87,15 @@ namespace Crocodile
                 return vertices;
             }
 
-            std::vector<glm::vec2> BoundingBox::getAxes()
+            std::vector<Line> BoundingBox::getAxes()
+            {
+                std::vector<Line> lines = {};
+                lines.push_back(Line("x", center, glm::vec2(xAxis.x, xAxis.y)));
+                lines.push_back(Line("y", center, glm::vec2(yAxis.x, yAxis.y)));
+                return lines;
+            }
+
+            std::vector<glm::vec2> BoundingBox::getDebugAxes()
             {
                 std::vector<glm::vec2> axes = {};
                 glm::vec2 px1 = glm::vec2(
@@ -120,9 +128,30 @@ namespace Crocodile
 
             bool BoundingBox::intersectsRotatedBounds(BoundingBox b)
             {
-                // rects axes
-                // rect corners
-                return false;
+                // logic implemented from https://stackoverflow.com/questions/62028169/how-to-detect-when-rotated-rectangles-are-colliding-each-other
+                // https://github.com/ArthurGerbelot/rect-collide
+                bool collide = true;
+                glm::vec2 limits = glm::vec2(0.f);
+                for (Line line : b.getAxes())
+                {
+                    float rectHalfSize = (line.axis == "x" ? b.width : b.height) / 2;
+                    for (glm::vec2 vertex : vertices)
+                    {
+                        Vector v(vertex.x, vertex.y);
+                        v.project(line);
+                        v.minus(center);
+                        bool sign = (v.x * line.direction.x) + (v.y * line.direction.y) > 0;
+                        float signedDistance = v.getMagnitude() * (sign ? 1 : -1);
+
+                        if (limits.x > signedDistance)
+                            limits.x = signedDistance;
+                        if (limits.y < signedDistance)
+                            limits.y = signedDistance;
+                    }
+                    if ((limits.x < 0 && limits.y > 0) || (glm::abs(limits.x) < rectHalfSize) || (glm::abs(limits.y) < rectHalfSize))
+                        collide = false;
+                }
+                return collide;
             }
 
         }

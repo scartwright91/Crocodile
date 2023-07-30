@@ -15,10 +15,12 @@ namespace Crocodile
 			class Line
 			{
 			public:
+				std::string axis;
 				glm::vec2 origin;
 				glm::vec2 direction;
-				Line(glm::vec2 origin, glm::vec2 direction)
+				Line(std::string axis, glm::vec2 origin, glm::vec2 direction)
 				{
+					this->axis = axis;
 					this->origin = origin;
 					this->direction = direction;
 				};
@@ -45,15 +47,20 @@ namespace Crocodile
 					this->x = newX;
 					this->y = newY;
 				}
-				void add(float v)
+				void add(glm::vec2 v)
 				{
-					x += v;
-					y += v;
+					x += v.x;
+					y += v.y;
 				}
-				void multiply(float v)
+				void minus(glm::vec2 v)
 				{
-					x *= v;
-					y *= v;
+					x -= v.x;
+					y -= v.y;
+				}
+				void multiply(glm::vec2 v)
+				{
+					x *= v.x;
+					y *= v.y;
 				}
 				void project(Line line)
 				{
@@ -95,7 +102,8 @@ namespace Crocodile
 
 				// vertices
 				void printVertices();
-				std::vector<glm::vec2> getAxes();
+				std::vector<Line> getAxes();
+				std::vector<glm::vec2> getDebugAxes();
 
 			private:
 				std::vector<glm::vec2> getVertices();

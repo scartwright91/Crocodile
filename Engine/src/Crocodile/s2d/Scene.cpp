@@ -234,7 +234,7 @@ namespace Crocodile
 				col::BoundingBox bbox = obj->getBoundingBox();
 				std::vector<glm::vec2> vertices = bbox.vertices;
 				// axes lines
-				for (glm::vec2 v : bbox.getAxes())
+				for (glm::vec2 v : bbox.getDebugAxes())
 				{
 					lineRenderer->render(
 						bbox.center * glm::vec2(1.5f),
