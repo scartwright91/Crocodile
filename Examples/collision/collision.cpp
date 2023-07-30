@@ -10,6 +10,7 @@ public:
     s2d::Text *fps = nullptr;
     s2d::Object *player = nullptr;
     s2d::Object *rect = nullptr;
+    std::vector<s2d::shapes::Line *> collisionLines = {};
 
     CollisionExample() : Crocodile::Application("Collision example", false, 1280, 720, false)
     {
@@ -19,6 +20,13 @@ public:
     void update(float dt)
     {
         fps->text = std::to_string(clock.getFPS());
+
+        for (s2d::shapes::Line *l : collisionLines)
+        {
+            scene->removeChild(l, "entities");
+            delete l;
+        }
+        collisionLines.clear();
 
         // move
         float speed = 400.f;
@@ -34,9 +42,9 @@ public:
             dx = speed * dt;
 
         if (scene->window->isKeyPressed(GLFW_KEY_LEFT))
-            player->rotate(-0.01f);
+            player->rotate(-0.05f);
         else if (scene->window->isKeyPressed(GLFW_KEY_RIGHT))
-            player->rotate(0.01f);
+            player->rotate(0.05f);
 
         player->move(dx, dy);
 
@@ -45,6 +53,17 @@ public:
             player->color = glm::vec3(1.f, 0.f, 0.f);
         else
             player->color = glm::vec3(0.f);
+
+        // add collision vectors
+        std::vector<s2d::col::Line> lines = player->getBoundingBox().getCollisionVectors(rect->getBoundingBox());
+        for (s2d::col::Line line : lines)
+        {
+            s2d::shapes::Line *l = new s2d::shapes::Line(
+                line.origin * glm::vec2(1.5f),
+                line.direction * glm::vec2(1.5f));
+            scene->addChild(l, "entities");
+            collisionLines.push_back(l);
+        }
     }
 
     void init()
@@ -66,21 +85,37 @@ public:
         scene->addChild(fps, "hud");
 
         player = new s2d::Object();
+        player->setPosition(glm::vec2(410.f));
+        player->alpha = 0.3f;
+        player->rotate(0.3f);
         player->size = glm::vec2(100.f);
         player->color = glm::vec3(0.f);
-        player->showBoundingBox = true;
+        // player->showBoundingBox = true;
 
         rect = new s2d::Object();
+        rect->alpha = 0.3f;
+        // rect->rotate(0.7f);
         rect->setPosition(glm::vec2(500.f));
         rect->size = glm::vec2(100.f);
-        rect->color = glm::vec3(0.1f);
+        rect->color = glm::vec3(0.f);
         rect->showBoundingBox = true;
 
-        window.setBackgroundColor(glm::vec3(0.88f));
+        window.setBackgroundColor(glm::vec3(0.7f));
         scene->camera->setTarget(player, false);
-        // scene->camera->setZoom(2.f);
+        scene->camera->setZoom(0.5f);
         scene->addChild(player, "entities");
         scene->addChild(rect, "entities");
+
+        // add collision vectors
+        std::vector<s2d::col::Line> lines = player->getBoundingBox().getCollisionVectors(rect->getBoundingBox());
+        for (s2d::col::Line line : lines)
+        {
+            s2d::shapes::Line *l = new s2d::shapes::Line(
+                line.origin * glm::vec2(1.5f),
+                line.direction * glm::vec2(1.5f));
+            scene->addChild(l, "entities");
+            collisionLines.push_back(l);
+        }
     }
 };
 

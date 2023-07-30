@@ -34,7 +34,7 @@ namespace Crocodile
 
             bool BoundingBox::intersectsBounds(BoundingBox b)
             {
-                if (rotation != 0.0)
+                if (rotation != 0.0 || b.rotation != 0.0)
                     return intersectsRotatedBounds(b);
                 return !(xMin >= b.xMax || yMin >= b.yMax || xMax <= b.xMin || yMax <= b.yMin);
             }
@@ -98,18 +98,19 @@ namespace Crocodile
             std::vector<glm::vec2> BoundingBox::getDebugAxes()
             {
                 std::vector<glm::vec2> axes = {};
+                float multiplier = 1.f;
                 glm::vec2 px1 = glm::vec2(
-                    center.x + width * 0.75 * xAxis.x,
-                    center.y + width * 0.75 * xAxis.y);
+                    center.x + width * multiplier * xAxis.x,
+                    center.y + width * multiplier * xAxis.y);
                 glm::vec2 px2 = glm::vec2(
-                    center.x - width * 0.75 * xAxis.x,
-                    center.y - width * 0.75 * xAxis.y);
+                    center.x - width * multiplier * xAxis.x,
+                    center.y - width * multiplier * xAxis.y);
                 glm::vec2 py1 = glm::vec2(
-                    center.x + height * 0.75 * yAxis.x,
-                    center.y + height * 0.75 * yAxis.y);
+                    center.x + height * multiplier * yAxis.x,
+                    center.y + height * multiplier * yAxis.y);
                 glm::vec2 py2 = glm::vec2(
-                    center.x - height * 0.75 * yAxis.x,
-                    center.y - height * 0.75 * yAxis.y);
+                    center.x - height * multiplier * yAxis.x,
+                    center.y - height * multiplier * yAxis.y);
                 axes.push_back(px1);
                 axes.push_back(px2);
                 axes.push_back(py1);
@@ -139,7 +140,7 @@ namespace Crocodile
                     {
                         Vector v(vertex.x, vertex.y);
                         v.project(line);
-                        v.minus(center);
+                        // v.minus(center);
                         bool sign = (v.x * line.direction.x) + (v.y * line.direction.y) > 0;
                         float signedDistance = v.getMagnitude() * (sign ? 1 : -1);
 
@@ -152,6 +153,24 @@ namespace Crocodile
                         collide = false;
                 }
                 return collide;
+            }
+
+            std::vector<Line> BoundingBox::getCollisionVectors(BoundingBox b)
+            {
+                std::vector<Line> lines = {};
+                for (Line line : b.getAxes())
+                {
+                    float rectHalfSize = (line.axis == "x" ? b.width : b.height) / 2;
+                    for (glm::vec2 vertex : vertices)
+                    {
+                        Vector v(vertex.x, vertex.y);
+                        v.project(line);
+                        // v.minus(center);
+                        Line l(line.axis, vertex, glm::vec2(v.x, v.y));
+                        lines.push_back(l);
+                    }
+                }
+                return lines;
             }
 
         }

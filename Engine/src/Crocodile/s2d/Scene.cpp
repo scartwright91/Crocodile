@@ -253,7 +253,8 @@ namespace Crocodile
 						vertices[i] * glm::vec2(1.5f),
 						view,
 						projection,
-						obj->color,
+						// obj->color,
+						glm::vec3(1.f),
 						obj->alpha,
 						layer->alpha);
 				}
@@ -262,7 +263,8 @@ namespace Crocodile
 					vertices[0] * glm::vec2(1.5f),
 					view,
 					projection,
-					obj->color,
+					// obj->color,
+					glm::vec3(1.f),
 					obj->alpha,
 					layer->alpha);
 			}
