@@ -12,18 +12,25 @@ namespace Crocodile
 		namespace col
 		{
 
-			class Line
+			struct Line
 			{
-			public:
 				std::string axis;
 				glm::vec2 origin;
 				glm::vec2 direction;
-				Line(std::string axis, glm::vec2 origin, glm::vec2 direction)
-				{
-					this->axis = axis;
-					this->origin = origin;
-					this->direction = direction;
-				};
+			};
+
+			struct LineIntersection
+			{
+				Line axis;
+				glm::vec2 min;
+				glm::vec2 max;
+				bool collision;
+			};
+
+			struct CollisionVectors
+			{
+				std::vector<Line> cornerProjections;
+				std::vector<LineIntersection> lineIntersections;
 			};
 
 			class Vector
@@ -46,21 +53,6 @@ namespace Crocodile
 					float newY = y * glm::cos(rotation) + x * glm::sin(rotation);
 					this->x = newX;
 					this->y = newY;
-				}
-				void add(glm::vec2 v)
-				{
-					x += v.x;
-					y += v.y;
-				}
-				void minus(glm::vec2 v)
-				{
-					x -= v.x;
-					y -= v.y;
-				}
-				void multiply(glm::vec2 v)
-				{
-					x *= v.x;
-					y *= v.y;
 				}
 				void project(Line line)
 				{
@@ -104,11 +96,12 @@ namespace Crocodile
 				void printVertices();
 				std::vector<Line> getAxes();
 				std::vector<glm::vec2> getDebugAxes();
-				std::vector<Line> getCollisionVectors(BoundingBox b);
+				CollisionVectors getCollisionVectors(BoundingBox b);
 
 			private:
 				std::vector<glm::vec2> getVertices();
 				bool intersectsRotatedBounds(BoundingBox b);
+				float getMagnitude(glm::vec2 a, glm::vec2 b);
 			};
 		}
 	}

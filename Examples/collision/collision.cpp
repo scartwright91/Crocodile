@@ -11,6 +11,7 @@ public:
     s2d::Object *player = nullptr;
     s2d::Object *rect = nullptr;
     std::vector<s2d::shapes::Line *> collisionLines = {};
+    std::vector<s2d::shapes::Line *> intersectionLines = {};
 
     CollisionExample() : Crocodile::Application("Collision example", false, 1280, 720, false)
     {
@@ -20,13 +21,6 @@ public:
     void update(float dt)
     {
         fps->text = std::to_string(clock.getFPS());
-
-        for (s2d::shapes::Line *l : collisionLines)
-        {
-            scene->removeChild(l, "entities");
-            delete l;
-        }
-        collisionLines.clear();
 
         // move
         float speed = 400.f;
@@ -55,14 +49,22 @@ public:
             player->color = glm::vec3(0.f);
 
         // add collision vectors
-        std::vector<s2d::col::Line> lines = player->getBoundingBox().getCollisionVectors(rect->getBoundingBox());
-        for (s2d::col::Line line : lines)
+        s2d::col::CollisionVectors cv = player->getBoundingBox().getCollisionVectors(rect->getBoundingBox());
+        std::vector<s2d::col::Line> lines = cv.cornerProjections;
+        for (unsigned int i = 0; i < lines.size(); i++)
         {
-            s2d::shapes::Line *l = new s2d::shapes::Line(
-                line.origin * glm::vec2(1.5f),
-                line.direction * glm::vec2(1.5f));
-            scene->addChild(l, "entities");
-            collisionLines.push_back(l);
+            collisionLines[i]->p1 = lines[i].origin * glm::vec2(1.5f);
+            collisionLines[i]->p2 = lines[i].direction * glm::vec2(1.5f);
+        }
+        std::vector<s2d::col::LineIntersection> linesIntersections = cv.lineIntersections;
+        for (unsigned int i = 0; i < linesIntersections.size(); i++)
+        {
+            intersectionLines[i]->p1 = linesIntersections[i].min * glm::vec2(1.5f);
+            intersectionLines[i]->p2 = linesIntersections[i].max * glm::vec2(1.5f);
+            if (linesIntersections[i].collision)
+                intersectionLines[i]->color = glm::vec3(1.f, 0.f, 0.f);
+            else
+                intersectionLines[i]->color = glm::vec3(1.f, 0.6f, 0.f);
         }
     }
 
@@ -107,7 +109,8 @@ public:
         scene->addChild(rect, "entities");
 
         // add collision vectors
-        std::vector<s2d::col::Line> lines = player->getBoundingBox().getCollisionVectors(rect->getBoundingBox());
+        s2d::col::CollisionVectors cv = player->getBoundingBox().getCollisionVectors(rect->getBoundingBox());
+        std::vector<s2d::col::Line> lines = cv.cornerProjections;
         for (s2d::col::Line line : lines)
         {
             s2d::shapes::Line *l = new s2d::shapes::Line(
@@ -115,6 +118,17 @@ public:
                 line.direction * glm::vec2(1.5f));
             scene->addChild(l, "entities");
             collisionLines.push_back(l);
+        }
+        // line intersections
+        std::vector<s2d::col::LineIntersection> intersections = cv.lineIntersections;
+        for (s2d::col::LineIntersection intersection : intersections)
+        {
+            s2d::shapes::Line *l = new s2d::shapes::Line(
+                intersection.min * glm::vec2(1.5f),
+                intersection.max * glm::vec2(1.5f));
+            l->color = glm::vec3(1.f, 0.f, 0.f);
+            scene->addChild(l, "entities");
+            intersectionLines.push_back(l);
         }
     }
 };

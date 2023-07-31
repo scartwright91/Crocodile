@@ -90,8 +90,16 @@ namespace Crocodile
             std::vector<Line> BoundingBox::getAxes()
             {
                 std::vector<Line> lines = {};
-                lines.push_back(Line("x", center, glm::vec2(xAxis.x, xAxis.y)));
-                lines.push_back(Line("y", center, glm::vec2(yAxis.x, yAxis.y)));
+                Line lx;
+                lx.axis = "x";
+                lx.origin = center;
+                lx.direction = glm::vec2(xAxis.x, xAxis.y);
+                Line ly;
+                ly.axis = "y";
+                ly.origin = center;
+                ly.direction = glm::vec2(yAxis.x, yAxis.y);
+                lines.push_back(lx);
+                lines.push_back(ly);
                 return lines;
             }
 
@@ -129,48 +137,64 @@ namespace Crocodile
 
             bool BoundingBox::intersectsRotatedBounds(BoundingBox b)
             {
+                // we check the line intersections of both bounding boxes to check all 4 projections
+                bool collide = true;
+                CollisionVectors cv1 = getCollisionVectors(b);
+                for (LineIntersection li : cv1.lineIntersections)
+                    if (!li.collision)
+                        collide = false;
+                return collide;
+            }
+
+            CollisionVectors BoundingBox::getCollisionVectors(BoundingBox b)
+            {
                 // logic implemented from https://stackoverflow.com/questions/62028169/how-to-detect-when-rotated-rectangles-are-colliding-each-other
                 // https://github.com/ArthurGerbelot/rect-collide
+                std::vector<Line> lines = {};
+                std::vector<LineIntersection> linesIntersections = {};
                 bool collide = true;
                 glm::vec2 limits = glm::vec2(0.f);
                 for (Line line : b.getAxes())
                 {
+                    glm::vec2 minMagVertex = line.origin;
+                    glm::vec2 maxMagVertex = line.origin;
                     float rectHalfSize = (line.axis == "x" ? b.width : b.height) / 2;
                     for (glm::vec2 vertex : vertices)
                     {
                         Vector v(vertex.x, vertex.y);
                         v.project(line);
-                        // v.minus(center);
-                        bool sign = (v.x * line.direction.x) + (v.y * line.direction.y) > 0;
-                        float signedDistance = v.getMagnitude() * (sign ? 1 : -1);
+                        glm::vec2 projectedVertex = glm::vec2(v.x, v.y);
+                        Line l;
+                        l.axis = line.axis;
+                        l.origin = vertex;
+                        l.direction = projectedVertex;
+                        lines.push_back(l);
 
-                        if (limits.x > signedDistance)
-                            limits.x = signedDistance;
-                        if (limits.y < signedDistance)
-                            limits.y = signedDistance;
+                        // v is the projected point on the axis, find min and max projections (relative to axis origin)
+                        float vertexMagnitude = getMagnitude(projectedVertex, line.origin);
+                        float minMag = getMagnitude(minMagVertex, line.origin);
+                        float maxMag = getMagnitude(maxMagVertex, line.origin);
+                        if (vertexMagnitude > maxMag)
+                            maxMagVertex = projectedVertex;
+                        if (vertexMagnitude < minMag || minMag == 0.0f)
+                            minMagVertex = projectedVertex;
                     }
-                    if ((limits.x < 0 && limits.y > 0) || (glm::abs(limits.x) < rectHalfSize) || (glm::abs(limits.y) < rectHalfSize))
-                        collide = false;
+                    LineIntersection li;
+                    li.axis = line;
+                    li.min = minMagVertex;
+                    li.max = maxMagVertex;
+                    li.collision = (getMagnitude(li.min, line.origin) < rectHalfSize) || (getMagnitude(li.max, line.origin) < rectHalfSize);
+                    linesIntersections.push_back(li);
                 }
-                return collide;
+                CollisionVectors cv;
+                cv.cornerProjections = lines;
+                cv.lineIntersections = linesIntersections;
+                return cv;
             }
 
-            std::vector<Line> BoundingBox::getCollisionVectors(BoundingBox b)
+            float BoundingBox::getMagnitude(glm::vec2 a, glm::vec2 b)
             {
-                std::vector<Line> lines = {};
-                for (Line line : b.getAxes())
-                {
-                    float rectHalfSize = (line.axis == "x" ? b.width : b.height) / 2;
-                    for (glm::vec2 vertex : vertices)
-                    {
-                        Vector v(vertex.x, vertex.y);
-                        v.project(line);
-                        // v.minus(center);
-                        Line l(line.axis, vertex, glm::vec2(v.x, v.y));
-                        lines.push_back(l);
-                    }
-                }
-                return lines;
+                return glm::sqrt(glm::pow(a.x - b.x, 2) + glm::pow(a.y - b.y, 2));
             }
 
         }
