@@ -96,7 +96,7 @@ namespace Crocodile
 				void printVertices();
 				std::vector<Line> getAxes();
 				std::vector<glm::vec2> getDebugAxes();
-				CollisionVectors getCollisionVectors(BoundingBox b);
+				CollisionVectors getCollisionVectors(BoundingBox *b);
 
 			private:
 				std::vector<glm::vec2> getVertices();

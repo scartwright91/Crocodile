@@ -49,7 +49,8 @@ public:
             player->color = glm::vec3(0.f);
 
         // add collision vectors
-        s2d::col::CollisionVectors cv = player->getBoundingBox().getCollisionVectors(rect->getBoundingBox());
+        s2d::col::BoundingBox bbox = rect->getBoundingBox();
+        s2d::col::CollisionVectors cv = player->getBoundingBox().getCollisionVectors(&bbox);
         std::vector<s2d::col::Line> lines = cv.cornerProjections;
         for (unsigned int i = 0; i < lines.size(); i++)
         {
@@ -109,7 +110,8 @@ public:
         scene->addChild(rect, "entities");
 
         // add collision vectors
-        s2d::col::CollisionVectors cv = player->getBoundingBox().getCollisionVectors(rect->getBoundingBox());
+        s2d::col::BoundingBox bbox = rect->getBoundingBox();
+        s2d::col::CollisionVectors cv = player->getBoundingBox().getCollisionVectors(&bbox);
         std::vector<s2d::col::Line> lines = cv.cornerProjections;
         for (s2d::col::Line line : lines)
         {

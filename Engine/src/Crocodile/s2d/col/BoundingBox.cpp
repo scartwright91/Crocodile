@@ -139,14 +139,18 @@ namespace Crocodile
             {
                 // we check the line intersections of both bounding boxes to check all 4 projections
                 bool collide = true;
-                CollisionVectors cv1 = getCollisionVectors(b);
+                CollisionVectors cv1 = getCollisionVectors(&b);
                 for (LineIntersection li : cv1.lineIntersections)
+                    if (!li.collision)
+                        collide = false;
+                CollisionVectors cv2 = b.getCollisionVectors(this);
+                for (LineIntersection li : cv2.lineIntersections)
                     if (!li.collision)
                         collide = false;
                 return collide;
             }
 
-            CollisionVectors BoundingBox::getCollisionVectors(BoundingBox b)
+            CollisionVectors BoundingBox::getCollisionVectors(BoundingBox *b)
             {
                 // logic implemented from https://stackoverflow.com/questions/62028169/how-to-detect-when-rotated-rectangles-are-colliding-each-other
                 // https://github.com/ArthurGerbelot/rect-collide
@@ -154,11 +158,11 @@ namespace Crocodile
                 std::vector<LineIntersection> linesIntersections = {};
                 bool collide = true;
                 glm::vec2 limits = glm::vec2(0.f);
-                for (Line line : b.getAxes())
+                for (Line line : b->getAxes())
                 {
                     glm::vec2 minMagVertex = line.origin;
                     glm::vec2 maxMagVertex = line.origin;
-                    float rectHalfSize = (line.axis == "x" ? b.width : b.height) / 2;
+                    float rectHalfSize = (line.axis == "x" ? b->width : b->height) / 2;
                     for (glm::vec2 vertex : vertices)
                     {
                         Vector v(vertex.x, vertex.y);
