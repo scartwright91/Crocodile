@@ -105,6 +105,7 @@ namespace Crocodile
 
             std::vector<glm::vec2> BoundingBox::getDebugAxes()
             {
+                //
                 std::vector<glm::vec2> axes = {};
                 float multiplier = 1.f;
                 glm::vec2 px1 = glm::vec2(
@@ -135,9 +136,10 @@ namespace Crocodile
                           << "]" << std::endl;
             }
 
+            // we check the line intersections of both bounding boxes to check all 4 projections
+            // if any of the 4 projections do not collide then there is no rect intersection
             bool BoundingBox::intersectsRotatedBounds(BoundingBox b)
             {
-                // we check the line intersections of both bounding boxes to check all 4 projections
                 bool collide = true;
                 CollisionVectors cv1 = getCollisionVectors(&b);
                 for (LineIntersection li : cv1.lineIntersections)
@@ -150,10 +152,10 @@ namespace Crocodile
                 return collide;
             }
 
+            // logic implemented from https://stackoverflow.com/questions/62028169/how-to-detect-when-rotated-rectangles-are-colliding-each-other
+            // https://github.com/ArthurGerbelot/rect-collide
             CollisionVectors BoundingBox::getCollisionVectors(BoundingBox *b)
             {
-                // logic implemented from https://stackoverflow.com/questions/62028169/how-to-detect-when-rotated-rectangles-are-colliding-each-other
-                // https://github.com/ArthurGerbelot/rect-collide
                 std::vector<Line> lines = {};
                 std::vector<LineIntersection> linesIntersections = {};
                 bool collide = true;

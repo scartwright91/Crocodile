@@ -1,7 +1,6 @@
 # Cmake stuff
 build/
 build_web/
-CMakeLists.txt
 CMakeFiles/
 CmakeCache.txt
 

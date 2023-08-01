@@ -91,7 +91,7 @@ public:
         player->setPosition(glm::vec2(410.f));
         player->alpha = 0.3f;
         player->rotate(0.3f);
-        player->size = glm::vec2(100.f);
+        player->size = glm::vec2(100.f, 60.f);
         player->color = glm::vec3(0.f);
         // player->showBoundingBox = true;
 
@@ -99,7 +99,7 @@ public:
         rect->alpha = 0.3f;
         // rect->rotate(0.7f);
         rect->setPosition(glm::vec2(500.f));
-        rect->size = glm::vec2(100.f);
+        rect->size = glm::vec2(100.f, 50.f);
         rect->color = glm::vec3(0.f);
         rect->showBoundingBox = true;
 
