@@ -77,13 +77,7 @@ namespace Crocodile
 				return false;
 			}
 
-			// viewport sizing
-			glfwGetFramebufferSize(window, &viewportWidth, &viewportHeight);
-			glViewport(0, 0, viewportWidth, viewportHeight);
-
-			viewportScale = glm::vec2(
-				(float)viewportWidth / initialWidth,
-				(float)viewportHeight / initialHeight);
+			updateViewport();
 
 			// set callbacks
 			glfwMakeContextCurrent(window);
@@ -99,6 +93,17 @@ namespace Crocodile
 			return true;
 		}
 
+		void Window::updateViewport()
+		{
+			// viewport sizing
+			glfwGetFramebufferSize(window, &viewportWidth, &viewportHeight);
+			glViewport(0, 0, viewportWidth, viewportHeight);
+
+			viewportScale = glm::vec2(
+				(float)viewportWidth / initialWidth,
+				(float)viewportHeight / initialHeight);
+		}
+
 		bool Window::closed() const
 		{
 			return glfwWindowShouldClose(window) == 1;
@@ -106,6 +111,9 @@ namespace Crocodile
 
 		void Window::beginRender()
 		{
+			// viewport sizing
+			updateViewport();
+			// clear buffers
 			glClearColor(color.x, color.y, color.z, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 			glfwGetFramebufferSize(window, &width, &height);
@@ -145,7 +153,7 @@ namespace Crocodile
 
 		void window_resize(GLFWwindow *window, int width, int height)
 		{
-			// glViewport(0, 0, width, height);
+			glViewport(0, 0, width, height);
 		}
 
 		void framebuffer_size_callback(GLFWwindow *window, int width, int height)

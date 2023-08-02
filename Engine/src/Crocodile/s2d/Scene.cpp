@@ -48,7 +48,7 @@ namespace Crocodile
 			camera->update();
 			// screen resizing
 			if ((window->getViewportWidth() != windowWidth) || (window->getViewportHeight() != windowHeight))
-				scaleScene(window->getviewportScale());
+				scaleScene(window->getViewportScale());
 			// objects
 			updateObjects(dt);
 			// transitions
@@ -86,7 +86,7 @@ namespace Crocodile
 							o->setPosition(newPos);
 						}
 						// apply scene scale
-						obj->modelScale = glm::vec3(window->getviewportScale(), 1.f);
+						obj->modelScale = glm::vec3(window->getViewportScale(), 1.f);
 					}
 				}
 			}
@@ -239,8 +239,8 @@ namespace Crocodile
 				for (glm::vec2 v : bbox.getDebugAxes())
 				{
 					lineRenderer->render(
-						bbox.center * window->getviewportScale(),
-						v * window->getviewportScale(),
+						bbox.center * window->getViewportScale(),
+						v * window->getViewportScale(),
 						view,
 						projection,
 						glm::vec3(0.f, 0.f, 1.f),
@@ -251,8 +251,8 @@ namespace Crocodile
 				for (unsigned int i = 1; i < 4; i++)
 				{
 					lineRenderer->render(
-						vertices[i - 1] * window->getviewportScale(),
-						vertices[i] * window->getviewportScale(),
+						vertices[i - 1] * window->getViewportScale(),
+						vertices[i] * window->getViewportScale(),
 						view,
 						projection,
 						obj->color,
@@ -260,8 +260,8 @@ namespace Crocodile
 						layer->alpha);
 				}
 				lineRenderer->render(
-					vertices[3] * window->getviewportScale(),
-					vertices[0] * window->getviewportScale(),
+					vertices[3] * window->getViewportScale(),
+					vertices[0] * window->getViewportScale(),
 					view,
 					projection,
 					obj->color,
