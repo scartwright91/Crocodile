@@ -85,6 +85,8 @@ namespace Crocodile
 								startingPos.y + (windowHeight - camera->cameraPosition.y) * layer->depth);
 							o->setPosition(newPos);
 						}
+						// apply scene scale
+						obj->modelScale = glm::vec3(window->getviewportScale(), 1.f);
 					}
 				}
 			}
@@ -237,8 +239,8 @@ namespace Crocodile
 				for (glm::vec2 v : bbox.getDebugAxes())
 				{
 					lineRenderer->render(
-						bbox.center * glm::vec2(1.5f),
-						v * glm::vec2(1.5f),
+						bbox.center * window->getviewportScale(),
+						v * window->getviewportScale(),
 						view,
 						projection,
 						glm::vec3(0.f, 0.f, 1.f),
@@ -249,22 +251,20 @@ namespace Crocodile
 				for (unsigned int i = 1; i < 4; i++)
 				{
 					lineRenderer->render(
-						vertices[i - 1] * glm::vec2(1.5f),
-						vertices[i] * glm::vec2(1.5f),
+						vertices[i - 1] * window->getviewportScale(),
+						vertices[i] * window->getviewportScale(),
 						view,
 						projection,
-						// obj->color,
-						glm::vec3(1.f),
+						obj->color,
 						obj->alpha,
 						layer->alpha);
 				}
 				lineRenderer->render(
-					vertices[3] * glm::vec2(1.5f),
-					vertices[0] * glm::vec2(1.5f),
+					vertices[3] * window->getviewportScale(),
+					vertices[0] * window->getviewportScale(),
 					view,
 					projection,
-					// obj->color,
-					glm::vec3(1.f),
+					obj->color,
 					obj->alpha,
 					layer->alpha);
 			}
@@ -351,18 +351,6 @@ namespace Crocodile
 		{
 			windowWidth = window->getViewportWidth();
 			windowHeight = window->getViewportHeight();
-			if (!enableScaling)
-				return;
-			std::cout << "Scale scene: (" << s.x << ", " << s.y << ")" << std::endl;
-			for (Layer *layer : layerStack->layers)
-				for (Object *obj : layer->objects)
-				{
-					std::vector<Object *> objectStack = {obj};
-					for (Object *child : obj->children)
-						objectStack.push_back(child);
-					for (Object *o : objectStack)
-						o->scale(s);
-				}
 			// scale postprocessing texture
 			if (enablePostprocessing)
 			{

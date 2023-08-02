@@ -55,9 +55,7 @@ namespace Crocodile
 			inline int getViewportWidth() const { return viewportWidth; }
 			inline int getViewportHeight() const { return viewportHeight; }
 			inline glm::vec2 getviewportScale() const { return viewportScale; }
-			inline glm::vec2 getScale() const { return glm::vec2((float)width / initialWidth, (float)height / initialHeight); }
 			inline glm::vec2 getScroll() const { return scroll; }
-			inline glm::vec2 getContentScale() const { return contentScale; }
 			inline GLFWwindow *getWindow() const { return window; }
 
 			static bool isKeyPressed(unsigned int keycode);
@@ -73,7 +71,6 @@ namespace Crocodile
 		private:
 			bool init();
 			glm::vec3 color = glm::vec3(0.f);
-			glm::vec2 contentScale = glm::vec2(1.0f);
 		};
 	}
 }
