@@ -189,13 +189,21 @@ namespace Crocodile
                     li.axis = line;
                     li.min = minMagVertex;
                     li.max = maxMagVertex;
-                    li.collision = (getMagnitude(li.min, line.origin) < rectHalfSize) || (getMagnitude(li.max, line.origin) < rectHalfSize);
+                    // TODO: fix this logic
+                    li.collision = (getSign(li.min, line.origin) < 0 && getSign(li.max, line.origin) > 0) ||
+                                   (getMagnitude(li.min, line.origin) < rectHalfSize) ||
+                                   (getMagnitude(li.max, line.origin) < rectHalfSize);
                     linesIntersections.push_back(li);
                 }
                 CollisionVectors cv;
                 cv.cornerProjections = lines;
                 cv.lineIntersections = linesIntersections;
                 return cv;
+            }
+
+            int BoundingBox::getSign(glm::vec2 a, glm::vec2 b)
+            {
+                return (a.x * b.x) + (a.y * b.y) > 0 ? 1 : -1;
             }
 
             float BoundingBox::getMagnitude(glm::vec2 a, glm::vec2 b)

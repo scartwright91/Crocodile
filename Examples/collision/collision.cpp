@@ -35,10 +35,14 @@ public:
         if (scene->window->isKeyPressed(GLFW_KEY_D))
             dx = speed * dt;
 
+        // rotate player
         if (scene->window->isKeyPressed(GLFW_KEY_LEFT))
             player->rotate(-0.05f);
         else if (scene->window->isKeyPressed(GLFW_KEY_RIGHT))
             player->rotate(0.05f);
+
+        // rotate rect
+        // rect->rotate(0.01f);
 
         player->move(dx, dy);
 
@@ -49,8 +53,13 @@ public:
             player->color = glm::vec3(0.f);
 
         // add collision vectors
-        s2d::col::BoundingBox bbox = rect->getBoundingBox();
-        s2d::col::CollisionVectors cv = player->getBoundingBox().getCollisionVectors(&bbox);
+        if (window.isKeyPressed(GLFW_KEY_SPACE))
+        {
+            std::cout << "debug" << std::endl;
+        }
+        s2d::col::BoundingBox bbox1 = player->getBoundingBox();
+        s2d::col::BoundingBox bbox2 = rect->getBoundingBox();
+        s2d::col::CollisionVectors cv = bbox2.getCollisionVectors(&bbox1);
         std::vector<s2d::col::Line> lines = cv.cornerProjections;
         for (unsigned int i = 0; i < lines.size(); i++)
         {
@@ -93,15 +102,15 @@ public:
         player->rotate(0.3f);
         player->size = glm::vec2(100.f, 60.f);
         player->color = glm::vec3(0.f);
-        // player->showBoundingBox = true;
+        player->showBoundingBox = true;
 
         rect = new s2d::Object();
         rect->alpha = 0.3f;
         // rect->rotate(0.7f);
-        rect->setPosition(glm::vec2(500.f));
-        rect->size = glm::vec2(100.f, 50.f);
+        rect->setPosition(glm::vec2(400.f));
+        rect->size = glm::vec2(200.f);
         rect->color = glm::vec3(0.f);
-        rect->showBoundingBox = true;
+        // rect->showBoundingBox = true;
 
         window.setBackgroundColor(glm::vec3(0.7f));
         scene->camera->setTarget(player, false);
@@ -110,8 +119,8 @@ public:
         scene->addChild(rect, "entities");
 
         // add collision vectors
-        s2d::col::BoundingBox bbox = rect->getBoundingBox();
-        s2d::col::CollisionVectors cv = player->getBoundingBox().getCollisionVectors(&bbox);
+        s2d::col::BoundingBox bbox = player->getBoundingBox();
+        s2d::col::CollisionVectors cv = rect->getBoundingBox().getCollisionVectors(&bbox);
         std::vector<s2d::col::Line> lines = cv.cornerProjections;
         for (s2d::col::Line line : lines)
         {
