@@ -17,6 +17,8 @@ add_executable(${PROJECT_NAME}
     src/TextEntity.cpp
     src/ParticleEntity.h
     src/ParticleEntity.cpp
+    src/Grid.h
+    src/Grid.cpp
 )
 
 target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURE_DIR}/build)
