@@ -52,13 +52,13 @@ void Editor::renderImGui()
     ImGui::PopStyleVar();
 }
 
-void Editor::update(bool mouseOnImGuiWindow)
+void Editor::update(float dt, bool mouseOnImGuiWindow)
 {
     this->mouseOnImGuiWindow = mouseOnImGuiWindow;
     zoom();
-    move();
+    move(dt);
     if (activeLevel != NULL)
-        activeLevel->update(sceneMousePosition);
+        activeLevel->update(dt, sceneMousePosition);
 }
 
 void Editor::zoom()
@@ -80,11 +80,11 @@ void Editor::zoom()
     }
 }
 
-void Editor::move()
+void Editor::move(float dt)
 {
     if (!mouseOnSceneWindow)
         return;
-    float zoomSpeed = speed * (scene->camera->zoom * 0.5);
+    float zoomSpeed = speed * (scene->camera->zoom * 0.5) * dt;
     float dx = 0.f;
     float dy = 0.f;
 

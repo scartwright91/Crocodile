@@ -21,7 +21,7 @@ class Editor
 public:
     Editor(Project *project, s2d::Scene *scene, ResourceManager *rm);
 
-    void update(bool mouseOnImGuiWindow);
+    void update(float dt, bool mouseOnImGuiWindow);
     void renderImGui();
 
     Project *project = nullptr;
@@ -36,13 +36,13 @@ private:
     ResourceManager *rm = nullptr;
 
     s2d::Object *camera = nullptr;
-    float speed = 50.f;
+    float speed = 300.f;
     float currentZoom = 0.0f;
     float zoomTimer = 0.f;
     float commandTimer = 0.f;
 
     void zoom();
-    void move();
+    void move(float dt);
     void load();
     void save();
     void close();

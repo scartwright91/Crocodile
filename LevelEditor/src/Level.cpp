@@ -72,7 +72,7 @@ void Level::loadPlacedEntities(LevelData data)
     }
 }
 
-void Level::update(glm::vec2 mouse)
+void Level::update(float dt, glm::vec2 mouse)
 {
     sceneMousePos = glm::vec2(mouse.x, scene->window->getMouseScreenPosition().y + (2 * ImGui::GetStyle().FramePadding.y)); // why this works I have no idea
     bool leftclick = scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1);
@@ -100,8 +100,6 @@ void Level::update(glm::vec2 mouse)
         else if (rightclick)
         {
             deleteObject(placementObject);
-            // scene->removeChild(placementObject, std::string(selectedPlacementLayer));
-            // delete placementObject;
             placementObject = nullptr;
         }
     }

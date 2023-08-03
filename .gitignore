@@ -9,6 +9,7 @@ TestGame/
 
 # VSCode stuff
 .vscode/
+.vs/
 
 # ImGui stuff
 imgui.ini

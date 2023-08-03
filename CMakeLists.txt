@@ -19,9 +19,12 @@ endif() # Emscripten
 # build engine library
 add_subdirectory(Engine)
 
-# build example
-add_subdirectory(Examples/collision)
-file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/collision)
+# # build example
+# add_subdirectory(Examples/collision)
+# file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/collision)
+
+# add_subdirectory(TestGame)
+# file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/TestGame)
 
 # build level editor
 add_subdirectory(LevelEditor)

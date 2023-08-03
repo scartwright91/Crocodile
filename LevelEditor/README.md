@@ -2,6 +2,7 @@
 ## TODO
 
 ### Current
+- Grids
 - Camera
 - Zones
 - Animations
@@ -23,5 +24,4 @@
 - Custom style
 - World / multiple levels
   - blueprints?
-- Grids
 - undo / redo functionality
