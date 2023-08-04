@@ -21,6 +21,7 @@ public:
     bool visible = true;
     void show();
     void hide();
+    glm::vec2 getGridPosition(glm::vec2 pos);
 
 private:
     s2d::Scene *scene = nullptr;

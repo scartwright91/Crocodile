@@ -86,7 +86,8 @@ namespace Crocodile
 							o->setPosition(newPos);
 						}
 						// apply scene scale
-						obj->modelScale = glm::vec3(window->getViewportScale(), 1.f);
+						// obj->modelScale = glm::vec3(window->getViewportScale(), 1.f);
+						obj->modelScale = glm::vec3(1.f);
 					}
 				}
 			}

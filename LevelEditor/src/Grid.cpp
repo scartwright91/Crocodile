@@ -20,6 +20,11 @@ Grid::~Grid()
     }
 }
 
+glm::vec2 Grid::getGridPosition(glm::vec2 pos)
+{
+    return glm::vec2((int)pos.x / gridSizeX, (int)pos.y / gridSizeY);
+}
+
 void Grid::show()
 {
     visible = true;
@@ -37,7 +42,7 @@ void Grid::hide()
 void Grid::createLines()
 {
     // create horizontal lines
-    for (unsigned int i = 0; i < canvasSizeY / gridSizeY; i++)
+    for (unsigned int i = 0; i < canvasSizeY / gridSizeY + 1; i++)
     {
         glm::vec2 a = glm::vec2(0.f, i * gridSizeY);
         glm::vec2 b = glm::vec2(canvasSizeX, i * gridSizeY);
@@ -45,7 +50,7 @@ void Grid::createLines()
         lines.push_back(line);
     }
     // create vertical lines
-    for (unsigned int i = 0; i < canvasSizeX / gridSizeX; i++)
+    for (unsigned int i = 0; i < canvasSizeX / gridSizeX + 1; i++)
     {
         glm::vec2 a = glm::vec2(i * gridSizeX, 0.f);
         glm::vec2 b = glm::vec2(i * gridSizeX, canvasSizeY);

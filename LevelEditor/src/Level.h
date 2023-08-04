@@ -98,6 +98,7 @@ private:
 
     // general ui
     glm::vec2 mouseWorldPos = glm::vec2(0.f);
+    glm::vec2 mouseWorldPosGrid = glm::vec2(0.f);
     void calculateMouseWorldPos();
 
     // imgui functions

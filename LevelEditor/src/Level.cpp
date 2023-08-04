@@ -16,7 +16,6 @@ Level::Level(LevelData data, s2d::Scene *scene, ResourceManager *rm) : scene(sce
         rm->loadTexture(td.path.c_str(), td.name, false);
     scene->addChild(canvas, "canvas");
     initCanvasEdges();
-    initGrid();
     loadPlacedEntities(data);
 }
 
@@ -28,7 +27,6 @@ Level::Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2
     canvas->color = canvasColour;
     scene->addChild(canvas, "canvas");
     initCanvasEdges();
-    initGrid();
 }
 
 void Level::loadPlacedEntities(LevelData data)
@@ -308,6 +306,7 @@ void Level::updateEdges()
     edges[1]->setPosition(glm::vec2(pos.x + size.x, pos.y));
     edges[2]->setPosition(glm::vec2(pos.x, pos.y - edgeWidth));
     edges[3]->setPosition(glm::vec2(pos.x, pos.y + canvas->size.y));
+    initGrid();
 }
 
 void Level::scaleEdges()
@@ -350,7 +349,6 @@ void Level::initGrid()
 {
     delete grid;
     grid = new Grid(scene, (int)canvas->size.x, (int)canvas->size.y, (int)gridSizeX, (int)gridSizeY);
-    std::cout << "Created grid" << std::endl;
 }
 
 void Level::calculateMouseWorldPos()
@@ -367,6 +365,7 @@ void Level::calculateMouseWorldPos()
         float dx = size.x * (sceneMousePos.x - bbox.x) / bbox.width;
         float dy = size.y * (sceneMousePos.y - bbox.y) / bbox.height;
         mouseWorldPos = glm::vec2(dx, dy);
+        mouseWorldPosGrid = grid->getGridPosition(mouseWorldPos);
     }
 }
 
@@ -426,6 +425,10 @@ void Level::levelInfo()
     std::string mousePos = "Mouse pos: ";
     mousePos += "(" + std::to_string((int)mouseWorldPos.x) + ", " + std::to_string((int)mouseWorldPos.y) + ")";
     ImGui::Text(mousePos.c_str());
+    // grid position
+    std::string gridPos = "Grid pos: ";
+    gridPos += "(" + std::to_string((int)mouseWorldPosGrid.x) + ", " + std::to_string((int)mouseWorldPosGrid.y) + ")";
+    ImGui::Text(gridPos.c_str());
     // display camera zoom
     ImGui::SliderFloat("Zoom", &scene->camera->zoom, 1.f, 50.0f);
     // Level size
@@ -1055,15 +1058,10 @@ void Level::deleteObject(s2d::Object *obj)
 
 void Level::moveObject(s2d::Object *obj)
 {
-    glm::vec2 objectScreenPos = obj->getScreenPosition(
-        true,
-        scene->camera->getViewMatrix(),
-        scene->camera->getProjectionMatrix(true),
-        scene->windowWidth,
-        scene->windowHeight);
-    float dx = (sceneMousePos.x - objectScreenPos.x) * scene->camera->zoom;
-    float dy = (sceneMousePos.y - objectScreenPos.y) * scene->camera->zoom;
-    obj->move(dx, dy);
+    if (snapToGrid)
+        obj->setPosition(mouseWorldPosGrid * glm::vec2(grid->gridSizeX, grid->gridSizeY));
+    else
+        obj->setPosition(mouseWorldPos);
 }
 
 void Level::selectObject()
