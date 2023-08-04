@@ -16,6 +16,7 @@ Level::Level(LevelData data, s2d::Scene *scene, ResourceManager *rm) : scene(sce
         rm->loadTexture(td.path.c_str(), td.name, false);
     scene->addChild(canvas, "canvas");
     initCanvasEdges();
+    initGrid();
     loadPlacedEntities(data);
 }
 
@@ -27,6 +28,7 @@ Level::Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2
     canvas->color = canvasColour;
     scene->addChild(canvas, "canvas");
     initCanvasEdges();
+    initGrid();
 }
 
 void Level::loadPlacedEntities(LevelData data)
@@ -342,6 +344,12 @@ void Level::initCanvasEdges()
         edge->color = edgeColour;
 
     updateEdges();
+}
+
+void Level::initGrid()
+{
+    delete grid;
+    grid = new Grid(scene, (int)canvas->size.x, (int)canvas->size.y, 100, 100);
 }
 
 void Level::calculateMouseWorldPos()

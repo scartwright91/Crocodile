@@ -7,6 +7,7 @@ Editor::Editor(
 {
     init();
     scene->layerStack->addLayer(new s2d::Layer("canvas"));
+    scene->layerStack->addLayer(new s2d::Layer("grid"));
     scene->layerStack->addLayer(new s2d::Layer("canvas_edges"));
     scene->layerStack->addLayer(new s2d::Layer("hud"));
     if (project->loadProjectFromFile)

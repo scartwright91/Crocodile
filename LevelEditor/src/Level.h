@@ -10,6 +10,7 @@
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
 
+#include "Grid.h"
 #include "Entity.h"
 #include "TextEntity.h"
 #include "ParticleEntity.h"
@@ -87,6 +88,10 @@ private:
     void updateCanvas();
     void updateEdges();
     void initCanvasEdges();
+
+    // grid
+    Grid *grid = nullptr;
+    void initGrid();
 
     // load functions
     void loadPlacedEntities(LevelData data);
