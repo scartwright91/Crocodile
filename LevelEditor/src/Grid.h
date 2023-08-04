@@ -18,11 +18,11 @@ public:
     Grid(s2d::Scene *scene, unsigned int canvasSizeX, unsigned int canvasSizeY, unsigned int gridSizeX, unsigned int gridSizeY);
     ~Grid();
 
+    bool visible = true;
     void show();
     void hide();
 
 private:
     s2d::Scene *scene = nullptr;
-    bool visible = true;
     void createLines();
 };

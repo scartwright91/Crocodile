@@ -108,6 +108,14 @@ private:
     void sceneTree();
     void placementUI();
 
+    // --------- Manage ----------
+    // canvas
+
+    // grid
+    bool showGrid = true;
+    int gridSizeX = 100;
+    int gridSizeY = 100;
+
     // layers
     void addLayer();
     void removeLayer();
@@ -161,18 +169,16 @@ private:
     float tmpParticleVelocity = 1.f;
     //
     float placementTimer = glfwGetTime();
-    const char *selectedPlacementType = "entity";
     const char *selectedPlacementObjectType = "entity";
     const char *selectedPlacementLayer = "";
     const char *tmpPlacementEntity = "";
     bool placeMultiple = true;
+    bool snapToGrid = true;
     s2d::EntityData *selectedEntityData;
     void createEntityFromData(s2d::EntityData *entityData);
     void createTextEntity();
     void createParticleEntity();
-    const char *placementTypes[3] = {"entity", "camera", "mask"};
     const char *placementObjectTypes[3] = {"entity", "text", "particles"};
-    void selectPlacementType();
     void selectPlacementLayer();
     void selectPlacementObject();
     void selectPlacementObjectType();

@@ -349,7 +349,8 @@ void Level::initCanvasEdges()
 void Level::initGrid()
 {
     delete grid;
-    grid = new Grid(scene, (int)canvas->size.x, (int)canvas->size.y, 100, 100);
+    grid = new Grid(scene, (int)canvas->size.x, (int)canvas->size.y, (int)gridSizeX, (int)gridSizeY);
+    std::cout << "Created grid" << std::endl;
 }
 
 void Level::calculateMouseWorldPos()
@@ -373,11 +374,32 @@ void Level::levelOptions()
 {
     ImGui::InputText("Level name", name, 64);
     ImGui::Checkbox("Update level:", &updateLevel);
-    if (ImGui::ColorEdit3("Canvas colour", (float *)&canvasColour))
-        canvas->color = canvasColour;
-    if (ImGui::ColorEdit3("Edge colour", (float *)&edgeColour))
-        for (s2d::Object *edge : edges)
-            edge->color = edgeColour;
+    if (ImGui::CollapsingHeader("Canvas"))
+    {
+        if (ImGui::ColorEdit3("Canvas colour", (float *)&canvasColour))
+            canvas->color = canvasColour;
+        if (ImGui::ColorEdit3("Edge colour", (float *)&edgeColour))
+            for (s2d::Object *edge : edges)
+                edge->color = edgeColour;
+    }
+    if (ImGui::CollapsingHeader("Grid"))
+    {
+        ImGui::Checkbox("Show", &showGrid);
+        if (showGrid)
+        {
+            if (!grid->visible)
+                grid->show();
+        }
+        else
+        {
+            if (grid->visible)
+                grid->hide();
+        }
+        ImGui::InputInt("Grid X", &gridSizeX);
+        ImGui::InputInt("Grid Y", &gridSizeY);
+        if (ImGui::Button("Create"))
+            initGrid();
+    }
     if (ImGui::CollapsingHeader("Layers"))
     {
         addLayer();
@@ -437,116 +459,104 @@ void Level::sceneTree()
 
 void Level::placementUI()
 {
-    selectPlacementType();
-    if (selectedPlacementType == "entity")
+    selectPlacementLayer();
+    if (selectedPlacementLayer == "")
+        return;
+    if (ImGui::Checkbox("Place mode", &placeMode))
+        selectedObject = nullptr;
+    if (placeMode)
     {
-        selectPlacementLayer();
-        if (selectedPlacementLayer == "")
-            return;
-        if (ImGui::Checkbox("Place mode", &placeMode))
-            selectedObject = nullptr;
-        if (placeMode)
+        selectPlacementObjectType();
+        ImGui::Checkbox("Snap to grid", &snapToGrid);
+        if (selectedPlacementObjectType == "entity")
         {
-            selectPlacementObjectType();
-            if (selectedPlacementObjectType == "entity")
+            selectPlacementObject();
+            ImGui::Checkbox("Place multiple", &placeMultiple);
+            ImGui::SliderFloat("scale", &tmpScale, 0.f, 5.f);
+            ImGui::SliderFloat("rotation", &tmpRotation, -3.14f, 3.14f);
+            ImGui::SliderFloat("alpha", &tmpAlpha, 0.f, 1.f);
+            ImGui::Button("Place");
+        }
+        else if (selectedPlacementObjectType == "text")
+        {
+            ImGui::InputText("text", tmpText, 64);
+            ImGui::ColorEdit3("color", (float *)&tmpTextColor);
+            ImGui::SliderFloat("scale", &tmpTextScale, 0.f, 20.f);
+            if (ImGui::Button("Place"))
             {
-                selectPlacementObject();
-                ImGui::Checkbox("Place multiple", &placeMultiple);
-                ImGui::SliderFloat("scale", &tmpScale, 0.f, 5.f);
-                ImGui::SliderFloat("rotation", &tmpRotation, -3.14f, 3.14f);
-                ImGui::SliderFloat("alpha", &tmpAlpha, 0.f, 1.f);
-                ImGui::Button("Place");
+                placeMultiple = false;
+                createTextEntity();
             }
-            else if (selectedPlacementObjectType == "text")
+        }
+        else if (selectedPlacementObjectType == "particles")
+        {
+            ImGui::SliderInt("number", &tmpParticleAmount, 0, 100);
+            ImGui::ColorEdit3("color", (float *)&tmpParticleColor);
+            ImGui::SliderFloat("direction", &tmpParticleDirection, -3.14, 3.14);
+            ImGui::SliderFloat("dispersion", &tmpParticleDispersion, 0, 3.14);
+            ImGui::SliderFloat("scale", &tmpParticleScale, 0, 100.f);
+            ImGui::SliderFloat("velocity", &tmpParticleVelocity, 0.f, 10.f);
+            if (ImGui::Button("Place"))
             {
-                ImGui::InputText("text", tmpText, 64);
-                ImGui::ColorEdit3("color", (float *)&tmpTextColor);
-                ImGui::SliderFloat("scale", &tmpTextScale, 0.f, 20.f);
-                if (ImGui::Button("Place"))
+                placeMultiple = false;
+                createParticleEntity();
+            }
+        }
+    }
+    else
+    {
+        if (selectedObject != NULL)
+        {
+            if (selectedObjectType == "entity")
+            {
+                std::string objName = "Name: " + selectedObject->label;
+                ImGui::Text(objName.c_str());
+                std::string objPosText = "Position: ";
+                glm::vec2 objPos = selectedObject->getPosition();
+                objPosText += "(" + std::to_string((int)objPos.x) + ", " + std::to_string((int)objPos.y) + ")";
+                ImGui::Text(objPosText.c_str());
+                ImGui::SliderFloat("rotation", &selectedObject->rotation, -3.14f, 3.14f);
+                ImGui::SliderFloat("alpha", &selectedObject->alpha, 0.f, 1.f);
+                if (ImGui::Button("delete"))
                 {
-                    placeMultiple = false;
-                    createTextEntity();
+                    deleteObject(selectedObject);
+                    selectedObject = nullptr;
                 }
             }
-            else if (selectedPlacementObjectType == "particles")
+            else if (selectedObjectType == "particles")
             {
-                ImGui::SliderInt("number", &tmpParticleAmount, 0, 100);
-                ImGui::ColorEdit3("color", (float *)&tmpParticleColor);
-                ImGui::SliderFloat("direction", &tmpParticleDirection, -3.14, 3.14);
-                ImGui::SliderFloat("dispersion", &tmpParticleDispersion, 0, 3.14);
-                ImGui::SliderFloat("scale", &tmpParticleScale, 0, 100.f);
-                ImGui::SliderFloat("velocity", &tmpParticleVelocity, 0.f, 10.f);
-                if (ImGui::Button("Place"))
+                s2d::ParticleGenerator *pg = (s2d::ParticleGenerator *)selectedObject;
+                ImGui::ColorEdit3("color", (float *)&selectedObject->color);
+                ImGui::SliderFloat("direction", &pg->direction, -3.14, 3.14);
+                ImGui::SliderFloat("dispersion", &pg->dispersion, 0, 3.14);
+                ImGui::SliderFloat("scale", &pg->scale, 0, 100.f);
+                ImGui::SliderFloat("velocity", &pg->velocity, 0.f, 10.f);
+                if (ImGui::Button("delete"))
                 {
-                    placeMultiple = false;
-                    createParticleEntity();
+                    deleteObject(selectedObject);
+                    selectedObject = nullptr;
+                }
+            }
+            else if (selectedObjectType == "text")
+            {
+                s2d::Text *te = (s2d::Text *)selectedObject;
+                // std::string t{te->text};
+                // ImGui::InputText("text", &t, 64);
+                ImGui::ColorEdit3("color", (float *)&te->color);
+                float ts = te->textScale.x;
+                ImGui::SliderFloat("scale", &ts, 0.f, 20.f);
+                te->textScale = glm::vec2(ts, ts);
+                if (ImGui::Button("delete"))
+                {
+                    deleteObject(selectedObject);
+                    selectedObject = nullptr;
                 }
             }
         }
         else
         {
-            if (selectedObject != NULL)
-            {
-                if (selectedObjectType == "entity")
-                {
-                    std::string objName = "Name: " + selectedObject->label;
-                    ImGui::Text(objName.c_str());
-                    std::string objPosText = "Position: ";
-                    glm::vec2 objPos = selectedObject->getPosition();
-                    objPosText += "(" + std::to_string((int)objPos.x) + ", " + std::to_string((int)objPos.y) + ")";
-                    ImGui::Text(objPosText.c_str());
-                    ImGui::SliderFloat("rotation", &selectedObject->rotation, -3.14f, 3.14f);
-                    ImGui::SliderFloat("alpha", &selectedObject->alpha, 0.f, 1.f);
-                    if (ImGui::Button("delete"))
-                    {
-                        deleteObject(selectedObject);
-                        selectedObject = nullptr;
-                    }
-                }
-                else if (selectedObjectType == "particles")
-                {
-                    s2d::ParticleGenerator *pg = (s2d::ParticleGenerator *)selectedObject;
-                    ImGui::ColorEdit3("color", (float *)&selectedObject->color);
-                    ImGui::SliderFloat("direction", &pg->direction, -3.14, 3.14);
-                    ImGui::SliderFloat("dispersion", &pg->dispersion, 0, 3.14);
-                    ImGui::SliderFloat("scale", &pg->scale, 0, 100.f);
-                    ImGui::SliderFloat("velocity", &pg->velocity, 0.f, 10.f);
-                    if (ImGui::Button("delete"))
-                    {
-                        deleteObject(selectedObject);
-                        selectedObject = nullptr;
-                    }
-                }
-                else if (selectedObjectType == "text")
-                {
-                    s2d::Text *te = (s2d::Text *)selectedObject;
-                    // std::string t{te->text};
-                    // ImGui::InputText("text", &t, 64);
-                    ImGui::ColorEdit3("color", (float *)&te->color);
-                    float ts = te->textScale.x;
-                    ImGui::SliderFloat("scale", &ts, 0.f, 20.f);
-                    te->textScale = glm::vec2(ts, ts);
-                    if (ImGui::Button("delete"))
-                    {
-                        deleteObject(selectedObject);
-                        selectedObject = nullptr;
-                    }
-                }
-            }
-            else
-            {
-                selectObject();
-            }
+            selectObject();
         }
-    }
-    else if (selectedPlacementType == "camera")
-    {
-        ImGui::SliderFloat("zoom", &tmpCameraZoom, 0.1f, 10.f);
-        ImGui::Button("Place");
-    }
-    else if (selectedPlacementType == "zone")
-    {
-        ImGui::Button("Place");
     }
 }
 
@@ -921,22 +931,6 @@ void Level::createParticleEntity()
     pg->velocity = tmpParticleVelocity;
     ParticleEntity *pge = new ParticleEntity(scene, pg, std::string(selectedPlacementLayer));
     placedParticleEntities.push_back(pge);
-}
-
-void Level::selectPlacementType()
-{
-    if (ImGui::BeginCombo("Type", selectedPlacementType))
-    {
-        for (int n = 0; n < IM_ARRAYSIZE(placementTypes); n++)
-        {
-            bool is_selected = (selectedPlacementType == placementTypes[n]);
-            if (ImGui::Selectable(placementTypes[n], is_selected))
-                selectedPlacementType = placementTypes[n];
-            if (is_selected)
-                ImGui::SetItemDefaultFocus();
-        }
-        ImGui::EndCombo();
-    }
 }
 
 void Level::selectPlacementLayer()

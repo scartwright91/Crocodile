@@ -14,7 +14,10 @@ Grid::Grid(
 Grid::~Grid()
 {
     for (s2d::shapes::Line *line : lines)
+    {
+        scene->removeChild(line, "grid");
         delete line;
+    }
 }
 
 void Grid::show()
