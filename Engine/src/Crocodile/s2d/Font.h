@@ -38,12 +38,12 @@ namespace Crocodile
                 {
                     Character ch = characters[*c];
                     x += (ch.Advance >> 6);
-                    float ySize = (2 * ch.Size.y - ch.Bearing.y) * textScale.y;
+                    float ySize = (2 * ch.Size.y - ch.Bearing.y);
                     if (ySize > y)
                         y = ySize;
                 }
 
-                return glm::vec2(x, y);
+                return glm::vec2(x, y) * textScale;
             }
 
         private:

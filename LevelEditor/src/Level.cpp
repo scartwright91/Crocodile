@@ -113,6 +113,12 @@ void Level::update(float dt, glm::vec2 mouse)
                     e->deselect();
                     break;
                 }
+            for (TextEntity *t : placedTextEntities)
+                if (t->text == selectedObject)
+                {
+                    t->deselect();
+                    break;
+                }
             selectedObject->outline = false;
             selectedObject = nullptr;
         }
@@ -1111,6 +1117,7 @@ void Level::selectObject()
                     tmpTimer = now;
                     selectedObject = te->text;
                     selectedObjectType = "text";
+                    te->select();
                     break;
                 }
             }
