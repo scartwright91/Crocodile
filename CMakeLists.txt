@@ -23,9 +23,12 @@ add_subdirectory(Engine)
 # add_subdirectory(Examples/collision)
 # file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/collision)
 
+add_subdirectory(Examples/dialogues)
+file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/dialogues)
+
 # add_subdirectory(TestGame)
 # file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/TestGame)
 
-# build level editor
-add_subdirectory(LevelEditor)
-file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/collision)
+# # build level editor
+# add_subdirectory(LevelEditor)
+# file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/collision)
