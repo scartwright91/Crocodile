@@ -37,13 +37,10 @@ namespace Crocodile
                 for (c = text.begin(); c != text.end(); c++)
                 {
                     Character ch = characters[*c];
-                    unsigned int adv = (ch.Advance >> 6);
-                    int bearing = ch.Bearing.x == 0 ? 0 : 1;
-                    x += adv + ch.Bearing.x;
+                    x += (ch.Advance >> 6);
                     float ySize = (2 * ch.Size.y - ch.Bearing.y) * textScale.y;
                     if (ySize > y)
                         y = ySize;
-                    std::cout << *c << " bearing: " << ch.Bearing.x << " size: " << ch.Size.x << " advance: " << (ch.Advance >> 6) << std::endl;
                 }
 
                 return glm::vec2(x, y);
