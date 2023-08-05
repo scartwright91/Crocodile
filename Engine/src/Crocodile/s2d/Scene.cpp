@@ -211,7 +211,7 @@ namespace Crocodile
 					projection,
 					text->color,
 					text->alpha,
-					text->textScale * glm::vec2(text->modelScale.x, text->modelScale.y),
+					text->getScale() * glm::vec2(text->modelScale.x, text->modelScale.y),
 					layer->alpha);
 			}
 			else if (obj->renderMethod == "line")
@@ -231,29 +231,33 @@ namespace Crocodile
 				std::cout << "Undefined render method" << std::endl;
 			}
 
-			// render lines to display object's bounding box
-			if (obj->showBoundingBox)
+			col::BoundingBox bbox = obj->getBoundingBox();
+			// render axis lines
+			if (obj->showAxes)
 			{
-				col::BoundingBox bbox = obj->getBoundingBox();
-				std::vector<glm::vec2> vertices = bbox.vertices;
 				// axes lines
 				for (glm::vec2 v : bbox.getDebugAxes())
 				{
 					lineRenderer->render(
-						bbox.center * window->getViewportScale(),
-						v * window->getViewportScale(),
+						bbox.center * glm::vec2(1.f), // window->getViewportScale(),
+						v * glm::vec2(1.f),			  // window->getViewportScale(),
 						view,
 						projection,
 						glm::vec3(0.f, 0.f, 1.f),
 						0.5f,
 						layer->alpha);
 				}
+			}
+			// render lines to display object's bounding box
+			if (obj->showBoundingBox)
+			{
 				// connect bbox vertices
+				std::vector<glm::vec2> vertices = bbox.vertices;
 				for (unsigned int i = 1; i < 4; i++)
 				{
 					lineRenderer->render(
-						vertices[i - 1] * window->getViewportScale(),
-						vertices[i] * window->getViewportScale(),
+						vertices[i - 1] * glm::vec2(1.f), // window->getViewportScale(),
+						vertices[i] * glm::vec2(1.f),	  // window->getViewportScale(),
 						view,
 						projection,
 						obj->color,
@@ -261,8 +265,8 @@ namespace Crocodile
 						layer->alpha);
 				}
 				lineRenderer->render(
-					vertices[3] * window->getViewportScale(),
-					vertices[0] * window->getViewportScale(),
+					vertices[3] * glm::vec2(1.f), // window->getViewportScale(),
+					vertices[0] * glm::vec2(1.f), // window->getViewportScale(),
 					view,
 					projection,
 					obj->color,

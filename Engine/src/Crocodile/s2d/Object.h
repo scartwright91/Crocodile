@@ -69,6 +69,7 @@ namespace Crocodile
 			// filters
 			bool outline = false;
 			bool showBoundingBox = false;
+			bool showAxes = false;
 
 			// animation
 			Animation *animation = nullptr;

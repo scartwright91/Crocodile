@@ -2,7 +2,6 @@
 ## TODO
 
 ### Current
-- Grids
 - Camera
 - Zones
 - Animations
@@ -12,10 +11,11 @@
 - Lights
 
 ### Bugs
+- Fix viewport scaling
 - layers
   - depth
-  - alpha
 - text
+  - text size with scaling
   - select text
   - show outline
 

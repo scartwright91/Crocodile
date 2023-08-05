@@ -7,9 +7,11 @@ TextEntity::TextEntity(s2d::Scene *scene, s2d::Text *text, std::string layer) : 
 void TextEntity::select()
 {
     text->outline = true;
+    text->showBoundingBox = true;
 }
 
 void TextEntity::deselect()
 {
     text->outline = false;
+    text->showBoundingBox = false;
 }

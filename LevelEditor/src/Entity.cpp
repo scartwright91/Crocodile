@@ -11,8 +11,9 @@ Entity::Entity(s2d::Scene *scene, s2d::Object *obj, std::string layer) : scene(s
 
 void Entity::select()
 {
-    label->setPosition(obj->getPosition());
     selected = true;
+    label->setPosition(obj->getPosition());
+    obj->showBoundingBox = true;
     label->alpha = 1.f;
     for (glm::vec2 p : movementPath)
     {
@@ -35,6 +36,7 @@ void Entity::select()
 void Entity::deselect()
 {
     selected = false;
+    obj->showBoundingBox = false;
     label->alpha = 0.f;
     for (s2d::Object *obj : tmpMarkers)
     {

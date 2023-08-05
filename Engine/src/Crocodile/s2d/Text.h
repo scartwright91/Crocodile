@@ -16,7 +16,6 @@ namespace Crocodile
         public:
             std::string fullText = "";
             std::string text = "";
-            glm::vec2 textScale = glm::vec2(1.0f);
 
             Text()
             {
@@ -56,7 +55,18 @@ namespace Crocodile
                 this->fullText = text;
                 if (!unravelByLetter)
                     this->text = text;
-                this->size = getTextSize();
+                this->size = font.getTextSize(fullText, textScale);
+            }
+
+            void setScale(glm::vec2 scale)
+            {
+                this->textScale = scale;
+                this->size = font.getTextSize(fullText, textScale);
+            }
+
+            glm::vec2 getScale()
+            {
+                return textScale;
             }
 
             bool isFullTextDisplayed()
@@ -68,16 +78,11 @@ namespace Crocodile
             Font font;
             bool unravelByLetter = false;
 
-            // steps to be completed
             unsigned int step = 0;
             float counter = 0.0f;
             float textSpeed = 0.05f;
             unsigned int letterCounter = 0;
-
-            glm::vec2 getTextSize()
-            {
-                return font.getTextSize(fullText, textScale);
-            }
+            glm::vec2 textScale = glm::vec2(1.0f);
         };
     }
 }

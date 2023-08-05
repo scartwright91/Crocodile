@@ -98,7 +98,6 @@ namespace Crocodile
 			// viewport sizing
 			glfwGetFramebufferSize(window, &viewportWidth, &viewportHeight);
 			glViewport(0, 0, viewportWidth, viewportHeight);
-
 			viewportScale = glm::vec2(
 				(float)viewportWidth / initialWidth,
 				(float)viewportHeight / initialHeight);

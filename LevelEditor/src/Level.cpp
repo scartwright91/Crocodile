@@ -52,7 +52,7 @@ void Level::loadPlacedEntities(LevelData data)
         t->alpha = ted->alpha;
         t->setPosition(ted->pos);
         t->color = ted->color;
-        t->textScale = ted->textScale;
+        t->setScale(ted->textScale);
         scene->addChild(t, ted->layer);
         TextEntity *te = new TextEntity(scene, t, ted->layer);
         placedTextEntities.push_back(te);
@@ -169,7 +169,7 @@ LevelData Level::serialise()
                 tsed->pos = ent->text->getPosition();
                 tsed->color = ent->text->color;
                 tsed->alpha = ent->text->alpha;
-                tsed->textScale = ent->text->textScale;
+                tsed->textScale = ent->text->getScale();
                 sceneTextEntitiesData.push_back(tsed);
             }
             ld.sceneTextEntityData = sceneTextEntitiesData;
@@ -546,9 +546,9 @@ void Level::placementUI()
                 // std::string t{te->text};
                 // ImGui::InputText("text", &t, 64);
                 ImGui::ColorEdit3("color", (float *)&te->color);
-                float ts = te->textScale.x;
+                float ts = te->getScale().x;
                 ImGui::SliderFloat("scale", &ts, 0.f, 20.f);
-                te->textScale = glm::vec2(ts, ts);
+                te->setScale(glm::vec2(ts));
                 if (ImGui::Button("delete"))
                 {
                     deleteObject(selectedObject);
@@ -917,7 +917,7 @@ void Level::createTextEntity()
     placementObject->color = tmpTextColor;
     scene->addChild(placementObject, std::string(selectedPlacementLayer));
     s2d::Text *t = (s2d::Text *)placementObject;
-    t->textScale = glm::vec2(tmpTextScale);
+    t->setScale(glm::vec2(tmpTextScale));
     TextEntity *te = new TextEntity(scene, t, std::string(selectedPlacementLayer));
     placedTextEntities.push_back(te);
 }
@@ -1103,7 +1103,6 @@ void Level::selectObject()
                 scene->camera->zoom,
                 scene->windowWidth,
                 scene->windowHeight);
-            bbox.inflate(100.f, 100.f, true);
             if (bbox.intersectsPoint(sceneMousePos))
             {
                 ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
