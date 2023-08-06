@@ -10,7 +10,7 @@
 #include "imgui.h"
 #include "ImGuiFileDialog.h"
 
-#include "Grid.h"
+#include "Canvas.h"
 #include "Entity.h"
 #include "TextEntity.h"
 #include "ParticleEntity.h"
@@ -51,12 +51,10 @@ public:
     void update(float dt, glm::vec2 mouse);
     void renderImGui();
     LevelData serialise();
-    void scaleEdges();
 
+    Canvas *canvas = nullptr;
     s2d::Scene *scene = nullptr;
-    s2d::Object *canvas = nullptr;
 
-    std::vector<s2d::Object *> edges = {};
     std::vector<s2d::Layer *> layers = {};
     std::vector<s2d::EntityData *> entitiesData = {};
     std::vector<ResourceManager::TextureData> textures = {};
@@ -78,28 +76,8 @@ private:
     glm::vec2 viewportSize = glm::vec2(0.f);
     float titleBarHeight = 0.f;
 
-    // canvas functions
-    glm::vec3 canvasColour = glm::vec3(0.f);
-    glm::vec3 edgeColour = glm::vec3(0.1f);
-    float edgeWidth = 20.f;
-    float startEdgeWidth = 20.f;
-    void selectEdge();
-    void moveEdge();
-    void updateCanvas();
-    void updateEdges();
-    void initCanvasEdges();
-
-    // grid
-    Grid *grid = nullptr;
-    void initGrid();
-
     // load functions
     void loadPlacedEntities(LevelData data);
-
-    // general ui
-    glm::vec2 mouseWorldPos = glm::vec2(0.f);
-    glm::vec2 mouseWorldPosGrid = glm::vec2(0.f);
-    void calculateMouseWorldPos();
 
     // imgui functions
     ImGuiTableFlags tableFlags = ImGuiTableFlags_Borders | ImGuiTableFlags_RowBg | ImGuiTableFlags_ScrollX | ImGuiTableFlags_ScrollY;
@@ -111,11 +89,6 @@ private:
 
     // --------- Manage ----------
     // canvas
-
-    // grid
-    bool showGrid = true;
-    int gridSizeX = 100;
-    int gridSizeY = 100;
 
     // layers
     void addLayer();

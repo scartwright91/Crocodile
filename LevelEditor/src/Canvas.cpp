@@ -1,16 +1,35 @@
 #include "Canvas.h"
 
-Canvas::Canvas(s2d::Scene *scene) : scene(scene)
+Canvas::Canvas(s2d::Scene *scene, glm::vec2 size)
 {
+    canvas = new s2d::Object();
+    canvas->size = size;
+    canvas->color = canvasColour;
+    scene->addChild(canvas, "canvas");
+    initCanvasEdges();
+}
+
+Canvas::Canvas(s2d::Scene *scene,
+               glm::vec2 size,
+               glm::vec3 color) : scene(scene)
+{
+    canvas = new s2d::Object();
+    canvas->size = size;
+    canvasColour = color;
+    canvas->color = canvasColour;
+    scene->addChild(canvas, "canvas");
+    initCanvasEdges();
 }
 
 Canvas::~Canvas()
 {
+    delete canvas;
 }
 
 void Canvas::update(float dt, glm::vec2 mouse)
 {
     sceneMousePos = glm::vec2(mouse.x, scene->window->getMouseScreenPosition().y + (2 * ImGui::GetStyle().FramePadding.y)); // why this works I have no idea
+    calculateWorldPosition();
     selectEdge();
 }
 
@@ -42,6 +61,29 @@ void Canvas::renderImGui()
         if (ImGui::Button("Create"))
             initGrid();
     }
+}
+
+void Canvas::calculateWorldPosition()
+{
+    s2d::col::BoundingBox bbox = canvas->getScreenBoundingBox(
+        scene->camera->getViewMatrix(),
+        scene->camera->getProjectionMatrix(true),
+        scene->camera->zoom,
+        scene->windowWidth,
+        scene->windowHeight);
+    if (bbox.intersectsPoint(sceneMousePos))
+    {
+        glm::vec2 size = canvas->size;
+        float dx = size.x * (sceneMousePos.x - bbox.x) / bbox.width;
+        float dy = size.y * (sceneMousePos.y - bbox.y) / bbox.height;
+        mouseWorldPos = glm::vec2(dx, dy);
+        mouseWorldPosGrid = grid->getGridPosition(mouseWorldPos);
+    }
+}
+
+glm::vec2 Canvas::getWorldGridPosition()
+{
+    return mouseWorldPosGrid * glm::vec2(grid->gridSizeX, gridSizeY);
 }
 
 void Canvas::updateCanvas()

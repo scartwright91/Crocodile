@@ -10,13 +10,18 @@ using namespace Crocodile;
 class Canvas
 {
 public:
-    Canvas(s2d::Scene *scene);
+    Canvas(s2d::Scene *scene, glm::vec2 size);
+    Canvas(s2d::Scene *scene, glm::vec2 size, glm::vec3 color);
     ~Canvas();
 
     void update(float dt, glm::vec2 mouse);
     void renderImGui();
 
     glm::vec2 sceneMousePos = glm::vec2(0.f);
+    glm::vec2 mouseWorldPos = glm::vec2(0.f);
+    glm::vec2 mouseWorldPosGrid = glm::vec2(0.f);
+    void calculateWorldPosition();
+    glm::vec2 getWorldGridPosition();
 
     // canvas
     s2d::Object *canvas = nullptr;
