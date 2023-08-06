@@ -511,6 +511,12 @@ void Level::placementUI()
                 createParticleEntity();
             }
         }
+        else if (selectedPlacementObjectType == "light")
+        {
+            ImGui::ColorEdit3("color", (float *)&tmpParticleColor);
+            ImGui::SliderFloat("radius", &tmpParticleDirection, -3.14, 3.14);
+            ImGui::Button("Place");
+        }
     }
     else
     {

@@ -5,6 +5,8 @@ add_executable(${PROJECT_NAME}
     main.cpp
     src/StartScreen.h    
     src/StartScreen.cpp    
+    src/Canvas.h    
+    src/Canvas.cpp    
     src/Project.h    
     src/Project.cpp    
     src/Editor.h

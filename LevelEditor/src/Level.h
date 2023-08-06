@@ -179,7 +179,7 @@ private:
     void createEntityFromData(s2d::EntityData *entityData);
     void createTextEntity();
     void createParticleEntity();
-    const char *placementObjectTypes[3] = {"entity", "text", "particles"};
+    const char *placementObjectTypes[5] = {"entity", "text", "particles", "light", "zone"};
     void selectPlacementLayer();
     void selectPlacementObject();
     void selectPlacementObjectType();
