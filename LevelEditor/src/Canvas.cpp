@@ -16,6 +16,32 @@ void Canvas::update(float dt, glm::vec2 mouse)
 
 void Canvas::renderImGui()
 {
+    if (ImGui::CollapsingHeader("Canvas"))
+    {
+        if (ImGui::ColorEdit3("Canvas colour", (float *)&canvasColour))
+            canvas->color = canvasColour;
+        if (ImGui::ColorEdit3("Edge colour", (float *)&edgeColour))
+            for (s2d::Object *edge : edges)
+                edge->color = edgeColour;
+    }
+    if (ImGui::CollapsingHeader("Grid"))
+    {
+        ImGui::Checkbox("Show", &showGrid);
+        if (showGrid)
+        {
+            if (!grid->visible)
+                grid->show();
+        }
+        else
+        {
+            if (grid->visible)
+                grid->hide();
+        }
+        ImGui::InputInt("Grid X", &gridSizeX);
+        ImGui::InputInt("Grid Y", &gridSizeY);
+        if (ImGui::Button("Create"))
+            initGrid();
+    }
 }
 
 void Canvas::updateCanvas()
