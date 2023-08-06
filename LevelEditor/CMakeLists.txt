@@ -13,6 +13,10 @@ add_executable(${PROJECT_NAME}
     src/Editor.cpp
     src/Level.h
     src/Level.cpp
+    src/Grid.h
+    src/Grid.cpp
+    src/Placer.h
+    src/Placer.cpp
     src/entities/Entity.h
     src/entities/Entity.cpp
     src/entities/TextEntity.h
@@ -21,8 +25,6 @@ add_executable(${PROJECT_NAME}
     src/entities/ParticleEntity.cpp
     src/entities/ZoneEntity.h
     src/entities/ZoneEntity.cpp
-    src/Grid.h
-    src/Grid.cpp
 )
 
 target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURE_DIR}/build)

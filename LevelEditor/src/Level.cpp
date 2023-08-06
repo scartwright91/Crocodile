@@ -329,6 +329,13 @@ void Level::placementUI()
             ImGui::SliderFloat("radius", &tmpParticleDirection, -3.14, 3.14);
             ImGui::Button("Place");
         }
+        else if (selectedPlacementObjectType == "zone")
+        {
+            ImGui::Text("Zones are created by dragging and dropping");
+            ImGui::InputText("Name", tmpText, 64);
+            ImGui::ColorEdit3("color", (float *)&tmpParticleColor);
+            ImGui::SliderFloat("alpha", &tmpParticleDirection, -3.14, 3.14);
+        }
     }
     else
     {

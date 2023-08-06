@@ -371,7 +371,8 @@ namespace Crocodile
 			particleRenderer = new s2d::ParticleRenderer(resourceManager->getShader("particle"));
 			lineRenderer = new s2d::LineRenderer(resourceManager->getShader("line"));
 			postProcessing = new s2d::PostProcessing(resourceManager->getShader("postprocessing"), windowWidth, windowHeight);
-			textRenderer = new s2d::TextRenderer("assets/fonts/FFF_Tusj.ttf", resourceManager->getShader("text"));
+			// textRenderer = new s2d::TextRenderer("assets/fonts/FFF_Tusj.ttf", resourceManager->getShader("text"));
+			textRenderer = new s2d::TextRenderer("assets/fonts/OpenSans-Regular.ttf", resourceManager->getShader("text"));
 			grid = new s2d::BackgroundGrid(resourceManager->getShader("grid"));
 			lightSystem = new s2d::LightSystem();
 			distortionTexture = resourceManager->getTexture("waterDUDV").textureID;
