@@ -13,12 +13,14 @@ add_executable(${PROJECT_NAME}
     src/Editor.cpp
     src/Level.h
     src/Level.cpp
-    src/Entity.h
-    src/Entity.cpp
-    src/TextEntity.h
-    src/TextEntity.cpp
-    src/ParticleEntity.h
-    src/ParticleEntity.cpp
+    src/entities/Entity.h
+    src/entities/Entity.cpp
+    src/entities/TextEntity.h
+    src/entities/TextEntity.cpp
+    src/entities/ParticleEntity.h
+    src/entities/ParticleEntity.cpp
+    src/entities/ZoneEntity.h
+    src/entities/ZoneEntity.cpp
     src/Grid.h
     src/Grid.cpp
 )

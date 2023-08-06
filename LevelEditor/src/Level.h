@@ -11,9 +11,9 @@
 #include "ImGuiFileDialog.h"
 
 #include "Canvas.h"
-#include "Entity.h"
-#include "TextEntity.h"
-#include "ParticleEntity.h"
+#include "entities/Entity.h"
+#include "entities/TextEntity.h"
+#include "entities/ParticleEntity.h"
 
 using namespace Crocodile;
 namespace fs = std::filesystem;
