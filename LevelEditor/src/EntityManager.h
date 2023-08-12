@@ -45,14 +45,8 @@ public:
     std::vector<TextEntity *> placedTextEntities = {};
     std::vector<ParticleEntity *> placedParticleEntities = {};
 
-private:
-    s2d::Scene *scene = nullptr;
-    Canvas *canvas = nullptr;
-
-    float tmpTimer = 0.f;
-
     // ----- Parameters -----
-
+    float tmpTimer = 0.f;
     // entity inputs
     float tmpScale = 1.f;
     float tmpAlpha = 1.f;
@@ -68,6 +62,10 @@ private:
     float tmpParticleDispersion = 0.1f;
     float tmpParticleScale = 10.f;
     float tmpParticleVelocity = 1.f;
+
+private:
+    s2d::Scene *scene = nullptr;
+    Canvas *canvas = nullptr;
 
     float objectPathTimer = 0.f;
     std::vector<s2d::Object *> objectPath = {};

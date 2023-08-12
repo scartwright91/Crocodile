@@ -11,9 +11,7 @@
 #include "ImGuiFileDialog.h"
 
 #include "Canvas.h"
-#include "entities/Entity.h"
-#include "entities/TextEntity.h"
-#include "entities/ParticleEntity.h"
+#include "EntityManager.h"
 
 using namespace Crocodile;
 namespace fs = std::filesystem;
@@ -98,6 +96,7 @@ private:
     ImVector<int> layerRowSelection = {};
 
     // entities
+    EntityManager *entityManager = nullptr;
     void addEntity();
     void modifyEntity();
     void removeEntity();
@@ -109,6 +108,9 @@ private:
     int tmpHeight = 0;
     const char *tmpNewTexture = "";
     ImVector<int> entityRowSelection = {};
+    const char *selectedPlacementObjectType = "entity";
+    const char *selectedPlacementLayer = "";
+    const char *tmpPlacementEntity = "";
 
     // textures
     void addTexture();
@@ -122,48 +124,8 @@ private:
     // camera
     float tmpCameraZoom = 1.f;
 
-    // placement
-    std::vector<Entity *> placedEntities = {};
-    std::vector<TextEntity *> placedTextEntities = {};
-    std::vector<ParticleEntity *> placedParticleEntities = {};
-    // entity inputs
-    float tmpScale = 1.f;
-    float tmpAlpha = 1.f;
-    float tmpRotation = 0.f;
-    // text inputs
-    char tmpText[64] = "";
-    glm::vec3 tmpTextColor = glm::vec3(1.f);
-    float tmpTextScale = 1.f;
-    // particle inputs
-    int tmpParticleAmount = 10;
-    glm::vec3 tmpParticleColor = glm::vec3(1.f);
-    float tmpParticleDirection = 0.f;
-    float tmpParticleDispersion = 0.1f;
-    float tmpParticleScale = 10.f;
-    float tmpParticleVelocity = 1.f;
-    //
-    float placementTimer = glfwGetTime();
-    const char *selectedPlacementObjectType = "entity";
-    const char *selectedPlacementLayer = "";
-    const char *tmpPlacementEntity = "";
-    bool placeMultiple = true;
-    bool snapToGrid = true;
-    s2d::EntityData *selectedEntityData;
-    void createEntityFromData(s2d::EntityData *entityData);
-    void createTextEntity();
-    void createParticleEntity();
     const char *placementObjectTypes[5] = {"entity", "text", "particles", "light", "zone"};
     void selectPlacementLayer();
     void selectPlacementObject();
     void selectPlacementObjectType();
-    void deleteObject(s2d::Object *obj);
-    void moveObject(s2d::Object *obj);
-    // selection
-    s2d::Object *selectedObject = nullptr;
-    std::string selectedObjectType = "entity";
-    bool moveSelectedObject = false;
-    void selectObject();
-    float objectPathTimer = 0.f;
-    std::vector<s2d::Object *> objectPath = {};
-    void createObjectPath();
 };
