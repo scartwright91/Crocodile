@@ -45,6 +45,9 @@ public:
     std::string selectedObjectType = "entity";
     bool moveSelectedObject = false;
 
+    // hovering entities
+    s2d::Object *hoveredObject = nullptr;
+
     std::vector<Entity *> placedEntities = {};
     std::vector<TextEntity *> placedTextEntities = {};
     std::vector<ParticleEntity *> placedParticleEntities = {};

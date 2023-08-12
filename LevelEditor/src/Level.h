@@ -111,6 +111,10 @@ private:
     const char *selectedPlacementObjectType = "entity";
     const char *selectedPlacementLayer = "";
     const char *tmpPlacementEntity = "";
+    const char *placementObjectTypes[5] = {"entity", "text", "particles", "light", "zone"};
+    void selectPlacementLayer();
+    void selectPlacementObject();
+    void selectPlacementObjectType();
 
     // textures
     void addTexture();
@@ -118,14 +122,6 @@ private:
     char tmpTextureName[64] = "";
     std::string tmpTexturePath = "";
 
-    // Objects
-    s2d::Object *placementObject = nullptr;
-
     // camera
     float tmpCameraZoom = 1.f;
-
-    const char *placementObjectTypes[5] = {"entity", "text", "particles", "light", "zone"};
-    void selectPlacementLayer();
-    void selectPlacementObject();
-    void selectPlacementObjectType();
 };

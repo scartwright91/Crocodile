@@ -125,6 +125,7 @@ void EntityManager::createParticleEntity()
 void EntityManager::selectObject()
 {
     float now = glfwGetTime();
+    hoveredObject = nullptr;
     // regular entities
     for (Entity *e : placedEntities)
         if (e->layer == std::string(selectedPlacementLayer))
@@ -139,6 +140,7 @@ void EntityManager::selectObject()
             {
                 ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
                 e->obj->outline = true;
+                hoveredObject = e->obj;
                 if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1) && (now - tmpTimer > 0.5f))
                 {
                     tmpTimer = now;
@@ -164,6 +166,7 @@ void EntityManager::selectObject()
             if (bbox.intersectsPoint(canvas->sceneMousePos))
             {
                 ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+                hoveredObject = te->text;
                 if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1) && (now - tmpTimer > 0.5f))
                 {
                     tmpTimer = now;
@@ -188,6 +191,7 @@ void EntityManager::selectObject()
             if (bbox.intersectsPoint(canvas->sceneMousePos))
             {
                 ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+                hoveredObject = pe->pg;
                 if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1) && (now - tmpTimer > 0.5f))
                 {
                     tmpTimer = now;
@@ -200,6 +204,8 @@ void EntityManager::selectObject()
 
     if (selectedObject != NULL)
         selectedObject->outline = true;
+    if (hoveredObject != NULL && scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_2))
+        deleteObject(hoveredObject);
 }
 
 void EntityManager::deleteObject(s2d::Object *obj)
