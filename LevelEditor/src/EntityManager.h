@@ -15,7 +15,11 @@ public:
     EntityManager(s2d::Scene *scene, Canvas *canvas);
     ~EntityManager();
 
-    void update(float dt, bool updateLevel);
+    void update(
+        float dt,
+        bool updateLevel,
+        const char *selectedPlacementLayer,
+        const char *selectedPlacementObjectType);
     void serialise();
     void selectObject();
     void deleteObject(s2d::Object *obj);

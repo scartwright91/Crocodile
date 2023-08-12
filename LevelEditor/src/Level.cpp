@@ -32,6 +32,7 @@ void Level::loadPlacedEntities(LevelData data)
         obj->alpha = sed->alpha;
         obj->setPosition(sed->pos);
         obj->size = sed->size;
+        obj->color = sed->color;
         if (sed->texture != "")
             obj->setTexture(rm->getTexture(sed->texture));
         scene->addChild(obj, sed->layer);
@@ -69,7 +70,7 @@ void Level::update(float dt, glm::vec2 mouse)
 {
     canvas->update(dt, mouse);
     sceneMousePos = glm::vec2(mouse.x, scene->window->getMouseScreenPosition().y + (2 * ImGui::GetStyle().FramePadding.y)); // why this works I have no idea
-    entityManager->update(dt, updateLevel);
+    entityManager->update(dt, updateLevel, selectedPlacementLayer, selectedPlacementObjectType);
 }
 
 LevelData Level::serialise()
@@ -93,6 +94,7 @@ LevelData Level::serialise()
                 sed->layer = ent->layer;
                 sed->pos = ent->obj->getPosition();
                 sed->size = ent->obj->size;
+                sed->color = ent->obj->color;
                 sed->rotation = ent->obj->rotation;
                 sed->alpha = ent->obj->alpha;
                 sed->texture = ent->obj->texture.name;

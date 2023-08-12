@@ -35,6 +35,7 @@ namespace Crocodile
 			std::string texture;
 			glm::vec2 pos;
 			glm::vec2 size;
+			glm::vec3 color;
 			float rotation;
 			float alpha;
 			std::vector<glm::vec2> path;

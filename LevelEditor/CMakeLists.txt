@@ -15,8 +15,6 @@ add_executable(${PROJECT_NAME}
     src/Level.cpp
     src/Grid.h
     src/Grid.cpp
-    src/Placer.h
-    src/Placer.cpp
     src/EntityManager.h
     src/EntityManager.cpp
     src/entities/Entity.h

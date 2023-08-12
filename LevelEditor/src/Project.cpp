@@ -85,6 +85,11 @@ void Project::save(LevelData ld)
         size.append(sed->size.x);
         size.append(sed->size.y);
         entData["size"] = size;
+        Json::Value color(Json::arrayValue);
+        color.append(sed->color.r);
+        color.append(sed->color.g);
+        color.append(sed->color.b);
+        entData["color"] = color;
         entData["texture"] = sed->texture;
         // add movement path
         Json::Value movementPath(Json::arrayValue);
@@ -237,6 +242,10 @@ LevelData Project::load()
         sceneEnt->alpha = entData["alpha"].asFloat();
         sceneEnt->pos = glm::vec2(entData["pos"][0].asFloat(), entData["pos"][1].asFloat());
         sceneEnt->size = glm::vec2(entData["size"][0].asFloat(), entData["size"][1].asFloat());
+        sceneEnt->color = glm::vec3(
+            entData["color"][0].asFloat(),
+            entData["color"][1].asFloat(),
+            entData["color"][2].asFloat());
         sceneEnt->texture = entData["texture"].asString();
         // iterate over movement path
         const Json::Value entMovementPath = entData["movement_path"];

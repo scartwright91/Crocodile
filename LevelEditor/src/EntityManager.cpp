@@ -8,8 +8,14 @@ EntityManager::~EntityManager()
 {
 }
 
-void EntityManager::update(float dt, bool updateLevel)
+void EntityManager::update(
+    float dt,
+    bool updateLevel,
+    const char *selectedPlacementLayer,
+    const char *selectedPlacementObjectType)
 {
+    this->selectedPlacementLayer = selectedPlacementLayer;
+    this->selectedPlacementObjectType = selectedPlacementObjectType;
     bool leftclick = scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1);
     bool rightclick = scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_2);
     float now = glfwGetTime();
