@@ -15,7 +15,7 @@ public:
     EntityManager(s2d::Scene *scene, Canvas *canvas);
     ~EntityManager();
 
-    void update(float dt);
+    void update(float dt, bool updateLevel);
     void serialise();
     void selectObject();
     void deleteObject(s2d::Object *obj);
@@ -31,6 +31,7 @@ public:
 
     // creating entities
     s2d::Object *placementObject = nullptr;
+    s2d::EntityData *selectedEntityData;
     void createEntityFromData(s2d::EntityData *entityData);
     void createTextEntity();
     void createParticleEntity();
@@ -38,6 +39,7 @@ public:
     // selecting entities
     s2d::Object *selectedObject = nullptr;
     std::string selectedObjectType = "entity";
+    bool moveSelectedObject = false;
 
     std::vector<Entity *> placedEntities = {};
     std::vector<TextEntity *> placedTextEntities = {};
@@ -66,4 +68,8 @@ private:
     float tmpParticleDispersion = 0.1f;
     float tmpParticleScale = 10.f;
     float tmpParticleVelocity = 1.f;
+
+    float objectPathTimer = 0.f;
+    std::vector<s2d::Object *> objectPath = {};
+    void createObjectPath();
 };

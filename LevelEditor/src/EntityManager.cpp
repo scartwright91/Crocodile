@@ -8,8 +8,66 @@ EntityManager::~EntityManager()
 {
 }
 
-void EntityManager::update(float dt)
+void EntityManager::update(float dt, bool updateLevel)
 {
+    bool leftclick = scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1);
+    bool rightclick = scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_2);
+    float now = glfwGetTime();
+    if (updateLevel)
+    {
+        // update particles
+        for (ParticleEntity *pg : placedParticleEntities)
+            pg->update();
+    }
+    if (placementObject != nullptr)
+    {
+        moveObject(placementObject);
+        if (leftclick && (now - placementTimer > 0.5f))
+        {
+            placementTimer = now;
+            if (placeMultiple)
+                createEntityFromData(selectedEntityData);
+            else
+                placementObject = nullptr;
+        }
+        else if (rightclick)
+        {
+            deleteObject(placementObject);
+            placementObject = nullptr;
+        }
+    }
+    if (selectedObject != nullptr)
+    {
+        if (rightclick)
+        {
+            for (Entity *e : placedEntities)
+                if (e->obj == selectedObject)
+                {
+                    e->deselect();
+                    break;
+                }
+            for (TextEntity *t : placedTextEntities)
+                if (t->text == selectedObject)
+                {
+                    t->deselect();
+                    break;
+                }
+            selectedObject->outline = false;
+            selectedObject = nullptr;
+        }
+        if (moveSelectedObject)
+        {
+            moveObject(selectedObject);
+            if (leftclick)
+                moveSelectedObject = false;
+        }
+        else
+        {
+            if (scene->window->isKeyPressed(GLFW_KEY_M))
+                moveSelectedObject = true;
+            createObjectPath();
+        }
+    }
 }
 
 void EntityManager::serialise()
@@ -201,4 +259,17 @@ void EntityManager::moveObject(s2d::Object *obj)
         obj->setPosition(canvas->getWorldGridPosition());
     else
         obj->setPosition(canvas->mouseWorldPos);
+}
+
+void EntityManager::createObjectPath()
+{
+    float now = glfwGetTime();
+    if (scene->window->isKeyPressed(GLFW_KEY_A) && (now - objectPathTimer > 0.5f))
+        for (Entity *e : placedEntities)
+            if (selectedObject == e->obj)
+            {
+                objectPathTimer = now;
+                e->addMovementPathPos(canvas->mouseWorldPos);
+                break;
+            }
 }
