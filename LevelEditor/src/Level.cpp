@@ -312,6 +312,7 @@ void Level::placementUI()
             {
                 s2d::ParticleGenerator *pg = (s2d::ParticleGenerator *)entityManager->selectedObject;
                 ImGui::ColorEdit3("color", (float *)&entityManager->selectedObject->color);
+                selectParticleTexture();
                 ImGui::SliderFloat("direction", &pg->direction, -3.14, 3.14);
                 ImGui::SliderFloat("dispersion", &pg->dispersion, 0, 3.14);
                 ImGui::SliderFloat("scale", &pg->scale, 0, 100.f);
