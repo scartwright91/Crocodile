@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Crocodile/ResourceManager.h"
 #include "Crocodile/s2d/Scene.h"
 
 #include "Canvas.h"
@@ -12,7 +13,7 @@ using namespace Crocodile;
 class EntityManager
 {
 public:
-    EntityManager(s2d::Scene *scene, Canvas *canvas);
+    EntityManager(s2d::Scene *scene, ResourceManager *rm, Canvas *canvas);
     ~EntityManager();
 
     void update(
@@ -65,6 +66,7 @@ public:
     // particle inputs
     int tmpParticleAmount = 10;
     glm::vec3 tmpParticleColor = glm::vec3(1.f);
+    const char *tmpParticleTextureName = "";
     float tmpParticleDirection = 0.f;
     float tmpParticleDispersion = 0.1f;
     float tmpParticleScale = 10.f;
@@ -72,6 +74,7 @@ public:
 
 private:
     s2d::Scene *scene = nullptr;
+    ResourceManager *rm = nullptr;
     Canvas *canvas = nullptr;
 
     float objectPathTimer = 0.f;

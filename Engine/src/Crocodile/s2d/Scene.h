@@ -56,6 +56,7 @@ namespace Crocodile
 			std::string layer;
 			glm::vec2 pos;
 			glm::vec3 color;
+			std::string texture;
 			int amount;
 			float alpha;
 			float direction;

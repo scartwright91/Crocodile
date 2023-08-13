@@ -101,6 +101,7 @@ private:
     void modifyEntity();
     void removeEntity();
     void selectEntityTexture();
+    void selectParticleTexture();
     void createEntitiesTable();
     char tmpEntityName[64] = "";
     glm::vec3 tmpEntityColour = glm::vec3(0.f);

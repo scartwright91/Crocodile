@@ -2,12 +2,8 @@
 ## TODO
 
 ### Current
-- Improve deleting objects from scene
 - Camera
 - Zones
-- Animations
-- Particles
-  - add textures
 - Autosaves
 - Lights
 

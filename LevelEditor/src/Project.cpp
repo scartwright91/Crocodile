@@ -148,6 +148,7 @@ void Project::save(LevelData ld)
         color.append(ped->color.y);
         color.append(ped->color.z);
         entData["color"] = color;
+        entData["texture"] = ped->texture;
         placedParticleEntities.append(entData);
     }
 
@@ -294,6 +295,7 @@ LevelData Project::load()
             entData["color"][0].asFloat(),
             entData["color"][1].asFloat(),
             entData["color"][2].asFloat());
+        sceneParticleEnt->texture = entData["texture"].asString();
         sceneParticleEntitiesData.push_back(sceneParticleEnt);
     }
 

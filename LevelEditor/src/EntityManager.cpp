@@ -1,6 +1,6 @@
 #include "EntityManager.h"
 
-EntityManager::EntityManager(s2d::Scene *scene, Canvas *canvas) : scene(scene), canvas(canvas)
+EntityManager::EntityManager(s2d::Scene *scene, ResourceManager *rm, Canvas *canvas) : scene(scene), rm(rm), canvas(canvas)
 {
 }
 
@@ -112,6 +112,7 @@ void EntityManager::createParticleEntity()
 {
     placementObject = new s2d::ParticleGenerator(tmpParticleAmount);
     placementObject->color = tmpParticleColor;
+    placementObject->setTexture(rm->getTexture(std::string(tmpParticleTextureName)));
     scene->addChild(placementObject, std::string(selectedPlacementLayer));
     s2d::ParticleGenerator *pg = (s2d::ParticleGenerator *)placementObject;
     pg->direction = tmpParticleDirection;

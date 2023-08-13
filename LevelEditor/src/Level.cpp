@@ -4,7 +4,7 @@ Level::Level(LevelData data, s2d::Scene *scene, ResourceManager *rm) : scene(sce
 {
     strcpy(name, data.name.c_str());
     canvas = new Canvas(scene, data.canvasSize, data.canvasColor);
-    entityManager = new EntityManager(scene, canvas);
+    entityManager = new EntityManager(scene, rm, canvas);
     entitiesData = data.entitiesData;
     layers = data.layers;
     for (s2d::Layer *l : layers)
@@ -19,7 +19,7 @@ Level::Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2
 {
     strcpy(this->name, name.c_str());
     canvas = new Canvas(scene, canvasSize);
-    entityManager = new EntityManager(scene, canvas);
+    entityManager = new EntityManager(scene, rm, canvas);
 }
 
 void Level::loadPlacedEntities(LevelData data)
@@ -60,6 +60,8 @@ void Level::loadPlacedEntities(LevelData data)
         pg->velocity = ped->velocity;
         pg->setPosition(ped->pos);
         pg->color = ped->color;
+        if (ped->texture != "")
+            pg->setTexture(rm->getTexture(ped->texture));
         scene->addChild(pg, ped->layer);
         ParticleEntity *pe = new ParticleEntity(scene, pg, ped->layer);
         entityManager->placedParticleEntities.push_back(pe);
@@ -124,6 +126,7 @@ LevelData Level::serialise()
                 psed->layer = ent->layer;
                 psed->pos = ent->pg->getPosition();
                 psed->color = ent->pg->color;
+                psed->texture = ent->pg->texture.name;
                 psed->amount = ent->pg->amount;
                 psed->alpha = ent->pg->alpha;
                 psed->direction = ent->pg->direction;
@@ -260,6 +263,7 @@ void Level::placementUI()
         {
             ImGui::SliderInt("number", &entityManager->tmpParticleAmount, 0, 100);
             ImGui::ColorEdit3("color", (float *)&entityManager->tmpParticleColor);
+            selectParticleTexture();
             ImGui::SliderFloat("direction", &entityManager->tmpParticleDirection, -3.14, 3.14);
             ImGui::SliderFloat("dispersion", &entityManager->tmpParticleDispersion, 0, 3.14);
             ImGui::SliderFloat("scale", &entityManager->tmpParticleScale, 0, 100.f);
@@ -485,7 +489,6 @@ void Level::modifyEntity()
     {
         if (ImGui::TreeNode("Modify"))
         {
-            // s2d::Object* obj = entityRowSelection
             ImGui::InputText("Entity name", tmpEntityName, 64);
             ImGui::ColorEdit3("Colour", (float *)&tmpEntityColour);
             if (tmpWidth <= 0)
@@ -532,6 +535,34 @@ void Level::selectEntityTexture()
             if (ImGui::Selectable(tmpTextures[n], is_selected))
             {
                 tmpNewTexture = tmpTextures[n];
+                tmpWidth = td.width;
+                tmpHeight = td.height;
+            }
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
+    }
+}
+
+void Level::selectParticleTexture()
+{
+    const char *tmpTextures[textures.size()];
+    for (int i = 0; i < textures.size(); i++)
+        tmpTextures[i] = textures[i].name.c_str();
+
+    if (ImGui::BeginCombo("##combo", entityManager->tmpParticleTextureName))
+    {
+        for (int n = 0; n < IM_ARRAYSIZE(tmpTextures); n++)
+        {
+            bool is_selected = (entityManager->tmpParticleTextureName == tmpTextures[n]);
+            ResourceManager::TextureData td = rm->getTexture(std::string(tmpTextures[n]));
+            float h = ImGui::GetTextLineHeight();
+            ImGui::Image((void *)(intptr_t)td.textureID, ImVec2(h, h));
+            ImGui::SameLine();
+            if (ImGui::Selectable(tmpTextures[n], is_selected))
+            {
+                entityManager->tmpParticleTextureName = tmpTextures[n];
                 tmpWidth = td.width;
                 tmpHeight = td.height;
             }

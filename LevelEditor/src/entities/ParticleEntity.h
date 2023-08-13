@@ -14,6 +14,7 @@ public:
     s2d::ParticleGenerator *pg = nullptr;
     s2d::Text *label = nullptr;
     std::string layer = "";
+    float updateSpeed = 60.f;
 
 private:
     s2d::Scene *scene = nullptr;
