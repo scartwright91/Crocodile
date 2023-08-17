@@ -16,6 +16,7 @@ void EntityManager::load()
         scene->addChild(te->text, te->layer);
     for (ParticleEntity *pe : placedParticleEntities)
         scene->addChild(pe->pg, pe->layer);
+    canvas->showGrid = true;
 }
 
 void EntityManager::clear()
@@ -26,6 +27,7 @@ void EntityManager::clear()
         scene->removeChild(te->text, te->layer);
     for (ParticleEntity *pe : placedParticleEntities)
         scene->removeChild(pe->pg, pe->layer);
+    canvas->showGrid = false;
 }
 
 void EntityManager::update(

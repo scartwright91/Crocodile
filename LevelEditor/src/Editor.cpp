@@ -15,7 +15,7 @@ Editor::Editor(
     else
     {
         levels.push_back(new Level("level0", scene, rm, glm::vec2(600.f)));
-        // levels.push_back(new Level("level1", scene, rm, glm::vec2(2000.f)));
+        levels.push_back(new Level("level1", scene, rm, glm::vec2(2000.f)));
     }
     activeLevel = levels[0];
 }

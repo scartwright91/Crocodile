@@ -22,6 +22,10 @@ void Project::save(LevelData ld)
     levelNames.append(ld.name);
     data["levels"]["level_names"] = levelNames;
 
+    Json::Value canvasPos(Json::arrayValue);
+    canvasPos.append((int)ld.canvasPos.x);
+    canvasPos.append((int)ld.canvasPos.y);
+    data["levels"][ld.name]["canvas_pos"] = canvasPos;
     Json::Value canvasSize(Json::arrayValue);
     canvasSize.append((int)ld.canvasSize.x);
     canvasSize.append((int)ld.canvasSize.y);
@@ -184,6 +188,8 @@ LevelData Project::load()
     ld.name = "level0";
 
     // canvas
+    const Json::Value canvasPosData = data["levels"][ld.name]["canvas_pos"];
+    ld.canvasSize = glm::vec2(canvasPosData[0].asFloat(), canvasPosData[1].asFloat());
     const Json::Value canvasSizeData = data["levels"][ld.name]["canvas_size"];
     ld.canvasSize = glm::vec2(canvasSizeData[0].asFloat(), canvasSizeData[1].asFloat());
     const Json::Value canvasColorData = data["levels"][ld.name]["canvas_color"];

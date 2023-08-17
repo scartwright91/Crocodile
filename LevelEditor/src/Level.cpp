@@ -15,10 +15,15 @@ Level::Level(LevelData data, s2d::Scene *scene, ResourceManager *rm) : scene(sce
     loadPlacedEntities(data);
 }
 
-Level::Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2 canvasSize) : scene(scene), rm(rm), currentPath(fs::current_path())
+Level::Level(
+    std::string name,
+    s2d::Scene *scene,
+    ResourceManager *rm,
+    glm::vec2 canvasPos,
+    glm::vec2 canvasSize) : scene(scene), rm(rm), currentPath(fs::current_path())
 {
     strcpy(this->name, name.c_str());
-    canvas = new Canvas(scene, canvasSize);
+    canvas = new Canvas(scene, canvasPos, canvasSize);
     entityManager = new EntityManager(scene, rm, canvas);
 }
 
@@ -89,6 +94,7 @@ LevelData Level::serialise()
 {
     LevelData ld = {};
     ld.name = std::string(name);
+    ld.canvasPos = canvas->canvas->getPosition();
     ld.canvasSize = canvas->canvas->size;
     ld.canvasColor = canvas->canvasColour;
     ld.entitiesData = entitiesData;

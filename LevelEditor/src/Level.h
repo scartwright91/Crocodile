@@ -20,6 +20,8 @@ struct LevelData
 {
     // level name
     std::string name;
+    // world position of canvas
+    glm::vec2 canvasPos;
     // world size of canvas
     glm::vec2 canvasSize;
     // background colour of canvas
@@ -42,7 +44,7 @@ class Level
 {
 public:
     Level(LevelData data, s2d::Scene *scene, ResourceManager *rm);
-    Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2 canvasSize);
+    Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2 canvasPos, glm::vec2 canvasSize);
 
     char name[64] = "";
 
