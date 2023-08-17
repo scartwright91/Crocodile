@@ -3,6 +3,10 @@
 
 ### Current
 - World / multiple levels
+  - Stretching levels
+  - Adding new levels
+  - Connecting levels
+  - Switching to active levels
 - Camera
 - Zones
 - Autosaves
@@ -12,6 +16,7 @@
 - Fix viewport scaling
 - layers
   - depth
+- framerate when zooming
 
 ### Roadmap
 - Particle Editor

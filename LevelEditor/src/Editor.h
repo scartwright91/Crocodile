@@ -51,7 +51,9 @@ private:
 
     // world
     bool worldView = true;
-    void switchView();
+    void useWorldView();
+    void useLevelView(Level *level);
+    void selectActiveLevel();
 
     // imgui functions
     glm::vec2 sceneMousePosition = glm::vec2(0.f);
@@ -59,6 +61,4 @@ private:
     bool mouseOnSceneWindow = false;
     bool mouseOnImGuiWindow = false;
     void showImGuiMainMenu();
-    bool showParticleEditor = false;
-    bool showImGuiParticleEditor(bool show);
 };

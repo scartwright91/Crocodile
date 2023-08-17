@@ -54,6 +54,7 @@ public:
     void renderImGui();
     LevelData serialise();
 
+    s2d::Text *levelNameText = nullptr;
     Canvas *canvas = nullptr;
     s2d::Scene *scene = nullptr;
 

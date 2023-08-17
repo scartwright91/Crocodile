@@ -17,14 +17,12 @@ Editor::Editor(
         levels.push_back(new Level("level0", scene, rm, glm::vec2(0.f), glm::vec2(600.f)));
         levels.push_back(new Level("level1", scene, rm, glm::vec2(1000.f), glm::vec2(2000.f)));
     }
-    activeLevel = levels[0];
+    // activeLevel = levels[0];
 }
 
 void Editor::renderImGui()
 {
     showImGuiMainMenu();
-    if (showParticleEditor)
-        showParticleEditor = showImGuiParticleEditor(showParticleEditor);
     if (worldView)
     {
     }
@@ -64,6 +62,7 @@ void Editor::renderImGui()
 
 void Editor::update(float dt, bool mouseOnImGuiWindow)
 {
+    float now = glfwGetTime();
     this->mouseOnImGuiWindow = mouseOnImGuiWindow;
     zoom();
     move(dt);
@@ -76,6 +75,15 @@ void Editor::update(float dt, bool mouseOnImGuiWindow)
     {
         if (activeLevel != NULL)
             activeLevel->update(dt, sceneMousePosition);
+    }
+    // selecting active level
+    selectActiveLevel();
+    // switch to world view
+    if (scene->window->isKeyPressed(GLFW_KEY_TAB) && (now - commandTimer > 0.5f))
+    {
+        useWorldView();
+        commandTimer = now;
+        activeLevel = nullptr;
     }
 }
 
@@ -94,7 +102,8 @@ void Editor::zoom()
             scene->camera->changeZoom(z);
         currentZoom = scroll;
         zoomTimer = now;
-        activeLevel->canvas->scaleEdges();
+        for (Level *level : levels)
+            level->canvas->scaleEdges();
     }
 }
 
@@ -183,11 +192,6 @@ void Editor::showImGuiMainMenu()
         }
         if (ImGui::BeginMenu("View"))
         {
-            if ((ImGui::MenuItem("Switch view", "Tab") || uSwitch) && (now - commandTimer > 0.5f))
-            {
-                switchView();
-                commandTimer = now;
-            }
             if (ImGui::MenuItem("Font +", "CTRL+"))
             {
                 fontImGuiScale += 0.2f;
@@ -199,37 +203,37 @@ void Editor::showImGuiMainMenu()
             }
             ImGui::EndMenu();
         }
-        if (ImGui::BeginMenu("Tools"))
-        {
-            if (ImGui::MenuItem("Particle editor"))
-            {
-                // showParticleEditor = true;
-                std::cout << "Not implemented" << std::endl;
-            }
-            ImGui::EndMenu();
-        }
         ImGui::EndMainMenuBar();
     }
 }
 
-bool Editor::showImGuiParticleEditor(bool show)
+void Editor::useWorldView()
 {
-    ImGui::Begin("Particle editor", &show);
-    ImGui::Text("Not implemented");
-    ImGui::End();
-    return show;
+    worldView = true;
+    activeLevel->clear();
+    activeLevel = nullptr;
 }
 
-void Editor::switchView()
+void Editor::useLevelView(Level *level)
 {
-    if (worldView)
+    worldView = false;
+    activeLevel = level;
+    activeLevel->load();
+    camera->setPosition(activeLevel->canvas->canvas->getCenteredPosition());
+}
+
+void Editor::selectActiveLevel()
+{
+    for (Level *level : levels)
     {
-        worldView = false;
-        activeLevel->load();
-    }
-    else
-    {
-        worldView = true;
-        activeLevel->clear();
+        if (level->canvas->canvas->getBoundingBox().intersectsPoint(sceneMousePosition))
+        {
+            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+            if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
+            {
+                useLevelView(level);
+                break;
+            }
+        }
     }
 }
