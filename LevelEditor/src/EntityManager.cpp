@@ -8,6 +8,26 @@ EntityManager::~EntityManager()
 {
 }
 
+void EntityManager::load()
+{
+    for (Entity *e : placedEntities)
+        scene->addChild(e->obj, e->layer);
+    for (TextEntity *te : placedTextEntities)
+        scene->addChild(te->text, te->layer);
+    for (ParticleEntity *pe : placedParticleEntities)
+        scene->addChild(pe->pg, pe->layer);
+}
+
+void EntityManager::clear()
+{
+    for (Entity *e : placedEntities)
+        scene->removeChild(e->obj, e->layer);
+    for (TextEntity *te : placedTextEntities)
+        scene->removeChild(te->text, te->layer);
+    for (ParticleEntity *pe : placedParticleEntities)
+        scene->removeChild(pe->pg, pe->layer);
+}
+
 void EntityManager::update(
     float dt,
     bool updateLevel,

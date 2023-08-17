@@ -16,6 +16,8 @@ public:
     EntityManager(s2d::Scene *scene, ResourceManager *rm, Canvas *canvas);
     ~EntityManager();
 
+    void load();
+    void clear();
     void update(
         float dt,
         bool updateLevel,

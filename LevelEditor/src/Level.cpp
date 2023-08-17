@@ -22,6 +22,16 @@ Level::Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2
     entityManager = new EntityManager(scene, rm, canvas);
 }
 
+void Level::load()
+{
+    entityManager->load();
+}
+
+void Level::clear()
+{
+    entityManager->clear();
+}
+
 void Level::loadPlacedEntities(LevelData data)
 {
     for (s2d::SceneEntityData *sed : data.sceneEntityData)
@@ -35,7 +45,7 @@ void Level::loadPlacedEntities(LevelData data)
         obj->color = sed->color;
         if (sed->texture != "")
             obj->setTexture(rm->getTexture(sed->texture));
-        scene->addChild(obj, sed->layer);
+        // scene->addChild(obj, sed->layer);
         Entity *e = new Entity(scene, obj, sed->layer);
         e->movementPath = sed->path;
         entityManager->placedEntities.push_back(e);
@@ -47,7 +57,7 @@ void Level::loadPlacedEntities(LevelData data)
         t->setPosition(ted->pos);
         t->color = ted->color;
         t->setScale(ted->textScale);
-        scene->addChild(t, ted->layer);
+        // scene->addChild(t, ted->layer);
         TextEntity *te = new TextEntity(scene, t, ted->layer);
         entityManager->placedTextEntities.push_back(te);
     }
@@ -62,7 +72,7 @@ void Level::loadPlacedEntities(LevelData data)
         pg->color = ped->color;
         if (ped->texture != "")
             pg->setTexture(rm->getTexture(ped->texture));
-        scene->addChild(pg, ped->layer);
+        // scene->addChild(pg, ped->layer);
         ParticleEntity *pe = new ParticleEntity(scene, pg, ped->layer);
         entityManager->placedParticleEntities.push_back(pe);
     }

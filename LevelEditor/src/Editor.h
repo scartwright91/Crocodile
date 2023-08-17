@@ -49,6 +49,10 @@ private:
 
     void init();
 
+    // world
+    bool worldView = true;
+    void switchView();
+
     // imgui functions
     glm::vec2 sceneMousePosition = glm::vec2(0.f);
     glm::vec2 viewportSize = glm::vec2(0.f);

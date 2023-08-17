@@ -13,7 +13,10 @@ Editor::Editor(
     if (project->loadProjectFromFile)
         levels.push_back(new Level(project->data, scene, rm));
     else
+    {
         levels.push_back(new Level("level0", scene, rm, glm::vec2(600.f)));
+        // levels.push_back(new Level("level1", scene, rm, glm::vec2(2000.f)));
+    }
     activeLevel = levels[0];
 }
 
@@ -58,8 +61,16 @@ void Editor::update(float dt, bool mouseOnImGuiWindow)
     this->mouseOnImGuiWindow = mouseOnImGuiWindow;
     zoom();
     move(dt);
-    if (activeLevel != NULL)
-        activeLevel->update(dt, sceneMousePosition);
+    if (worldView)
+    {
+        for (Level *level : levels)
+            level->update(dt, sceneMousePosition);
+    }
+    else
+    {
+        if (activeLevel != NULL)
+            activeLevel->update(dt, sceneMousePosition);
+    }
 }
 
 void Editor::zoom()
@@ -117,12 +128,15 @@ void Editor::save()
 
 void Editor::load()
 {
-    // project->load();
+    if (activeLevel != NULL)
+        activeLevel->load();
     std::cout << "Load not implemented" << std::endl;
 }
 
 void Editor::close()
 {
+    if (activeLevel != NULL)
+        activeLevel->clear();
     std::cout << "Close not implemented" << std::endl;
 }
 
@@ -131,6 +145,7 @@ void Editor::showImGuiMainMenu()
     float now = glfwGetTime();
     // user commands
     bool uSave = scene->window->isKeyPressed(GLFW_KEY_LEFT_CONTROL) && scene->window->isKeyPressed(GLFW_KEY_S);
+    bool uSwitch = scene->window->isKeyPressed(GLFW_KEY_TAB);
     if (ImGui::BeginMainMenuBar())
     {
         if (ImGui::BeginMenu("Project"))
@@ -140,11 +155,11 @@ void Editor::showImGuiMainMenu()
                 save();
                 commandTimer = now;
             }
-            if (ImGui::MenuItem("Open", "CTRL O"))
+            if (ImGui::MenuItem("Load", "CTRL O"))
             {
                 load();
             }
-            if (ImGui::MenuItem("Close"))
+            if (ImGui::MenuItem("Clear"))
             {
                 close();
             }
@@ -162,6 +177,11 @@ void Editor::showImGuiMainMenu()
         }
         if (ImGui::BeginMenu("View"))
         {
+            if ((ImGui::MenuItem("Switch view", "Tab") || uSwitch) && (now - commandTimer > 0.5f))
+            {
+                switchView();
+                commandTimer = now;
+            }
             if (ImGui::MenuItem("Font +", "CTRL+"))
             {
                 fontImGuiScale += 0.2f;
@@ -177,7 +197,8 @@ void Editor::showImGuiMainMenu()
         {
             if (ImGui::MenuItem("Particle editor"))
             {
-                showParticleEditor = true;
+                // showParticleEditor = true;
+                std::cout << "Not implemented" << std::endl;
             }
             ImGui::EndMenu();
         }
@@ -191,4 +212,18 @@ bool Editor::showImGuiParticleEditor(bool show)
     ImGui::Text("Not implemented");
     ImGui::End();
     return show;
+}
+
+void Editor::switchView()
+{
+    if (worldView)
+    {
+        worldView = false;
+        activeLevel->load();
+    }
+    else
+    {
+        worldView = true;
+        activeLevel->clear();
+    }
 }

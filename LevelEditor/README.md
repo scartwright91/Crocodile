@@ -2,6 +2,7 @@
 ## TODO
 
 ### Current
+- World / multiple levels
 - Camera
 - Zones
 - Autosaves
@@ -15,6 +16,4 @@
 ### Roadmap
 - Particle Editor
 - Custom style
-- World / multiple levels
-  - blueprints?
 - undo / redo functionality

@@ -46,6 +46,8 @@ public:
 
     char name[64] = "";
 
+    void load();
+    void clear();
     void update(float dt, glm::vec2 mouse);
     void renderImGui();
     LevelData serialise();
