@@ -3,7 +3,7 @@
 Canvas::Canvas(s2d::Scene *scene, glm::vec2 pos, glm::vec2 size)
 {
     canvas = new s2d::Object();
-    canvas->setPosition(pos);
+    // canvas->setPosition(pos);
     canvas->size = size;
     canvas->color = canvasColour;
     scene->addChild(canvas, "canvas");
