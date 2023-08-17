@@ -11,6 +11,8 @@ add_executable(${PROJECT_NAME}
     src/Project.cpp    
     src/Editor.h
     src/Editor.cpp
+    src/World.h
+    src/World.cpp
     src/Level.h
     src/Level.cpp
     src/Grid.h

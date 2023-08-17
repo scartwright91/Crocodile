@@ -15,7 +15,7 @@ Editor::Editor(
     else
     {
         levels.push_back(new Level("level0", scene, rm, glm::vec2(0.f), glm::vec2(600.f)));
-        // levels.push_back(new Level("level1", scene, rm, glm::vec2(1000.f), glm::vec2(2000.f)));
+        levels.push_back(new Level("level1", scene, rm, glm::vec2(1000.f), glm::vec2(2000.f)));
     }
     activeLevel = levels[0];
 }
@@ -25,8 +25,14 @@ void Editor::renderImGui()
     showImGuiMainMenu();
     if (showParticleEditor)
         showParticleEditor = showImGuiParticleEditor(showParticleEditor);
-    if (activeLevel != NULL)
-        activeLevel->renderImGui();
+    if (worldView)
+    {
+    }
+    else
+    {
+        if (activeLevel != NULL)
+            activeLevel->renderImGui();
+    }
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
     ImGui::Begin("Scene");
     ImVec2 currentViewportSize = ImGui::GetContentRegionAvail();

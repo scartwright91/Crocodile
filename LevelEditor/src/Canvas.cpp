@@ -1,9 +1,11 @@
 #include "Canvas.h"
 
-Canvas::Canvas(s2d::Scene *scene, glm::vec2 pos, glm::vec2 size)
+Canvas::Canvas(s2d::Scene *scene,
+               glm::vec2 pos,
+               glm::vec2 size) : scene(scene)
 {
     canvas = new s2d::Object();
-    // canvas->setPosition(pos);
+    canvas->setPosition(pos);
     canvas->size = size;
     canvas->color = canvasColour;
     scene->addChild(canvas, "canvas");
@@ -221,5 +223,5 @@ void Canvas::updateEdges()
 void Canvas::initGrid()
 {
     delete grid;
-    grid = new Grid(scene, (int)canvas->size.x, (int)canvas->size.y, (int)gridSizeX, (int)gridSizeY);
+    grid = new Grid(scene, canvas->getPosition(), (int)canvas->size.x, (int)canvas->size.y, (int)gridSizeX, (int)gridSizeY);
 }

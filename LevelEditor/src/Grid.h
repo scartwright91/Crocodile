@@ -15,10 +15,17 @@ public:
 
     std::vector<s2d::shapes::Line *> lines = {};
 
-    Grid(s2d::Scene *scene, unsigned int canvasSizeX, unsigned int canvasSizeY, unsigned int gridSizeX, unsigned int gridSizeY);
+    Grid(
+        s2d::Scene *scene,
+        glm::vec2 position,
+        unsigned int canvasSizeX,
+        unsigned int canvasSizeY,
+        unsigned int gridSizeX,
+        unsigned int gridSizeY);
     ~Grid();
 
-    bool visible = true;
+    glm::vec2 position = glm::vec2(0.f);
+    bool visible = false;
     void show();
     void hide();
     glm::vec2 getGridPosition(glm::vec2 pos);

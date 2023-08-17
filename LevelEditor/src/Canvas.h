@@ -43,7 +43,7 @@ public:
 
     // grid
     Grid *grid = nullptr;
-    bool showGrid = true;
+    bool showGrid = false;
     int gridSizeX = 100;
     int gridSizeY = 100;
     void initGrid();

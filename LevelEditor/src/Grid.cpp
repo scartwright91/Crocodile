@@ -2,10 +2,11 @@
 
 Grid::Grid(
     s2d::Scene *scene,
+    glm::vec2 position,
     unsigned int canvasSizeX,
     unsigned int canvasSizeY,
     unsigned int gridSizeX,
-    unsigned int gridSizeY) : scene(scene), canvasSizeX(canvasSizeX), canvasSizeY(canvasSizeY), gridSizeX(gridSizeX), gridSizeY(gridSizeY)
+    unsigned int gridSizeY) : scene(scene), position(position), canvasSizeX(canvasSizeX), canvasSizeY(canvasSizeY), gridSizeX(gridSizeX), gridSizeY(gridSizeY)
 {
     createLines();
     show();
@@ -46,7 +47,7 @@ void Grid::createLines()
     {
         glm::vec2 a = glm::vec2(0.f, i * gridSizeY);
         glm::vec2 b = glm::vec2(canvasSizeX, i * gridSizeY);
-        s2d::shapes::Line *line = new s2d::shapes::Line(a, b);
+        s2d::shapes::Line *line = new s2d::shapes::Line(a + position, b + position);
         lines.push_back(line);
     }
     // create vertical lines
@@ -54,7 +55,7 @@ void Grid::createLines()
     {
         glm::vec2 a = glm::vec2(i * gridSizeX, 0.f);
         glm::vec2 b = glm::vec2(i * gridSizeX, canvasSizeY);
-        s2d::shapes::Line *line = new s2d::shapes::Line(a, b);
+        s2d::shapes::Line *line = new s2d::shapes::Line(a + position, b + position);
         lines.push_back(line);
     }
 }
