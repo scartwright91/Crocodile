@@ -39,6 +39,7 @@ namespace Crocodile
 
 			glm::vec2 getDifferenceFromTarget(glm::vec2 pos);
 
+			glm::vec2 getWorldfromScreenPosition(glm::vec2 screenPos, float screenWidth, float screenHeight);
 			glm::mat4 getViewMatrix();
 			glm::mat4 getProjectionMatrix(bool applyZoom);
 

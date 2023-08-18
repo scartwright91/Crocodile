@@ -64,26 +64,29 @@ void Editor::update(float dt, bool mouseOnImGuiWindow)
 {
     float now = glfwGetTime();
     this->mouseOnImGuiWindow = mouseOnImGuiWindow;
+    worldPosition = scene->camera->getWorldfromScreenPosition(
+        scene->window->getMouseScreenPosition(),
+        scene->windowWidth,
+        scene->windowHeight);
     zoom();
     move(dt);
     if (worldView)
     {
         for (Level *level : levels)
             level->update(dt, sceneMousePosition);
+        // selecting active level
+        selectActiveLevel();
     }
     else
     {
-        if (activeLevel != NULL)
-            activeLevel->update(dt, sceneMousePosition);
-    }
-    // selecting active level
-    selectActiveLevel();
-    // switch to world view
-    if (scene->window->isKeyPressed(GLFW_KEY_TAB) && (now - commandTimer > 0.5f))
-    {
-        useWorldView();
-        commandTimer = now;
-        activeLevel = nullptr;
+        activeLevel->update(dt, sceneMousePosition);
+        // switch to world view
+        if (scene->window->isKeyPressed(GLFW_KEY_TAB) && (now - commandTimer > 0.5f))
+        {
+            useWorldView();
+            commandTimer = now;
+            activeLevel = nullptr;
+        }
     }
 }
 
@@ -93,8 +96,9 @@ void Editor::zoom()
         return;
     float scroll = scene->window->scroll.y;
     float now = glfwGetTime();
-    if (scroll != currentZoom)
+    if (scroll != currentZoom && (now - commandTimer > 0.1f))
     {
+        commandTimer = now;
         float z = abs(scroll) / 10;
         if (scroll > currentZoom)
             scene->camera->changeZoom(-z);
@@ -226,7 +230,7 @@ void Editor::selectActiveLevel()
 {
     for (Level *level : levels)
     {
-        if (level->canvas->canvas->getBoundingBox().intersectsPoint(sceneMousePosition))
+        if (level->canvas->canvas->getBoundingBox().intersectsPoint(worldPosition))
         {
             ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
             if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))

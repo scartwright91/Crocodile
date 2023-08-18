@@ -50,6 +50,7 @@ private:
     void init();
 
     // world
+    glm::vec2 worldPosition = glm::vec2(0.f);
     bool worldView = true;
     void useWorldView();
     void useLevelView(Level *level);

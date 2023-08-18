@@ -74,6 +74,18 @@ namespace Crocodile
 			}
 		}
 
+		glm::vec2 Camera::getWorldfromScreenPosition(glm::vec2 screenPos, float screenWidth, float screenHeight)
+		{
+			float ndcX = (2.0f * screenPos.x) / screenWidth - 1.0f;
+			float ndcY = 1.0f - (2.0f * screenPos.y) / screenHeight;
+			glm::mat4 inverseProjection = glm::inverse(getProjectionMatrix(true));
+			glm::vec4 viewPosition = inverseProjection * glm::vec4(ndcX, ndcY, 0.f, 1.0f);
+			glm::vec3 normalizedViewPos = glm::vec3(viewPosition) / viewPosition.w;
+			glm::mat4 inverseView = glm::inverse(getViewMatrix());
+			glm::vec4 worldPosition = inverseView * glm::vec4(normalizedViewPos, 1.0f);
+			return glm::vec2(worldPosition.x, worldPosition.y);
+		}
+
 		glm::mat4 Camera::getViewMatrix()
 		{
 			glm::vec3 pos = glm::vec3(

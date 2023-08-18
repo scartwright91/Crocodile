@@ -6,7 +6,6 @@
   - Stretching levels
   - Adding new levels
   - Connecting levels
-  - Switching to active levels
 - Camera
 - Zones
 - Autosaves
