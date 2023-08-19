@@ -33,7 +33,7 @@ namespace Crocodile
 		public:
 			Object();
 			Object(float x, float y);
-			~Object();
+			virtual ~Object();
 
 			// label
 			std::string label = "";
