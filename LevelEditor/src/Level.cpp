@@ -533,7 +533,7 @@ void Level::removeEntity()
 
 void Level::selectEntityTexture()
 {
-    const char *tmpTextures[textures.size()];
+    const char *tmpTextures[1];
     for (int i = 0; i < textures.size(); i++)
         tmpTextures[i] = textures[i].name.c_str();
 
@@ -561,7 +561,7 @@ void Level::selectEntityTexture()
 
 void Level::selectParticleTexture()
 {
-    const char *tmpTextures[textures.size()];
+    const char *tmpTextures[1];
     for (int i = 0; i < textures.size(); i++)
         tmpTextures[i] = textures[i].name.c_str();
 
@@ -720,7 +720,7 @@ void Level::createTextureTable()
 
 void Level::selectPlacementLayer()
 {
-    const char *tmpLayers[layers.size()];
+    const char *tmpLayers[1];
     for (int i = 0; i < layers.size(); i++)
         tmpLayers[i] = layers[i]->name.c_str();
 
@@ -740,7 +740,7 @@ void Level::selectPlacementLayer()
 
 void Level::selectPlacementObject()
 {
-    const char *tmpEntities[entitiesData.size()];
+    const char *tmpEntities[1];
     for (int i = 0; i < entitiesData.size(); i++)
         tmpEntities[i] = entitiesData[i]->label.c_str();
 
