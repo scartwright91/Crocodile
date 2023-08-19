@@ -7,6 +7,7 @@ namespace Crocodile
         LineRenderer::LineRenderer(graphics::Shader *shader) : shader(shader)
         {
             initShader();
+            init();
         }
 
         LineRenderer::~LineRenderer()
@@ -23,7 +24,7 @@ namespace Crocodile
             float alpha,
             float layerAlpha)
         {
-            init(p1, p2);
+            updateBuffer(p1, p2);
             // prepare shader
             shader->use();
             shader->setMat4("u_Model", glm::mat4(1.f));
@@ -38,14 +39,25 @@ namespace Crocodile
             glBindVertexArray(0);
         }
 
-        void LineRenderer::init(glm::vec2 p1, glm::vec2 p2)
+        void LineRenderer::updateBuffer(glm::vec2 p1, glm::vec2 p2)
         {
-            unsigned int VBO;
-            float vertices[] = {
+            GLfloat vertices[] = {
                 p1.x,
                 p1.y,
                 p2.x,
                 p2.y,
+            };
+            glBindBuffer(GL_ARRAY_BUFFER, VBO);
+            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
+        }
+
+        void LineRenderer::init()
+        {
+            GLfloat vertices[] = {
+                0.f,
+                0.f,
+                1.f,
+                1.f,
             };
 
             glGenVertexArrays(1, &VAO);

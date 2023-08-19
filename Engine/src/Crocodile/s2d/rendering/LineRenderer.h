@@ -26,9 +26,11 @@ namespace Crocodile
 
             graphics::Shader *shader;
             unsigned int VAO = 0;
+            unsigned int VBO = 0;
 
         private:
-            void init(glm::vec2 p1, glm::vec2 p2);
+            void init();
+            void updateBuffer(glm::vec2 p1, glm::vec2 p2);
             void initShader();
         };
     }
