@@ -48,6 +48,8 @@ public:
     ~Level();
 
     char name[64] = "";
+    s2d::Text *levelName = nullptr;
+    void createLevelName();
 
     void load();
     void clear();

@@ -36,6 +36,19 @@ Level::~Level()
         scene->layerStack->removeLayer(layer);
         delete layer;
     }
+    scene->removeChild(levelName, "canvas");
+    delete levelName;
+}
+
+void Level::createLevelName()
+{
+    delete levelName;
+    levelName = new s2d::Text();
+    levelName->color = glm::vec3(1.f);
+    levelName->setScale(glm::vec2(2.f));
+    levelName->setText(std::string(name), false);
+    levelName->setPosition(canvas->canvas->getCenteredPosition() - levelName->size / 2.f);
+    scene->addChild(levelName, "canvas");
 }
 
 void Level::load()
@@ -45,6 +58,7 @@ void Level::load()
         scene->layerStack->addLayer(layer);
     canvas->showGrid = true;
     canvas->grid->show();
+    scene->removeChild(levelName, "canvas");
 }
 
 void Level::clear()
@@ -54,6 +68,7 @@ void Level::clear()
         scene->layerStack->removeLayer(layer);
     canvas->showGrid = false;
     canvas->grid->hide();
+    scene->addChild(levelName, "canvas");
 }
 
 void Level::loadPlacedEntities(LevelData data)

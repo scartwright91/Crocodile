@@ -6,7 +6,10 @@ World::World(s2d::Scene *scene, ResourceManager *rm) : scene(scene), rm(rm)
     levels.push_back(new Level("level1", scene, rm, glm::vec2(1000.f), glm::vec2(2000.f)));
     levels.push_back(new Level("level2", scene, rm, glm::vec2(-1000.f), glm::vec2(2000.f, 500.f)));
     for (Level *level : levels)
+    {
         level->canvas->initCanvasEdges();
+        level->createLevelName();
+    }
 }
 
 World::~World()
@@ -76,7 +79,6 @@ void World::renderImGui()
 void World::enterLevel()
 {
     activeLevel = selectedLevel;
-    // activeLevel->canvas->grid->show();
 }
 
 void World::deleteLevel()
@@ -115,6 +117,7 @@ void World::placeLevel()
     {
         levels.push_back(tmpLevel);
         tmpLevel->canvas->initCanvasEdges();
+        tmpLevel->createLevelName();
         tmpLevel = nullptr;
     }
     else if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_2))
