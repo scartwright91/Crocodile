@@ -26,7 +26,7 @@ public:
     // canvas
     glm::vec2 pos = glm::vec2(0.f);
     s2d::Object *canvas = nullptr;
-    glm::vec3 canvasColour = glm::vec3(0.f);
+    glm::vec3 canvasColour = glm::vec3(0.01f, 0.19f, 0.13f);
     void updateCanvas();
     void initCanvasEdges();
 

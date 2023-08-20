@@ -7,11 +7,11 @@
   - Stretching levels
   - Adding new levels
     - ImGui panel
-      - adding new levels (name, size)
       - modifying current levels (name, delete, size, move)
   - Connecting levels
     - connect points -> draw line -> create rotated rect
     - modify connections
+  - Saving levels
 
 ### Bugs
 - Fix viewport scaling
