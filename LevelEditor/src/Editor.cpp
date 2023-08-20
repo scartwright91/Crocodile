@@ -37,7 +37,7 @@ void Editor::renderImGui()
     if (worldView)
         world->renderImGui();
     else
-        activeLevel->renderImGui();
+        world->activeLevel->renderImGui();
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
     ImGui::Begin("Scene");
     ImVec2 currentViewportSize = ImGui::GetContentRegionAvail();
@@ -76,16 +76,18 @@ void Editor::update(float dt, bool mouseOnImGuiWindow)
     if (worldView)
     {
         world->update(dt, sceneMousePosition);
+        if (world->activeLevel != NULL)
+            worldView = false;
     }
     else
     {
-        activeLevel->update(dt, sceneMousePosition);
+        world->activeLevel->update(dt, sceneMousePosition);
         // switch to world view
         if (scene->window->isKeyPressed(GLFW_KEY_TAB) && (now - commandTimer > 0.5f))
         {
             useWorldView();
             commandTimer = now;
-            activeLevel = nullptr;
+            world->activeLevel = nullptr;
         }
     }
 }
@@ -140,22 +142,19 @@ void Editor::init()
 
 void Editor::save()
 {
-    LevelData ld = activeLevel->serialise();
+    // TODO: iterate over all levels
+    LevelData ld = world->activeLevel->serialise();
     std::cout << "Project saved" << std::endl;
     project->save(ld);
 }
 
 void Editor::load()
 {
-    if (activeLevel != NULL)
-        activeLevel->load();
     std::cout << "Load not implemented" << std::endl;
 }
 
 void Editor::close()
 {
-    if (activeLevel != NULL)
-        activeLevel->clear();
     std::cout << "Close not implemented" << std::endl;
 }
 
@@ -214,14 +213,12 @@ void Editor::showImGuiMainMenu()
 void Editor::useWorldView()
 {
     worldView = true;
-    activeLevel->clear();
-    activeLevel = nullptr;
+    world->activeLevel->clear();
 }
 
 void Editor::useLevelView(Level *level)
 {
     worldView = false;
-    activeLevel = level;
-    activeLevel->load();
-    camera->setPosition(activeLevel->canvas->canvas->getCenteredPosition());
+    world->activeLevel->load();
+    camera->setPosition(world->activeLevel->canvas->canvas->getCenteredPosition());
 }

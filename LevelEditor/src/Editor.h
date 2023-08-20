@@ -28,7 +28,6 @@ public:
 
     Project *project = nullptr;
 
-    Level *activeLevel = nullptr;
     std::vector<Level *> levels = {};
 
     float fontImGuiScale = 1.f;

@@ -65,10 +65,17 @@ void World::renderImGui()
         ImGui::Text(selectedLevel->name);
         ImGui::Text("Rename...");
         ImGui::Text("Move...");
+        if (ImGui::Button("Enter level") || scene->window->isKeyPressed(GLFW_KEY_ENTER))
+            enterLevel();
         if (ImGui::Button("Delete"))
             deleteLevel();
         ImGui::End();
     }
+}
+
+void World::enterLevel()
+{
+    activeLevel = selectedLevel;
 }
 
 void World::deleteLevel()

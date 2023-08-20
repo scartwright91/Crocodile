@@ -30,12 +30,14 @@ public:
     std::vector<Level *> levels = {};
 
     // level functionality
+    Level *activeLevel = nullptr;
     Level *selectedLevel = nullptr;
     Level *tmpLevel = nullptr;
     glm::vec2 worldPosition = glm::vec2(0.f);
     char tmpLevelName[64] = "";
     int tmpLevelWidth = 1000;
     int tmpLevelHeight = 1000;
+    void enterLevel();
     void deleteLevel();
     void selectLevel();
     void createLevel();
