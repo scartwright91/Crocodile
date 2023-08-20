@@ -177,7 +177,7 @@ void Project::save(WorldData wd)
         data["levels"][ld.name]["placed_particle_entities"] = placedParticleEntities;
     }
 
-    data["levels"]["level_names"] = levelNames;
+    data["level_names"] = levelNames;
 
     // write to file
     std::ofstream file_id;
@@ -192,146 +192,161 @@ void Project::save(WorldData wd)
     file_id.close();
 }
 
-LevelData Project::load()
+WorldData Project::load()
 {
     // read project from file
     std::ifstream f(path);
     Json::Value data;
     f >> data;
 
-    // unpack into level data struct
-    LevelData ld;
-    ld.name = "level0";
+    WorldData wd = {};
+    std::vector<LevelData> lds = {};
 
-    // canvas
-    const Json::Value canvasPosData = data["levels"][ld.name]["canvas_pos"];
-    ld.canvasSize = glm::vec2(canvasPosData[0].asFloat(), canvasPosData[1].asFloat());
-    const Json::Value canvasSizeData = data["levels"][ld.name]["canvas_size"];
-    ld.canvasSize = glm::vec2(canvasSizeData[0].asFloat(), canvasSizeData[1].asFloat());
-    const Json::Value canvasColorData = data["levels"][ld.name]["canvas_color"];
-    ld.canvasColor = glm::vec3(canvasColorData[0].asFloat(), canvasColorData[1].asFloat(), canvasColorData[2].asFloat());
-
-    // layers
-    const Json::Value levelLayersData = data["levels"][ld.name]["layers"];
-    std::vector<s2d::Layer *> layers = {};
-    for (int i = 0; i < levelLayersData.size(); i++)
+    // iterate over levels
+    const Json::Value levelNames = data["level_names"];
+    for (int i = 0; i < levelNames.size(); i++)
     {
-        std::string layerName = levelLayersData[i].asString();
-        layers.push_back(new s2d::Layer(layerName));
-    }
-    ld.layers = layers;
+        const Json::Value level = data["levels"][levelNames[i].asString()];
+        // unpack into level data struct
+        LevelData ld;
+        ld.name = "level0";
 
-    // textures
-    const Json::Value levelTexturesData = data["levels"][ld.name]["texture_keys"];
-    std::vector<ResourceManager::TextureData> textures = {};
-    for (int i = 0; i < levelTexturesData.size(); i++)
-    {
-        std::string textureName = levelTexturesData[i].asString();
-        std::string texturePath = data["levels"][ld.name]["textures"][textureName].asString();
-        rm->loadTexture(texturePath.c_str(), textureName, false);
-        textures.push_back(rm->getTexture(textureName));
+        // canvas
+        const Json::Value canvasPosData = data["levels"][ld.name]["canvas_pos"];
+        ld.canvasSize = glm::vec2(canvasPosData[0].asFloat(), canvasPosData[1].asFloat());
+        const Json::Value canvasSizeData = data["levels"][ld.name]["canvas_size"];
+        ld.canvasSize = glm::vec2(canvasSizeData[0].asFloat(), canvasSizeData[1].asFloat());
+        const Json::Value canvasColorData = data["levels"][ld.name]["canvas_color"];
+        ld.canvasColor = glm::vec3(canvasColorData[0].asFloat(), canvasColorData[1].asFloat(), canvasColorData[2].asFloat());
+
+        // layers
+        const Json::Value levelLayersData = data["levels"][ld.name]["layers"];
+        std::vector<s2d::Layer *> layers = {};
+        for (int i = 0; i < levelLayersData.size(); i++)
+        {
+            std::string layerName = levelLayersData[i].asString();
+            layers.push_back(new s2d::Layer(layerName));
+        }
+        ld.layers = layers;
+
+        // textures
+        const Json::Value levelTexturesData = data["levels"][ld.name]["texture_keys"];
+        std::vector<ResourceManager::TextureData> textures = {};
+        for (int i = 0; i < levelTexturesData.size(); i++)
+        {
+            std::string textureName = levelTexturesData[i].asString();
+            std::string texturePath = data["levels"][ld.name]["textures"][textureName].asString();
+            rm->loadTexture(texturePath.c_str(), textureName, false);
+            textures.push_back(rm->getTexture(textureName));
+        }
+
+        // entities data
+        const Json::Value levelEntitiesData = data["levels"][ld.name]["entity_keys"];
+        std::vector<s2d::EntityData *> entitiesData = {};
+        for (int i = 0; i < levelEntitiesData.size(); i++)
+        {
+            std::string entityName = levelEntitiesData[i].asString();
+            Json::Value entData = data["levels"][ld.name]["entity_data"][entityName];
+            std::string entityTexture = entData["texture"].asString();
+            s2d::EntityData *ed = new s2d::EntityData();
+            ed->label = entityName;
+            ResourceManager::TextureData td = rm->getTexture(entityTexture);
+            ed->texture = td;
+            ed->size = glm::vec2(entData["size"][0].asFloat(), entData["size"][1].asFloat());
+            ed->colour = glm::vec3(
+                entData["color"][0].asFloat(),
+                entData["color"][1].asFloat(),
+                entData["color"][2].asFloat());
+            entitiesData.push_back(ed);
+        }
+
+        // placed entities data
+        const Json::Value placedEntitiesData = data["levels"][ld.name]["placed_entities"];
+        std::vector<s2d::SceneEntityData *> sceneEntitiesData = {};
+        for (int i = 0; i < placedEntitiesData.size(); i++)
+        {
+            Json::Value entData = placedEntitiesData[i];
+            s2d::SceneEntityData *sceneEnt = new s2d::SceneEntityData();
+            sceneEnt->label = entData["label"].asString();
+            sceneEnt->layer = entData["layer"].asString();
+            sceneEnt->rotation = entData["rotation"].asFloat();
+            sceneEnt->alpha = entData["alpha"].asFloat();
+            sceneEnt->pos = glm::vec2(entData["pos"][0].asFloat(), entData["pos"][1].asFloat());
+            sceneEnt->worldPos = glm::vec2(entData["worldPos"][0].asFloat(), entData["worldPos"][1].asFloat());
+            sceneEnt->size = glm::vec2(entData["size"][0].asFloat(), entData["size"][1].asFloat());
+            sceneEnt->color = glm::vec3(
+                entData["color"][0].asFloat(),
+                entData["color"][1].asFloat(),
+                entData["color"][2].asFloat());
+            sceneEnt->texture = entData["texture"].asString();
+            // iterate over movement path
+            const Json::Value entMovementPath = entData["movement_path"];
+            std::vector<glm::vec2> path = {};
+            for (int j = 0; j < entMovementPath.size(); j++)
+                path.push_back(glm::vec2(entMovementPath[j][0].asFloat(), entMovementPath[j][1].asFloat()));
+            sceneEnt->path = path;
+            sceneEntitiesData.push_back(sceneEnt);
+        }
+
+        // placed text entities data
+        const Json::Value placedTextEntitiesData = data["levels"][ld.name]["placed_text_entities"];
+        std::vector<s2d::SceneTextEntityData *> sceneTextEntitiesData = {};
+        for (int i = 0; i < placedTextEntitiesData.size(); i++)
+        {
+            Json::Value entData = placedTextEntitiesData[i];
+            s2d::SceneTextEntityData *sceneTextEnt = new s2d::SceneTextEntityData();
+            sceneTextEnt->text = entData["text"].asString();
+            sceneTextEnt->layer = entData["layer"].asString();
+            sceneTextEnt->alpha = entData["alpha"].asFloat();
+            sceneTextEnt->pos = glm::vec2(entData["pos"][0].asFloat(), entData["pos"][1].asFloat());
+            sceneTextEnt->worldPos = glm::vec2(entData["worldPos"][0].asFloat(), entData["worldPos"][1].asFloat());
+            sceneTextEnt->color = glm::vec3(
+                entData["color"][0].asFloat(),
+                entData["color"][1].asFloat(),
+                entData["color"][2].asFloat());
+            sceneTextEnt->textScale = glm::vec2(entData["text_scale"][0].asFloat(), entData["text_scale"][1].asFloat());
+            sceneTextEntitiesData.push_back(sceneTextEnt);
+        }
+
+        // placed particle entities data
+        const Json::Value placedParticleEntitiesData = data["levels"][ld.name]["placed_particle_entities"];
+        std::vector<s2d::SceneParticleEntityData *> sceneParticleEntitiesData = {};
+        for (int i = 0; i < placedParticleEntitiesData.size(); i++)
+        {
+            Json::Value entData = placedParticleEntitiesData[i];
+            s2d::SceneParticleEntityData *sceneParticleEnt = new s2d::SceneParticleEntityData();
+            sceneParticleEnt->layer = entData["layer"].asString();
+            sceneParticleEnt->amount = entData["amount"].asInt();
+            sceneParticleEnt->alpha = entData["alpha"].asFloat();
+            sceneParticleEnt->direction = entData["direction"].asFloat();
+            sceneParticleEnt->dispersion = entData["dispersion"].asFloat();
+            sceneParticleEnt->scale = entData["scale"].asFloat();
+            sceneParticleEnt->velocity = entData["velocity"].asFloat();
+            sceneParticleEnt->pos = glm::vec2(entData["pos"][0].asFloat(), entData["pos"][1].asFloat());
+            sceneParticleEnt->worldPos = glm::vec2(entData["worldPos"][0].asFloat(), entData["worldPos"][1].asFloat());
+            sceneParticleEnt->color = glm::vec3(
+                entData["color"][0].asFloat(),
+                entData["color"][1].asFloat(),
+                entData["color"][2].asFloat());
+            sceneParticleEnt->texture = entData["texture"].asString();
+            sceneParticleEntitiesData.push_back(sceneParticleEnt);
+        }
+
+        ld.entitiesData = entitiesData;
+        ld.textures = textures;
+        ld.sceneEntityData = sceneEntitiesData;
+        ld.sceneTextEntityData = sceneTextEntitiesData;
+        ld.SceneParticleEntityData = sceneParticleEntitiesData;
+
+        lds.push_back(ld);
     }
 
-    // entities data
-    const Json::Value levelEntitiesData = data["levels"][ld.name]["entity_keys"];
-    std::vector<s2d::EntityData *> entitiesData = {};
-    for (int i = 0; i < levelEntitiesData.size(); i++)
-    {
-        std::string entityName = levelEntitiesData[i].asString();
-        Json::Value entData = data["levels"][ld.name]["entity_data"][entityName];
-        std::string entityTexture = entData["texture"].asString();
-        s2d::EntityData *ed = new s2d::EntityData();
-        ed->label = entityName;
-        ResourceManager::TextureData td = rm->getTexture(entityTexture);
-        ed->texture = td;
-        ed->size = glm::vec2(entData["size"][0].asFloat(), entData["size"][1].asFloat());
-        ed->colour = glm::vec3(
-            entData["color"][0].asFloat(),
-            entData["color"][1].asFloat(),
-            entData["color"][2].asFloat());
-        entitiesData.push_back(ed);
-    }
-
-    // placed entities data
-    const Json::Value placedEntitiesData = data["levels"][ld.name]["placed_entities"];
-    std::vector<s2d::SceneEntityData *> sceneEntitiesData = {};
-    for (int i = 0; i < placedEntitiesData.size(); i++)
-    {
-        Json::Value entData = placedEntitiesData[i];
-        s2d::SceneEntityData *sceneEnt = new s2d::SceneEntityData();
-        sceneEnt->label = entData["label"].asString();
-        sceneEnt->layer = entData["layer"].asString();
-        sceneEnt->rotation = entData["rotation"].asFloat();
-        sceneEnt->alpha = entData["alpha"].asFloat();
-        sceneEnt->pos = glm::vec2(entData["pos"][0].asFloat(), entData["pos"][1].asFloat());
-        sceneEnt->worldPos = glm::vec2(entData["worldPos"][0].asFloat(), entData["worldPos"][1].asFloat());
-        sceneEnt->size = glm::vec2(entData["size"][0].asFloat(), entData["size"][1].asFloat());
-        sceneEnt->color = glm::vec3(
-            entData["color"][0].asFloat(),
-            entData["color"][1].asFloat(),
-            entData["color"][2].asFloat());
-        sceneEnt->texture = entData["texture"].asString();
-        // iterate over movement path
-        const Json::Value entMovementPath = entData["movement_path"];
-        std::vector<glm::vec2> path = {};
-        for (int j = 0; j < entMovementPath.size(); j++)
-            path.push_back(glm::vec2(entMovementPath[j][0].asFloat(), entMovementPath[j][1].asFloat()));
-        sceneEnt->path = path;
-        sceneEntitiesData.push_back(sceneEnt);
-    }
-
-    // placed text entities data
-    const Json::Value placedTextEntitiesData = data["levels"][ld.name]["placed_text_entities"];
-    std::vector<s2d::SceneTextEntityData *> sceneTextEntitiesData = {};
-    for (int i = 0; i < placedTextEntitiesData.size(); i++)
-    {
-        Json::Value entData = placedTextEntitiesData[i];
-        s2d::SceneTextEntityData *sceneTextEnt = new s2d::SceneTextEntityData();
-        sceneTextEnt->text = entData["text"].asString();
-        sceneTextEnt->layer = entData["layer"].asString();
-        sceneTextEnt->alpha = entData["alpha"].asFloat();
-        sceneTextEnt->pos = glm::vec2(entData["pos"][0].asFloat(), entData["pos"][1].asFloat());
-        sceneTextEnt->worldPos = glm::vec2(entData["worldPos"][0].asFloat(), entData["worldPos"][1].asFloat());
-        sceneTextEnt->color = glm::vec3(
-            entData["color"][0].asFloat(),
-            entData["color"][1].asFloat(),
-            entData["color"][2].asFloat());
-        sceneTextEnt->textScale = glm::vec2(entData["text_scale"][0].asFloat(), entData["text_scale"][1].asFloat());
-        sceneTextEntitiesData.push_back(sceneTextEnt);
-    }
-
-    // placed particle entities data
-    const Json::Value placedParticleEntitiesData = data["levels"][ld.name]["placed_particle_entities"];
-    std::vector<s2d::SceneParticleEntityData *> sceneParticleEntitiesData = {};
-    for (int i = 0; i < placedParticleEntitiesData.size(); i++)
-    {
-        Json::Value entData = placedParticleEntitiesData[i];
-        s2d::SceneParticleEntityData *sceneParticleEnt = new s2d::SceneParticleEntityData();
-        sceneParticleEnt->layer = entData["layer"].asString();
-        sceneParticleEnt->amount = entData["amount"].asInt();
-        sceneParticleEnt->alpha = entData["alpha"].asFloat();
-        sceneParticleEnt->direction = entData["direction"].asFloat();
-        sceneParticleEnt->dispersion = entData["dispersion"].asFloat();
-        sceneParticleEnt->scale = entData["scale"].asFloat();
-        sceneParticleEnt->velocity = entData["velocity"].asFloat();
-        sceneParticleEnt->pos = glm::vec2(entData["pos"][0].asFloat(), entData["pos"][1].asFloat());
-        sceneParticleEnt->worldPos = glm::vec2(entData["worldPos"][0].asFloat(), entData["worldPos"][1].asFloat());
-        sceneParticleEnt->color = glm::vec3(
-            entData["color"][0].asFloat(),
-            entData["color"][1].asFloat(),
-            entData["color"][2].asFloat());
-        sceneParticleEnt->texture = entData["texture"].asString();
-        sceneParticleEntitiesData.push_back(sceneParticleEnt);
-    }
-
-    ld.entitiesData = entitiesData;
-    ld.textures = textures;
-    ld.sceneEntityData = sceneEntitiesData;
-    ld.sceneTextEntityData = sceneTextEntitiesData;
-    ld.SceneParticleEntityData = sceneParticleEntitiesData;
+    wd.nLevels = levelNames.size();
+    wd.nConnections = 0;
+    wd.levels = lds;
 
     // std::cout << data << std::endl;
-    return ld;
+    return wd;
 }
 
 void Project::undo()

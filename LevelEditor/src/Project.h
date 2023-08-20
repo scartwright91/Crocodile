@@ -20,10 +20,10 @@ public:
     std::string path = "";
     bool loadProjectFromFile = false;
 
-    LevelData data;
+    WorldData data;
 
     void save(WorldData wd);
-    LevelData load();
+    WorldData load();
 
     void undo();
     void redo();
