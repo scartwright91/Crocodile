@@ -45,6 +45,7 @@ class Level
 public:
     Level(LevelData data, s2d::Scene *scene, ResourceManager *rm);
     Level(std::string name, s2d::Scene *scene, ResourceManager *rm, glm::vec2 canvasPos, glm::vec2 canvasSize);
+    ~Level();
 
     char name[64] = "";
 

@@ -29,6 +29,7 @@ Canvas::Canvas(s2d::Scene *scene,
 Canvas::~Canvas()
 {
     delete canvas;
+    delete grid;
 }
 
 void Canvas::update(float dt, glm::vec2 mouse)

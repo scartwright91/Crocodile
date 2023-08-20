@@ -27,14 +27,29 @@ Level::Level(
     entityManager = new EntityManager(scene, rm, canvas);
 }
 
+Level::~Level()
+{
+    delete canvas;
+    delete entityManager;
+    for (s2d::Layer *layer : layers)
+    {
+        scene->layerStack->removeLayer(layer);
+        delete layer;
+    }
+}
+
 void Level::load()
 {
     entityManager->load();
+    for (s2d::Layer *layer : layers)
+        scene->layerStack->addLayer(layer);
 }
 
 void Level::clear()
 {
     entityManager->clear();
+    for (s2d::Layer *layer : layers)
+        scene->layerStack->removeLayer(layer);
 }
 
 void Level::loadPlacedEntities(LevelData data)

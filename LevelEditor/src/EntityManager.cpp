@@ -6,6 +6,13 @@ EntityManager::EntityManager(s2d::Scene *scene, ResourceManager *rm, Canvas *can
 
 EntityManager::~EntityManager()
 {
+    clear();
+    for (Entity *e : placedEntities)
+        delete e;
+    for (TextEntity *te : placedTextEntities)
+        delete te;
+    for (ParticleEntity *pe : placedParticleEntities)
+        delete pe;
 }
 
 void EntityManager::load()
