@@ -29,6 +29,7 @@ class World
 
 public:
     World(s2d::Scene *scene, ResourceManager *rm);
+    World(WorldData wd, s2d::Scene *scene, ResourceManager *rm);
     ~World();
 
     WorldData serialise();

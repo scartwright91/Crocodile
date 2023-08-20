@@ -3,7 +3,7 @@
 Level::Level(LevelData data, s2d::Scene *scene, ResourceManager *rm) : scene(scene), rm(rm), currentPath(fs::current_path())
 {
     strcpy(name, data.name.c_str());
-    canvas = new Canvas(scene, data.canvasSize, data.canvasColor);
+    canvas = new Canvas(scene, data.canvasPos, data.canvasSize, data.canvasColor);
     entityManager = new EntityManager(scene, rm, canvas);
     entitiesData = data.entitiesData;
     layers = data.layers;

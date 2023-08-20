@@ -10,17 +10,7 @@ Editor::Editor(
     scene->layerStack->addLayer(new s2d::Layer("grid"));
     scene->layerStack->addLayer(new s2d::Layer("canvas_edges"));
     scene->layerStack->addLayer(new s2d::Layer("hud"));
-    /*
-    if (project->loadProjectFromFile)
-        levels.push_back(new Level(project->data, scene, rm));
-    else
-    {
-        levels.push_back(new Level("level0", scene, rm, glm::vec2(0.f), glm::vec2(600.f)));
-        levels.push_back(new Level("level1", scene, rm, glm::vec2(1000.f), glm::vec2(2000.f)));
-        levels.push_back(new Level("level2", scene, rm, glm::vec2(-1000.f), glm::vec2(2000.f, 500.f)));
-    }
-    */
-    world = new World(scene, rm);
+    world = project->loadProjectFromFile ? new World(project->data, scene, rm) : new World(scene, rm);
 }
 
 Editor::~Editor()

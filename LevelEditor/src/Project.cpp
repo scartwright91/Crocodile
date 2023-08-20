@@ -206,10 +206,10 @@ WorldData Project::load()
     const Json::Value levelNames = data["level_names"];
     for (int i = 0; i < levelNames.size(); i++)
     {
-        const Json::Value level = data["levels"][levelNames[i].asString()];
+        std::string levelName = levelNames[i].asString();
         // unpack into level data struct
         LevelData ld;
-        ld.name = "level0";
+        ld.name = levelName;
 
         // canvas
         const Json::Value canvasPosData = data["levels"][ld.name]["canvas_pos"];

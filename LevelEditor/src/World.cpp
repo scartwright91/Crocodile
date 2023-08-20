@@ -2,13 +2,24 @@
 
 World::World(s2d::Scene *scene, ResourceManager *rm) : scene(scene), rm(rm)
 {
-    levels.push_back(new Level("level0", scene, rm, glm::vec2(0.f), glm::vec2(600.f)));
-    levels.push_back(new Level("level1", scene, rm, glm::vec2(1000.f), glm::vec2(2000.f)));
-    levels.push_back(new Level("level2", scene, rm, glm::vec2(-1000.f), glm::vec2(2000.f, 500.f)));
-    for (Level *level : levels)
+    // levels.push_back(new Level("level0", scene, rm, glm::vec2(0.f), glm::vec2(600.f)));
+    // levels.push_back(new Level("level1", scene, rm, glm::vec2(1000.f), glm::vec2(2000.f)));
+    // levels.push_back(new Level("level2", scene, rm, glm::vec2(-1000.f), glm::vec2(2000.f, 500.f)));
+    // for (Level *level : levels)
+    // {
+    //     level->canvas->initCanvasEdges();
+    //     level->createLevelName();
+    // }
+}
+
+World::World(WorldData wd, s2d::Scene *scene, ResourceManager *rm) : scene(scene), rm(rm)
+{
+    for (LevelData ld : wd.levels)
     {
+        Level *level = new Level(ld, scene, rm);
         level->canvas->initCanvasEdges();
         level->createLevelName();
+        levels.push_back(level);
     }
 }
 
