@@ -48,6 +48,7 @@ void Level::createLevelName()
     levelName->setScale(glm::vec2(2.f));
     levelName->setText(std::string(name), false);
     levelName->setPosition(canvas->canvas->getCenteredPosition() - levelName->size / 2.f);
+    scene->removeChild(levelName, "canvas");
     scene->addChild(levelName, "canvas");
 }
 
@@ -211,7 +212,6 @@ void Level::renderImGui()
 
 void Level::levelOptions()
 {
-    ImGui::InputText("Level name", name, 64);
     ImGui::Checkbox("Update level:", &updateLevel);
     canvas->renderImGui();
     if (ImGui::CollapsingHeader("Layers"))

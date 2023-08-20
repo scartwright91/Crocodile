@@ -28,6 +28,8 @@ void World::update(float dt, glm::vec2 mousePos)
         selectLevel();
     else
     {
+        if (movingLevel)
+            moveLevel();
         if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_2))
             selectedLevel = nullptr;
     }
@@ -45,7 +47,7 @@ void World::renderImGui()
     ImGui::Text("Some world options...");
     if (ImGui::CollapsingHeader("New level"))
     {
-        ImGui::InputText("Entity name", tmpLevelName, 64);
+        ImGui::InputText("Level name", tmpLevelName, 64);
         if (tmpLevelWidth <= 100)
             tmpLevelWidth = 100;
         if (tmpLevelHeight <= 100)
@@ -66,8 +68,10 @@ void World::renderImGui()
     {
         ImGui::Begin("Level options");
         ImGui::Text(selectedLevel->name);
-        ImGui::InputText("Entity name", selectedLevel->name, 64);
-        // if (ImGui::Button("Move level") || scene->window->isKeyPressed(GLFW_KEY_M))
+        if (ImGui::InputText("Level name", selectedLevel->name, 64))
+            selectedLevel->createLevelName();
+        if (ImGui::Button("Move level") || scene->window->isKeyPressed(GLFW_KEY_M))
+            movingLevel = true;
         if (ImGui::Button("Enter level") || scene->window->isKeyPressed(GLFW_KEY_ENTER))
             enterLevel();
         if (ImGui::Button("Delete"))
@@ -111,7 +115,6 @@ void World::createLevel()
 
 void World::placeLevel()
 {
-    // move level
     tmpLevel->canvas->canvas->setPosition(worldPosition);
     if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
     {
@@ -124,5 +127,16 @@ void World::placeLevel()
     {
         delete tmpLevel;
         tmpLevel = nullptr;
+    }
+}
+
+void World::moveLevel()
+{
+    selectedLevel->canvas->canvas->setPosition(worldPosition);
+    if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
+    {
+        selectedLevel->canvas->initCanvasEdges();
+        selectedLevel->createLevelName();
+        movingLevel = false;
     }
 }

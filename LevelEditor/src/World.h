@@ -34,6 +34,7 @@ public:
     Level *selectedLevel = nullptr;
     Level *tmpLevel = nullptr;
     glm::vec2 worldPosition = glm::vec2(0.f);
+    bool movingLevel = false;
     char tmpLevelName[64] = "";
     int tmpLevelWidth = 1000;
     int tmpLevelHeight = 1000;
@@ -42,6 +43,7 @@ public:
     void selectLevel();
     void createLevel();
     void placeLevel();
+    void moveLevel();
 
     // connection functionality
     Connection *selectedConnection = nullptr;

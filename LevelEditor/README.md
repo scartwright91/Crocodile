@@ -3,10 +3,10 @@
 
 ### Current
 - World / multiple levels
-  - add level name in world view
   - Stretching levels
-    - ImGui panel
-      - modifying current levels (name, delete, size, move)
+  - ImGui panel
+    - modifying current levels
+      - move
   - Connecting levels
     - connect points -> draw line -> create rotated rect
     - modify connections
