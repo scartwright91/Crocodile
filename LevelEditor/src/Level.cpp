@@ -80,7 +80,7 @@ void Level::loadPlacedEntities(LevelData data)
         obj->label = sed->label;
         obj->rotation = sed->rotation;
         obj->alpha = sed->alpha;
-        obj->setPosition(sed->pos);
+        obj->setPosition(sed->worldPos);
         obj->size = sed->size;
         obj->color = sed->color;
         if (sed->texture != "")
@@ -93,7 +93,7 @@ void Level::loadPlacedEntities(LevelData data)
     {
         s2d::Text *t = new s2d::Text(ted->text, false);
         t->alpha = ted->alpha;
-        t->setPosition(ted->pos);
+        t->setPosition(ted->worldPos);
         t->color = ted->color;
         t->setScale(ted->textScale);
         TextEntity *te = new TextEntity(scene, t, ted->layer);
@@ -106,7 +106,7 @@ void Level::loadPlacedEntities(LevelData data)
         pg->dispersion = ped->dispersion;
         pg->scale = ped->scale;
         pg->velocity = ped->velocity;
-        pg->setPosition(ped->pos);
+        pg->setPosition(ped->worldPos);
         pg->color = ped->color;
         if (ped->texture != "")
             pg->setTexture(rm->getTexture(ped->texture));
