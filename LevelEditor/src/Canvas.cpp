@@ -208,6 +208,8 @@ void Canvas::moveEdge()
         edgeSelected->move(0, dy);
     updateCanvas();
     updateEdges();
+    initGrid();
+    grid->show();
 }
 
 void Canvas::scaleEdges()
