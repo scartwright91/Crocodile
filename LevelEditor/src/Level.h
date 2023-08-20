@@ -65,7 +65,6 @@ public:
     std::vector<s2d::EntityData *> entitiesData = {};
     std::vector<ResourceManager::TextureData> textures = {};
 
-    glm::vec2 sceneMousePos = glm::vec2(0.f);
     float tmpTimer = glfwGetTime();
 
 private:

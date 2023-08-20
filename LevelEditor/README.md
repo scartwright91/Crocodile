@@ -4,9 +4,6 @@
 ### Current
 - World / multiple levels
   - Stretching levels
-  - ImGui panel
-    - modifying current levels
-      - move
   - Connecting levels
     - connect points -> draw line -> create rotated rect
     - modify connections

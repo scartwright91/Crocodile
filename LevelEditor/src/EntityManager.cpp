@@ -306,10 +306,7 @@ void EntityManager::deleteObject(s2d::Object *obj)
 
 void EntityManager::moveObject(s2d::Object *obj)
 {
-    if (snapToGrid)
-        obj->setPosition(canvas->getWorldGridPosition());
-    else
-        obj->setPosition(canvas->mouseWorldPos);
+    obj->setPosition(canvas->getWorldPosition(snapToGrid));
 }
 
 void EntityManager::createObjectPath()
@@ -320,7 +317,7 @@ void EntityManager::createObjectPath()
             if (selectedObject == e->obj)
             {
                 objectPathTimer = now;
-                e->addMovementPathPos(canvas->mouseWorldPos);
+                e->addMovementPathPos(canvas->levelMousePos);
                 break;
             }
 }

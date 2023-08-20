@@ -18,10 +18,11 @@ public:
     void renderImGui();
 
     glm::vec2 sceneMousePos = glm::vec2(0.f);
-    glm::vec2 mouseWorldPos = glm::vec2(0.f);
-    glm::vec2 mouseWorldPosGrid = glm::vec2(0.f);
-    void calculateWorldPosition();
-    glm::vec2 getWorldGridPosition();
+    glm::vec2 levelMousePos = glm::vec2(0.f);
+    glm::vec2 levelMousePosGrid = glm::vec2(0.f);
+    void calculateLevelPosition();
+    glm::vec2 getLevelGridPosition();
+    glm::vec2 getWorldPosition(bool snapToGrid);
 
     // canvas
     glm::vec2 pos = glm::vec2(0.f);

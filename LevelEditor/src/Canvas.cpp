@@ -39,7 +39,7 @@ Canvas::~Canvas()
 void Canvas::update(float dt, glm::vec2 mouse)
 {
     sceneMousePos = glm::vec2(mouse.x, scene->window->getMouseScreenPosition().y + (2 * ImGui::GetStyle().FramePadding.y)); // why this works I have no idea
-    calculateWorldPosition();
+    calculateLevelPosition();
     selectEdge();
 }
 
@@ -73,7 +73,7 @@ void Canvas::renderImGui()
     }
 }
 
-void Canvas::calculateWorldPosition()
+void Canvas::calculateLevelPosition()
 {
     s2d::col::BoundingBox bbox = canvas->getScreenBoundingBox(
         scene->camera->getViewMatrix(),
@@ -86,14 +86,20 @@ void Canvas::calculateWorldPosition()
         glm::vec2 size = canvas->size;
         float dx = size.x * (sceneMousePos.x - bbox.x) / bbox.width;
         float dy = size.y * (sceneMousePos.y - bbox.y) / bbox.height;
-        mouseWorldPos = glm::vec2(dx, dy);
-        mouseWorldPosGrid = grid->getGridPosition(mouseWorldPos);
+        levelMousePos = glm::vec2(dx, dy);
+        levelMousePosGrid = grid->getGridPosition(levelMousePos);
     }
 }
 
-glm::vec2 Canvas::getWorldGridPosition()
+glm::vec2 Canvas::getLevelGridPosition()
 {
-    return mouseWorldPosGrid * glm::vec2(grid->gridSizeX, gridSizeY);
+    return levelMousePosGrid * glm::vec2(grid->gridSizeX, gridSizeY);
+}
+
+glm::vec2 Canvas::getWorldPosition(bool snapToGrid)
+{
+    glm::vec2 p = snapToGrid ? getLevelGridPosition() : levelMousePos;
+    return p + canvas->getPosition();
 }
 
 void Canvas::updateCanvas()

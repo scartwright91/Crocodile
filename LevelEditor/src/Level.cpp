@@ -118,7 +118,6 @@ void Level::loadPlacedEntities(LevelData data)
 void Level::update(float dt, glm::vec2 mouse)
 {
     canvas->update(dt, mouse);
-    sceneMousePos = glm::vec2(mouse.x, scene->window->getMouseScreenPosition().y + (2 * ImGui::GetStyle().FramePadding.y)); // why this works I have no idea
     entityManager->update(dt, updateLevel, selectedPlacementLayer, selectedPlacementObjectType);
 }
 
@@ -238,11 +237,11 @@ void Level::levelInfo()
 {
     // display mouse position
     std::string mousePos = "Mouse pos: ";
-    mousePos += "(" + std::to_string((int)canvas->mouseWorldPos.x) + ", " + std::to_string((int)canvas->mouseWorldPos.y) + ")";
+    mousePos += "(" + std::to_string((int)canvas->levelMousePos.x) + ", " + std::to_string((int)canvas->levelMousePos.y) + ")";
     ImGui::Text(mousePos.c_str());
     // grid position
     std::string gridPos = "Grid pos: ";
-    gridPos += "(" + std::to_string((int)canvas->mouseWorldPosGrid.x) + ", " + std::to_string((int)canvas->mouseWorldPosGrid.y) + ")";
+    gridPos += "(" + std::to_string((int)canvas->levelMousePosGrid.x) + ", " + std::to_string((int)canvas->levelMousePosGrid.y) + ")";
     ImGui::Text(gridPos.c_str());
     // display camera zoom
     ImGui::SliderFloat("Zoom", &scene->camera->zoom, 1.f, 50.0f);
@@ -567,13 +566,14 @@ void Level::removeEntity()
 
 void Level::selectEntityTexture()
 {
-    const char *tmpTextures[1];
+    std::vector<const char *> tmpTextures = {};
+
     for (int i = 0; i < textures.size(); i++)
-        tmpTextures[i] = textures[i].name.c_str();
+        tmpTextures.push_back(textures[i].name.c_str());
 
     if (ImGui::BeginCombo("##combo", tmpNewTexture))
     {
-        for (int n = 0; n < IM_ARRAYSIZE(tmpTextures); n++)
+        for (int n = 0; n < tmpTextures.size(); n++)
         {
             bool is_selected = (tmpNewTexture == tmpTextures[n]);
             ResourceManager::TextureData td = rm->getTexture(std::string(tmpTextures[n]));
@@ -595,13 +595,14 @@ void Level::selectEntityTexture()
 
 void Level::selectParticleTexture()
 {
-    const char *tmpTextures[1];
+    std::vector<const char *> tmpTextures = {};
+
     for (int i = 0; i < textures.size(); i++)
-        tmpTextures[i] = textures[i].name.c_str();
+        tmpTextures.push_back(textures[i].name.c_str());
 
     if (ImGui::BeginCombo("##combo", entityManager->tmpParticleTextureName))
     {
-        for (int n = 0; n < IM_ARRAYSIZE(tmpTextures); n++)
+        for (int n = 0; n < tmpTextures.size(); n++)
         {
             bool is_selected = (entityManager->tmpParticleTextureName == tmpTextures[n]);
             ResourceManager::TextureData td = rm->getTexture(std::string(tmpTextures[n]));
@@ -754,13 +755,13 @@ void Level::createTextureTable()
 
 void Level::selectPlacementLayer()
 {
-    const char *tmpLayers[1];
+    std::vector<const char *> tmpLayers = {};
     for (int i = 0; i < layers.size(); i++)
-        tmpLayers[i] = layers[i]->name.c_str();
+        tmpLayers.push_back(layers[i]->name.c_str());
 
     if (ImGui::BeginCombo("Select layer", selectedPlacementLayer))
     {
-        for (int n = 0; n < IM_ARRAYSIZE(tmpLayers); n++)
+        for (int n = 0; n < tmpLayers.size(); n++)
         {
             bool is_selected = (selectedPlacementLayer == tmpLayers[n]);
             if (ImGui::Selectable(tmpLayers[n], is_selected))
@@ -774,13 +775,13 @@ void Level::selectPlacementLayer()
 
 void Level::selectPlacementObject()
 {
-    const char *tmpEntities[1];
+    std::vector<const char *> tmpEntities = {};
     for (int i = 0; i < entitiesData.size(); i++)
-        tmpEntities[i] = entitiesData[i]->label.c_str();
+        tmpEntities.push_back(entitiesData[i]->label.c_str());
 
     if (ImGui::BeginCombo("Select entity", tmpPlacementEntity))
     {
-        for (int n = 0; n < IM_ARRAYSIZE(tmpEntities); n++)
+        for (int n = 0; n < tmpEntities.size(); n++)
         {
             bool is_selected = (tmpPlacementEntity == tmpEntities[n]);
             if (ImGui::Selectable(tmpEntities[n], is_selected))
