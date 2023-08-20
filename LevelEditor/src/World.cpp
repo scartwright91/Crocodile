@@ -16,6 +16,18 @@ World::~World()
 {
 }
 
+WorldData World::serialise()
+{
+    WorldData wd = {};
+    wd.nLevels = levels.size();
+    wd.nConnections = connections.size();
+    std::vector<LevelData> lds = {};
+    for (Level *level : levels)
+        lds.push_back(level->serialise());
+    wd.levels = lds;
+    return wd;
+}
+
 void World::update(float dt, glm::vec2 mousePos)
 {
     worldPosition = scene->camera->getWorldfromScreenPosition(

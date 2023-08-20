@@ -143,9 +143,9 @@ void Editor::init()
 void Editor::save()
 {
     // TODO: iterate over all levels
-    LevelData ld = world->activeLevel->serialise();
+    WorldData wd = world->serialise();
+    project->save(wd);
     std::cout << "Project saved" << std::endl;
-    project->save(ld);
 }
 
 void Editor::load()

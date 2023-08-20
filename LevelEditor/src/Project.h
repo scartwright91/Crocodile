@@ -9,7 +9,7 @@
 #include "json/writer.h"
 #include "json/json.h"
 
-#include "Level.h"
+#include "World.h"
 
 class Project
 {
@@ -22,7 +22,7 @@ public:
 
     LevelData data;
 
-    void save(LevelData ld);
+    void save(WorldData wd);
     LevelData load();
 
     void undo();

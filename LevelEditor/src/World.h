@@ -17,6 +17,13 @@ struct Connection
     s2d::Object *rect = nullptr;
 };
 
+struct WorldData
+{
+    unsigned int nLevels;
+    unsigned int nConnections;
+    std::vector<LevelData> levels;
+};
+
 class World
 {
 
@@ -24,6 +31,7 @@ public:
     World(s2d::Scene *scene, ResourceManager *rm);
     ~World();
 
+    WorldData serialise();
     void update(float dt, glm::vec2 mousePos);
     void renderImGui();
 

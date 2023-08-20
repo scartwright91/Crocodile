@@ -10,170 +10,174 @@ Project::Project(
         data = load();
 }
 
-void Project::save(LevelData ld)
+void Project::save(WorldData wd)
 {
     Json::Value data;
-
     // project data
     data["project"]["name"] = name;
     data["project"]["path"] = path;
 
     Json::Value levelNames(Json::arrayValue);
-    levelNames.append(ld.name);
-    data["levels"]["level_names"] = levelNames;
 
-    Json::Value canvasPos(Json::arrayValue);
-    canvasPos.append((int)ld.canvasPos.x);
-    canvasPos.append((int)ld.canvasPos.y);
-    data["levels"][ld.name]["canvas_pos"] = canvasPos;
-    Json::Value canvasSize(Json::arrayValue);
-    canvasSize.append((int)ld.canvasSize.x);
-    canvasSize.append((int)ld.canvasSize.y);
-    data["levels"][ld.name]["canvas_size"] = canvasSize;
-    Json::Value canvasColor(Json::arrayValue);
-    canvasColor.append((float)ld.canvasColor.r);
-    canvasColor.append((float)ld.canvasColor.g);
-    canvasColor.append((float)ld.canvasColor.b);
-    data["levels"][ld.name]["canvas_color"] = canvasColor;
-
-    Json::Value layerKeys(Json::arrayValue);
-    Json::Value entityKeys(Json::arrayValue);
-    Json::Value textureKeys(Json::arrayValue);
-    Json::Value placedEntities(Json::arrayValue);
-    Json::Value placedTextEntities(Json::arrayValue);
-    Json::Value placedParticleEntities(Json::arrayValue);
-
-    // layers
-    for (s2d::Layer *layer : ld.layers)
-        layerKeys.append(layer->name);
-
-    // textures
-    Json::Value textures(Json::arrayValue);
-    for (ResourceManager::TextureData td : ld.textures)
+    for (LevelData ld : wd.levels)
     {
-        textureKeys.append(td.name);
-        data["levels"][ld.name]["textures"][td.name] = td.path;
-    }
+        levelNames.append(ld.name);
 
-    // entities
-    for (s2d::EntityData *ed : ld.entitiesData)
-    {
-        entityKeys.append(ed->label);
-        Json::Value entData;
-        entData["texture"] = ed->texture.name;
-        Json::Value size(Json::arrayValue);
-        size.append(ed->size.x);
-        size.append(ed->size.y);
-        entData["size"] = size;
-        Json::Value color(Json::arrayValue);
-        color.append(ed->colour.x);
-        color.append(ed->colour.y);
-        color.append(ed->colour.z);
-        entData["color"] = color;
-        data["levels"][ld.name]["entity_data"][ed->label] = entData;
-    }
+        Json::Value canvasPos(Json::arrayValue);
+        canvasPos.append((int)ld.canvasPos.x);
+        canvasPos.append((int)ld.canvasPos.y);
+        data["levels"][ld.name]["canvas_pos"] = canvasPos;
+        Json::Value canvasSize(Json::arrayValue);
+        canvasSize.append((int)ld.canvasSize.x);
+        canvasSize.append((int)ld.canvasSize.y);
+        data["levels"][ld.name]["canvas_size"] = canvasSize;
+        Json::Value canvasColor(Json::arrayValue);
+        canvasColor.append((float)ld.canvasColor.r);
+        canvasColor.append((float)ld.canvasColor.g);
+        canvasColor.append((float)ld.canvasColor.b);
+        data["levels"][ld.name]["canvas_color"] = canvasColor;
 
-    // placed entities
-    for (s2d::SceneEntityData *sed : ld.sceneEntityData)
-    {
-        Json::Value entData;
-        entData["label"] = sed->label;
-        entData["layer"] = sed->layer;
-        entData["rotation"] = sed->rotation;
-        entData["alpha"] = sed->alpha;
-        Json::Value pos(Json::arrayValue);
-        pos.append((int)sed->pos.x);
-        pos.append((int)sed->pos.y);
-        entData["pos"] = pos;
-        Json::Value worldPos(Json::arrayValue);
-        worldPos.append((int)sed->worldPos.x);
-        worldPos.append((int)sed->worldPos.y);
-        entData["worldPos"] = worldPos;
-        Json::Value size(Json::arrayValue);
-        size.append(sed->size.x);
-        size.append(sed->size.y);
-        entData["size"] = size;
-        Json::Value color(Json::arrayValue);
-        color.append(sed->color.r);
-        color.append(sed->color.g);
-        color.append(sed->color.b);
-        entData["color"] = color;
-        entData["texture"] = sed->texture;
-        // add movement path
-        Json::Value movementPath(Json::arrayValue);
-        for (glm::vec2 p : sed->path)
+        Json::Value layerKeys(Json::arrayValue);
+        Json::Value entityKeys(Json::arrayValue);
+        Json::Value textureKeys(Json::arrayValue);
+        Json::Value placedEntities(Json::arrayValue);
+        Json::Value placedTextEntities(Json::arrayValue);
+        Json::Value placedParticleEntities(Json::arrayValue);
+
+        // layers
+        for (s2d::Layer *layer : ld.layers)
+            layerKeys.append(layer->name);
+
+        // textures
+        Json::Value textures(Json::arrayValue);
+        for (ResourceManager::TextureData td : ld.textures)
         {
-            Json::Value movementPathPos(Json::arrayValue);
-            movementPathPos.append(p.x);
-            movementPathPos.append(p.y);
-            movementPath.append(movementPathPos);
+            textureKeys.append(td.name);
+            data["levels"][ld.name]["textures"][td.name] = td.path;
         }
-        entData["movement_path"] = movementPath;
-        // add custom attributes
-        placedEntities.append(entData);
+
+        // entities
+        for (s2d::EntityData *ed : ld.entitiesData)
+        {
+            entityKeys.append(ed->label);
+            Json::Value entData;
+            entData["texture"] = ed->texture.name;
+            Json::Value size(Json::arrayValue);
+            size.append(ed->size.x);
+            size.append(ed->size.y);
+            entData["size"] = size;
+            Json::Value color(Json::arrayValue);
+            color.append(ed->colour.x);
+            color.append(ed->colour.y);
+            color.append(ed->colour.z);
+            entData["color"] = color;
+            data["levels"][ld.name]["entity_data"][ed->label] = entData;
+        }
+
+        // placed entities
+        for (s2d::SceneEntityData *sed : ld.sceneEntityData)
+        {
+            Json::Value entData;
+            entData["label"] = sed->label;
+            entData["layer"] = sed->layer;
+            entData["rotation"] = sed->rotation;
+            entData["alpha"] = sed->alpha;
+            Json::Value pos(Json::arrayValue);
+            pos.append((int)sed->pos.x);
+            pos.append((int)sed->pos.y);
+            entData["pos"] = pos;
+            Json::Value worldPos(Json::arrayValue);
+            worldPos.append((int)sed->worldPos.x);
+            worldPos.append((int)sed->worldPos.y);
+            entData["worldPos"] = worldPos;
+            Json::Value size(Json::arrayValue);
+            size.append(sed->size.x);
+            size.append(sed->size.y);
+            entData["size"] = size;
+            Json::Value color(Json::arrayValue);
+            color.append(sed->color.r);
+            color.append(sed->color.g);
+            color.append(sed->color.b);
+            entData["color"] = color;
+            entData["texture"] = sed->texture;
+            // add movement path
+            Json::Value movementPath(Json::arrayValue);
+            for (glm::vec2 p : sed->path)
+            {
+                Json::Value movementPathPos(Json::arrayValue);
+                movementPathPos.append(p.x);
+                movementPathPos.append(p.y);
+                movementPath.append(movementPathPos);
+            }
+            entData["movement_path"] = movementPath;
+            // add custom attributes
+            placedEntities.append(entData);
+        }
+
+        // placed text entities
+        for (s2d::SceneTextEntityData *ted : ld.sceneTextEntityData)
+        {
+            Json::Value entData;
+            entData["text"] = ted->text;
+            entData["layer"] = ted->layer;
+            entData["alpha"] = ted->alpha;
+            Json::Value pos(Json::arrayValue);
+            pos.append((int)ted->pos.x);
+            pos.append((int)ted->pos.y);
+            entData["pos"] = pos;
+            Json::Value worldPos(Json::arrayValue);
+            worldPos.append((int)ted->worldPos.x);
+            worldPos.append((int)ted->worldPos.y);
+            entData["worldPos"] = worldPos;
+            Json::Value textScale(Json::arrayValue);
+            textScale.append(ted->textScale.x);
+            textScale.append(ted->textScale.y);
+            entData["text_scale"] = textScale;
+            Json::Value color(Json::arrayValue);
+            color.append(ted->color.x);
+            color.append(ted->color.y);
+            color.append(ted->color.z);
+            entData["color"] = color;
+            placedTextEntities.append(entData);
+        }
+
+        // placed particle entities
+        for (s2d::SceneParticleEntityData *ped : ld.SceneParticleEntityData)
+        {
+            Json::Value entData;
+            entData["layer"] = ped->layer;
+            entData["amount"] = ped->amount;
+            entData["alpha"] = ped->alpha;
+            entData["direction"] = ped->direction;
+            entData["dispersion"] = ped->dispersion;
+            entData["scale"] = ped->scale;
+            entData["velocity"] = ped->velocity;
+            Json::Value pos(Json::arrayValue);
+            pos.append((int)ped->pos.x);
+            pos.append((int)ped->pos.y);
+            entData["pos"] = pos;
+            Json::Value worldPos(Json::arrayValue);
+            worldPos.append((int)ped->worldPos.x);
+            worldPos.append((int)ped->worldPos.y);
+            entData["worldPos"] = worldPos;
+            Json::Value color(Json::arrayValue);
+            color.append(ped->color.x);
+            color.append(ped->color.y);
+            color.append(ped->color.z);
+            entData["color"] = color;
+            entData["texture"] = ped->texture;
+            placedParticleEntities.append(entData);
+        }
+
+        data["levels"][ld.name]["layers"] = layerKeys;
+        data["levels"][ld.name]["texture_keys"] = textureKeys;
+        data["levels"][ld.name]["entity_keys"] = entityKeys;
+        data["levels"][ld.name]["placed_entities"] = placedEntities;
+        data["levels"][ld.name]["placed_text_entities"] = placedTextEntities;
+        data["levels"][ld.name]["placed_particle_entities"] = placedParticleEntities;
     }
 
-    // placed text entities
-    for (s2d::SceneTextEntityData *ted : ld.sceneTextEntityData)
-    {
-        Json::Value entData;
-        entData["text"] = ted->text;
-        entData["layer"] = ted->layer;
-        entData["alpha"] = ted->alpha;
-        Json::Value pos(Json::arrayValue);
-        pos.append((int)ted->pos.x);
-        pos.append((int)ted->pos.y);
-        entData["pos"] = pos;
-        Json::Value worldPos(Json::arrayValue);
-        worldPos.append((int)ted->worldPos.x);
-        worldPos.append((int)ted->worldPos.y);
-        entData["worldPos"] = worldPos;
-        Json::Value textScale(Json::arrayValue);
-        textScale.append(ted->textScale.x);
-        textScale.append(ted->textScale.y);
-        entData["text_scale"] = textScale;
-        Json::Value color(Json::arrayValue);
-        color.append(ted->color.x);
-        color.append(ted->color.y);
-        color.append(ted->color.z);
-        entData["color"] = color;
-        placedTextEntities.append(entData);
-    }
-
-    // placed particle entities
-    for (s2d::SceneParticleEntityData *ped : ld.SceneParticleEntityData)
-    {
-        Json::Value entData;
-        entData["layer"] = ped->layer;
-        entData["amount"] = ped->amount;
-        entData["alpha"] = ped->alpha;
-        entData["direction"] = ped->direction;
-        entData["dispersion"] = ped->dispersion;
-        entData["scale"] = ped->scale;
-        entData["velocity"] = ped->velocity;
-        Json::Value pos(Json::arrayValue);
-        pos.append((int)ped->pos.x);
-        pos.append((int)ped->pos.y);
-        entData["pos"] = pos;
-        Json::Value worldPos(Json::arrayValue);
-        worldPos.append((int)ped->worldPos.x);
-        worldPos.append((int)ped->worldPos.y);
-        entData["worldPos"] = worldPos;
-        Json::Value color(Json::arrayValue);
-        color.append(ped->color.x);
-        color.append(ped->color.y);
-        color.append(ped->color.z);
-        entData["color"] = color;
-        entData["texture"] = ped->texture;
-        placedParticleEntities.append(entData);
-    }
-
-    data["levels"][ld.name]["layers"] = layerKeys;
-    data["levels"][ld.name]["texture_keys"] = textureKeys;
-    data["levels"][ld.name]["entity_keys"] = entityKeys;
-    data["levels"][ld.name]["placed_entities"] = placedEntities;
-    data["levels"][ld.name]["placed_text_entities"] = placedTextEntities;
-    data["levels"][ld.name]["placed_particle_entities"] = placedParticleEntities;
+    data["levels"]["level_names"] = levelNames;
 
     // write to file
     std::ofstream file_id;
