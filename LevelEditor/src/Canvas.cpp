@@ -28,7 +28,13 @@ Canvas::Canvas(s2d::Scene *scene,
 
 Canvas::~Canvas()
 {
+    scene->removeChild(canvas, "canvas");
     delete canvas;
+    for (s2d::Object *edge : edges)
+    {
+        scene->removeChild(edge, "canvas_edges");
+        delete edge;
+    }
     delete grid;
 }
 

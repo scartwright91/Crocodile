@@ -1,7 +1,10 @@
 #include "World.h"
 
-World::World(s2d::Scene *scene, std::vector<Level *> levels) : scene(scene), levels(levels)
+World::World(s2d::Scene *scene, ResourceManager* rm) : scene(scene), rm(rm)
 {
+    levels.push_back(new Level("level0", scene, rm, glm::vec2(0.f), glm::vec2(600.f)));
+    levels.push_back(new Level("level1", scene, rm, glm::vec2(1000.f), glm::vec2(2000.f)));
+    levels.push_back(new Level("level2", scene, rm, glm::vec2(-1000.f), glm::vec2(2000.f, 500.f)));
 }
 
 World::~World()
@@ -45,9 +48,17 @@ void World::renderImGui()
         ImGui::Text("Some level options...");
         ImGui::Text("Rename...");
         ImGui::Text("Move...");
-        ImGui::Button("Delete");
+        if (ImGui::Button("Delete"))
+            deleteLevel();
         ImGui::End();
     }
+}
+
+void World::deleteLevel()
+{
+    levels.erase(std::remove(levels.begin(), levels.end(), selectedLevel), levels.end());
+    delete selectedLevel;
+    selectedLevel = nullptr;
 }
 
 void World::selectLevel()

@@ -2,6 +2,7 @@
 
 #include <vector>
 
+#include "Crocodile/ResourceManager.h"
 #include "Crocodile/s2d/Scene.h"
 #include "imgui.h"
 
@@ -20,7 +21,7 @@ class World
 {
 
 public:
-    World(s2d::Scene *scene, std::vector<Level *> levels);
+    World(s2d::Scene *scene, ResourceManager* rm);
     ~World();
 
     void update(float dt, glm::vec2 mousePos);
@@ -31,6 +32,7 @@ public:
     // level functionality
     Level *selectedLevel = nullptr;
     glm::vec2 worldPosition = glm::vec2(0.f);
+    void deleteLevel();
     void selectLevel();
 
     // connection functionality
@@ -39,5 +41,6 @@ public:
     void selectConnection();
 
 private:
+    ResourceManager* rm = nullptr;
     s2d::Scene *scene = nullptr;
 };

@@ -10,6 +10,7 @@ Editor::Editor(
     scene->layerStack->addLayer(new s2d::Layer("grid"));
     scene->layerStack->addLayer(new s2d::Layer("canvas_edges"));
     scene->layerStack->addLayer(new s2d::Layer("hud"));
+    /*
     if (project->loadProjectFromFile)
         levels.push_back(new Level(project->data, scene, rm));
     else
@@ -18,7 +19,8 @@ Editor::Editor(
         levels.push_back(new Level("level1", scene, rm, glm::vec2(1000.f), glm::vec2(2000.f)));
         levels.push_back(new Level("level2", scene, rm, glm::vec2(-1000.f), glm::vec2(2000.f, 500.f)));
     }
-    world = new World(scene, levels);
+    */
+    world = new World(scene, rm);
 }
 
 Editor::~Editor()
@@ -223,19 +225,3 @@ void Editor::useLevelView(Level *level)
     activeLevel->load();
     camera->setPosition(activeLevel->canvas->canvas->getCenteredPosition());
 }
-
-// void Editor::selectActiveLevel()
-// {
-//     for (Level *level : levels)
-//     {
-//         if (level->canvas->canvas->getBoundingBox().intersectsPoint(worldPosition))
-//         {
-//             ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
-//             if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
-//             {
-//                 useLevelView(level);
-//                 break;
-//             }
-//         }
-//     }
-// }

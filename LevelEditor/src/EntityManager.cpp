@@ -8,11 +8,20 @@ EntityManager::~EntityManager()
 {
     clear();
     for (Entity *e : placedEntities)
+    {
+        scene->removeChild(e->obj, e->layer);
         delete e;
+    }
     for (TextEntity *te : placedTextEntities)
+    {
+        scene->removeChild(te->text, te->layer);
         delete te;
+    }
     for (ParticleEntity *pe : placedParticleEntities)
+    {
+        scene->removeChild(pe->pg, pe->layer);
         delete pe;
+    }
 }
 
 void EntityManager::load()
