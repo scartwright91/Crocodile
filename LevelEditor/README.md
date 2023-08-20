@@ -5,7 +5,6 @@
 - World / multiple levels
   - add level name in world view
   - Stretching levels
-  - Adding new levels
     - ImGui panel
       - modifying current levels (name, delete, size, move)
   - Connecting levels

@@ -9,7 +9,6 @@ Canvas::Canvas(s2d::Scene *scene,
     canvas->size = size;
     canvas->color = canvasColour;
     scene->addChild(canvas, "canvas");
-    // initCanvasEdges();
 }
 
 Canvas::Canvas(s2d::Scene *scene,
@@ -23,7 +22,6 @@ Canvas::Canvas(s2d::Scene *scene,
     canvasColour = color;
     canvas->color = canvasColour;
     scene->addChild(canvas, "canvas");
-    initCanvasEdges();
 }
 
 Canvas::~Canvas()

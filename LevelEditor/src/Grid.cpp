@@ -9,7 +9,6 @@ Grid::Grid(
     unsigned int gridSizeY) : scene(scene), position(position), canvasSizeX(canvasSizeX), canvasSizeY(canvasSizeY), gridSizeX(gridSizeX), gridSizeY(gridSizeY)
 {
     createLines();
-    show();
 }
 
 Grid::~Grid()

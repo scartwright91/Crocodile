@@ -63,8 +63,8 @@ void World::renderImGui()
     {
         ImGui::Begin("Level options");
         ImGui::Text(selectedLevel->name);
-        ImGui::Text("Rename...");
-        ImGui::Text("Move...");
+        ImGui::InputText("Entity name", selectedLevel->name, 64);
+        // if (ImGui::Button("Move level") || scene->window->isKeyPressed(GLFW_KEY_M))
         if (ImGui::Button("Enter level") || scene->window->isKeyPressed(GLFW_KEY_ENTER))
             enterLevel();
         if (ImGui::Button("Delete"))
@@ -76,6 +76,7 @@ void World::renderImGui()
 void World::enterLevel()
 {
     activeLevel = selectedLevel;
+    // activeLevel->canvas->grid->show();
 }
 
 void World::deleteLevel()

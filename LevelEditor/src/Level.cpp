@@ -43,6 +43,8 @@ void Level::load()
     entityManager->load();
     for (s2d::Layer *layer : layers)
         scene->layerStack->addLayer(layer);
+    canvas->showGrid = true;
+    canvas->grid->show();
 }
 
 void Level::clear()
@@ -50,6 +52,8 @@ void Level::clear()
     entityManager->clear();
     for (s2d::Layer *layer : layers)
         scene->layerStack->removeLayer(layer);
+    canvas->showGrid = false;
+    canvas->grid->hide();
 }
 
 void Level::loadPlacedEntities(LevelData data)

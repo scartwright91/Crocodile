@@ -54,7 +54,7 @@ private:
     World *world = nullptr;
     bool worldView = true;
     void useWorldView();
-    void useLevelView(Level *level);
+    void useLevelView();
 
     // imgui functions
     glm::vec2 sceneMousePosition = glm::vec2(0.f);

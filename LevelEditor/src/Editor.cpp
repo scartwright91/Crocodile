@@ -77,7 +77,7 @@ void Editor::update(float dt, bool mouseOnImGuiWindow)
     {
         world->update(dt, sceneMousePosition);
         if (world->activeLevel != NULL)
-            worldView = false;
+            useLevelView();
     }
     else
     {
@@ -216,7 +216,7 @@ void Editor::useWorldView()
     world->activeLevel->clear();
 }
 
-void Editor::useLevelView(Level *level)
+void Editor::useLevelView()
 {
     worldView = false;
     world->activeLevel->load();
