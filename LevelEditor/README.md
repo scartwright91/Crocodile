@@ -2,7 +2,6 @@
 ## TODO
 
 ### Current
-- MEMORY LEAK WHEN CREATING LEVELS
 - World / multiple levels
   - add level name in world view
   - Stretching levels
@@ -18,7 +17,6 @@
 - Fix viewport scaling
 - layers
   - depth
-- framerate when zooming
 
 ### Roadmap
 - Camera

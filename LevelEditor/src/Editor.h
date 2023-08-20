@@ -11,6 +11,7 @@
 #include <iostream>
 #include <fstream>
 
+#include "World.h"
 #include "Level.h"
 #include "Project.h"
 
@@ -20,6 +21,7 @@ class Editor
 {
 public:
     Editor(Project *project, s2d::Scene *scene, ResourceManager *rm);
+    ~Editor();
 
     void update(float dt, bool mouseOnImGuiWindow);
     void renderImGui();
@@ -50,11 +52,10 @@ private:
     void init();
 
     // world
-    glm::vec2 worldPosition = glm::vec2(0.f);
+    World *world = nullptr;
     bool worldView = true;
     void useWorldView();
     void useLevelView(Level *level);
-    void selectActiveLevel();
 
     // imgui functions
     glm::vec2 sceneMousePosition = glm::vec2(0.f);

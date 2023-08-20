@@ -16,21 +16,26 @@ Editor::Editor(
     {
         levels.push_back(new Level("level0", scene, rm, glm::vec2(0.f), glm::vec2(600.f)));
         levels.push_back(new Level("level1", scene, rm, glm::vec2(1000.f), glm::vec2(2000.f)));
+        levels.push_back(new Level("level2", scene, rm, glm::vec2(-1000.f), glm::vec2(2000.f, 500.f)));
     }
-    // activeLevel = levels[0];
+    world = new World(scene, levels);
+}
+
+Editor::~Editor()
+{
+    for (Level *level : levels)
+        delete level;
+    levels.clear();
+    delete world;
 }
 
 void Editor::renderImGui()
 {
     showImGuiMainMenu();
     if (worldView)
-    {
-    }
+        world->renderImGui();
     else
-    {
-        if (activeLevel != NULL)
-            activeLevel->renderImGui();
-    }
+        activeLevel->renderImGui();
     ImGui::PushStyleVar(ImGuiStyleVar_WindowPadding, ImVec2(0, 0));
     ImGui::Begin("Scene");
     ImVec2 currentViewportSize = ImGui::GetContentRegionAvail();
@@ -64,18 +69,11 @@ void Editor::update(float dt, bool mouseOnImGuiWindow)
 {
     float now = glfwGetTime();
     this->mouseOnImGuiWindow = mouseOnImGuiWindow;
-    worldPosition = scene->camera->getWorldfromScreenPosition(
-        scene->window->getMouseScreenPosition(),
-        scene->windowWidth,
-        scene->windowHeight);
     zoom();
     move(dt);
     if (worldView)
     {
-        for (Level *level : levels)
-            level->update(dt, sceneMousePosition);
-        // selecting active level
-        selectActiveLevel();
+        world->update(dt);
     }
     else
     {
@@ -96,7 +94,7 @@ void Editor::zoom()
         return;
     float scroll = scene->window->scroll.y;
     float now = glfwGetTime();
-    if (scroll != currentZoom && (now - commandTimer > 0.1f))
+    if (scroll != currentZoom)
     {
         commandTimer = now;
         float z = abs(scroll) / 10;
@@ -226,18 +224,18 @@ void Editor::useLevelView(Level *level)
     camera->setPosition(activeLevel->canvas->canvas->getCenteredPosition());
 }
 
-void Editor::selectActiveLevel()
-{
-    for (Level *level : levels)
-    {
-        if (level->canvas->canvas->getBoundingBox().intersectsPoint(worldPosition))
-        {
-            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
-            if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
-            {
-                useLevelView(level);
-                break;
-            }
-        }
-    }
-}
+// void Editor::selectActiveLevel()
+// {
+//     for (Level *level : levels)
+//     {
+//         if (level->canvas->canvas->getBoundingBox().intersectsPoint(worldPosition))
+//         {
+//             ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+//             if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
+//             {
+//                 useLevelView(level);
+//                 break;
+//             }
+//         }
+//     }
+// }
