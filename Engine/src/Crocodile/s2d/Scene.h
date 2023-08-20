@@ -33,7 +33,8 @@ namespace Crocodile
 			std::string label;
 			std::string layer;
 			std::string texture;
-			glm::vec2 pos;
+			glm::vec2 pos;		// pos represents position in level space
+			glm::vec2 worldPos; // worldPos represents position in world space
 			glm::vec2 size;
 			glm::vec3 color;
 			float rotation;
@@ -46,6 +47,7 @@ namespace Crocodile
 			std::string text;
 			std::string layer;
 			glm::vec2 pos;
+			glm::vec2 worldPos;
 			glm::vec3 color;
 			glm::vec2 textScale;
 			float alpha;
@@ -55,6 +57,7 @@ namespace Crocodile
 		{
 			std::string layer;
 			glm::vec2 pos;
+			glm::vec2 worldPos;
 			glm::vec3 color;
 			std::string texture;
 			int amount;

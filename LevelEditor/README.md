@@ -3,7 +3,6 @@
 
 ### Current
 - World / multiple levels
-  - Stretching levels
   - Connecting levels
     - connect points -> draw line -> create rotated rect
     - modify connections

@@ -85,6 +85,10 @@ void Project::save(LevelData ld)
         pos.append((int)sed->pos.x);
         pos.append((int)sed->pos.y);
         entData["pos"] = pos;
+        Json::Value worldPos(Json::arrayValue);
+        worldPos.append((int)sed->worldPos.x);
+        worldPos.append((int)sed->worldPos.y);
+        entData["worldPos"] = worldPos;
         Json::Value size(Json::arrayValue);
         size.append(sed->size.x);
         size.append(sed->size.y);
@@ -120,6 +124,10 @@ void Project::save(LevelData ld)
         pos.append((int)ted->pos.x);
         pos.append((int)ted->pos.y);
         entData["pos"] = pos;
+        Json::Value worldPos(Json::arrayValue);
+        worldPos.append((int)ted->worldPos.x);
+        worldPos.append((int)ted->worldPos.y);
+        entData["worldPos"] = worldPos;
         Json::Value textScale(Json::arrayValue);
         textScale.append(ted->textScale.x);
         textScale.append(ted->textScale.y);
@@ -147,6 +155,10 @@ void Project::save(LevelData ld)
         pos.append((int)ped->pos.x);
         pos.append((int)ped->pos.y);
         entData["pos"] = pos;
+        Json::Value worldPos(Json::arrayValue);
+        worldPos.append((int)ped->worldPos.x);
+        worldPos.append((int)ped->worldPos.y);
+        entData["worldPos"] = worldPos;
         Json::Value color(Json::arrayValue);
         color.append(ped->color.x);
         color.append(ped->color.y);
@@ -248,6 +260,7 @@ LevelData Project::load()
         sceneEnt->rotation = entData["rotation"].asFloat();
         sceneEnt->alpha = entData["alpha"].asFloat();
         sceneEnt->pos = glm::vec2(entData["pos"][0].asFloat(), entData["pos"][1].asFloat());
+        sceneEnt->worldPos = glm::vec2(entData["worldPos"][0].asFloat(), entData["worldPos"][1].asFloat());
         sceneEnt->size = glm::vec2(entData["size"][0].asFloat(), entData["size"][1].asFloat());
         sceneEnt->color = glm::vec3(
             entData["color"][0].asFloat(),
@@ -274,6 +287,7 @@ LevelData Project::load()
         sceneTextEnt->layer = entData["layer"].asString();
         sceneTextEnt->alpha = entData["alpha"].asFloat();
         sceneTextEnt->pos = glm::vec2(entData["pos"][0].asFloat(), entData["pos"][1].asFloat());
+        sceneTextEnt->worldPos = glm::vec2(entData["worldPos"][0].asFloat(), entData["worldPos"][1].asFloat());
         sceneTextEnt->color = glm::vec3(
             entData["color"][0].asFloat(),
             entData["color"][1].asFloat(),
@@ -297,6 +311,7 @@ LevelData Project::load()
         sceneParticleEnt->scale = entData["scale"].asFloat();
         sceneParticleEnt->velocity = entData["velocity"].asFloat();
         sceneParticleEnt->pos = glm::vec2(entData["pos"][0].asFloat(), entData["pos"][1].asFloat());
+        sceneParticleEnt->worldPos = glm::vec2(entData["worldPos"][0].asFloat(), entData["worldPos"][1].asFloat());
         sceneParticleEnt->color = glm::vec3(
             entData["color"][0].asFloat(),
             entData["color"][1].asFloat(),

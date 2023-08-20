@@ -141,7 +141,8 @@ LevelData Level::serialise()
                 s2d::SceneEntityData *sed = new s2d::SceneEntityData();
                 sed->label = ent->obj->label;
                 sed->layer = ent->layer;
-                sed->pos = ent->obj->getPosition();
+                sed->pos = ent->obj->getPosition() - canvas->canvas->getPosition();
+                sed->worldPos = ent->obj->getPosition();
                 sed->size = ent->obj->size;
                 sed->color = ent->obj->color;
                 sed->rotation = ent->obj->rotation;
@@ -158,6 +159,7 @@ LevelData Level::serialise()
                 s2d::SceneTextEntityData *tsed = new s2d::SceneTextEntityData();
                 tsed->text = ent->text->text;
                 tsed->layer = ent->layer;
+                tsed->pos = ent->text->getPosition() - canvas->canvas->getPosition();
                 tsed->pos = ent->text->getPosition();
                 tsed->color = ent->text->color;
                 tsed->alpha = ent->text->alpha;
@@ -171,7 +173,8 @@ LevelData Level::serialise()
             {
                 s2d::SceneParticleEntityData *psed = new s2d::SceneParticleEntityData();
                 psed->layer = ent->layer;
-                psed->pos = ent->pg->getPosition();
+                psed->pos = ent->pg->getPosition() - canvas->canvas->getPosition();
+                psed->worldPos = ent->pg->getPosition();
                 psed->color = ent->pg->color;
                 psed->texture = ent->pg->texture.name;
                 psed->amount = ent->pg->amount;
