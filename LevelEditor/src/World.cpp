@@ -8,10 +8,10 @@ World::~World()
 {
 }
 
-void World::update(float dt)
+void World::update(float dt, glm::vec2 mousePos)
 {
     worldPosition = scene->camera->getWorldfromScreenPosition(
-        scene->window->getMouseScreenPosition(),
+        glm::vec2(mousePos.x, scene->window->getMouseScreenPosition().y + (2 * ImGui::GetStyle().FramePadding.y)),
         scene->windowWidth,
         scene->windowHeight);
     if (selectedLevel == NULL)

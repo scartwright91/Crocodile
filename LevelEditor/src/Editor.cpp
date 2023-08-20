@@ -73,7 +73,7 @@ void Editor::update(float dt, bool mouseOnImGuiWindow)
     move(dt);
     if (worldView)
     {
-        world->update(dt);
+        world->update(dt, sceneMousePosition);
     }
     else
     {

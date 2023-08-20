@@ -23,7 +23,7 @@ public:
     World(s2d::Scene *scene, std::vector<Level *> levels);
     ~World();
 
-    void update(float dt);
+    void update(float dt, glm::vec2 mousePos);
     void renderImGui();
 
     std::vector<Level *> levels = {};
