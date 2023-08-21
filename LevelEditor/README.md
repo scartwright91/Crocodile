@@ -2,7 +2,6 @@
 ## TODO
 
 ### Current
-- Fix viewport scaling
 
 ### Bugs
 - layers

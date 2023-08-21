@@ -106,6 +106,7 @@ namespace Crocodile
 			void setTransitionType(PostProcessing::TransitionEffect effect);
 
 			// options
+			bool enableScaling = true;
 			bool enableLighting = true;
 			bool enablePostprocessing = true;
 
@@ -145,6 +146,9 @@ namespace Crocodile
 			float transitionCounter = 1.0;
 			bool fadeinTransition = false;
 			bool fadeoutTransition = false;
+
+			// scaling
+			glm::vec2 viewportScale = glm::vec2(1.f);
 
 			void init();
 		};
