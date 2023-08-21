@@ -3,10 +3,11 @@
 Connection::Connection(
     s2d::Scene *scene,
     float width,
+    std::string start,
+    std::string end,
     s2d::Object *a,
-    s2d::Object *b) : scene(scene), width(width), a(a), b(b)
+    s2d::Object *b) : scene(scene), width(width), start(start), end(end), a(a), b(b)
 {
-    init();
 }
 
 Connection::~Connection()
@@ -17,6 +18,9 @@ Connection::~Connection()
 
 ConnectionData Connection::serialise()
 {
+    ConnectionData cd = {};
+    cd.a = "";
+    return cd;
 }
 
 void Connection::update(glm::vec2 pos)
@@ -28,7 +32,7 @@ void Connection::update(glm::vec2 pos)
         rect->setPosition(glm::vec2(pos.x, current.y));
 }
 
-void Connection::init()
+void Connection::createConnection()
 {
     // determine whether orientation is vertical or horizontal
     glm::vec2 apos = a->getPosition();
@@ -81,6 +85,8 @@ void Connection::init()
 
 void Connection::createRect()
 {
+    scene->removeChild(rect, "canvas");
+    delete rect;
     rect = new s2d::Object();
     if (orientation == "horizontal")
     {

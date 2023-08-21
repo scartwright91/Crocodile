@@ -56,17 +56,22 @@ void World::update(float dt, glm::vec2 mousePos)
         if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_2))
             selectedLevel = nullptr;
     }
-
     // creating new level
     if (tmpLevel != NULL)
-    {
         placeLevel();
-    }
 
-    if (tmpConnection != NULL)
+    // connection selection / deselection
+    if (selectedConnection == NULL)
+        selectConnection();
+    else
     {
-        updateConnection();
+        if (movingConnection)
+            moveConnection();
+        if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_2))
+            selectedConnection = nullptr;
     }
+    if (tmpConnection != NULL)
+        updateConnection();
 }
 
 void World::renderImGui()
@@ -106,6 +111,15 @@ void World::renderImGui()
             enterLevel();
         if (ImGui::Button("Delete"))
             deleteLevel();
+        ImGui::End();
+    }
+    else if (selectedConnection != NULL)
+    {
+        ImGui::Begin("Connection options");
+        if (ImGui::Button("Move") || scene->window->isKeyPressed(GLFW_KEY_M))
+            movingConnection = true;
+        if (ImGui::Button("Delete"))
+            deleteConnection();
         ImGui::End();
     }
 }
@@ -184,7 +198,14 @@ void World::moveLevel()
         selectedLevel->canvas->initCanvasEdges();
         selectedLevel->createLevelName();
         movingLevel = false;
+        updateAllConnections();
     }
+}
+
+void World::updateAllConnections()
+{
+    for (Connection *connection : connections)
+        connection->createConnection();
 }
 
 void World::createConnection()
@@ -194,8 +215,11 @@ void World::createConnection()
     tmpConnection = new Connection(
         scene,
         tmpConnectionWidth,
+        std::string(selectedConnectionA),
+        std::string(selectedConnectionB),
         a,
         b);
+    tmpConnection->createConnection();
     if (tmpConnection->orientation == "")
     {
         std::cout << "Connection not valid" << std::endl;
@@ -245,4 +269,33 @@ void World::updateConnection()
         connections.push_back(tmpConnection);
         tmpConnection = nullptr;
     }
+}
+
+void World::selectConnection()
+{
+    for (Connection *connection : connections)
+    {
+        if (connection->rect->getBoundingBox().intersectsPoint(worldPosition))
+        {
+            ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+            if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
+            {
+                selectedConnection = connection;
+                break;
+            }
+        }
+    }
+}
+
+void World::deleteConnection()
+{
+    delete selectedConnection;
+    selectedConnection = nullptr;
+}
+
+void World::moveConnection()
+{
+    selectedConnection->update(worldPosition);
+    if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
+        movingConnection = false;
 }

@@ -55,8 +55,10 @@ public:
     void moveLevel();
 
     // connection functionality
+    void updateAllConnections();
     Connection *selectedConnection = nullptr;
     Connection *tmpConnection = nullptr;
+    bool movingConnection = false;
     const char *selectedConnectionA = "";
     const char *selectedConnectionB = "";
     int tmpConnectionWidth = 100;
@@ -65,6 +67,8 @@ public:
     void selectConnectionB();
     void selectConnection();
     void updateConnection();
+    void deleteConnection();
+    void moveConnection();
 
 private:
     ResourceManager *rm = nullptr;
