@@ -7,15 +7,9 @@
 #include "imgui.h"
 
 #include "Level.h"
+#include "Connection.h"
 
 using namespace Crocodile;
-
-struct Connection
-{
-    Level *A = nullptr;
-    Level *B = nullptr;
-    s2d::Object *rect = nullptr;
-};
 
 struct WorldData
 {
@@ -36,7 +30,13 @@ public:
     void update(float dt, glm::vec2 mousePos);
     void renderImGui();
 
+    std::vector<const char *> getLevelNames();
+    Level *getLevel(const char *name);
+
     std::vector<Level *> levels = {};
+    std::vector<Connection *> connections = {};
+
+    bool mouseOnImGuiWindow = false;
 
     // level functionality
     Level *activeLevel = nullptr;
@@ -56,7 +56,13 @@ public:
 
     // connection functionality
     Connection *selectedConnection = nullptr;
-    std::vector<Connection *> connections = {};
+    Connection *tmpConnection = nullptr;
+    const char *selectedConnectionA = "";
+    const char *selectedConnectionB = "";
+    int tmpConnectionWidth = 100;
+    void createConnection();
+    void selectConnectionA();
+    void selectConnectionB();
     void selectConnection();
 
 private:

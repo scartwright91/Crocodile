@@ -17,6 +17,8 @@ add_executable(${PROJECT_NAME}
     src/Level.cpp
     src/Grid.h
     src/Grid.cpp
+    src/Connection.h
+    src/Connection.cpp
     src/EntityManager.h
     src/EntityManager.cpp
     src/entities/Entity.h

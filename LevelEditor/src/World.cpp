@@ -2,14 +2,14 @@
 
 World::World(s2d::Scene *scene, ResourceManager *rm) : scene(scene), rm(rm)
 {
-    // levels.push_back(new Level("level0", scene, rm, glm::vec2(0.f), glm::vec2(600.f)));
-    // levels.push_back(new Level("level1", scene, rm, glm::vec2(1000.f), glm::vec2(2000.f)));
-    // levels.push_back(new Level("level2", scene, rm, glm::vec2(-1000.f), glm::vec2(2000.f, 500.f)));
-    // for (Level *level : levels)
-    // {
-    //     level->canvas->initCanvasEdges();
-    //     level->createLevelName();
-    // }
+    levels.push_back(new Level("level0", scene, rm, glm::vec2(0.f), glm::vec2(600.f)));
+    levels.push_back(new Level("level1", scene, rm, glm::vec2(1000.f), glm::vec2(2000.f)));
+    levels.push_back(new Level("level2", scene, rm, glm::vec2(-1000.f), glm::vec2(2000.f, 500.f)));
+    for (Level *level : levels)
+    {
+        level->canvas->initCanvasEdges();
+        level->createLevelName();
+    }
 }
 
 World::World(WorldData wd, s2d::Scene *scene, ResourceManager *rm) : scene(scene), rm(rm)
@@ -82,9 +82,11 @@ void World::renderImGui()
     }
     if (ImGui::CollapsingHeader("New connection"))
     {
-        ImGui::Text("A:");
-        ImGui::Text("B:");
-        ImGui::Button("Add");
+        selectConnectionA();
+        selectConnectionB();
+        ImGui::InputInt("Width", &tmpConnectionWidth);
+        if (ImGui::Button("Add"))
+            createConnection();
     }
     ImGui::End();
     if (selectedLevel != NULL)
@@ -101,6 +103,22 @@ void World::renderImGui()
             deleteLevel();
         ImGui::End();
     }
+}
+
+std::vector<const char *> World::getLevelNames()
+{
+    std::vector<const char *> names = {};
+    for (Level *level : levels)
+        names.push_back(level->name);
+    return names;
+}
+
+Level *World::getLevel(const char *name)
+{
+    for (Level *level : levels)
+        if (level->name == name)
+            return level;
+    return nullptr;
 }
 
 void World::enterLevel()
@@ -161,5 +179,55 @@ void World::moveLevel()
         selectedLevel->canvas->initCanvasEdges();
         selectedLevel->createLevelName();
         movingLevel = false;
+    }
+}
+
+void World::createConnection()
+{
+    s2d::Object *a = getLevel(selectedConnectionA)->canvas->canvas;
+    s2d::Object *b = getLevel(selectedConnectionB)->canvas->canvas;
+    tmpConnection = new Connection(
+        scene,
+        tmpConnectionWidth,
+        a,
+        b);
+    if (tmpConnection->orientation == "")
+    {
+        std::cout << "Connection not valid" << std::endl;
+        delete tmpConnection;
+    }
+}
+
+void World::selectConnectionA()
+{
+    std::vector<const char *> tmpLevels = getLevelNames();
+    if (ImGui::BeginCombo("Level A: ", selectedConnectionA))
+    {
+        for (int n = 0; n < tmpLevels.size(); n++)
+        {
+            bool is_selected = (selectedConnectionA == tmpLevels[n]);
+            if (ImGui::Selectable(tmpLevels[n], is_selected))
+                selectedConnectionA = tmpLevels[n];
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
+    }
+}
+
+void World::selectConnectionB()
+{
+    std::vector<const char *> tmpLevels = getLevelNames();
+    if (ImGui::BeginCombo("Level B: ", selectedConnectionB))
+    {
+        for (int n = 0; n < tmpLevels.size(); n++)
+        {
+            bool is_selected = (selectedConnectionB == tmpLevels[n]);
+            if (ImGui::Selectable(tmpLevels[n], is_selected))
+                selectedConnectionB = tmpLevels[n];
+            if (is_selected)
+                ImGui::SetItemDefaultFocus();
+        }
+        ImGui::EndCombo();
     }
 }

@@ -4,9 +4,8 @@
 ### Current
 - World / multiple levels
   - Connecting levels
-    - connect points -> draw line -> create rotated rect
+    - specify a width -> add two points (either vertically or diagonally) -> create rect
     - modify connections
-  - Saving levels
 
 ### Bugs
 - Fix viewport scaling

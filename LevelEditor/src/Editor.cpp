@@ -61,6 +61,7 @@ void Editor::update(float dt, bool mouseOnImGuiWindow)
 {
     float now = glfwGetTime();
     this->mouseOnImGuiWindow = mouseOnImGuiWindow;
+    world->mouseOnImGuiWindow = mouseOnImGuiWindow;
     zoom();
     move(dt);
     if (worldView)
