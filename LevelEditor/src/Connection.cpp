@@ -15,13 +15,17 @@ Connection::~Connection()
     scene->removeChild(rect, "canvas");
 }
 
+ConnectionData Connection::serialise()
+{
+}
+
 void Connection::update(glm::vec2 pos)
 {
+    glm::vec2 current = rect->getPosition();
     if (orientation == "horizontal")
-    {
-        glm::vec2 current = rect->getPosition();
         rect->setPosition(glm::vec2(current.x, pos.y));
-    }
+    else
+        rect->setPosition(glm::vec2(pos.x, current.y));
 }
 
 void Connection::init()
@@ -43,17 +47,33 @@ void Connection::init()
         orientation = "vertical";
 
     // calculate p1, p2
-    if (orientation == "horizontal")
+    if (orientation != "")
     {
-        if (leftB > leftA)
+        if (orientation == "horizontal")
         {
-            p1 = glm::vec2(rightA, topB);
-            p2 = glm::vec2(leftB, topB);
+            if (leftB > leftA)
+            {
+                p1 = glm::vec2(rightA, topB);
+                p2 = glm::vec2(leftB, topB);
+            }
+            else
+            {
+                p1 = glm::vec2(rightB, topB);
+                p2 = glm::vec2(leftA, topB);
+            }
         }
         else
         {
-            p1 = glm::vec2(rightB, topB);
-            p2 = glm::vec2(leftA, topB);
+            if (topB > topA)
+            {
+                p1 = glm::vec2(rightA, botA);
+                p2 = glm::vec2(rightA, topB);
+            }
+            else
+            {
+                p1 = glm::vec2(rightA, botB);
+                p2 = glm::vec2(rightA, topA);
+            }
         }
         createRect();
     }
@@ -66,6 +86,11 @@ void Connection::createRect()
     {
         rect->setPosition(glm::vec2(p1.x, p1.y + width / 2.f));
         rect->size = glm::vec2(p2.x - p1.x, width);
+    }
+    else
+    {
+        rect->setPosition(glm::vec2(p1.x + width / 2.f, p1.y));
+        rect->size = glm::vec2(width, p2.y - p1.y);
     }
     scene->addChild(rect, "canvas");
 }

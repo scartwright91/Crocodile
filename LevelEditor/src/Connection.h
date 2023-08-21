@@ -4,6 +4,10 @@
 
 using namespace Crocodile;
 
+struct ConnectionData
+{
+};
+
 class Connection
 {
 public:
@@ -14,6 +18,7 @@ public:
         s2d::Object *b);
     ~Connection();
 
+    ConnectionData serialise();
     void update(glm::vec2 pos);
 
     s2d::Object *a = nullptr;
