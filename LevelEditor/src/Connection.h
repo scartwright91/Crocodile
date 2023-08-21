@@ -14,6 +14,8 @@ public:
         s2d::Object *b);
     ~Connection();
 
+    void update(glm::vec2 pos);
+
     s2d::Object *a = nullptr;
     s2d::Object *b = nullptr;
     glm::vec2 p1 = glm::vec2(0.f);

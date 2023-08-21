@@ -64,6 +64,7 @@ public:
     void selectConnectionA();
     void selectConnectionB();
     void selectConnection();
+    void updateConnection();
 
 private:
     ResourceManager *rm = nullptr;

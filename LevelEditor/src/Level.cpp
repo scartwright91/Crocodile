@@ -42,13 +42,13 @@ Level::~Level()
 
 void Level::createLevelName()
 {
+    scene->removeChild(levelName, "canvas");
     delete levelName;
     levelName = new s2d::Text();
     levelName->color = glm::vec3(1.f);
     levelName->setScale(glm::vec2(2.f));
     levelName->setText(std::string(name), false);
     levelName->setPosition(canvas->canvas->getCenteredPosition() - levelName->size / 2.f);
-    scene->removeChild(levelName, "canvas");
     scene->addChild(levelName, "canvas");
 }
 

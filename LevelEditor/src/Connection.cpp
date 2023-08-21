@@ -15,6 +15,15 @@ Connection::~Connection()
     scene->removeChild(rect, "canvas");
 }
 
+void Connection::update(glm::vec2 pos)
+{
+    if (orientation == "horizontal")
+    {
+        glm::vec2 current = rect->getPosition();
+        rect->setPosition(glm::vec2(current.x, pos.y));
+    }
+}
+
 void Connection::init()
 {
     // determine whether orientation is vertical or horizontal
@@ -28,7 +37,6 @@ void Connection::init()
     float botB = bpos.y + b->size.y;
     float leftB = bpos.x;
     float rightB = bpos.x + b->size.x;
-    std::string orientation = "";
     if (!(botB < topA || topB > botA))
         orientation = "horizontal";
     if (!(rightB < leftA || leftB > rightA))
@@ -56,7 +64,7 @@ void Connection::createRect()
     rect = new s2d::Object();
     if (orientation == "horizontal")
     {
-        rect->setPosition(glm::vec2(p1.x, p2.x + width / 2.f));
+        rect->setPosition(glm::vec2(p1.x, p1.y + width / 2.f));
         rect->size = glm::vec2(p2.x - p1.x, width);
     }
     scene->addChild(rect, "canvas");

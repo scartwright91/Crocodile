@@ -62,6 +62,11 @@ void World::update(float dt, glm::vec2 mousePos)
     {
         placeLevel();
     }
+
+    if (tmpConnection != NULL)
+    {
+        updateConnection();
+    }
 }
 
 void World::renderImGui()
@@ -229,5 +234,15 @@ void World::selectConnectionB()
                 ImGui::SetItemDefaultFocus();
         }
         ImGui::EndCombo();
+    }
+}
+
+void World::updateConnection()
+{
+    tmpConnection->update(worldPosition);
+    if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
+    {
+        connections.push_back(tmpConnection);
+        tmpConnection = nullptr;
     }
 }
