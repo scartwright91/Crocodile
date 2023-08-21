@@ -10,6 +10,20 @@ Connection::Connection(
 {
 }
 
+Connection::Connection(
+    s2d::Scene *scene,
+    float width,
+    std::string start,
+    std::string end,
+    s2d::Object *a,
+    s2d::Object *b,
+    std::string orientation,
+    glm::vec2 pos,
+    glm::vec2 size) : scene(scene), width(width), start(start), end(end), a(a), b(b), orientation(orientation)
+{
+    createRectFromData(pos, size);
+}
+
 Connection::~Connection()
 {
     delete rect;
@@ -22,6 +36,9 @@ ConnectionData Connection::serialise()
     cd.start = start;
     cd.end = end;
     cd.width = width;
+    cd.orientation = orientation;
+    cd.pos = rect->getPosition();
+    cd.size = rect->size;
     return cd;
 }
 
@@ -100,5 +117,13 @@ void Connection::createRect()
         rect->setPosition(glm::vec2(p1.x + width / 2.f, p1.y));
         rect->size = glm::vec2(width, p2.y - p1.y);
     }
+    scene->addChild(rect, "canvas");
+}
+
+void Connection::createRectFromData(glm::vec2 pos, glm::vec2 size)
+{
+    rect = new s2d::Object();
+    rect->setPosition(pos);
+    rect->size = size;
     scene->addChild(rect, "canvas");
 }

@@ -21,6 +21,22 @@ World::World(WorldData wd, s2d::Scene *scene, ResourceManager *rm) : scene(scene
         level->createLevelName();
         levels.push_back(level);
     }
+    for (ConnectionData cd : wd.connections)
+    {
+        s2d::Object *a = getLevel(cd.start)->canvas->canvas;
+        s2d::Object *b = getLevel(cd.end)->canvas->canvas;
+        Connection *connection = new Connection(
+            scene,
+            cd.width,
+            cd.start,
+            cd.end,
+            a,
+            b,
+            cd.orientation,
+            cd.pos,
+            cd.size);
+        connections.push_back(connection);
+    }
 }
 
 World::~World()
@@ -136,10 +152,10 @@ std::vector<const char *> World::getLevelNames()
     return names;
 }
 
-Level *World::getLevel(const char *name)
+Level *World::getLevel(std::string name)
 {
     for (Level *level : levels)
-        if (level->name == name)
+        if (std::string(level->name) == name)
             return level;
     return nullptr;
 }
@@ -214,8 +230,8 @@ void World::updateAllConnections()
 
 void World::createConnection()
 {
-    s2d::Object *a = getLevel(selectedConnectionA)->canvas->canvas;
-    s2d::Object *b = getLevel(selectedConnectionB)->canvas->canvas;
+    s2d::Object *a = getLevel(std::string(selectedConnectionA))->canvas->canvas;
+    s2d::Object *b = getLevel(std::string(selectedConnectionB))->canvas->canvas;
     tmpConnection = new Connection(
         scene,
         tmpConnectionWidth,

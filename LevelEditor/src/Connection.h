@@ -8,6 +8,9 @@ struct ConnectionData
 {
     std::string start;
     std::string end;
+    std::string orientation;
+    glm::vec2 pos;
+    glm::vec2 size;
     float width;
 };
 
@@ -21,6 +24,16 @@ public:
         std::string end,
         s2d::Object *a,
         s2d::Object *b);
+    Connection(
+        s2d::Scene *scene,
+        float width,
+        std::string start,
+        std::string end,
+        s2d::Object *a,
+        s2d::Object *b,
+        std::string orientation,
+        glm::vec2 p1,
+        glm::vec2 p2);
     ~Connection();
 
     ConnectionData serialise();
@@ -41,4 +54,5 @@ public:
 private:
     s2d::Scene *scene = nullptr;
     void createRect();
+    void createRectFromData(glm::vec2 pos, glm::vec2 size);
 };

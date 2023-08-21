@@ -2,9 +2,9 @@
 ## TODO
 
 ### Current
+- Fix viewport scaling
 
 ### Bugs
-- Fix viewport scaling
 - layers
   - depth
 

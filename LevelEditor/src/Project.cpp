@@ -186,6 +186,15 @@ void Project::save(WorldData wd)
         connection["start"] = cd.start;
         connection["end"] = cd.end;
         connection["width"] = cd.width;
+        connection["orientation"] = cd.orientation;
+        Json::Value pos(Json::arrayValue);
+        pos.append(cd.pos.x);
+        pos.append(cd.pos.y);
+        connection["pos"] = pos;
+        Json::Value size(Json::arrayValue);
+        size.append(cd.size.x);
+        size.append(cd.size.y);
+        connection["size"] = size;
         connections.append(connection);
     }
     data["connections"] = connections;
@@ -225,7 +234,7 @@ WorldData Project::load()
 
         // canvas
         const Json::Value canvasPosData = data["levels"][ld.name]["canvas_pos"];
-        ld.canvasSize = glm::vec2(canvasPosData[0].asFloat(), canvasPosData[1].asFloat());
+        ld.canvasPos = glm::vec2(canvasPosData[0].asFloat(), canvasPosData[1].asFloat());
         const Json::Value canvasSizeData = data["levels"][ld.name]["canvas_size"];
         ld.canvasSize = glm::vec2(canvasSizeData[0].asFloat(), canvasSizeData[1].asFloat());
         const Json::Value canvasColorData = data["levels"][ld.name]["canvas_color"];
@@ -362,6 +371,9 @@ WorldData Project::load()
         cd.start = connection["start"].asString();
         cd.end = connection["end"].asString();
         cd.width = connection["width"].asFloat();
+        cd.orientation = connection["orientation"].asString();
+        cd.pos = glm::vec2(connection["pos"][0].asFloat(), connection["pos"][1].asFloat());
+        cd.size = glm::vec2(connection["size"][0].asFloat(), connection["size"][1].asFloat());
         cds.push_back(cd);
     }
 
@@ -370,7 +382,7 @@ WorldData Project::load()
     wd.nConnections = connections.size();
     wd.connections = cds;
 
-    std::cout << data << std::endl;
+    // std::cout << data << std::endl;
     return wd;
 }
 

@@ -32,7 +32,7 @@ public:
     void renderImGui();
 
     std::vector<const char *> getLevelNames();
-    Level *getLevel(const char *name);
+    Level *getLevel(std::string name);
 
     std::vector<Level *> levels = {};
     std::vector<Connection *> connections = {};
