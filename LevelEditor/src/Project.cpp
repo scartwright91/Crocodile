@@ -17,8 +17,8 @@ void Project::save(WorldData wd)
     data["project"]["name"] = name;
     data["project"]["path"] = path;
 
+    // writing level data
     Json::Value levelNames(Json::arrayValue);
-
     for (LevelData ld : wd.levels)
     {
         levelNames.append(ld.name);
@@ -176,8 +176,19 @@ void Project::save(WorldData wd)
         data["levels"][ld.name]["placed_text_entities"] = placedTextEntities;
         data["levels"][ld.name]["placed_particle_entities"] = placedParticleEntities;
     }
-
     data["level_names"] = levelNames;
+
+    // writing connection data
+    Json::Value connections(Json::arrayValue);
+    for (ConnectionData cd : wd.connections)
+    {
+        Json::Value connection;
+        connection["start"] = cd.start;
+        connection["end"] = cd.end;
+        connection["width"] = cd.width;
+        connections.append(connection);
+    }
+    data["connections"] = connections;
 
     // write to file
     std::ofstream file_id;
@@ -201,6 +212,7 @@ WorldData Project::load()
 
     WorldData wd = {};
     std::vector<LevelData> lds = {};
+    std::vector<ConnectionData> cds = {};
 
     // iterate over levels
     const Json::Value levelNames = data["level_names"];
@@ -341,11 +353,24 @@ WorldData Project::load()
         lds.push_back(ld);
     }
 
-    wd.nLevels = levelNames.size();
-    wd.nConnections = 0;
-    wd.levels = lds;
+    // connections
+    const Json::Value connections = data["connections"];
+    for (int i = 0; i < connections.size(); i++)
+    {
+        const Json::Value connection = connections[i];
+        ConnectionData cd = {};
+        cd.start = connection["start"].asString();
+        cd.end = connection["end"].asString();
+        cd.width = connection["width"].asFloat();
+        cds.push_back(cd);
+    }
 
-    // std::cout << data << std::endl;
+    wd.nLevels = levelNames.size();
+    wd.levels = lds;
+    wd.nConnections = connections.size();
+    wd.connections = cds;
+
+    std::cout << data << std::endl;
     return wd;
 }
 
