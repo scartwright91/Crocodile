@@ -35,7 +35,11 @@ WorldData World::serialise()
     std::vector<LevelData> lds = {};
     for (Level *level : levels)
         lds.push_back(level->serialise());
+    std::vector<ConnectionData> cds = {};
+    for (Connection *connection : connections)
+        cds.push_back(connection->serialise());
     wd.levels = lds;
+    wd.connections = cds;
     return wd;
 }
 

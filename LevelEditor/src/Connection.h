@@ -6,7 +6,9 @@ using namespace Crocodile;
 
 struct ConnectionData
 {
-    std::string a;
+    std::string start;
+    std::string end;
+    float width;
 };
 
 class Connection

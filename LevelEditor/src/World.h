@@ -14,8 +14,9 @@ using namespace Crocodile;
 struct WorldData
 {
     unsigned int nLevels;
-    unsigned int nConnections;
     std::vector<LevelData> levels;
+    unsigned int nConnections;
+    std::vector<ConnectionData> connections;
 };
 
 class World

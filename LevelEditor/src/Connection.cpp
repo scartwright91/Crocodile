@@ -19,7 +19,9 @@ Connection::~Connection()
 ConnectionData Connection::serialise()
 {
     ConnectionData cd = {};
-    cd.a = "";
+    cd.start = start;
+    cd.end = end;
+    cd.width = width;
     return cd;
 }
 
