@@ -10,6 +10,8 @@ StartScreen::~StartScreen()
 
 Project *StartScreen::getProject(ResourceManager *rm)
 {
+    rm->paths["project_folder"] = projectFolder;
+    std::filesystem::current_path(projectFolder); // setting path
     return new Project(projectName, getProjectPath(), loadProjectFromFile, rm);
 }
 

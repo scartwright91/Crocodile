@@ -32,6 +32,8 @@ namespace Crocodile
         std::map<std::string, TextureData> textureIDs = {};
         // animations
         std::map<std::string, std::vector<std::string>> animations = {};
+        // paths
+        std::map<std::string, std::string> paths = {};
 
         ResourceManager()
         {

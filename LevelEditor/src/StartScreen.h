@@ -22,11 +22,12 @@ public:
     bool isActive();
     void renderImGui();
 
+    std::string projectFolder = "";
+
 private:
     fs::path currentPath;
     char projectName[64] = "";
     std::string projectNameFromFile = "";
-    std::string projectFolder = "";
 
     bool active = true;
     bool loadProjectFromFile = false;
