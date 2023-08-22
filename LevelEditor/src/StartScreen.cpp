@@ -71,16 +71,9 @@ void StartScreen::newProject()
     if (ImGui::Button("Choose folder", ImVec2(100, 50)))
         ImGuiFileDialog::Instance()->OpenDialog("choose_folder", "Choose a Directory", nullptr, ".");
     ImGui::NewLine();
-    ImGui::Text("Project path:");
-    ImGui::SameLine();
-    // ImGui::Text(getProjectPath().c_str());
-    ImGui::NewLine();
-    ImGui::NewLine();
-    ImGui::NewLine();
-    ImGui::NewLine();
-    if (ImGui::Button("Create project", ImVec2(100, 50)) && projectName != "")
-        active = false;
-
+    if (std::string(projectName) != "")
+        if (ImGui::Button("Create project", ImVec2(100, 50)))
+            active = false;
     // display
     if (ImGuiFileDialog::Instance()->Display("choose_folder"))
     {
@@ -101,16 +94,11 @@ void StartScreen::loadProject()
     ImGui::Text("Load project");
     if (ImGui::Button("Choose project", ImVec2(100, 50)))
         ImGuiFileDialog::Instance()->OpenDialog("choose_project", "Choose a Directory", ".cld", ".");
-    ImGui::Text("Project path:");
-    ImGui::SameLine();
-    // ImGui::Text(getProjectPath().c_str());
-    ImGui::NewLine();
-    ImGui::NewLine();
-    ImGui::NewLine();
     ImGui::NewLine();
     // check if project exists
-    if (ImGui::Button("Load project", ImVec2(100, 50)) && projectName != "")
-        active = false;
+    if (projectNameFromFile != "")
+        if (ImGui::Button("Load project", ImVec2(100, 50)))
+            active = false;
     // display
     if (ImGuiFileDialog::Instance()->Display("choose_project"))
     {
