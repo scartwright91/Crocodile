@@ -295,7 +295,8 @@ void Level::placementUI()
             ImGui::SliderFloat("scale", &entityManager->tmpScale, 0.f, 5.f);
             ImGui::SliderFloat("rotation", &entityManager->tmpRotation, -3.14f, 3.14f);
             ImGui::SliderFloat("alpha", &entityManager->tmpAlpha, 0.f, 1.f);
-            ImGui::Button("Place");
+            if (ImGui::Button("Place"))
+                entityManager->createEntityFromData(entityManager->selectedEntityData);
         }
         else if (entityManager->selectedPlacementObjectType == "text")
         {
@@ -791,10 +792,7 @@ void Level::selectPlacementObject()
             {
                 tmpPlacementEntity = tmpEntities[n];
                 if (selectedPlacementLayer != "")
-                {
                     entityManager->selectedEntityData = entitiesData[n];
-                    entityManager->createEntityFromData(entityManager->selectedEntityData);
-                }
             }
             if (is_selected)
                 ImGui::SetItemDefaultFocus();
