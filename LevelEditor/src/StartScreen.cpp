@@ -11,8 +11,8 @@ StartScreen::~StartScreen()
 Project *StartScreen::getProject(ResourceManager *rm)
 {
     rm->paths["project_folder"] = projectFolder;
-    std::filesystem::current_path(projectFolder); // setting path
-    return new Project(projectName, getProjectPath(), loadProjectFromFile, rm);
+    std::filesystem::current_path(projectFolder);
+    return new Project(getProjectName(), loadProjectFromFile, rm);
 }
 
 bool StartScreen::isActive()
@@ -54,15 +54,9 @@ void StartScreen::renderImGui()
     ImGui::End();
 }
 
-std::string StartScreen::getProjectPath()
+std::string StartScreen::getProjectName()
 {
-    std::string path = "";
-    path += std::string(projectFolder);
-    if (loadProjectFromFile)
-        path += projectNameFromFile;
-    else
-        path += projectName;
-    return path;
+    return (loadProjectFromFile) ? projectNameFromFile : projectName;
 }
 
 void StartScreen::recentProjects()
@@ -79,7 +73,7 @@ void StartScreen::newProject()
     ImGui::NewLine();
     ImGui::Text("Project path:");
     ImGui::SameLine();
-    ImGui::Text(getProjectPath().c_str());
+    // ImGui::Text(getProjectPath().c_str());
     ImGui::NewLine();
     ImGui::NewLine();
     ImGui::NewLine();
@@ -109,7 +103,7 @@ void StartScreen::loadProject()
         ImGuiFileDialog::Instance()->OpenDialog("choose_project", "Choose a Directory", ".cld", ".");
     ImGui::Text("Project path:");
     ImGui::SameLine();
-    ImGui::Text(getProjectPath().c_str());
+    // ImGui::Text(getProjectPath().c_str());
     ImGui::NewLine();
     ImGui::NewLine();
     ImGui::NewLine();

@@ -2,9 +2,8 @@
 
 Project::Project(
     std::string name,
-    std::string path,
     bool loadProjectFromFile,
-    ResourceManager *rm) : name(name), path(path), loadProjectFromFile(loadProjectFromFile), rm(rm)
+    ResourceManager *rm) : name(name), loadProjectFromFile(loadProjectFromFile), rm(rm)
 {
     if (loadProjectFromFile)
         data = load();
@@ -15,7 +14,6 @@ void Project::save(WorldData wd)
     Json::Value data;
     // project data
     data["project"]["name"] = name;
-    data["project"]["path"] = path;
 
     // writing level data
     Json::Value levelNames(Json::arrayValue);
@@ -201,12 +199,7 @@ void Project::save(WorldData wd)
 
     // write to file
     std::ofstream file_id;
-    std::string projectPath = "";
-    if (loadProjectFromFile)
-        projectPath = path;
-    else
-        projectPath = path + ".cld";
-    file_id.open(projectPath);
+    file_id.open(loadProjectFromFile ? name : name + ".cld");
     Json::StyledWriter styledWriter;
     file_id << styledWriter.write(data);
     file_id.close();
@@ -215,7 +208,7 @@ void Project::save(WorldData wd)
 WorldData Project::load()
 {
     // read project from file
-    std::ifstream f(path);
+    std::ifstream f(name);
     Json::Value data;
     f >> data;
 

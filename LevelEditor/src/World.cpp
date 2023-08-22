@@ -125,6 +125,9 @@ void World::renderImGui()
         ImGui::Text(selectedLevel->name);
         if (ImGui::InputText("Level name", selectedLevel->name, 64))
             selectedLevel->createLevelName();
+        glm::vec2 s = selectedLevel->canvas->canvas->size;
+        std::string levelSize = "Size: (" + std::to_string((int)s.x) + ", " + std::to_string((int)s.y) + ")";
+        ImGui::Text(levelSize.c_str());
         if (ImGui::Button("Move level") || scene->window->isKeyPressed(GLFW_KEY_M))
             movingLevel = true;
         if (ImGui::Button("Enter level") || scene->window->isKeyPressed(GLFW_KEY_ENTER))

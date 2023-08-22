@@ -702,7 +702,7 @@ void Level::addTexture()
             if (ImGuiFileDialog::Instance()->IsOk())
             {
                 std::string filename = ImGuiFileDialog::Instance()->GetFilePathName();
-                fs::path relPath = fs::relative(filename, rm->paths["project_folder"]);
+                fs::path relPath = fs::relative(filename, ".");
                 tmpTexturePath = relPath.generic_string();
             }
             // close

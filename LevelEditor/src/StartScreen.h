@@ -33,7 +33,7 @@ private:
     bool loadProjectFromFile = false;
     std::string renderOptions = "recent_projects";
 
-    std::string getProjectPath();
+    std::string getProjectName();
 
     void recentProjects();
     void newProject();

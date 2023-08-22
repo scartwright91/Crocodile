@@ -14,10 +14,9 @@
 class Project
 {
 public:
-    Project(std::string name, std::string path, bool loadProjectFromFile, ResourceManager *rm);
+    Project(std::string name, bool loadProjectFromFile, ResourceManager *rm);
 
     std::string name = "";
-    std::string path = "";
     bool loadProjectFromFile = false;
 
     WorldData data;
