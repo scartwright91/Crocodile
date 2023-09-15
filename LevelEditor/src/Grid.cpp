@@ -46,7 +46,6 @@ void Grid::createLines()
     {
         glm::vec2 a = glm::vec2(0.f, i * gridSizeY);
         glm::vec2 b = glm::vec2(canvasSizeX, i * gridSizeY);
-        // std::shared_ptr<s2d::shapes::Line> line = std::make_shared<s2d::shapes::Line>(a + position, b + position);
         s2d::shapes::Line *line = new s2d::shapes::Line(a + position, b + position);
         lines.push_back(line);
     }
@@ -55,7 +54,6 @@ void Grid::createLines()
     {
         glm::vec2 a = glm::vec2(i * gridSizeX, 0.f);
         glm::vec2 b = glm::vec2(i * gridSizeX, canvasSizeY);
-        // std::shared_ptr<s2d::shapes::Line> line = std::make_shared<s2d::shapes::Line>(a + position, b + position);
         s2d::shapes::Line *line = new s2d::shapes::Line(a + position, b + position);
         lines.push_back(line);
     }

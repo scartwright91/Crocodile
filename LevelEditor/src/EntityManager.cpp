@@ -6,21 +6,28 @@ EntityManager::EntityManager(s2d::Scene *scene, ResourceManager *rm, Canvas *can
 
 EntityManager::~EntityManager()
 {
-    clear();
     for (Entity *e : placedEntities)
-    {
-        scene->removeChild(e->obj, e->layer);
         delete e;
-    }
     for (TextEntity *te : placedTextEntities)
-    {
-        scene->removeChild(te->text, te->layer);
         delete te;
-    }
     for (ParticleEntity *pe : placedParticleEntities)
-    {
-        scene->removeChild(pe->pg, pe->layer);
         delete pe;
+    for (ConnectionEntity *ce : placedConnectionEntities)
+        delete ce;
+}
+
+void EntityManager::move(float dx, float dy)
+{
+    for (Entity *e : placedEntities)
+        e->obj->move(dx, dy);
+    for (TextEntity *te : placedTextEntities)
+        te->text->move(dx, dy);
+    for (ParticleEntity *pe : placedParticleEntities)
+        pe->pg->move(dx, dy);
+    for (ConnectionEntity *ce : placedConnectionEntities)
+    {
+        ce->collision->move(dx, dy);
+        ce->spawn->move(dx, dy);
     }
 }
 
@@ -32,7 +39,11 @@ void EntityManager::load()
         scene->addChild(te->text, te->layer);
     for (ParticleEntity *pe : placedParticleEntities)
         scene->addChild(pe->pg, pe->layer);
-    canvas->showGrid = true;
+    for (ConnectionEntity *ce : placedConnectionEntities)
+    {
+        scene->addChild(ce->collision, ce->layer);
+        scene->addChild(ce->spawn, ce->layer);
+    }
 }
 
 void EntityManager::clear()
@@ -43,7 +54,11 @@ void EntityManager::clear()
         scene->removeChild(te->text, te->layer);
     for (ParticleEntity *pe : placedParticleEntities)
         scene->removeChild(pe->pg, pe->layer);
-    canvas->showGrid = false;
+    for (ConnectionEntity *ce : placedConnectionEntities)
+    {
+        scene->removeChild(ce->collision, ce->layer);
+        scene->removeChild(ce->spawn, ce->layer);
+    }
 }
 
 void EntityManager::update(
@@ -161,6 +176,22 @@ void EntityManager::createParticleEntity()
     placedParticleEntities.push_back(pge);
 }
 
+void EntityManager::createConnectionEntity()
+{
+    placementObject = new s2d::Object();
+    placementObject->color = glm::vec3(02, 0.2, 0.8);
+    placementObject->alpha = 0.5f;
+    scene->addChild(placementObject, std::string(selectedPlacementLayer));
+    placementObject->size = glm::vec2(tmpConnectionColWidth, tmpConnectionColHeight);
+    ConnectionEntity *ce = new ConnectionEntity(
+        scene,
+        std::string(tmpConnectionLevelName),
+        std::string(selectedPlacementLayer),
+        placementObject);
+    scene->addChild(ce->spawn, ce->layer);
+    placedConnectionEntities.push_back(ce);
+}
+
 void EntityManager::selectObject()
 {
     float now = glfwGetTime();
@@ -240,6 +271,29 @@ void EntityManager::selectObject()
                 }
             }
         }
+    for (ConnectionEntity *ce : placedConnectionEntities)
+        if (ce->layer == std::string(selectedPlacementLayer))
+        {
+            s2d::col::BoundingBox bbox = ce->collision->getScreenBoundingBox(
+                scene->camera->getViewMatrix(),
+                scene->camera->getProjectionMatrix(true),
+                scene->camera->zoom,
+                scene->windowWidth,
+                scene->windowHeight);
+            if (bbox.intersectsPoint(canvas->sceneMousePos))
+            {
+                ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
+                hoveredObject = ce->collision;
+                if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1) && (now - tmpTimer > 0.5f))
+                {
+                    tmpTimer = now;
+                    selectedObject = ce->collision;
+                    selectedConnectionEntity = ce;
+                    selectedObjectType = "connection";
+                    break;
+                }
+            }
+        }
 
     if (selectedObject != NULL)
         selectedObject->outline = true;
@@ -302,6 +356,23 @@ void EntityManager::deleteObject(s2d::Object *obj)
             }
         }
     }
+    else if (selectedObjectType == "connection")
+    {
+        for (ConnectionEntity *e : placedConnectionEntities)
+        {
+            if (selectedConnectionEntity == e)
+            {
+                scene->removeChild(e->collision, e->layer);
+                scene->removeChild(e->spawn, e->layer);
+                placedConnectionEntities.erase(
+                    std::remove(placedConnectionEntities.begin(),
+                                placedConnectionEntities.end(), e),
+                    placedConnectionEntities.end());
+                delete e;
+                break;
+            }
+        }
+    }
 }
 
 void EntityManager::moveObject(s2d::Object *obj)
@@ -312,12 +383,12 @@ void EntityManager::moveObject(s2d::Object *obj)
 void EntityManager::createObjectPath()
 {
     float now = glfwGetTime();
-    if (scene->window->isKeyPressed(GLFW_KEY_A) && (now - objectPathTimer > 0.5f))
+    if (scene->window->isKeyPressed(GLFW_KEY_Z) && (now - objectPathTimer > 0.5f))
         for (Entity *e : placedEntities)
             if (selectedObject == e->obj)
             {
                 objectPathTimer = now;
-                e->addMovementPathPos(canvas->levelMousePos);
+                e->addMovementPathPos(canvas->getWorldPosition(false));
                 break;
             }
 }

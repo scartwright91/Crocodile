@@ -37,7 +37,7 @@ private:
     ResourceManager *rm = nullptr;
 
     s2d::Object *camera = nullptr;
-    float speed = 300.f;
+    float speed = 600.f;
     float currentZoom = 0.0f;
     float zoomTimer = 0.f;
     float commandTimer = 0.f;

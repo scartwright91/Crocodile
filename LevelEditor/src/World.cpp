@@ -2,14 +2,6 @@
 
 World::World(s2d::Scene *scene, ResourceManager *rm) : scene(scene), rm(rm)
 {
-    levels.push_back(new Level("level0", scene, rm, glm::vec2(0.f), glm::vec2(600.f)));
-    levels.push_back(new Level("level1", scene, rm, glm::vec2(1000.f), glm::vec2(2000.f)));
-    levels.push_back(new Level("level2", scene, rm, glm::vec2(-1000.f), glm::vec2(2000.f, 500.f)));
-    for (Level *level : levels)
-    {
-        level->canvas->initCanvasEdges();
-        level->createLevelName();
-    }
 }
 
 World::World(WorldData wd, s2d::Scene *scene, ResourceManager *rm) : scene(scene), rm(rm)
@@ -97,7 +89,8 @@ void World::update(float dt, glm::vec2 mousePos)
 void World::renderImGui()
 {
     ImGui::Begin("Manage");
-    ImGui::Text("Some world options...");
+    std::string _worldPos = "World position: (" + std::to_string((int)worldPosition.x) + ", " + std::to_string((int)worldPosition.y) + ")";
+    ImGui::Text(_worldPos.c_str());
     if (ImGui::CollapsingHeader("New level"))
     {
         ImGui::InputText("Level name", tmpLevelName, 64);
@@ -129,7 +122,10 @@ void World::renderImGui()
         std::string levelSize = "Size: (" + std::to_string((int)s.x) + ", " + std::to_string((int)s.y) + ")";
         ImGui::Text(levelSize.c_str());
         if (ImGui::Button("Move level") || scene->window->isKeyPressed(GLFW_KEY_M))
+        {
+            currentLevelPosition = selectedLevel->canvas->canvas->getPosition();
             movingLevel = true;
+        }
         if (ImGui::Button("Enter level") || scene->window->isKeyPressed(GLFW_KEY_ENTER))
             enterLevel();
         if (ImGui::Button("Delete"))
@@ -215,11 +211,11 @@ void World::placeLevel()
 
 void World::moveLevel()
 {
-    selectedLevel->canvas->canvas->setPosition(worldPosition);
+    glm::vec2 d = worldPosition - currentLevelPosition;
     if (scene->window->isButtonPressed(GLFW_MOUSE_BUTTON_1))
     {
-        selectedLevel->canvas->initCanvasEdges();
-        selectedLevel->createLevelName();
+        selectedLevel->canvas->canvas->move(d.x, d.y);
+        selectedLevel->move(d.x, d.y);
         movingLevel = false;
         updateAllConnections();
     }

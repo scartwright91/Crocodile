@@ -41,6 +41,7 @@ void Project::save(WorldData wd)
         Json::Value placedEntities(Json::arrayValue);
         Json::Value placedTextEntities(Json::arrayValue);
         Json::Value placedParticleEntities(Json::arrayValue);
+        Json::Value placedConnectionEntities(Json::arrayValue);
 
         // layers
         for (s2d::Layer *layer : ld.layers)
@@ -108,6 +109,16 @@ void Project::save(WorldData wd)
                 movementPath.append(movementPathPos);
             }
             entData["movement_path"] = movementPath;
+            // add world movement path
+            Json::Value movementWorldPath(Json::arrayValue);
+            for (glm::vec2 p : sed->worldPath)
+            {
+                Json::Value movementWorldPathPos(Json::arrayValue);
+                movementWorldPathPos.append(p.x);
+                movementWorldPathPos.append(p.y);
+                movementWorldPath.append(movementWorldPathPos);
+            }
+            entData["movement_world_path"] = movementWorldPath;
             // add custom attributes
             placedEntities.append(entData);
         }
@@ -167,12 +178,42 @@ void Project::save(WorldData wd)
             placedParticleEntities.append(entData);
         }
 
+        // placed connection entities
+        for (ConnectionEntityData *cd : ld.sceneConnectionEntityData)
+        {
+            Json::Value entData;
+            entData["layer"] = cd->layer;
+            entData["destination"] = cd->destination;
+            Json::Value collisionPos(Json::arrayValue);
+            collisionPos.append((int)cd->collisionPos.x);
+            collisionPos.append((int)cd->collisionPos.y);
+            entData["collisionPos"] = collisionPos;
+            Json::Value collisionWorldPos(Json::arrayValue);
+            collisionWorldPos.append((int)cd->collisionWorldPos.x);
+            collisionWorldPos.append((int)cd->collisionWorldPos.y);
+            entData["collisionWorldPos"] = collisionWorldPos;
+            Json::Value collisionSize(Json::arrayValue);
+            collisionSize.append((int)cd->collisionSize.x);
+            collisionSize.append((int)cd->collisionSize.y);
+            entData["collisionSize"] = collisionSize;
+            Json::Value spawnPos(Json::arrayValue);
+            spawnPos.append((int)cd->spawnPos.x);
+            spawnPos.append((int)cd->spawnPos.y);
+            entData["spawnPos"] = spawnPos;
+            Json::Value spawnWorldPos(Json::arrayValue);
+            spawnWorldPos.append((int)cd->spawnWorldPos.x);
+            spawnWorldPos.append((int)cd->spawnWorldPos.y);
+            entData["spawnWorldPos"] = spawnWorldPos;
+            placedConnectionEntities.append(entData);
+        }
+
         data["levels"][ld.name]["layers"] = layerKeys;
         data["levels"][ld.name]["texture_keys"] = textureKeys;
         data["levels"][ld.name]["entity_keys"] = entityKeys;
         data["levels"][ld.name]["placed_entities"] = placedEntities;
         data["levels"][ld.name]["placed_text_entities"] = placedTextEntities;
         data["levels"][ld.name]["placed_particle_entities"] = placedParticleEntities;
+        data["levels"][ld.name]["placed_connection_entities"] = placedConnectionEntities;
     }
     data["level_names"] = levelNames;
 
@@ -299,6 +340,12 @@ WorldData Project::load()
             for (int j = 0; j < entMovementPath.size(); j++)
                 path.push_back(glm::vec2(entMovementPath[j][0].asFloat(), entMovementPath[j][1].asFloat()));
             sceneEnt->path = path;
+            // iterate over movement world path
+            const Json::Value entMovementWorldPath = entData["movement_world_path"];
+            std::vector<glm::vec2> worldPath = {};
+            for (int j = 0; j < entMovementWorldPath.size(); j++)
+                worldPath.push_back(glm::vec2(entMovementWorldPath[j][0].asFloat(), entMovementWorldPath[j][1].asFloat()));
+            sceneEnt->worldPath = worldPath;
             sceneEntitiesData.push_back(sceneEnt);
         }
 
@@ -346,11 +393,34 @@ WorldData Project::load()
             sceneParticleEntitiesData.push_back(sceneParticleEnt);
         }
 
+        // placed connection entities
+        const Json::Value placedConnectionEntitiesData = data["levels"][ld.name]["placed_connection_entities"];
+        std::vector<ConnectionEntityData *> sceneConnectionEntitiesData = {};
+        for (int i = 0; i < placedConnectionEntitiesData.size(); i++)
+        {
+            Json::Value entData = placedConnectionEntitiesData[i];
+            ConnectionEntityData *sceneConnectionEnt = new ConnectionEntityData();
+            sceneConnectionEnt->layer = entData["layer"].asString();
+            sceneConnectionEnt->destination = entData["destination"].asString();
+            sceneConnectionEnt->collisionPos = glm::vec2(
+                entData["collisionPos"][0].asFloat(), entData["collisionPos"][1].asFloat());
+            sceneConnectionEnt->collisionWorldPos = glm::vec2(
+                entData["collisionWorldPos"][0].asFloat(), entData["collisionWorldPos"][1].asFloat());
+            sceneConnectionEnt->collisionSize = glm::vec2(
+                entData["collisionSize"][0].asFloat(), entData["collisionSize"][1].asFloat());
+            sceneConnectionEnt->spawnPos = glm::vec2(
+                entData["spawnPos"][0].asFloat(), entData["spawnPos"][1].asFloat());
+            sceneConnectionEnt->spawnWorldPos = glm::vec2(
+                entData["spawnWorldPos"][0].asFloat(), entData["spawnWorldPos"][1].asFloat());
+            sceneConnectionEntitiesData.push_back(sceneConnectionEnt);
+        }
+
         ld.entitiesData = entitiesData;
         ld.textures = textures;
         ld.sceneEntityData = sceneEntitiesData;
         ld.sceneTextEntityData = sceneTextEntitiesData;
         ld.SceneParticleEntityData = sceneParticleEntitiesData;
+        ld.sceneConnectionEntityData = sceneConnectionEntitiesData;
 
         lds.push_back(ld);
     }

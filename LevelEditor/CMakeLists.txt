@@ -27,8 +27,8 @@ add_executable(${PROJECT_NAME}
     src/entities/TextEntity.cpp
     src/entities/ParticleEntity.h
     src/entities/ParticleEntity.cpp
-    src/entities/ZoneEntity.h
-    src/entities/ZoneEntity.cpp
+    src/entities/ConnectionEntity.h
+    src/entities/ConnectionEntity.cpp
 )
 
 target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURE_DIR}/build)

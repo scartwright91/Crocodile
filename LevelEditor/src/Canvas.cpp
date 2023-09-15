@@ -66,10 +66,6 @@ void Canvas::renderImGui()
             if (grid->visible)
                 grid->hide();
         }
-        ImGui::InputInt("Grid X", &gridSizeX);
-        ImGui::InputInt("Grid Y", &gridSizeY);
-        if (ImGui::Button("Create"))
-            initGrid();
     }
 }
 
@@ -109,16 +105,6 @@ void Canvas::updateCanvas()
     float miny = edges[2]->getPosition().y + edgeWidth;
     float maxy = edges[3]->getPosition().y;
     canvas->setPosition(glm::vec2(minx, miny));
-    if (minx != 0 || miny != 0)
-    {
-        for (std::string layerName : scene->layerStack->getLayerNames())
-        {
-            s2d::Layer *layer = scene->layerStack->getLayer(layerName);
-            if (layer->cameraScroll)
-                for (s2d::Object *obj : layer->objects)
-                    obj->move(-minx, -miny);
-        }
-    }
     canvas->size = glm::vec2(maxx - minx, maxy - miny);
 }
 
@@ -202,13 +188,15 @@ void Canvas::moveEdge()
         scene->windowHeight);
     float dx = (sceneMousePos.x - edgeScreenPos.x) * scene->camera->zoom;
     float dy = (sceneMousePos.y - edgeScreenPos.y) * scene->camera->zoom;
+    // round to grid values
+    int ix = round(dx);
+    int iy = round(dy);
     if (edgeSelected == edges[0] || edgeSelected == edges[1])
-        edgeSelected->move(dx, 0);
+        edgeSelected->move(ix, 0);
     else if (edgeSelected == edges[2] || edgeSelected == edges[3])
-        edgeSelected->move(0, dy);
+        edgeSelected->move(0, iy);
     updateCanvas();
     updateEdges();
-    initGrid();
     grid->show();
 }
 
@@ -237,4 +225,14 @@ void Canvas::initGrid()
 {
     delete grid;
     grid = new Grid(scene, canvas->getPosition(), (int)canvas->size.x, (int)canvas->size.y, (int)gridSizeX, (int)gridSizeY);
+}
+
+int Canvas::round(float v)
+{
+    // Smaller multiple
+    int a = ((int)v / gridSizeX) * gridSizeX;
+    // Larger multiple
+    int b = a + gridSizeX;
+    // Return of closest of two
+    return (v - a > b - v) ? b : a;
 }

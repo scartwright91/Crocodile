@@ -6,7 +6,6 @@ Entity::Entity(s2d::Scene *scene, s2d::Object *obj, std::string layer) : scene(s
     label->setPosition(obj->getPosition());
     label->color = glm::vec3(1.f);
     label->alpha = 0.f;
-    scene->addChild(label, layer);
 }
 
 void Entity::select()

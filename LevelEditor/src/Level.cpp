@@ -7,12 +7,12 @@ Level::Level(LevelData data, s2d::Scene *scene, ResourceManager *rm) : scene(sce
     entityManager = new EntityManager(scene, rm, canvas);
     entitiesData = data.entitiesData;
     layers = data.layers;
-    for (s2d::Layer *l : layers)
-        scene->layerStack->addLayer(l);
     textures = data.textures;
     for (ResourceManager::TextureData td : textures)
         rm->loadTexture(td.path.c_str(), td.name, false);
     loadPlacedEntities(data);
+    camera = new s2d::Object();
+    camera->setPosition(canvas->canvas->getCenteredPosition());
 }
 
 Level::Level(
@@ -25,6 +25,14 @@ Level::Level(
     strcpy(this->name, name.c_str());
     canvas = new Canvas(scene, canvasPos, canvasSize);
     entityManager = new EntityManager(scene, rm, canvas);
+    camera = new s2d::Object();
+    camera->setPosition(canvas->canvas->getCenteredPosition());
+    std::vector<std::string> layerNames = {"background", "platforms", "connections", "entities", "foreground"};
+    for (std::string layerName : layerNames)
+    {
+        s2d::Layer *layer = new s2d::Layer(layerName);
+        layers.push_back(layer);
+    }
 }
 
 Level::~Level()
@@ -46,17 +54,24 @@ void Level::createLevelName()
     delete levelName;
     levelName = new s2d::Text();
     levelName->color = glm::vec3(1.f);
-    levelName->setScale(glm::vec2(2.f));
+    levelName->setScale(glm::vec2(3.f));
     levelName->setText(std::string(name), false);
     levelName->setPosition(canvas->canvas->getCenteredPosition() - levelName->size / 2.f);
     scene->addChild(levelName, "canvas");
 }
 
+void Level::move(float dx, float dy)
+{
+    canvas->initCanvasEdges();
+    createLevelName();
+    entityManager->move(dx, dy);
+}
+
 void Level::load()
 {
-    entityManager->load();
     for (s2d::Layer *layer : layers)
         scene->layerStack->addLayer(layer);
+    entityManager->load();
     canvas->showGrid = true;
     canvas->grid->show();
     scene->removeChild(levelName, "canvas");
@@ -69,7 +84,7 @@ void Level::clear()
         scene->layerStack->removeLayer(layer);
     canvas->showGrid = false;
     canvas->grid->hide();
-    scene->addChild(levelName, "canvas");
+    createLevelName();
 }
 
 void Level::loadPlacedEntities(LevelData data)
@@ -86,7 +101,7 @@ void Level::loadPlacedEntities(LevelData data)
         if (sed->texture != "")
             obj->setTexture(rm->getTexture(sed->texture));
         Entity *e = new Entity(scene, obj, sed->layer);
-        e->movementPath = sed->path;
+        e->movementPath = sed->worldPath;
         entityManager->placedEntities.push_back(e);
     }
     for (s2d::SceneTextEntityData *ted : data.sceneTextEntityData)
@@ -112,6 +127,21 @@ void Level::loadPlacedEntities(LevelData data)
             pg->setTexture(rm->getTexture(ped->texture));
         ParticleEntity *pe = new ParticleEntity(scene, pg, ped->layer);
         entityManager->placedParticleEntities.push_back(pe);
+    }
+    for (ConnectionEntityData *cd : data.sceneConnectionEntityData)
+    {
+        s2d::Object *collision = new s2d::Object();
+        collision->color = glm::vec3(02, 0.2, 0.8);
+        collision->alpha = 0.5f;
+        collision->setPosition(cd->collisionWorldPos);
+        collision->size = cd->collisionSize;
+        ConnectionEntity *ce = new ConnectionEntity(
+            scene,
+            cd->destination,
+            cd->layer,
+            collision);
+        ce->spawn->setPosition(cd->spawnWorldPos);
+        entityManager->placedConnectionEntities.push_back(ce);
     }
 }
 
@@ -148,7 +178,14 @@ LevelData Level::serialise()
                 sed->rotation = ent->obj->rotation;
                 sed->alpha = ent->obj->alpha;
                 sed->texture = ent->obj->texture.name;
-                sed->path = ent->movementPath;
+                sed->worldPath = ent->movementPath;
+                std::vector<glm::vec2> localPath = {};
+                for (glm::vec2 p : ent->movementPath)
+                {
+                    p -= canvas->canvas->getPosition();
+                    localPath.push_back(p);
+                }
+                sed->path = localPath;
                 sceneEntitiesData.push_back(sed);
             }
             ld.sceneEntityData = sceneEntitiesData;
@@ -186,6 +223,21 @@ LevelData Level::serialise()
                 sceneParticleEntitiesData.push_back(psed);
             }
             ld.SceneParticleEntityData = sceneParticleEntitiesData;
+            // connections
+            std::vector<ConnectionEntityData *> sceneConnectionsData = {};
+            for (ConnectionEntity *ent : entityManager->placedConnectionEntities)
+            {
+                ConnectionEntityData *cd = new ConnectionEntityData();
+                cd->layer = ent->layer;
+                cd->destination = ent->destination;
+                cd->collisionPos = ent->collision->getPosition() - canvas->canvas->getPosition();
+                cd->collisionWorldPos = ent->collision->getPosition();
+                cd->collisionSize = ent->collision->size;
+                cd->spawnPos = ent->spawn->getPosition() - canvas->canvas->getPosition();
+                cd->spawnWorldPos = ent->spawn->getPosition();
+                sceneConnectionsData.push_back(cd);
+            }
+            ld.sceneConnectionEntityData = sceneConnectionsData;
         }
     }
     catch (const std::exception &e)
@@ -198,24 +250,41 @@ LevelData Level::serialise()
 
 void Level::renderImGui()
 {
-    ImGui::Begin("Manage");
-    levelOptions();
-    ImGui::End();
+    if (!cameraView)
+    {
+        ImGui::Begin("Manage");
+        levelOptions();
+        ImGui::End();
 
-    ImGui::Begin("Level");
-    levelInfo();
-    sceneTree();
-    ImGui::End();
+        ImGui::Begin("Level");
+        levelInfo();
+        sceneTree();
+        ImGui::End();
 
-    ImGui::Begin("Placement");
-    placementUI();
-    ImGui::End();
+        ImGui::Begin("Placement");
+        placementUI();
+        ImGui::End();
+    }
+    else
+    {
+        ImGui::Begin("Layer Depth");
+        s2d::Layer *bg = scene->layerStack->getLayer("background");
+        ImGui::SliderFloat("Depth", &bg->xDepth, -2.f, 2.f);
+        ImGui::End();
+    }
 }
 
 void Level::levelOptions()
 {
     ImGui::Checkbox("Update level:", &updateLevel);
+    std::string _camMode = "Camera view: " + std::to_string(cameraView);
+    ImGui::Text(_camMode.c_str());
     canvas->renderImGui();
+    if (ImGui::CollapsingHeader("Camera"))
+    {
+        ImGui::Text("Press TAB to toggle camera view");
+        ImGui::Button("Move");
+    }
     if (ImGui::CollapsingHeader("Layers"))
     {
         addLayer();
@@ -324,18 +393,17 @@ void Level::placementUI()
                 entityManager->createParticleEntity();
             }
         }
-        else if (entityManager->selectedPlacementObjectType == "light")
+        else if (entityManager->selectedPlacementObjectType == "connection")
         {
-            ImGui::ColorEdit3("color", (float *)&entityManager->tmpParticleColor);
-            ImGui::SliderFloat("radius", &entityManager->tmpParticleDirection, -3.14, 3.14);
-            ImGui::Button("Place");
-        }
-        else if (entityManager->selectedPlacementObjectType == "zone")
-        {
-            ImGui::Text("Zones are created by dragging and dropping");
-            ImGui::InputText("Name", entityManager->tmpText, 64);
-            ImGui::ColorEdit3("color", (float *)&entityManager->tmpParticleColor);
-            ImGui::SliderFloat("alpha", &entityManager->tmpParticleDirection, -3.14, 3.14);
+            ImGui::Text("Enter the level to connect to");
+            ImGui::InputText("Level", entityManager->tmpConnectionLevelName, 64);
+            ImGui::InputInt("Col Width", &entityManager->tmpConnectionColWidth);
+            ImGui::InputInt("Col Height", &entityManager->tmpConnectionColHeight);
+            if (ImGui::Button("Place"))
+            {
+                entityManager->placeMultiple = false;
+                entityManager->createConnectionEntity();
+            }
         }
     }
     else
@@ -382,6 +450,24 @@ void Level::placementUI()
                 float ts = te->getScale().x;
                 ImGui::SliderFloat("scale", &ts, 0.f, 20.f);
                 te->setScale(glm::vec2(ts));
+                if (ImGui::Button("delete"))
+                {
+                    entityManager->deleteObject(entityManager->selectedObject);
+                    entityManager->selectedObject = nullptr;
+                }
+            }
+            else if (entityManager->selectedObjectType == "connection")
+            {
+                if (ImGui::Button("move collision"))
+                {
+                    entityManager->placeMultiple = false;
+                    entityManager->placementObject = entityManager->selectedConnectionEntity->collision;
+                }
+                if (ImGui::Button("move spawn"))
+                {
+                    entityManager->placeMultiple = false;
+                    entityManager->placementObject = entityManager->selectedConnectionEntity->spawn;
+                }
                 if (ImGui::Button("delete"))
                 {
                     entityManager->deleteObject(entityManager->selectedObject);
@@ -474,19 +560,19 @@ void Level::createLayersTable()
                 if (ImGui::SmallButton("+"))
                     if (row + 1 < layers.size())
                     {
-                        move(layers, row, row + 1);
+                        moveVectorElement(layers, row, row + 1);
                         scene->layerStack->moveLayerUp(layers[row]->name);
                     }
                 ImGui::SameLine();
                 if (ImGui::SmallButton("-"))
                     if (row - 1 >= 0)
                     {
-                        move(layers, row, row - 1);
+                        moveVectorElement(layers, row, row - 1);
                         scene->layerStack->moveLayerDown(layers[row]->name);
                     }
             }
             if (ImGui::TableSetColumnIndex(2))
-                ImGui::SliderFloat("depth", &layers[row]->depth, -1.f, 1.0f);
+                ImGui::SliderFloat("depth", &layers[row]->xDepth, -1.f, 1.0f);
             if (ImGui::TableSetColumnIndex(3))
                 ImGui::SliderFloat("alpha", &layers[row]->alpha, 0.f, 1.0f);
             if (ImGui::TableSetColumnIndex(4))

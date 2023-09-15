@@ -36,6 +36,8 @@ struct LevelData
     std::vector<s2d::SceneTextEntityData *> sceneTextEntityData;
     // particle Entities placed in the scene
     std::vector<s2d::SceneParticleEntityData *> SceneParticleEntityData;
+    // connection entities placed in the scene
+    std::vector<ConnectionEntityData *> sceneConnectionEntityData;
     // Textures that have been used by entities
     std::vector<ResourceManager::TextureData> textures;
 };
@@ -51,6 +53,7 @@ public:
     s2d::Text *levelName = nullptr;
     void createLevelName();
 
+    void move(float dx, float dy);
     void load();
     void clear();
     void update(float dt, glm::vec2 mouse);
@@ -66,6 +69,11 @@ public:
     std::vector<ResourceManager::TextureData> textures = {};
 
     float tmpTimer = glfwGetTime();
+
+    // camera controller
+    float toggleTimer = glfwGetTime();
+    bool cameraView = false;
+    s2d::Object *camera = nullptr;
 
 private:
     ResourceManager *rm = nullptr;
@@ -119,7 +127,7 @@ private:
     const char *selectedPlacementObjectType = "entity";
     const char *selectedPlacementLayer = "";
     const char *tmpPlacementEntity = "";
-    const char *placementObjectTypes[5] = {"entity", "text", "particles", "light", "zone"};
+    const char *placementObjectTypes[4] = {"entity", "text", "particles", "connection"};
     void selectPlacementLayer();
     void selectPlacementObject();
     void selectPlacementObjectType();

@@ -43,6 +43,7 @@ public:
     Level *activeLevel = nullptr;
     Level *selectedLevel = nullptr;
     Level *tmpLevel = nullptr;
+    glm::vec2 currentLevelPosition = glm::vec2(0.f);
     glm::vec2 worldPosition = glm::vec2(0.f);
     bool movingLevel = false;
     char tmpLevelName[64] = "";

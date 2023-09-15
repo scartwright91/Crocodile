@@ -7,6 +7,7 @@
 #include "entities/Entity.h"
 #include "entities/ParticleEntity.h"
 #include "entities/TextEntity.h"
+#include "entities/ConnectionEntity.h"
 
 using namespace Crocodile;
 
@@ -16,6 +17,7 @@ public:
     EntityManager(s2d::Scene *scene, ResourceManager *rm, Canvas *canvas);
     ~EntityManager();
 
+    void move(float dx, float dy);
     void load();
     void clear();
     void update(
@@ -42,6 +44,7 @@ public:
     void createEntityFromData(s2d::EntityData *entityData);
     void createTextEntity();
     void createParticleEntity();
+    void createConnectionEntity();
 
     // selecting entities
     s2d::Object *selectedObject = nullptr;
@@ -54,6 +57,7 @@ public:
     std::vector<Entity *> placedEntities = {};
     std::vector<TextEntity *> placedTextEntities = {};
     std::vector<ParticleEntity *> placedParticleEntities = {};
+    std::vector<ConnectionEntity *> placedConnectionEntities = {};
 
     // ----- Parameters -----
     float tmpTimer = 0.f;
@@ -73,6 +77,11 @@ public:
     float tmpParticleDispersion = 0.1f;
     float tmpParticleScale = 10.f;
     float tmpParticleVelocity = 1.f;
+    // connection inputs
+    ConnectionEntity *selectedConnectionEntity = nullptr;
+    char tmpConnectionLevelName[64] = "";
+    int tmpConnectionColWidth = 100;
+    int tmpConnectionColHeight = 100;
 
 private:
     s2d::Scene *scene = nullptr;

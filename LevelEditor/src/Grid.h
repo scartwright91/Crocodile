@@ -14,7 +14,6 @@ public:
     unsigned int gridSizeY;
 
     std::vector<s2d::shapes::Line *> lines = {};
-    // std::vector<std::shared_ptr<s2d::shapes::Line>> lines = {};
 
     Grid(
         s2d::Scene *scene,

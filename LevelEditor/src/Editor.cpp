@@ -74,11 +74,26 @@ void Editor::update(float dt, bool mouseOnImGuiWindow)
     {
         world->activeLevel->update(dt, sceneMousePosition);
         // switch to world view
-        if (scene->window->isKeyPressed(GLFW_KEY_TAB) && (now - commandTimer > 0.5f))
+        if (scene->window->isKeyPressed(GLFW_KEY_ESCAPE) && (now - commandTimer > 0.5f))
         {
             useWorldView();
             commandTimer = now;
-            world->activeLevel = nullptr;
+        }
+        if (scene->window->isKeyPressed(GLFW_KEY_TAB) && (now - commandTimer > 0.5f))
+        {
+            if (world->activeLevel->cameraView)
+            {
+                world->activeLevel->cameraView = false;
+                scene->camera->setTarget(camera, true);
+                scene->camera->setZoom(4.f);
+            }
+            else
+            {
+                world->activeLevel->cameraView = true;
+                scene->camera->setTarget(world->activeLevel->camera, true);
+                scene->camera->setZoom(1.f);
+            }
+            commandTimer = now;
         }
     }
 }
@@ -112,15 +127,24 @@ void Editor::move(float dt)
     float dx = 0.f;
     float dy = 0.f;
 
-    if (scene->window->isKeyPressed(GLFW_KEY_UP))
+    if (scene->window->isKeyPressed(GLFW_KEY_UP) || scene->window->isKeyPressed(GLFW_KEY_W))
         dy = -zoomSpeed;
-    if (scene->window->isKeyPressed(GLFW_KEY_DOWN))
+    if (scene->window->isKeyPressed(GLFW_KEY_DOWN) || scene->window->isKeyPressed(GLFW_KEY_S))
         dy = zoomSpeed;
-    if (scene->window->isKeyPressed(GLFW_KEY_LEFT))
+    if (scene->window->isKeyPressed(GLFW_KEY_LEFT) || scene->window->isKeyPressed(GLFW_KEY_A))
         dx = -zoomSpeed;
-    if (scene->window->isKeyPressed(GLFW_KEY_RIGHT))
+    if (scene->window->isKeyPressed(GLFW_KEY_RIGHT) || scene->window->isKeyPressed(GLFW_KEY_D))
         dx = zoomSpeed;
-    camera->move(dx, dy);
+
+    if (worldView)
+        camera->move(dx, dy);
+    else
+    {
+        if (world->activeLevel->cameraView)
+            world->activeLevel->camera->move(dx, dy);
+        else
+            camera->move(dx, dy);
+    }
 }
 
 void Editor::init()
@@ -133,7 +157,6 @@ void Editor::init()
 
 void Editor::save()
 {
-    // TODO: iterate over all levels
     WorldData wd = world->serialise();
     project->save(wd);
     std::cout << "Project saved" << std::endl;
@@ -205,11 +228,13 @@ void Editor::useWorldView()
 {
     worldView = true;
     world->activeLevel->clear();
+    world->activeLevel = nullptr;
+    world->selectedLevel = nullptr;
 }
 
 void Editor::useLevelView()
 {
     worldView = false;
     world->activeLevel->load();
-    camera->setPosition(world->activeLevel->canvas->canvas->getCenteredPosition());
+    world->selectedLevel = nullptr;
 }
