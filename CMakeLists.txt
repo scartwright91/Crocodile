@@ -22,7 +22,7 @@ add_subdirectory(Engine)
 # build ldtk loader
 add_subdirectory(LDtkLoader)
 
-# # build example
+# build example
 # add_subdirectory(Examples/collision)
 # file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/collision)
 

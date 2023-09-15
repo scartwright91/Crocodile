@@ -12,6 +12,7 @@ public:
     s2d::Object *rect = nullptr;
     std::vector<s2d::shapes::Line *> collisionLines = {};
     std::vector<s2d::shapes::Line *> intersectionLines = {};
+    float speed = 400.f;
 
     CollisionExample() : Crocodile::Application("Collision example", true, 1280, 720, false)
     {
@@ -23,7 +24,6 @@ public:
         fps->text = std::to_string(clock.getFPS());
 
         // move
-        float speed = 400.f;
         float dx = 0.f;
         float dy = 0.f;
         if (scene->window->isKeyPressed(GLFW_KEY_W))

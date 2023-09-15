@@ -251,8 +251,7 @@ namespace Crocodile
 		s2d::col::BoundingBox Object::getBoundingBox()
 		{
 			// Returns a bounding box with the same position and size as the entity in world coordinates
-			// return s2d::col::BoundingBox(position.x, position.y, size.x, size.y, rotation);
-			return s2d::col::BoundingBox(position.x, position.y, size.x, size.y, 0.f);
+			return s2d::col::BoundingBox(position.x, position.y, size.x, size.y, rotation);
 		}
 
 		s2d::col::BoundingBox Object::getShiftedBoundingBox(float dx, float dy)
