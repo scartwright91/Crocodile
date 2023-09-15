@@ -269,7 +269,7 @@ void Level::renderImGui()
     {
         ImGui::Begin("Layer Depth");
         s2d::Layer *bg = scene->layerStack->getLayer("background");
-        ImGui::SliderFloat("Depth", &bg->xDepth, -2.f, 2.f);
+        ImGui::SliderFloat("Depth", &bg->depth, -2.f, 2.f);
         ImGui::End();
     }
 }
@@ -572,7 +572,7 @@ void Level::createLayersTable()
                     }
             }
             if (ImGui::TableSetColumnIndex(2))
-                ImGui::SliderFloat("depth", &layers[row]->xDepth, -1.f, 1.0f);
+                ImGui::SliderFloat("depth", &layers[row]->depth, .1f, 1.5f);
             if (ImGui::TableSetColumnIndex(3))
                 ImGui::SliderFloat("alpha", &layers[row]->alpha, 0.f, 1.0f);
             if (ImGui::TableSetColumnIndex(4))

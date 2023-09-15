@@ -56,7 +56,8 @@ void World::update(float dt, glm::vec2 mousePos)
     worldPosition = scene->camera->getWorldfromScreenPosition(
         glm::vec2(mousePos.x, scene->window->getMouseScreenPosition().y + (2 * ImGui::GetStyle().FramePadding.y)),
         scene->windowWidth,
-        scene->windowHeight);
+        scene->windowHeight,
+        1.0);
 
     // level selection / deselection
     if (selectedLevel == NULL)

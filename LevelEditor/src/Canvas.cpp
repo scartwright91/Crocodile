@@ -72,11 +72,12 @@ void Canvas::renderImGui()
 void Canvas::calculateLevelPosition()
 {
     s2d::col::BoundingBox bbox = canvas->getScreenBoundingBox(
-        scene->camera->getViewMatrix(),
+        scene->camera->getViewMatrix(1.),
         scene->camera->getProjectionMatrix(true),
         scene->camera->zoom,
         scene->windowWidth,
-        scene->windowHeight);
+        scene->windowHeight,
+        1.0);
     if (bbox.intersectsPoint(sceneMousePos))
     {
         glm::vec2 size = canvas->size;
@@ -157,11 +158,12 @@ void Canvas::selectEdge()
         for (s2d::Object *obj : edges)
         {
             s2d::col::BoundingBox bbox = obj->getScreenBoundingBox(
-                scene->camera->getViewMatrix(),
+                scene->camera->getViewMatrix(1.),
                 scene->camera->getProjectionMatrix(true),
                 scene->camera->zoom,
                 scene->windowWidth,
-                scene->windowHeight);
+                scene->windowHeight,
+                1.0);
             if (bbox.intersectsPoint(sceneMousePos))
             {
                 if (obj == edges[0] || obj == edges[1])
@@ -182,10 +184,11 @@ void Canvas::moveEdge()
 {
     glm::vec2 edgeScreenPos = edgeSelected->getScreenPosition(
         true,
-        scene->camera->getViewMatrix(),
+        scene->camera->getViewMatrix(1.),
         scene->camera->getProjectionMatrix(true),
         scene->windowWidth,
-        scene->windowHeight);
+        scene->windowHeight,
+        1.0);
     float dx = (sceneMousePos.x - edgeScreenPos.x) * scene->camera->zoom;
     float dy = (sceneMousePos.y - edgeScreenPos.y) * scene->camera->zoom;
     // round to grid values

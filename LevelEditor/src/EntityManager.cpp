@@ -201,11 +201,12 @@ void EntityManager::selectObject()
         if (e->layer == std::string(selectedPlacementLayer))
         {
             if (e->obj->getScreenBoundingBox(
-                          scene->camera->getViewMatrix(),
+                          scene->camera->getViewMatrix(1.),
                           scene->camera->getProjectionMatrix(true),
                           scene->camera->zoom,
                           scene->windowWidth,
-                          scene->windowHeight)
+                          scene->windowHeight,
+                          1.0)
                     .intersectsPoint(canvas->sceneMousePos))
             {
                 ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -228,11 +229,12 @@ void EntityManager::selectObject()
         if (te->layer == std::string(selectedPlacementLayer))
         {
             s2d::col::BoundingBox bbox = te->text->getScreenBoundingBox(
-                scene->camera->getViewMatrix(),
+                scene->camera->getViewMatrix(1.),
                 scene->camera->getProjectionMatrix(true),
                 scene->camera->zoom,
                 scene->windowWidth,
-                scene->windowHeight);
+                scene->windowHeight,
+                1.0);
             if (bbox.intersectsPoint(canvas->sceneMousePos))
             {
                 ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
@@ -252,11 +254,12 @@ void EntityManager::selectObject()
         if (pe->layer == std::string(selectedPlacementLayer))
         {
             s2d::col::BoundingBox bbox = pe->pg->getScreenBoundingBox(
-                scene->camera->getViewMatrix(),
+                scene->camera->getViewMatrix(1.),
                 scene->camera->getProjectionMatrix(true),
                 scene->camera->zoom,
                 scene->windowWidth,
-                scene->windowHeight);
+                scene->windowHeight,
+                1.0);
             bbox.inflate(100.f, 100.f, true);
             if (bbox.intersectsPoint(canvas->sceneMousePos))
             {
@@ -275,11 +278,12 @@ void EntityManager::selectObject()
         if (ce->layer == std::string(selectedPlacementLayer))
         {
             s2d::col::BoundingBox bbox = ce->collision->getScreenBoundingBox(
-                scene->camera->getViewMatrix(),
+                scene->camera->getViewMatrix(1.),
                 scene->camera->getProjectionMatrix(true),
                 scene->camera->zoom,
                 scene->windowWidth,
-                scene->windowHeight);
+                scene->windowHeight,
+                1.0);
             if (bbox.intersectsPoint(canvas->sceneMousePos))
             {
                 ImGui::SetMouseCursor(ImGuiMouseCursor_Hand);
