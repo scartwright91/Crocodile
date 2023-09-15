@@ -45,11 +45,11 @@ namespace Crocodile
 			time += 0.05 * dt;
 			if (time >= 1.0)
 				time = 0.0;
-			camera->update();
 			if (enableScaling)
 				viewportScale = window->getViewportScale();
 			else
 				viewportScale = glm::vec2(1.f);
+			camera->update(viewportScale);
 			// screen resizing
 			if ((window->getViewportWidth() != windowWidth) || (window->getViewportHeight() != windowHeight))
 				scaleScene(window->getViewportScale());
@@ -58,7 +58,7 @@ namespace Crocodile
 			// transitions
 			if (isTransitioning() && (transitionCounter > 0.0f))
 			{
-				transitionCounter -= dt * 0.5;
+				transitionCounter -= dt * 1.f;
 				if (transitionCounter < 0.0f)
 					transitionCounter = 0.0;
 			}
@@ -66,7 +66,6 @@ namespace Crocodile
 
 		void Scene::updateObjects(float dt)
 		{
-
 			for (Layer *layer : layerStack->layers)
 			{
 				if (layer->ySort)
@@ -80,15 +79,6 @@ namespace Crocodile
 					{
 						// updating animations
 						o->updateAnimation(dt);
-						// move objects relative to camera based on render depth
-						if (layer->depth != 0.f)
-						{
-							glm::vec2 startingPos = o->getStartingPosition();
-							glm::vec2 newPos = glm::vec2(
-								startingPos.x - camera->cameraPosition.x * layer->depth,
-								startingPos.y + (windowHeight - camera->cameraPosition.y) * layer->depth);
-							o->setPosition(newPos);
-						}
 						// apply scene scale
 						obj->modelScale = glm::vec3(viewportScale, 1.f);
 					}
@@ -145,7 +135,7 @@ namespace Crocodile
 			if (!layer->cameraScroll)
 				view = glm::mat4(1.0f);
 			else
-				view = camera->getViewMatrix();
+				view = camera->getViewMatrix(layer->depth);
 
 			// calculating projection matrix
 			glm::mat4 projection = camera->getProjectionMatrix(layer->applyZoom);
@@ -156,22 +146,18 @@ namespace Crocodile
 			{
 				std::vector<Light *> lights;
 				if (enableLighting)
-				{
-					if (layer->depth == 0.f)
-						lights = lightSystem->getScaledLights(obj->modelScale);
-					else
-						lights = {};
-				}
+					lights = lightSystem->getScaledLights(obj->modelScale);
 				else
 					lights = {};
 
 				spriteRenderer->render(
 					time,
-					obj->calculateModelMatrix(pos),
+					obj->calculateModelMatrix(pos, 1.f),
 					view,
 					projection,
 					obj->texture.textureID,
 					obj->useTexture,
+					obj->useColorTexture,
 					obj->numberOfRows,
 					obj->numberOfCols,
 					obj->textureOffset,
@@ -195,7 +181,7 @@ namespace Crocodile
 				ParticleGenerator *pg = (ParticleGenerator *)obj;
 				particleRenderer->render(
 					pg->particles,
-					pg->calculateModelMatrix(pos),
+					pg->calculateModelMatrix(pos, 1.f),
 					view,
 					projection,
 					pg->texture.textureID,
@@ -209,7 +195,7 @@ namespace Crocodile
 				Text *text = (Text *)obj;
 				textRenderer->render(
 					text->text,
-					text->calculateModelMatrix(pos),
+					text->calculateModelMatrix(pos, 1.f),
 					view,
 					projection,
 					text->color,

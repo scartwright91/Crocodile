@@ -53,18 +53,17 @@ namespace Crocodile
 			children.clear();
 		}
 
-		glm::mat4 Object::calculateModelMatrix(glm::vec2 pos)
+		glm::mat4 Object::calculateModelMatrix(glm::vec2 pos, float layerDepth)
 		{
-			glm::mat4 model = glm::mat4(1.0f);
-			model = glm::translate(model, glm::vec3(pos, 0.0f));
+			glm::mat4 model = glm::mat4(1);
+			model = glm::translate(model, glm::vec3(pos - 1.f, 0.0f));
 			model = applyRotation(model);
-			model = glm::scale(model, glm::vec3(getScaledSize(), 1.0f));
+			model = glm::scale(model, glm::vec3(2.f + getScaledSize() * layerDepth, 1.0f));
 			return model;
 		}
 
 		void Object::move(float dx, float dy)
 		{
-			startingPosition += glm::vec2(dx, dy);
 			position += glm::vec2(dx, dy);
 			for (Object *child : children)
 			{
@@ -115,17 +114,6 @@ namespace Crocodile
 			return position;
 		}
 
-		glm::vec2 Object::getStartingPosition()
-		{
-			return startingPosition;
-		}
-
-		glm::vec2 Object::getScaledStartingPosition()
-		{
-			glm::vec2 startingPos = glm::vec2(startingPosition.x * modelScale.x, startingPosition.y * modelScale.y);
-			return startingPos;
-		}
-
 		glm::vec2 Object::getCenteredPosition()
 		{
 			glm::vec2 centeredPos = glm::vec2(position.x + size.x / 2, position.y + size.y / 2);
@@ -149,12 +137,6 @@ namespace Crocodile
 			return getPosition().y + size.y;
 		}
 
-		void Object::setStartingPosition(glm::vec2 pos)
-		{
-			startingPosition = pos;
-			position = pos;
-		}
-
 		void Object::setPosition(glm::vec2 pos)
 		{
 			position = pos;
@@ -168,17 +150,15 @@ namespace Crocodile
 
 		void Object::setTileMapTexture(
 			ResourceManager::TextureData texture,
-			float width,
-			float height,
 			unsigned int gridSize,
 			unsigned int x,
 			unsigned int y)
 		{
 			this->texture = texture;
 			useTexture = true;
-			numberOfRows = (float)height / gridSize;
-			numberOfCols = (float)width / gridSize;
-			textureOffset = glm::vec2(x / width, y / height);
+			numberOfRows = (int)texture.height / gridSize;
+			numberOfCols = (int)texture.width / gridSize;
+			textureOffset = glm::vec2((int)x / texture.width, (int)y / texture.height);
 		}
 
 		void Object::updateAnimation(float dt)
@@ -237,25 +217,25 @@ namespace Crocodile
 			return absPosition;
 		}
 
-		glm::vec2 Object::getScreenPosition(bool centre, glm::mat4 view, glm::mat4 projection, float width, float height)
+		glm::vec2 Object::getScreenPosition(bool centre, glm::mat4 view, glm::mat4 projection, float width, float height, float layerDepth)
 		{
-			glm::mat4 model = calculateModelMatrix(centre ? getCenteredPosition() : getPosition());
+			glm::mat4 model = calculateModelMatrix(centre ? getCenteredPosition() : getPosition(), layerDepth);
 			glm::mat4 mvp = projection * view * model;
 			glm::vec2 pos = mvp * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 			return glm::vec2((pos.x * 0.5 + 0.5) * width, height - (pos.y * 0.5 + 0.5) * height);
 		}
 
-		glm::vec2 Object::getShiftedScreenPosition(glm::vec2 offset, glm::mat4 view, glm::mat4 projection, float width, float height)
+		glm::vec2 Object::getShiftedScreenPosition(glm::vec2 offset, glm::mat4 view, glm::mat4 projection, float width, float height, float layerDepth)
 		{
-			glm::mat4 model = calculateModelMatrix(position + offset);
+			glm::mat4 model = calculateModelMatrix(position + offset, layerDepth);
 			glm::mat4 mvp = projection * view * model;
 			glm::vec2 pos = mvp * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 			return glm::vec2((pos.x * 0.5 + 0.5) * width, height - (pos.y * 0.5 + 0.5) * height);
 		}
 
-		s2d::col::BoundingBox Object::getScreenBoundingBox(glm::mat4 view, glm::mat4 projection, float zoom, float width, float height)
+		s2d::col::BoundingBox Object::getScreenBoundingBox(glm::mat4 view, glm::mat4 projection, float zoom, float width, float height, float layerDepth)
 		{
-			glm::mat4 model = calculateModelMatrix(position);
+			glm::mat4 model = calculateModelMatrix(position, layerDepth);
 			glm::mat4 mvp = projection * view * model;
 			glm::vec2 pos = mvp * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 			glm::vec2 scaledSize = getScaledSize();
@@ -271,7 +251,8 @@ namespace Crocodile
 		s2d::col::BoundingBox Object::getBoundingBox()
 		{
 			// Returns a bounding box with the same position and size as the entity in world coordinates
-			return s2d::col::BoundingBox(position.x, position.y, size.x, size.y, rotation);
+			// return s2d::col::BoundingBox(position.x, position.y, size.x, size.y, rotation);
+			return s2d::col::BoundingBox(position.x, position.y, size.x, size.y, 0.f);
 		}
 
 		s2d::col::BoundingBox Object::getShiftedBoundingBox(float dx, float dy)

@@ -27,25 +27,22 @@ find_package(OpenGL REQUIRED)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARIES})
 target_include_directories(${PROJECT_NAME} PRIVATE ${OPENGL_INCLUDE_DIR})
 
-if (NOT EMSCRIPTEN)
-    # GLEW
-    find_package(GLEW REQUIRED)
-    target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW)
+# GLEW
+find_package(GLEW REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW)
 
-    # GLFW
-    find_package(glfw3 3.3 REQUIRED)
-    target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
+# GLFW
+find_package(glfw3 3.3 REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
 
-    # Freetype
-    find_package(Freetype 2.12.1 REQUIRED)
-    target_link_libraries(${PROJECT_NAME} PRIVATE Freetype::Freetype)
+# Freetype
+find_package(Freetype 2.12.1 REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE Freetype::Freetype)
 
-    # OpenAL
-    find_package(OpenAL CONFIG REQUIRED)
-    target_link_libraries(${PROJECT_NAME} PRIVATE OpenAL::OpenAL)
+# OpenAL
+find_package(OpenAL CONFIG REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE OpenAL::OpenAL)
 
-    # libsndfile
-    find_package(SndFile CONFIG REQUIRED)
-    target_link_libraries(${PROJECT_NAME} PRIVATE SndFile::sndfile)
-
-endif()
+# libsndfile
+find_package(SndFile CONFIG REQUIRED)
+target_link_libraries(${PROJECT_NAME} PRIVATE SndFile::sndfile)

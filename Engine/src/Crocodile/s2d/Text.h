@@ -52,9 +52,12 @@ namespace Crocodile
             void setText(std::string text, bool unravelByLetter)
             {
                 this->unravelByLetter = unravelByLetter;
+                letterCounter = 0;
                 this->fullText = text;
                 if (!unravelByLetter)
                     this->text = text;
+                else
+                    this->text = "";
                 this->size = font.getTextSize(fullText, textScale);
             }
 

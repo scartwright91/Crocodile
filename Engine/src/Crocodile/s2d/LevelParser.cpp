@@ -22,10 +22,8 @@ namespace Crocodile
 			f >> project;
 		}
 
-		LevelData LevelParser::parseLevel(std::string level)
+		void LevelParser::parseLevel(std::string level)
 		{
-
-			LevelData ld;
 
 			Json::Value levelData = project["levels"][level];
 			// parse texture data
@@ -33,7 +31,7 @@ namespace Crocodile
 			for (int i = 0; i < levelTexturesData.size(); i++)
 			{
 				std::string textureName = levelTexturesData[i].asString();
-				std::string texturePath = levelData["textures"][textureName].asString();
+				std::string texturePath = "res/" + levelData["textures"][textureName].asString();
 				resourceManager->loadTexture(texturePath.c_str(), textureName, false);
 			}
 
@@ -115,8 +113,45 @@ namespace Crocodile
 			ld.sceneEntityData = sceneEntitiesData;
 			ld.sceneTextEntityData = sceneTextEntitiesData;
 			ld.SceneParticleEntityData = sceneParticleEntitiesData;
+		}
 
-			return ld;
+		void LevelParser::parseConnections(std::string level)
+		{
+			Json::Value connectionsData = project["levels"][level]["placed_connection_entities"];
+			// iterate through connections in the level
+			// find associated connections in other levels
+			for (int i = 0; i < connectionsData.size(); i++)
+			{
+				Json::Value connectionData = connectionsData[i];
+				ConnectionData cd1 = {};
+				cd1.currentLevel = level;
+				cd1.destinationLevel = connectionData["destination"].asString();
+				cd1.collisionPos = glm::vec2(connectionData["collisionPos"][0].asFloat(), connectionData["collisionPos"][1].asFloat());
+				cd1.collisionSize = glm::vec2(connectionData["collisionSize"][0].asFloat(), connectionData["collisionSize"][1].asFloat());
+				cd1.spawn = glm::vec2(connectionData["spawnPos"][0].asFloat(), connectionData["spawnPos"][1].asFloat());
+
+				std::string key = level + "->" + cd1.destinationLevel;
+				connectionKeys.push_back(key);
+				connectionsDataMap[key] = cd1;
+
+				Json::Value destConnectionsData = project["levels"][cd1.destinationLevel]["placed_connection_entities"];
+				for (int j = 0; j < destConnectionsData.size(); j++)
+				{
+					Json::Value destConnectionData = destConnectionsData[j];
+					if (level == destConnectionData["destination"].asString())
+					{
+						ConnectionData cd2 = {};
+						cd2.currentLevel = cd1.destinationLevel;
+						cd2.destinationLevel = level;
+						cd2.collisionPos = glm::vec2(destConnectionData["collisionPos"][0].asFloat(), destConnectionData["collisionPos"][1].asFloat());
+						cd2.collisionSize = glm::vec2(destConnectionData["collisionSize"][0].asFloat(), destConnectionData["collisionSize"][1].asFloat());
+						cd2.spawn = glm::vec2(destConnectionData["spawnPos"][0].asFloat(), destConnectionData["spawnPos"][1].asFloat());
+						std::string key = cd2.currentLevel + "->" + cd2.destinationLevel;
+						connectionsDataMap[key] = cd2;
+						break;
+					}
+				}
+			}
 		}
 
 		glm::vec2 LevelParser::getCanvasBounds(std::string level)

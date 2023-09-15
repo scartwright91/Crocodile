@@ -40,7 +40,7 @@ namespace Crocodile
 
 		void UIContainer::addElementToUI(Object *obj)
 		{
-			obj->setStartingPosition(getPosition());
+			obj->setPosition(getPosition());
 			obj->move(currentElementPosition.x, currentElementPosition.y);
 			updateCurrentElementPosition(obj->size.x, obj->size.y);
 			if (!staticSize)

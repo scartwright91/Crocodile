@@ -88,6 +88,7 @@ namespace Crocodile
 				// collision / intersection
 				bool intersectsBounds(BoundingBox b);
 				bool intersectsPoint(glm::vec2 p);
+				float getMinDistanceFromBounds(BoundingBox b, std::string axis);
 
 				// transformation
 				void inflate(float dx, float dy, bool centre);

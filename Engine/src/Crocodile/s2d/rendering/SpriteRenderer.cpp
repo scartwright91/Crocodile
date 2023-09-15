@@ -16,6 +16,7 @@ namespace Crocodile
             glm::mat4 projection,
             unsigned int textureID,
             bool useTexture,
+            bool useColorTexture,
             float numberOfRows,
             float numberOfCols,
             glm::vec2 textureOffset,
@@ -42,6 +43,7 @@ namespace Crocodile
             shader->setMat4("u_View", view);
             shader->setMat4("u_Projection", projection);
             shader->setBool("u_UseTexture", useTexture);
+            shader->setBool("u_UseColorTexture", useColorTexture);
             shader->setBool("u_UseDistortion", useDistortionTexture);
             shader->setBool("u_ScrollDistortionX", scrollDistortionX);
             shader->setBool("u_ScrollDistortionY", scrollDistortionY);

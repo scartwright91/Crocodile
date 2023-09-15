@@ -42,12 +42,17 @@ namespace Crocodile
 			float dispersion = 0.1;
 			float scale = 1.0f;
 			float velocity = 1.0f;
+			float life = .5f;
 			unsigned int amount = 0;
 
+			float duration = 0.0f;
+			bool createOnce = false;
+			bool finished = false;
+
+			void createParticles();
+
 		private:
-			float duration = 1.0f;
 			Particle createParticle();
-			void init();
 		};
 	}
 }

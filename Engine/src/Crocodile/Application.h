@@ -43,6 +43,7 @@ namespace Crocodile
 
 		ResourceManager resourceManager;
 		SoundManager soundManager;
+
 		graphics::Window window;
 		s2d::Scene *scene;
 		Clock clock;
@@ -63,6 +64,7 @@ namespace Crocodile
 		void render();
 		void setCurrentScene(s2d::Scene *scene);
 		virtual void update(float dt){};
+		virtual void fixedUpdate(float dt){};
 		virtual void renderImGui(){};
 
 	private:

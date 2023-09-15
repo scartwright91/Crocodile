@@ -8,10 +8,8 @@ namespace Crocodile
 		ParticleGenerator::ParticleGenerator(unsigned int amount)
 		{
 			this->amount = amount;
-			this->duration = 0.f;
 			this->size = glm::vec2(1.0f);
 			renderMethod = "particles";
-			init();
 		}
 
 		ParticleGenerator::~ParticleGenerator()
@@ -28,6 +26,9 @@ namespace Crocodile
 					active = false;
 			}
 
+			if (particles.size() == 0)
+				finished = true;
+
 			// update all particles
 			for (unsigned int i = 0; i < getNParticles(); ++i)
 			{
@@ -38,7 +39,7 @@ namespace Crocodile
 				{ // particle is alive, thus update
 					p.position -= p.velocity * dt;
 				}
-				else if (active)
+				else if (active && !createOnce)
 				{
 					// reset particle attributes
 					p = createParticle();
@@ -74,7 +75,7 @@ namespace Crocodile
 				p.position.y += (r * h);
 			}
 			p.scale = scale;
-			p.life = 0.5f + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 2.5));
+			p.life = life + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 1.5));
 
 			// calculate velocity
 			float dispX = -dispersion + 2 * dispersion * static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
@@ -85,7 +86,7 @@ namespace Crocodile
 			return p;
 		}
 
-		void ParticleGenerator::init()
+		void ParticleGenerator::createParticles()
 		{
 			for (unsigned int i = 0; i < this->amount; ++i)
 				particles.push_back(createParticle());

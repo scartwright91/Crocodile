@@ -15,23 +15,34 @@ namespace Crocodile
         {
             soundBuffer = SoundBuffer::get();
             soundDevice = SoundDevice::get();
-            speaker = new SoundSource();
+            for (unsigned int i = 0; i < nSources; i++)
+            {
+                SoundSource *source = new SoundSource();
+                sources.push_back(source);
+            }
         };
         ~SoundManager()
         {
-            delete speaker;
+            for (unsigned int i = 0; i < nSources; i++)
+            {
+                SoundSource *source = sources[i];
+                delete source;
+            }
+            sources.clear();
         };
 
-        void play(std::string name)
+        void play(std::string name, unsigned int source)
         {
             ALuint sound = soundBuffer->getSound(name);
-            speaker->play(sound);
+            sources[source]->play(sound);
         }
 
         SoundBuffer *soundBuffer = nullptr;
 
     private:
-        SoundSource *speaker = nullptr;
         SoundDevice *soundDevice = nullptr;
+
+        unsigned int nSources = 5;
+        std::vector<SoundSource *> sources = {};
     };
 }

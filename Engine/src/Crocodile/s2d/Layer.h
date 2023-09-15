@@ -15,7 +15,6 @@ namespace Crocodile
 
 		public:
 			Layer(std::string name);
-			Layer(std::string name, float depth);
 			~Layer();
 
 			void addObject(Object *obj);
@@ -24,8 +23,11 @@ namespace Crocodile
 
 			// layer characteristics
 			std::string name = "";
-			float depth = 0.f;
+			// depth > 1.f: closer to camera, depth < 1.f: further from camera
+			float depth = 1.f;
+			// layer transparency
 			float alpha = 1.f;
+			// layer will sort all objects by increasing y-position at render time
 			bool ySort = false;
 			bool cameraScroll = true;
 			bool applyZoom = true;

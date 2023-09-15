@@ -36,6 +36,16 @@ namespace Crocodile
 			std::vector<ResourceManager::TextureData> textures;
 		};
 
+		struct ConnectionData
+		{
+			std::string currentLevel;
+			std::string destinationLevel;
+			s2d::Object *collision;
+			glm::vec2 collisionPos;
+			glm::vec2 collisionSize;
+			glm::vec2 spawn;
+		};
+
 		class CROCODILE_API LevelParser
 		{
 		public:
@@ -45,7 +55,13 @@ namespace Crocodile
 			Json::Value project;
 			std::vector<std::string> levelNames = {};
 
-			LevelData parseLevel(std::string level);
+			void parseLevel(std::string level);
+			void parseConnections(std::string level);
+
+			LevelData ld;
+
+			std::vector<std::string> connectionKeys = {};
+			std::map<std::string, ConnectionData> connectionsDataMap = {};
 
 		private:
 			std::string path;

@@ -22,6 +22,7 @@ namespace Crocodile
 				glm::mat4 projection,
 				unsigned int textureID,
 				bool useTexture,
+				bool useColorTexture,
 				float numberOfRows,
 				float numberOfCols,
 				glm::vec2 textureOffset,

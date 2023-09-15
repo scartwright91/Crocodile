@@ -5,7 +5,7 @@
 namespace Crocodile
 {
     template <typename t>
-    void CROCODILE_API move(std::vector<t> &v, size_t oldIndex, size_t newIndex)
+    void CROCODILE_API moveVectorElement(std::vector<t> &v, size_t oldIndex, size_t newIndex)
     {
         if (oldIndex > newIndex)
             std::rotate(v.rend() - oldIndex - 1, v.rend() - oldIndex, v.rend() - newIndex);

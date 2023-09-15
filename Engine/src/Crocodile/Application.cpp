@@ -39,7 +39,6 @@ namespace Crocodile
 #else
 		while (!window.closed())
 		{
-			clock.tick(60);
 			window.beginRender();
 			if (useImGui)
 			{
@@ -47,8 +46,12 @@ namespace Crocodile
 				ImGui_ImplGlfw_NewFrame();
 				ImGui::NewFrame();
 			}
-			update(clock.deltaTime);
-			scene->update(clock.deltaTime);
+			if (clock.tick(60))
+			{
+				update(clock.deltaTime);
+				fixedUpdate(clock.deltaTime);
+				scene->update(clock.deltaTime);
+			}
 			render();
 			if (useImGui)
 			{

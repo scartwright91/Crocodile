@@ -44,6 +44,16 @@ namespace Crocodile
                 return (p.x <= xMax && p.x >= xMin && p.y <= yMax && p.y >= yMin);
             }
 
+            float BoundingBox::getMinDistanceFromBounds(BoundingBox b, std::string axis)
+            {
+                float d = 0.f;
+                if (axis == "x")
+                    d = abs(b.center.x - center.x) - (width / 2.f + b.width / 2.f);
+                else if (axis == "y")
+                    d = abs(b.center.y - center.y) - (height / 2.f + b.height / 2.f);
+                return d;
+            }
+
             void BoundingBox::inflate(float dx, float dy, bool centre)
             {
                 if (centre)

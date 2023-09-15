@@ -14,6 +14,7 @@ uniform float u_Time;
 
 uniform sampler2D u_Texture;
 uniform bool u_UseTexture;
+uniform bool u_UseColorTexture;
 uniform sampler2D u_DistortionTexture;
 uniform bool u_UseDistortion;
 uniform bool u_ScrollDistortionX;
@@ -55,7 +56,13 @@ void main()
 		{
 			result = texture(u_Texture, vec2(TexCoords.x, TexCoords.y)) * vec4(1, 1, 1, u_Alpha);
 		}
-
+		if (u_UseColorTexture)
+		{
+			if (result.a > 0)
+			{
+				result = vec4(u_SpriteColor, u_Alpha);
+			}
+		}
 	}
 	else
 		result = vec4(u_SpriteColor, u_Alpha);

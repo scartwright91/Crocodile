@@ -48,6 +48,7 @@ namespace Crocodile
 			float alpha = 1.0f;
 			ResourceManager::TextureData texture = {};
 			bool useTexture = false;
+			bool useColorTexture = false;
 			float numberOfRows = 1.f;
 			float numberOfCols = 1.f;
 			glm::vec2 textureOffset = glm::vec2(0.0f);
@@ -75,7 +76,6 @@ namespace Crocodile
 			Animation *animation = nullptr;
 
 		private:
-			glm::vec2 startingPosition = glm::vec2(0.0f);
 			glm::vec2 position = glm::vec2(0.0f);
 			bool animated = false;
 
@@ -86,7 +86,7 @@ namespace Crocodile
 			void removeParent();
 			void clear();
 
-			glm::mat4 calculateModelMatrix(glm::vec2 pos);
+			glm::mat4 calculateModelMatrix(glm::vec2 pos, float layerDepth);
 			void move(float dx, float dy);
 			void moveTowards(glm::vec2 targetPosition, float speed);
 			void scale(glm::vec2 s);
@@ -94,23 +94,18 @@ namespace Crocodile
 			glm::vec2 getScaledSize();
 			glm::vec2 getScaledPosition();
 			glm::vec2 getPosition();
-			glm::vec2 getStartingPosition();
-			glm::vec2 getScaledStartingPosition();
 			glm::vec2 getAbsolutePosition();
 			glm::vec2 getCenteredPosition();
 			glm::vec2 getScaledCenteredPosition();
-			glm::vec2 getScreenPosition(bool centre, glm::mat4 view, glm::mat4 projection, float width, float height);
-			glm::vec2 getShiftedScreenPosition(glm::vec2 offset, glm::mat4 view, glm::mat4 projection, float width, float height);
+			glm::vec2 getScreenPosition(bool centre, glm::mat4 view, glm::mat4 projection, float width, float height, float layerDepth);
+			glm::vec2 getShiftedScreenPosition(glm::vec2 offset, glm::mat4 view, glm::mat4 projection, float width, float height, float layerDepth);
 			float getDistanceFrom(glm::vec2 targetPosition);
 			float getYSortValue();
-			void setStartingPosition(glm::vec2 pos);
 			void setPosition(glm::vec2 pos);
 
 			void setTexture(ResourceManager::TextureData texture);
 			void setTileMapTexture(
 				ResourceManager::TextureData texture,
-				float width,
-				float height,
 				unsigned int gridSize,
 				unsigned int x,
 				unsigned int y);
@@ -118,7 +113,7 @@ namespace Crocodile
 			void updateAnimation(float dt);
 			void setDistortionProperties(bool useDistortion, bool scrollX, bool scrollY, float distortionSpeed);
 
-			s2d::col::BoundingBox getScreenBoundingBox(glm::mat4 view, glm::mat4 projection, float zoom, float width, float height);
+			s2d::col::BoundingBox getScreenBoundingBox(glm::mat4 view, glm::mat4 projection, float zoom, float width, float height, float layerDepth);
 			s2d::col::BoundingBox getBoundingBox();
 			s2d::col::BoundingBox getShiftedBoundingBox(float dx, float dy);
 

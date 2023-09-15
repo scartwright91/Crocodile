@@ -64,7 +64,7 @@ namespace Crocodile
 			else
 				glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-			// glfwWindowHint(GLFW_SCALE_TO_MONITOR, 1);
+			glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
 
 			// create window
 			int count;
@@ -81,7 +81,6 @@ namespace Crocodile
 
 			// set callbacks
 			glfwMakeContextCurrent(window);
-			// glfwSetWindowSizeCallback(window, windowResize);
 			glfwSetWindowSizeCallback(window, window_resize);
 			glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 			glfwSetKeyCallback(window, key_callback);

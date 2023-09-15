@@ -31,6 +31,7 @@ namespace Crocodile
         void removeSoundEffect(std::string name);
 
         ALuint getSound(std::string name);
+        bool isSoundPlaying(std::string name);
 
     private:
         SoundBuffer();

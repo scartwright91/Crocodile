@@ -14,6 +14,10 @@ namespace Crocodile
 		class CROCODILE_API Animation
 		{
 		public:
+			Animation(ResourceManager::TextureData spritesheet, float width, unsigned int gridSize, float frameDuration);
+			Animation(std::vector<ResourceManager::TextureData> textures, float frameDuration);
+			~Animation();
+
 			bool spritesheetAnimation = false;
 			bool freezeAnimation = false;
 			ResourceManager::TextureData spritesheet = {};
@@ -22,10 +26,6 @@ namespace Crocodile
 			float width;
 			std::vector<ResourceManager::TextureData> textures = {};
 			unsigned int totalFrames, currentFrame;
-
-			Animation(ResourceManager::TextureData spritesheet, float width, unsigned int gridSize, float frameDuration);
-			Animation(std::vector<ResourceManager::TextureData> textures, float frameDuration);
-			~Animation();
 
 			glm::vec2 getTextureOffset();
 			void updateAnimation(float dt);

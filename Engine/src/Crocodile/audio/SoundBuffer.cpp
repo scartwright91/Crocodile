@@ -114,4 +114,9 @@ namespace Crocodile
         return soundEffects[name];
     }
 
+    bool SoundBuffer::isSoundPlaying(std::string name)
+    {
+        return false;
+    }
+
 }

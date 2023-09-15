@@ -25,7 +25,6 @@ namespace Crocodile
             p_Buffer = buffer_to_play;
             alSourcei(p_Source, AL_BUFFER, (ALint)p_Buffer);
         }
-
         alSourcePlay(p_Source);
     }
 }

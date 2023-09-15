@@ -51,21 +51,21 @@ namespace Crocodile
 
 		void LayerStack::moveLayerToPos(std::string name, unsigned int pos)
 		{
-			move(layers, getLayerPosition(name), pos);
+			moveVectorElement(layers, getLayerPosition(name), pos);
 		}
 
 		void LayerStack::moveLayerUp(std::string name)
 		{
 			unsigned int currentPos = getLayerPosition(name);
 			if (currentPos - 1 >= 0)
-				move(layers, currentPos, currentPos - 1);
+				moveVectorElement(layers, currentPos, currentPos - 1);
 		}
 
 		void LayerStack::moveLayerDown(std::string name)
 		{
 			unsigned int currentPos = getLayerPosition(name);
 			if (currentPos + 1 < layers.size())
-				move(layers, currentPos, currentPos + 1);
+				moveVectorElement(layers, currentPos, currentPos + 1);
 		}
 
 		void LayerStack::removeAllLayers()

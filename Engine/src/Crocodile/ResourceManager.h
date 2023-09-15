@@ -103,7 +103,7 @@ namespace Crocodile
             animations[name] = animImageNames;
         }
 
-        std::vector<TextureData> getAnimation(std::string name)
+        std::vector<TextureData> getAnimationData(std::string name)
         {
             std::vector<TextureData> animation = {};
             for (std::string animImageName : animations[name])

@@ -15,7 +15,7 @@ namespace Crocodile
 
 		void Camera::setTargetScreenPosition(float x, float y)
 		{
-			screenPos = glm::vec2(x, y);
+			screenPos = glm::vec2(x * zoom, y * zoom);
 		}
 
 		glm::vec2 Camera::getTargetScreenPosition(bool pixels)
@@ -57,7 +57,7 @@ namespace Crocodile
 				if (z > 0.f)
 				{
 					zoom = z;
-					setTargetScreenPosition(0.5f * zoom, 0.5f * zoom);
+					setTargetScreenPosition(0.5f, 0.5f);
 				}
 			}
 		}
@@ -69,32 +69,32 @@ namespace Crocodile
 				if (zoom + z > 0.f)
 				{
 					zoom += z;
-					setTargetScreenPosition(0.5f * zoom, 0.5f * zoom);
+					setTargetScreenPosition(0.5f, 0.5f);
 				}
 			}
 		}
 
-		glm::vec2 Camera::getWorldfromScreenPosition(glm::vec2 screenPos, float screenWidth, float screenHeight)
+		glm::vec2 Camera::getWorldfromScreenPosition(glm::vec2 screenPos, float screenWidth, float screenHeight, float layerDepth)
 		{
 			float ndcX = (2.0f * screenPos.x) / screenWidth - 1.0f;
 			float ndcY = 1.0f - (2.0f * screenPos.y) / screenHeight;
 			glm::mat4 inverseProjection = glm::inverse(getProjectionMatrix(true));
 			glm::vec4 viewPosition = inverseProjection * glm::vec4(ndcX, ndcY, 0.f, 1.0f);
 			glm::vec3 normalizedViewPos = glm::vec3(viewPosition) / viewPosition.w;
-			glm::mat4 inverseView = glm::inverse(getViewMatrix());
+			glm::mat4 inverseView = glm::inverse(getViewMatrix(layerDepth));
 			glm::vec4 worldPosition = inverseView * glm::vec4(normalizedViewPos, 1.0f);
 			return glm::vec2(worldPosition.x, worldPosition.y);
 		}
 
-		glm::mat4 Camera::getViewMatrix()
+		glm::mat4 Camera::getViewMatrix(float depth)
 		{
 			glm::vec3 pos = glm::vec3(
-				cameraScaledPosition.x - (window->getViewportWidth() * screenPos.x),
-				cameraScaledPosition.y - (window->getViewportHeight() * screenPos.y),
+				depth * cameraScaledPosition.x - (window->getViewportWidth() * screenPos.x),
+				depth * cameraScaledPosition.y - (window->getViewportHeight() * screenPos.y),
 				0.0f);
 			glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f);
 			glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-			return glm::lookAt(pos, pos + front, up);
+			return glm::lookAt(pos - glm::vec3(v), pos + front, up);
 		}
 
 		glm::mat4 Camera::getProjectionMatrix(bool applyZoom)
@@ -120,8 +120,9 @@ namespace Crocodile
 			return glm::vec3(target->getScaledPosition() - pos, 0.f);
 		}
 
-		void Camera::update()
+		void Camera::update(glm::vec2 viewportScale)
 		{
+			scaledLevelBounds = levelBounds * viewportScale;
 			// set camera position
 			if (transitioning)
 			{
@@ -170,15 +171,15 @@ namespace Crocodile
 			{
 				if (cameraScaledPosition.x - targetScreenPos.x < 0)
 					cameraScaledPosition.x = targetScreenPos.x;
-				if (cameraScaledPosition.x + targetScreenPos.x > levelBounds.x)
-					cameraScaledPosition.x = levelBounds.x - targetScreenPos.x;
+				if (cameraScaledPosition.x + targetScreenPos.x > scaledLevelBounds.x)
+					cameraScaledPosition.x = scaledLevelBounds.x - targetScreenPos.x;
 			}
 			if (clampY)
 			{
 				if (cameraScaledPosition.y - targetScreenPos.y < 0)
 					cameraScaledPosition.y = targetScreenPos.y;
-				if (cameraScaledPosition.y + targetScreenPos.y > levelBounds.y)
-					cameraScaledPosition.y = levelBounds.y - targetScreenPos.y;
+				if (cameraScaledPosition.y + targetScreenPos.y > scaledLevelBounds.y)
+					cameraScaledPosition.y = scaledLevelBounds.y - targetScreenPos.y;
 			}
 		}
 

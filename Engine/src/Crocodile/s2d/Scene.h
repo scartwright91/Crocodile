@@ -40,6 +40,7 @@ namespace Crocodile
 			float rotation;
 			float alpha;
 			std::vector<glm::vec2> path;
+			std::vector<glm::vec2> worldPath;
 		};
 
 		struct SceneTextEntityData
