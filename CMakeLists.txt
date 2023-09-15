@@ -19,6 +19,8 @@ endif() # Emscripten
 
 # build engine library
 add_subdirectory(Engine)
+# build ldtk loader
+add_subdirectory(LDtkLoader)
 
 # # build example
 # add_subdirectory(Examples/collision)
