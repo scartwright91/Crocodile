@@ -29,6 +29,9 @@ add_subdirectory(LDtkLoader)
 # add_subdirectory(Examples/dialogues)
 # file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/dialogues)
 
-# build level editor
-add_subdirectory(LevelEditor)
-file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/LevelEditor)
+add_subdirectory(Examples/platformer)
+file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/Release/platformer)
+
+# # build level editor
+# add_subdirectory(LevelEditor)
+# file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/LevelEditor)

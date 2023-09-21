@@ -16,12 +16,12 @@ namespace Crocodile
 
         void Entity::add()
         {
-            scene->addChild(sprite, layer);
+            scene->addObject(sprite, layer);
         }
 
         void Entity::remove()
         {
-            scene->removeChild(sprite, layer);
+            scene->removeObject(sprite, layer);
         }
     }
 }

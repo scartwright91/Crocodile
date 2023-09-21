@@ -21,7 +21,14 @@ namespace Crocodile
 
 		void Layer::removeObject(Object *obj)
 		{
-			objects.erase(std::remove(objects.begin(), objects.end(), obj), objects.end());
+			for (unsigned int i = 0; i < objects.size(); i++)
+			{
+				if (objects[i]->id == obj->id)
+				{
+					objects.erase(objects.begin() + i);
+					break;
+				}
+			}
 		}
 
 		void Layer::sort()

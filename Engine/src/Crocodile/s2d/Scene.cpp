@@ -39,7 +39,10 @@ namespace Crocodile
 		{
 			Layer *layer = layerStack->getLayer(layerName);
 			if (layer != NULL)
-				layer->removeObject(object);
+			{
+				if (object != NULL)
+					layer->removeObject(object);
+			}
 			else
 				std::cout << "Layer " << layerName << " does not exist in layerstack" << std::endl;
 		}
@@ -77,8 +80,13 @@ namespace Crocodile
 					layer->sort();
 				for (Object *obj : layer->objects)
 				{
-					obj->updateAnimation(dt);
-					obj->modelScale = glm::vec3(viewportScale, 1.f);
+					if (obj == NULL)
+						removeObject(obj, layer->name);
+					else
+					{
+						obj->updateAnimation(dt);
+						obj->modelScale = glm::vec3(viewportScale, 1.f);
+					}
 				}
 			}
 		}
