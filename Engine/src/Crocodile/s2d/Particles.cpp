@@ -14,6 +14,7 @@ namespace Crocodile
 
 		ParticleGenerator::~ParticleGenerator()
 		{
+			particles.clear();
 		}
 
 		void ParticleGenerator::update(float dt)

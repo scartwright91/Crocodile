@@ -37,6 +37,7 @@ namespace Crocodile
 
 			// label
 			std::string label = "";
+			double id = glfwGetTime();
 
 			// vertex
 			glm::vec2 size = glm::vec2(0.0f);

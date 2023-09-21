@@ -82,8 +82,8 @@ namespace Crocodile
 			int windowWidth;
 			int windowHeight;
 
-			void addChild(s2d::Object *object, std::string layerName);
-			void removeChild(s2d::Object *object, std::string layerName);
+			void addObject(s2d::Object *object, std::string layerName);
+			void removeObject(s2d::Object *object, std::string layerName);
 
 			void update(float dt);
 			void updateObjects(float dt);

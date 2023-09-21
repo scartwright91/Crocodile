@@ -26,17 +26,22 @@ namespace Crocodile
 			delete layerStack;
 		}
 
-		void Scene::addChild(s2d::Object *object, std::string layerName)
+		void Scene::addObject(s2d::Object *object, std::string layerName)
 		{
 			Layer *layer = layerStack->getLayer(layerName);
 			if (layer != NULL)
 				layer->addObject(object);
+			else
+				std::cout << "Layer " << layerName << " does not exist in layerstack" << std::endl;
 		}
 
-		void Scene::removeChild(s2d::Object *object, std::string layerName)
+		void Scene::removeObject(s2d::Object *object, std::string layerName)
 		{
 			Layer *layer = layerStack->getLayer(layerName);
-			layer->removeObject(object);
+			if (layer != NULL)
+				layer->removeObject(object);
+			else
+				std::cout << "Layer " << layerName << " does not exist in layerstack" << std::endl;
 		}
 
 		void Scene::update(float dt)
@@ -72,16 +77,8 @@ namespace Crocodile
 					layer->sort();
 				for (Object *obj : layer->objects)
 				{
-					std::vector<Object *> objectStack = {obj};
-					for (Object *child : obj->children)
-						objectStack.push_back(child);
-					for (Object *o : objectStack)
-					{
-						// updating animations
-						o->updateAnimation(dt);
-						// apply scene scale
-						obj->modelScale = glm::vec3(viewportScale, 1.f);
-					}
+					obj->updateAnimation(dt);
+					obj->modelScale = glm::vec3(viewportScale, 1.f);
 				}
 			}
 		}
