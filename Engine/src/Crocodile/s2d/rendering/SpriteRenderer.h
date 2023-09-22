@@ -2,6 +2,7 @@
 
 #include <glm/glm.hpp>
 
+#include "../../ResourceManager.h"
 #include "Renderer.h"
 #include "../LightSystem.h"
 
@@ -20,7 +21,7 @@ namespace Crocodile
 				glm::mat4 model,
 				glm::mat4 view,
 				glm::mat4 projection,
-				unsigned int textureID,
+				ResourceManager::TextureData texture,
 				bool useTexture,
 				bool useColorTexture,
 				float numberOfRows,

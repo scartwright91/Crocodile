@@ -14,7 +14,7 @@ namespace Crocodile
             glm::mat4 model,
             glm::mat4 view,
             glm::mat4 projection,
-            unsigned int textureID,
+            ResourceManager::TextureData texture,
             bool useTexture,
             bool useColorTexture,
             float numberOfRows,
@@ -54,12 +54,14 @@ namespace Crocodile
             if (useTexture)
             {
                 glActiveTexture(GL_TEXTURE0);
-                glBindTexture(GL_TEXTURE_2D, textureID);
+                glBindTexture(GL_TEXTURE_2D, texture.textureID);
                 glActiveTexture(GL_TEXTURE1);
                 glBindTexture(GL_TEXTURE_2D, distortionTexture);
                 shader->setFloat("u_NumberOfRows", numberOfRows);
                 shader->setFloat("u_NumberOfCols", numberOfCols);
                 shader->setVec2("u_TextureOffset", textureOffset);
+                shader->setFloat("u_TextureWidth", texture.width);
+                shader->setFloat("u_TextureHeight", texture.height);
             }
             shader->setVec3("u_SpriteColor", spriteColor);
             shader->setFloat("u_Alpha", alpha);
@@ -78,6 +80,9 @@ namespace Crocodile
             // filter effects
             shader->setBool("u_Outline", outline);
             shader->setFloat("u_AspectRatio", aspectRatio);
+            // bloom (gaussian blur)
+            shader->setBool("u_UseGaussianBlur", false);
+            shader->setFloat("u_BlurRadius", 5);
             // bind and draw
             glBindVertexArray(VAO);
             glDrawArrays(GL_TRIANGLES, 0, 6);

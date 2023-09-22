@@ -2,6 +2,11 @@
 ## TODO
 
 * Fix rotated bounding box collision
-* Add platformer example
-* Add serialisation
 * Better logging
+* Improved sound
+* Tileset issue
+* Gaussian blur for bloom effect
+* controller support
+
+* Add serialisation
+* Add platformer example

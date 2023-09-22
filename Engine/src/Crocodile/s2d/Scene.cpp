@@ -160,7 +160,7 @@ namespace Crocodile
 					obj->calculateModelMatrix(pos, 1.f),
 					view,
 					projection,
-					obj->texture.textureID,
+					obj->texture,
 					obj->useTexture,
 					obj->useColorTexture,
 					obj->numberOfRows,
