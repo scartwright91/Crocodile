@@ -1,26 +1,13 @@
-cmake_minimum_required(VERSION 3.22)
+cmake_minimum_required(VERSION 3.26.3)
 
-project(Crocodile VERSION 0.0.1)
+project(Crocodile-box2d)
 
-set(CMAKE_CXX_STANDARD 17)
+add_executable(${PROJECT_NAME} box2d.cpp)
 
-# Engine files
-file(GLOB_RECURSE Src src/*.cpp)
-file(GLOB_RECURSE Inc src/*.h)
+target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURE_DIR}/build)
+target_link_libraries(${PROJECT_NAME} PRIVATE Crocodile::Crocodile)
 
-add_library(Crocodile STATIC ${Src} ${Inc})
-add_library(Crocodile::Crocodile ALIAS Crocodile)
-
-target_include_directories(Crocodile PUBLIC $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>)
-target_include_directories(Crocodile PUBLIC src)
-target_include_directories(Crocodile PUBLIC src/utils)
-target_include_directories(Crocodile PUBLIC src/utils/imgui)
-target_include_directories(Crocodile PUBLIC src/utils/imgui/backends)
-target_include_directories(Crocodile PUBLIC src/utils/imgui/dirent)
-
-### Dependencies
-
-## Cross-platform dependencies
+## Dependencies
 
 # OpenGL
 find_package(OpenGL REQUIRED)

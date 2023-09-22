@@ -94,7 +94,7 @@ public:
         fps = new s2d::Text();
         fps->text = "";
         fps->color = glm::vec3(1.f);
-        scene->addChild(fps, "hud");
+        scene->addObject(fps, "hud");
 
         player = new s2d::Object();
         player->setPosition(glm::vec2(410.f));
@@ -115,8 +115,8 @@ public:
         window.setBackgroundColor(glm::vec3(0.7f));
         scene->camera->setTarget(player, false);
         scene->camera->setZoom(0.5f);
-        scene->addChild(player, "entities");
-        scene->addChild(rect, "entities");
+        scene->addObject(player, "entities");
+        scene->addObject(rect, "entities");
 
         // add collision vectors
         s2d::col::BoundingBox bbox = player->getBoundingBox();
@@ -127,7 +127,7 @@ public:
             s2d::shapes::Line *l = new s2d::shapes::Line(
                 line.origin * window.getViewportScale(),
                 line.direction * window.getViewportScale());
-            scene->addChild(l, "entities");
+            scene->addObject(l, "entities");
             collisionLines.push_back(l);
         }
         // line intersections
@@ -138,7 +138,7 @@ public:
                 intersection.min * window.getViewportScale(),
                 intersection.max * window.getViewportScale());
             l->color = glm::vec3(1.f, 0.f, 0.f);
-            scene->addChild(l, "entities");
+            scene->addObject(l, "entities");
             intersectionLines.push_back(l);
         }
     }
