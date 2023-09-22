@@ -80,9 +80,6 @@ namespace Crocodile
             // filter effects
             shader->setBool("u_Outline", outline);
             shader->setFloat("u_AspectRatio", aspectRatio);
-            // bloom (gaussian blur)
-            shader->setBool("u_UseGaussianBlur", false);
-            shader->setFloat("u_BlurRadius", 5);
             // bind and draw
             glBindVertexArray(VAO);
             glDrawArrays(GL_TRIANGLES, 0, 6);

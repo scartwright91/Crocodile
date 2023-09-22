@@ -38,10 +38,6 @@ uniform float u_AspectRatio;
 const float outlineSize = 1 / 25.0;
 const float offset = 1.0 / 128.0;
 
-// gaussian blur
-uniform bool u_UseGaussianBlur;
-uniform float u_BlurRadius;
-
 void main()
 {    
 	vec4 result;
@@ -68,25 +64,6 @@ void main()
 			{
 				result = vec4(u_SpriteColor, u_Alpha);
 			}
-		}
-		// Gaussian blur
-		if (u_UseGaussianBlur)
-		{
-			float x, y, rr = u_BlurRadius * u_BlurRadius, d, w, w0;
-			vec2 p = 0.5 * (vec2(1.0, 1.0) + vec2(FragPos.x, FragPos.y));
-    		vec4 col = vec4(0.0, 0.0, 0.0, 0.0);
-			w0 = 0.5135 / pow(u_BlurRadius,0.96);
-			for (d = 1.0 / u_TextureWidth, x = -u_BlurRadius, p.x += x*d; x <= u_BlurRadius; x++, p.x+=d)
-			{ 
-				w = w0 * exp((-x*x)/(2.0*rr));
-				result += texture2D(u_Texture, p) * w;
-			}
-			for (d = 1.0 / u_TextureHeight, y = -u_BlurRadius, p.y += y*d; y <= u_BlurRadius; y++, p.y += d) 
-			{
-				w = w0 * exp((-y*y)/(2.0*rr));
-				col += texture2D(u_Texture, p) * w;
-			}
-			result = col;
 		}
 	}
 	else
