@@ -31,7 +31,7 @@ namespace Crocodile
 			transitioning = transition;
 			if (transitioning)
 			{
-				glm::vec2 pos = target->getScaledPosition();
+				glm::vec2 pos = target->getScaledCenteredPosition();
 				distance = sqrt(pow(pos.x - cameraScaledPosition.x, 2) + pow(pos.y - cameraScaledPosition.y, 2));
 			}
 		}
@@ -117,7 +117,7 @@ namespace Crocodile
 		{
 			if (target == NULL)
 				return glm::vec3(0.0f);
-			return glm::vec3(target->getScaledPosition() - pos, 0.f);
+			return glm::vec3(target->getScaledCenteredPosition() - pos, 0.f);
 		}
 
 		void Camera::update(glm::vec2 viewportScale)
@@ -130,7 +130,7 @@ namespace Crocodile
 				if (centreOnTarget)
 					pos = target->getScaledCenteredPosition();
 				else
-					pos = target->getScaledPosition();
+					pos = target->getScaledCenteredPosition();
 				glm::vec2 transition = calculateTransition(pos);
 				float dx = (pos.x - cameraScaledPosition.x);
 				float dy = (pos.y - cameraScaledPosition.y);
@@ -147,7 +147,7 @@ namespace Crocodile
 				if (centreOnTarget)
 					pos = target->getScaledCenteredPosition();
 				else
-					pos = target->getScaledPosition();
+					pos = target->getScaledCenteredPosition();
 				cameraScaledPosition = glm::vec3(pos, 0.0f);
 				cameraPosition = glm::vec3(target->getPosition(), 0.0f);
 			}

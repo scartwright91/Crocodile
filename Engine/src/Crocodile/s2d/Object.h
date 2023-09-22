@@ -32,7 +32,6 @@ namespace Crocodile
 
 		public:
 			Object();
-			Object(float x, float y);
 			virtual ~Object();
 
 			// label

@@ -9,11 +9,6 @@ namespace Crocodile
 		{
 		}
 
-		Object::Object(float x, float y) : renderMethod("sprite")
-		{
-			move(x, y);
-		}
-
 		Object::~Object()
 		{
 		}
