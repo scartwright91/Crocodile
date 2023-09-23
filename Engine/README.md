@@ -7,6 +7,6 @@
 * Tileset issue
 * Gaussian blur for bloom effect
 * controller support
-
-* Add serialisation
-* Add platformer example
+* circle shape
+* add additional render passes
+* add serialisation

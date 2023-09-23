@@ -54,7 +54,7 @@ public:
 
         b2BodyDef bodyDef;
         bodyDef.type = b2_dynamicBody;
-        bodyDef.position.Set(0.0f, 4.0f);
+        bodyDef.position.Set(4.0f, 4.0f);
         body = world->CreateBody(&bodyDef);
 
         b2PolygonShape dynamicBox;
@@ -77,7 +77,7 @@ public:
         b2Vec2 position = body->GetPosition();
         float angle = body->GetAngle();
         printf("%4.2f %4.2f %4.2f\n", position.x, position.y, angle);
-        rect->setPosition(glm::vec2(position.x, position.y * 100));
+        rect->setPosition(glm::vec2(position.x * 100, position.y * 100));
     }
 
     void init()

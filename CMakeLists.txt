@@ -33,9 +33,9 @@ add_subdirectory(LDtkLoader)
 # file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/platformer/Release)
 # file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/platformer/Debug)
 
-add_subdirectory(Examples/box2d)
-file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/box2d/Release)
-file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/box2d/Debug)
+# add_subdirectory(Examples/box2d)
+# file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/box2d/Release)
+# file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/box2d/Debug)
 
 # # build level editor
 # add_subdirectory(LevelEditor)

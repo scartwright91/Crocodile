@@ -16,7 +16,8 @@ namespace Crocodile
 			{
 				None,
 				GREYSCALE,
-				WAVEY
+				WAVEY,
+				BLUR
 			};
 
 			enum TransitionEffect
@@ -38,6 +39,7 @@ namespace Crocodile
 				float dt,
 				bool greyscale,
 				bool wavey,
+				bool blur,
 				bool screenShake,
 				TransitionEffect effect,
 				bool fadeinTransition,

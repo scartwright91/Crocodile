@@ -140,6 +140,7 @@ namespace Crocodile
 			// postprocessing
 			bool greyscale = false;
 			bool wavey = false;
+			bool blur = false;
 			bool screenShake = false;
 
 			// transitions

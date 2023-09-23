@@ -32,6 +32,7 @@ namespace Crocodile
 			float dt,
 			bool greyscale,
 			bool wavey,
+			bool blur,
 			bool screenShake,
 			TransitionEffect effect,
 			bool fadeinTransition,
@@ -44,6 +45,7 @@ namespace Crocodile
 			shader->setFloat("u_DeltaTime", dt);
 			shader->setBool("u_Greyscale", greyscale);
 			shader->setBool("u_Wavey", wavey);
+			shader->setBool("u_Blur", blur);
 			shader->setBool("u_ScreenShake", screenShake);
 			if (effect == FADE)
 				shader->setBool("u_FadeTransition", true);

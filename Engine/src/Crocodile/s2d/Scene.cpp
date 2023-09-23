@@ -123,6 +123,7 @@ namespace Crocodile
 					(float)glfwGetTime(),
 					greyscale,
 					wavey,
+					blur,
 					screenShake,
 					transitionEffect,
 					fadeinTransition,
@@ -292,16 +293,25 @@ namespace Crocodile
 			{
 				greyscale = false;
 				wavey = false;
+				blur = false;
 			}
 			else if (effect == PostProcessing::GREYSCALE)
 			{
 				greyscale = true;
 				wavey = false;
+				blur = false;
 			}
 			else if (effect == PostProcessing::WAVEY)
 			{
 				greyscale = false;
 				wavey = true;
+				blur = false;
+			}
+			else if (effect == PostProcessing::BLUR)
+			{
+				greyscale = false;
+				wavey = false;
+				blur = true;
 			}
 		}
 
