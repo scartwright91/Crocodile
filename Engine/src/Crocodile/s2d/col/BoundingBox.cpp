@@ -41,6 +41,8 @@ namespace Crocodile
 
             bool BoundingBox::intersectsPoint(glm::vec2 p)
             {
+                if (rotation != 0.0)
+                    return intersectsRotatedPoint(p);
                 return (p.x <= xMax && p.x >= xMin && p.y <= yMax && p.y >= yMin);
             }
 
@@ -169,13 +171,17 @@ namespace Crocodile
                 std::vector<Line> lines = {};
                 std::vector<LineIntersection> linesIntersections = {};
                 glm::vec2 limits = glm::vec2(0.f);
+                // lines come from opposiong bounding box
                 for (Line line : b->getAxes())
                 {
+                    // initialise min and max vertex magnitudes
                     glm::vec2 minMagVertex = line.origin;
                     glm::vec2 maxMagVertex = line.origin;
+                    // rect comes from opposing bounding box
                     float rectHalfSize = (line.axis == "x" ? b->width : b->height) / 2;
                     for (glm::vec2 vertex : vertices)
                     {
+                        // project vertices onto opposing bounding box axes
                         Vector v(vertex.x, vertex.y);
                         v.project(line);
                         glm::vec2 projectedVertex = glm::vec2(v.x, v.y);
@@ -198,14 +204,12 @@ namespace Crocodile
                     li.axis = line;
                     li.min = minMagVertex;
                     li.max = maxMagVertex;
+
                     bool l1 = getSign(li.min, line.origin) < 0;
                     bool l2 = getSign(li.max, line.origin) > 0;
                     bool l3 = (getMagnitude(li.min, line.origin) < rectHalfSize);
                     bool l4 = (getMagnitude(li.max, line.origin) < rectHalfSize);
-                    // if (rand() % 20)
-                    // {
-                    //     std::cout << line.axis << ": " << l3 << ", " << l4 << std::endl;
-                    // }
+
                     // TODO: fix this logic
                     li.collision = (l1 && l2) || l3 || l4;
                     linesIntersections.push_back(li);
@@ -216,6 +220,18 @@ namespace Crocodile
                 return cv;
             }
 
+            bool BoundingBox::intersectsRotatedPoint(glm::vec2 p)
+            {
+                std::vector<glm::vec2> vertices = getVertices();
+                float t1 = areaTriangle(p, vertices[0], vertices[3]);
+                float t2 = areaTriangle(p, vertices[3], vertices[2]);
+                float t3 = areaTriangle(p, vertices[2], vertices[1]);
+                float t4 = areaTriangle(p, vertices[1], vertices[0]);
+                if (t1 + t2 + t3 + t4 <= width * height)
+                    return true;
+                return false;
+            }
+
             int BoundingBox::getSign(glm::vec2 a, glm::vec2 b)
             {
                 return (a.x * b.x) + (a.y * b.y) > 0 ? 1 : -1;
@@ -224,6 +240,11 @@ namespace Crocodile
             float BoundingBox::getMagnitude(glm::vec2 a, glm::vec2 b)
             {
                 return glm::sqrt(glm::pow(a.x - b.x, 2) + glm::pow(a.y - b.y, 2));
+            }
+
+            float BoundingBox::areaTriangle(glm::vec2 a, glm::vec2 b, glm::vec2 c)
+            {
+                return abs((b.x * a.y - a.x * b.y) + (c.x * b.y - b.x * c.y) + (a.x * c.y - c.x * a.y)) / 2;
             }
 
         }

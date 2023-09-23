@@ -102,8 +102,10 @@ namespace Crocodile
 			private:
 				std::vector<glm::vec2> getVertices();
 				bool intersectsRotatedBounds(BoundingBox b);
+				bool intersectsRotatedPoint(glm::vec2 p);
 				int getSign(glm::vec2 a, glm::vec2 b);
 				float getMagnitude(glm::vec2 a, glm::vec2 b);
+				float areaTriangle(glm::vec2 a, glm::vec2 b, glm::vec2 c);
 			};
 		}
 	}

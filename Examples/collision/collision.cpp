@@ -10,6 +10,7 @@ public:
     s2d::Text *fps = nullptr;
     s2d::Object *player = nullptr;
     s2d::Object *rect = nullptr;
+    s2d::Object *test = nullptr;
     std::vector<s2d::shapes::Line *> collisionLines = {};
     std::vector<s2d::shapes::Line *> intersectionLines = {};
     float speed = 400.f;
@@ -42,7 +43,20 @@ public:
             player->rotate(0.05f);
 
         // rotate rect
-        rect->rotate(0.01f);
+        // rect->rotate(0.01f);
+
+        s2d::col::BoundingBox b = test->getScreenBoundingBox(
+            scene->camera->getViewMatrix(1.f),
+            scene->camera->getProjectionMatrix(true),
+            scene->camera->zoom,
+            scene->windowWidth,
+            scene->windowHeight,
+            1.f);
+        glm::vec2 mouse = window.getMouseScreenPosition();
+        if (b.intersectsPoint(mouse))
+            test->color = glm::vec3(1.f, 0.f, 0.f);
+        else
+            test->color = glm::vec3(0.f);
 
         player->move(dx, dy);
 
@@ -106,11 +120,17 @@ public:
 
         rect = new s2d::Object();
         rect->alpha = 0.3f;
-        // rect->rotate(0.7f);
+        rect->rotate(0.7f);
         rect->setPosition(glm::vec2(400.f));
         rect->size = glm::vec2(200.f);
         rect->color = glm::vec3(0.f);
         rect->showBoundingBox = true;
+
+        test = new s2d::Object();
+        test->alpha = 0.3f;
+        test->rotate(0.3f);
+        test->size = glm::vec2(100.f);
+        scene->addObject(test, "entities");
 
         window.setBackgroundColor(glm::vec3(0.7f));
         scene->camera->setTarget(player, false);
@@ -119,8 +139,8 @@ public:
         scene->addObject(rect, "entities");
 
         // add collision vectors
-        s2d::col::BoundingBox bbox = player->getBoundingBox();
-        s2d::col::CollisionVectors cv = rect->getBoundingBox().getCollisionVectors(&bbox);
+        s2d::col::BoundingBox bbox = rect->getBoundingBox();
+        s2d::col::CollisionVectors cv = player->getBoundingBox().getCollisionVectors(&bbox);
         std::vector<s2d::col::Line> lines = cv.cornerProjections;
         for (s2d::col::Line line : lines)
         {
