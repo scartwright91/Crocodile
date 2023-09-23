@@ -42,7 +42,7 @@ public:
             player->rotate(0.05f);
 
         // rotate rect
-        // rect->rotate(0.01f);
+        rect->rotate(0.01f);
 
         player->move(dx, dy);
 
@@ -110,7 +110,7 @@ public:
         rect->setPosition(glm::vec2(400.f));
         rect->size = glm::vec2(200.f);
         rect->color = glm::vec3(0.f);
-        // rect->showBoundingBox = true;
+        rect->showBoundingBox = true;
 
         window.setBackgroundColor(glm::vec3(0.7f));
         scene->camera->setTarget(player, false);

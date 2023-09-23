@@ -168,7 +168,6 @@ namespace Crocodile
             {
                 std::vector<Line> lines = {};
                 std::vector<LineIntersection> linesIntersections = {};
-                bool collide = true;
                 glm::vec2 limits = glm::vec2(0.f);
                 for (Line line : b->getAxes())
                 {
@@ -199,10 +198,16 @@ namespace Crocodile
                     li.axis = line;
                     li.min = minMagVertex;
                     li.max = maxMagVertex;
+                    bool l1 = getSign(li.min, line.origin) < 0;
+                    bool l2 = getSign(li.max, line.origin) > 0;
+                    bool l3 = (getMagnitude(li.min, line.origin) < rectHalfSize);
+                    bool l4 = (getMagnitude(li.max, line.origin) < rectHalfSize);
+                    // if (rand() % 20)
+                    // {
+                    //     std::cout << line.axis << ": " << l3 << ", " << l4 << std::endl;
+                    // }
                     // TODO: fix this logic
-                    li.collision = (getSign(li.min, line.origin) < 0 && getSign(li.max, line.origin) > 0) ||
-                                   (getMagnitude(li.min, line.origin) < rectHalfSize) ||
-                                   (getMagnitude(li.max, line.origin) < rectHalfSize);
+                    li.collision = (l1 && l2) || l3 || l4;
                     linesIntersections.push_back(li);
                 }
                 CollisionVectors cv;

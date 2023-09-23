@@ -51,9 +51,9 @@ namespace Crocodile
 		glm::mat4 Object::calculateModelMatrix(glm::vec2 pos, float layerDepth)
 		{
 			glm::mat4 model = glm::mat4(1);
-			model = glm::translate(model, glm::vec3(pos - 1.f, 0.0f));
+			model = glm::translate(model, glm::vec3(pos, 0.0f));
 			model = applyRotation(model);
-			model = glm::scale(model, glm::vec3(2.f + getScaledSize() * layerDepth, 1.0f));
+			model = glm::scale(model, glm::vec3(getScaledSize() * layerDepth, 1.0f));
 			return model;
 		}
 
