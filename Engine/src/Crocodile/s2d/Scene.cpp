@@ -226,6 +226,7 @@ namespace Crocodile
 				shapes::Circle *circle = (shapes::Circle *)obj;
 				circleRenderer->render(
 					circle->radius,
+					obj->calculateModelMatrix(pos, 1.f),
 					view,
 					projection,
 					circle->color,
@@ -382,6 +383,10 @@ namespace Crocodile
 		void Scene::init()
 		{
 			camera = new s2d::Camera(window);
+			lightSystem = new s2d::LightSystem();
+			distortionTexture = resourceManager->getTexture("waterDUDV").textureID;
+			layerStack = new LayerStack();
+			// renderers
 			spriteRenderer = new s2d::SpriteRenderer(resourceManager->getShader("sprite"));
 			particleRenderer = new s2d::ParticleRenderer(resourceManager->getShader("particle"));
 			lineRenderer = new s2d::LineRenderer(resourceManager->getShader("line"));
@@ -389,9 +394,6 @@ namespace Crocodile
 			postProcessing = new s2d::PostProcessing(resourceManager->getShader("postprocessing"), windowWidth, windowHeight);
 			textRenderer = new s2d::TextRenderer("assets/fonts/OpenSans-Regular.ttf", resourceManager->getShader("text"));
 			grid = new s2d::BackgroundGrid(resourceManager->getShader("grid"));
-			lightSystem = new s2d::LightSystem();
-			distortionTexture = resourceManager->getTexture("waterDUDV").textureID;
-			layerStack = new LayerStack();
 		}
 
 	}

@@ -11,14 +11,13 @@ public:
 
     Sandbox() : Crocodile::Application("Sandbox", true, 1280, 720, false)
     {
-        // create hud layer
         s2d::Layer *hud = new s2d::Layer("hud");
         hud->applyZoom = false;
         hud->cameraScroll = false;
         scene->layerStack->addLayer(hud);
 
         circle = new s2d::shapes::Circle(5.f);
-        circle->size = glm::vec2(100.f);
+        circle->size = glm::vec2(200.f);
         circle->color = glm::vec3(1.f);
         circle->setPosition(glm::vec2(200.f));
         scene->addObject(circle, "hud");
