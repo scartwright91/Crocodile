@@ -37,6 +37,10 @@ file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/collision)
 # file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/box2d/Release)
 # file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/box2d/Debug)
 
+add_subdirectory(Examples/sandbox)
+file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/sandbox/Release)
+file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/sandbox/Debug)
+
 # # build level editor
 # add_subdirectory(LevelEditor)
 # file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/LevelEditor)
