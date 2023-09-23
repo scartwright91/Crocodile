@@ -221,6 +221,17 @@ namespace Crocodile
 					line->alpha,
 					layer->alpha);
 			}
+			else if (obj->renderMethod == "circle")
+			{
+				shapes::Circle *circle = (shapes::Circle *)obj;
+				circleRenderer->render(
+					1.f,
+					view,
+					projection,
+					circle->color,
+					circle->alpha,
+					layer->alpha);
+			}
 			else
 			{
 				std::cout << "Undefined render method" << std::endl;
@@ -374,8 +385,8 @@ namespace Crocodile
 			spriteRenderer = new s2d::SpriteRenderer(resourceManager->getShader("sprite"));
 			particleRenderer = new s2d::ParticleRenderer(resourceManager->getShader("particle"));
 			lineRenderer = new s2d::LineRenderer(resourceManager->getShader("line"));
+			circleRenderer = new s2d::CircleRenderer(resourceManager->getShader("circle"));
 			postProcessing = new s2d::PostProcessing(resourceManager->getShader("postprocessing"), windowWidth, windowHeight);
-			// textRenderer = new s2d::TextRenderer("assets/fonts/FFF_Tusj.ttf", resourceManager->getShader("text"));
 			textRenderer = new s2d::TextRenderer("assets/fonts/OpenSans-Regular.ttf", resourceManager->getShader("text"));
 			grid = new s2d::BackgroundGrid(resourceManager->getShader("grid"));
 			lightSystem = new s2d::LightSystem();

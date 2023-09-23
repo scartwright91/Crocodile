@@ -2,13 +2,14 @@
 
 #include <glm/glm.hpp>
 
+#include "Renderer.h"
 #include "../../graphics/Shader.h"
 
 namespace Crocodile
 {
     namespace s2d
     {
-        class CROCODILE_API CircleRenderer
+        class CROCODILE_API CircleRenderer : public Renderer
         {
 
         public:
@@ -29,7 +30,6 @@ namespace Crocodile
 
         private:
             void init();
-            // void updateBuffer(glm::vec2 p1, glm::vec2 p2);
             void initShader();
         };
     }

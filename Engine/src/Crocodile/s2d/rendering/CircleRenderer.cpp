@@ -4,15 +4,8 @@ namespace Crocodile
 {
     namespace s2d
     {
-        CircleRenderer::CircleRenderer(graphics::Shader *shader) : shader(shader)
+        CircleRenderer::CircleRenderer(graphics::Shader *shader) : Renderer(shader)
         {
-            initShader();
-            init();
-        }
-
-        CircleRenderer::~CircleRenderer()
-        {
-            glDeleteVertexArrays(1, &this->VAO);
         }
 
         void CircleRenderer::render(
@@ -25,6 +18,7 @@ namespace Crocodile
         {
             // prepare shader
             shader->use();
+            shader->setFloat("u_Radius", radius);
             shader->setMat4("u_Model", glm::mat4(1.f));
             shader->setMat4("u_View", view);
             shader->setMat4("u_Projection", projection);
@@ -33,42 +27,7 @@ namespace Crocodile
             shader->setFloat("u_LayerAlpha", layerAlpha);
             // bind and draw
             glBindVertexArray(VAO);
-            glDrawArrays(GL_LINES, 0, 2);
-            glBindVertexArray(0);
-        }
-
-        // void LineRenderer::updateBuffer(glm::vec2 p1, glm::vec2 p2)
-        // {
-        //     GLfloat vertices[] = {
-        //         p1.x,
-        //         p1.y,
-        //         p2.x,
-        //         p2.y,
-        //     };
-        //     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-        //     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_DYNAMIC_DRAW);
-        // }
-
-        void CircleRenderer::init()
-        {
-            GLfloat vertices[] = {
-                0.f,
-                0.f,
-                1.f,
-                1.f,
-            };
-
-            glGenVertexArrays(1, &VAO);
-            glGenBuffers(1, &VBO);
-            glBindVertexArray(VAO);
-
-            glBindBuffer(GL_ARRAY_BUFFER, VBO);
-            glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-
-            glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0);
-            glEnableVertexAttribArray(0);
-
-            glBindBuffer(GL_ARRAY_BUFFER, 0);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
             glBindVertexArray(0);
         }
 
