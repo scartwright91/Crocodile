@@ -10,7 +10,8 @@ namespace Crocodile
         }
 
         void CircleRenderer::render(
-            float radius,
+            float thickness,
+            float fade,
             glm::mat4 model,
             glm::mat4 view,
             glm::mat4 projection,
@@ -20,7 +21,8 @@ namespace Crocodile
         {
             // prepare shader
             shader->use();
-            shader->setFloat("u_Radius", radius);
+            shader->setFloat("u_Thickness", thickness);
+            shader->setFloat("u_Fade", fade);
             shader->setMat4("u_Model", model);
             shader->setMat4("u_View", view);
             shader->setMat4("u_Projection", projection);

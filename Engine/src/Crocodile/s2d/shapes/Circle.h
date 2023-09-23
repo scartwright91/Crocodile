@@ -16,6 +16,8 @@ namespace Crocodile
                 Circle(float radius);
 
                 float radius;
+                float thickness = 1.f;
+                float fade = 0.05f;
             };
         }
     }

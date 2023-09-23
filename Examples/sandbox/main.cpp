@@ -16,8 +16,7 @@ public:
         hud->cameraScroll = false;
         scene->layerStack->addLayer(hud);
 
-        circle = new s2d::shapes::Circle(5.f);
-        circle->size = glm::vec2(200.f);
+        circle = new s2d::shapes::Circle(50.f);
         circle->color = glm::vec3(1.f);
         circle->setPosition(glm::vec2(200.f));
         scene->addObject(circle, "hud");
@@ -25,6 +24,7 @@ public:
 
     void update(float dt)
     {
+        circle->setPosition(window.getMouseScreenPosition());
     }
 };
 
