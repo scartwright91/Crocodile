@@ -14,7 +14,6 @@ namespace Crocodile
 
         public:
             CircleRenderer(graphics::Shader *shader);
-            ~CircleRenderer();
 
             void render(
                 float radius,
@@ -29,7 +28,6 @@ namespace Crocodile
             unsigned int VBO = 0;
 
         private:
-            void init();
             void initShader();
         };
     }

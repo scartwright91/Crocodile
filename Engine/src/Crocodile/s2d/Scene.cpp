@@ -225,7 +225,7 @@ namespace Crocodile
 			{
 				shapes::Circle *circle = (shapes::Circle *)obj;
 				circleRenderer->render(
-					1.f,
+					circle->radius,
 					view,
 					projection,
 					circle->color,

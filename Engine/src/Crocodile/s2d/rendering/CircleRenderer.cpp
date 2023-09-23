@@ -6,6 +6,7 @@ namespace Crocodile
     {
         CircleRenderer::CircleRenderer(graphics::Shader *shader) : Renderer(shader)
         {
+            initShader();
         }
 
         void CircleRenderer::render(
@@ -18,7 +19,7 @@ namespace Crocodile
         {
             // prepare shader
             shader->use();
-            shader->setFloat("u_Radius", radius);
+            // shader->setFloat("u_Radius", radius);
             shader->setMat4("u_Model", glm::mat4(1.f));
             shader->setMat4("u_View", view);
             shader->setMat4("u_Projection", projection);
