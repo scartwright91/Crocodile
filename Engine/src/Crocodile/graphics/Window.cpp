@@ -146,7 +146,7 @@ namespace Crocodile
 		{
 			double x, y;
 			glfwGetCursorPos(window, &x, &y);
-			return glm::vec2(x, y);
+			return glm::vec2(x, y) / viewportScale;
 		}
 
 		void Window::setBackgroundColor(glm::vec3 color)
