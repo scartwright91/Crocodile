@@ -49,7 +49,5 @@ file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/sandbox/Debug)
 add_subdirectory(TestGame)
 # Release
 file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/TestGame/Release)
-file(COPY TestGame/res DESTINATION ${CMAKE_BINARY_DIR}/TestGame/Release)
 # Debug
 file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/TestGame/Debug)
-file(COPY TestGame/res DESTINATION ${CMAKE_BINARY_DIR}/TestGame/Debug)

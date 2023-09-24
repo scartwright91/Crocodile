@@ -5,4 +5,4 @@
 * Better logging
 * Improved sound
 * controller support
-* Gaussian blur for bloom effect
+* A* Pathfinding

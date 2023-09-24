@@ -17,6 +17,6 @@ void main()
     col *= vec3(smoothstep(u_Thickness + u_Fade, u_Thickness, distance));
 
     // Set output color
-    color = vec4(col, 1.0);
+    color = vec4(col, col.r * 1.0);
     color *= (vec4(u_Color, u_Alpha) * vec4(1, 1, 1, u_LayerAlpha));
 }
