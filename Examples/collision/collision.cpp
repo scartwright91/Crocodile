@@ -42,6 +42,7 @@ public:
         else if (scene->window->isKeyPressed(GLFW_KEY_RIGHT))
             player->rotate(0.05f);
 
+        player->move(dx, dy);
         // rotate rect
         // rect->rotate(0.01f);
 
@@ -57,8 +58,6 @@ public:
             test->color = glm::vec3(1.f, 0.f, 0.f);
         else
             test->color = glm::vec3(0.f);
-
-        player->move(dx, dy);
 
         // check collision
         if (player->getBoundingBox().intersectsBounds(rect->getBoundingBox()))
@@ -128,8 +127,9 @@ public:
 
         test = new s2d::Object();
         test->alpha = 0.3f;
-        test->rotate(0.3f);
+        // test->rotate(0.79f);
         test->size = glm::vec2(100.f);
+        test->showBoundingBox = true;
         scene->addObject(test, "entities");
 
         window.setBackgroundColor(glm::vec3(0.7f));

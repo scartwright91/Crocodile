@@ -222,14 +222,27 @@ namespace Crocodile
 
             bool BoundingBox::intersectsRotatedPoint(glm::vec2 p)
             {
+                auto onRightSide = [](float x, float y, glm::vec2 p1, glm::vec2 p2)
+                {
+                    float a = (p2.y - p1.y);
+                    float b = (p1.x - p2.x);
+                    float c = -(a * p1.x + b * p1.y);
+                    return a * x + b * y + c >= 0;
+                };
+
                 std::vector<glm::vec2> vertices = getVertices();
-                float t1 = areaTriangle(p, vertices[0], vertices[3]);
-                float t2 = areaTriangle(p, vertices[3], vertices[2]);
-                float t3 = areaTriangle(p, vertices[2], vertices[1]);
-                float t4 = areaTriangle(p, vertices[1], vertices[0]);
-                if (t1 + t2 + t3 + t4 <= width * height)
-                    return true;
-                return false;
+                bool allRight = true;
+                bool allLeft = true;
+                for (unsigned int i = 0; i < 4; i++)
+                {
+                    bool b = onRightSide(p.x, p.y, vertices[i], vertices[(i + 1) % 4]);
+                    if (b)
+                        allLeft = false;
+                    else
+                        allRight = false;
+                }
+
+                return (allRight) || (allLeft);
             }
 
             int BoundingBox::getSign(glm::vec2 a, glm::vec2 b)

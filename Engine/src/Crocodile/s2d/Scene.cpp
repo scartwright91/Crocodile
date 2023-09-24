@@ -280,6 +280,19 @@ namespace Crocodile
 					obj->color,
 					obj->alpha,
 					layer->alpha);
+				for (unsigned int i = 0; i < 4; i++)
+				{
+					shapes::Circle c(4);
+					circleRenderer->render(
+						c.thickness,
+						c.fade,
+						c.calculateModelMatrix((vertices[i]) * viewportScale, 1.f),
+						view,
+						projection,
+						glm::vec3(1., 0., 0.),
+						1.,
+						layer->alpha);
+				}
 			}
 		}
 

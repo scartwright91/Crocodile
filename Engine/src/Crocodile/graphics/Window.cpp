@@ -79,6 +79,11 @@ namespace Crocodile
 
 			updateViewport();
 
+			// joystick
+			int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
+			if (present)
+				std::cout << "Joystick detected" << std::endl;
+
 			// set callbacks
 			glfwMakeContextCurrent(window);
 			glfwSetWindowSizeCallback(window, window_resize);

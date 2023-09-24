@@ -24,7 +24,8 @@ add_subdirectory(LDtkLoader)
 
 # build example
 add_subdirectory(Examples/collision)
-file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/collision)
+file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/collision/Release)
+file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/collision/Debug)
 
 # add_subdirectory(Examples/dialogues)
 # file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/dialogues)
