@@ -5,29 +5,26 @@
 */
 #pragma once
 
+#include "glm/glm.hpp"
+
 #include <vector>
 #include <functional>
 #include <set>
 
 namespace Crocodile
 {
-    struct Vec2i
-    {
-        int x, y;
-        bool operator==(const Vec2i &coordinates_);
-    };
 
     using uint = unsigned int;
-    using HeuristicFunction = std::function<uint(Vec2i, Vec2i)>;
-    using CoordinateList = std::vector<Vec2i>;
+    using HeuristicFunction = std::function<uint(glm::vec2, glm::vec2)>;
+    using CoordinateList = std::vector<glm::vec2>;
 
     struct Node
     {
         uint G, H;
-        Vec2i coordinates;
+        glm::vec2 coordinates;
         Node *parent;
 
-        Node(Vec2i coord_, Node *parent_ = nullptr);
+        Node(glm::vec2 coord_, Node *parent_ = nullptr);
         uint getScore();
     };
 
@@ -35,34 +32,34 @@ namespace Crocodile
 
     class Generator
     {
-        bool detectCollision(Vec2i coordinates_);
-        Node *findNodeOnList(NodeSet &nodes_, Vec2i coordinates_);
+        bool detectCollision(glm::vec2 coordinates_);
+        Node *findNodeOnList(NodeSet &nodes_, glm::vec2 coordinates_);
         void releaseNodes(NodeSet &nodes_);
 
     public:
         Generator();
-        void setWorldSize(Vec2i worldSize_);
+        void setWorldSize(glm::vec2 worldSize_);
         void setDiagonalMovement(bool enable_);
         void setHeuristic(HeuristicFunction heuristic_);
-        CoordinateList findPath(Vec2i source_, Vec2i target_);
-        void addCollision(Vec2i coordinates_);
-        void removeCollision(Vec2i coordinates_);
+        CoordinateList findPath(glm::vec2 source_, glm::vec2 target_);
+        void addCollision(glm::vec2 coordinates_);
+        void removeCollision(glm::vec2 coordinates_);
         void clearCollisions();
 
     private:
         HeuristicFunction heuristic;
         CoordinateList direction, walls;
-        Vec2i worldSize;
+        glm::vec2 worldSize;
         uint directions;
     };
 
     class Heuristic
     {
-        static Vec2i getDelta(Vec2i source_, Vec2i target_);
+        static glm::vec2 getDelta(glm::vec2 source_, glm::vec2 target_);
 
     public:
-        static uint manhattan(Vec2i source_, Vec2i target_);
-        static uint euclidean(Vec2i source_, Vec2i target_);
-        static uint octagonal(Vec2i source_, Vec2i target_);
+        static uint manhattan(glm::vec2 source_, glm::vec2 target_);
+        static uint euclidean(glm::vec2 source_, glm::vec2 target_);
+        static uint octagonal(glm::vec2 source_, glm::vec2 target_);
     };
 }

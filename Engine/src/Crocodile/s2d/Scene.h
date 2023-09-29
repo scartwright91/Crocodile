@@ -10,6 +10,7 @@
 #include "Object.h"
 #include "Particles.h"
 #include "Text.h"
+#include "BatchSprite.h"
 #include "shapes/Line.h"
 #include "shapes/Circle.h"
 #include "LightSystem.h"

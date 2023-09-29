@@ -23,12 +23,19 @@ namespace Crocodile
 		{
 			float currentFrame = (float)glfwGetTime();
 			deltaTime = currentFrame - lastFrame;
-			if ((1 / deltaTime) <= fps)
+			if (fps > 0)
 			{
-				lastFrame = currentFrame;
-				return true;
+				if ((1 / deltaTime) <= fps)
+				{
+					lastFrame = currentFrame;
+					return true;
+				}
+				else
+					return false;
 			}
-			return false;
+			else
+				lastFrame = currentFrame;
+			return true;
 		}
 
 		int getFPS()

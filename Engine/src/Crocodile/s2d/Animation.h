@@ -20,6 +20,8 @@ namespace Crocodile
 
 			bool spritesheetAnimation = false;
 			bool freezeAnimation = false;
+			bool repeat = true;
+			bool finished = false;
 			ResourceManager::TextureData spritesheet = {};
 			unsigned int gridSize;
 			float frameDuration;

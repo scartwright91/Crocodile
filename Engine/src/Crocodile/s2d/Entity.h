@@ -1,6 +1,8 @@
 #include "Scene.h"
 #include "../audio/SoundManager.h"
 
+#include "../Core.h"
+
 namespace Crocodile
 {
     namespace s2d

@@ -5,4 +5,3 @@
 * Better logging
 * Improved sound
 * controller support
-* A* Pathfinding

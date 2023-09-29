@@ -17,9 +17,7 @@ uniform float u_TransitionCounter;
 uniform bool u_FadeTransition;
 uniform bool u_DiamondTransition;
 
-// uniform float weight[5] = float[] (0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216);
 uniform float weight[5] = float[] (0.45, 0.4, 0.24, 0.1, 0.03);
-// uniform float weight[5] = float[] (1, 1, 1, 1, 1);
 
 
 void main()
@@ -73,7 +71,7 @@ void main()
 			float xDistance = abs(xFraction - 0.5);
 			float yDistance = abs(yFraction - 0.5);
 			if (xDistance + yDistance + TexCoords.x + TexCoords.y > u_TransitionCounter * 4.0f) {
-				color = vec4(1.0, 0.0, 1.0, 1.0);
+				color = vec4(0.57f, 0.31f, 0.91f, 1.0);
 			}
 		}
 	} else if (u_BeginScene)
@@ -89,7 +87,7 @@ void main()
 			float xDistance = abs(xFraction - 0.5);
 			float yDistance = abs(yFraction - 0.5);
 			if (xDistance + yDistance + TexCoords.x + TexCoords.y > (1 - u_TransitionCounter) * 4.0f) {
-				color = vec4(1.0, 0.0, 1.0, 1.0);
+				color = vec4(0.57f, 0.31f, 0.91f, 1.0);
 			}
 		}
 	}

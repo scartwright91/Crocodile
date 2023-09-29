@@ -35,13 +35,18 @@ namespace Crocodile
 
 		void Animation::updateAnimation(float dt)
 		{
-			if (!freezeAnimation)
+			if (!freezeAnimation && !finished)
 			{
 				timer += dt;
 				if (timer > frameDuration)
 				{
 					currentFrame = (currentFrame + 1) % totalFrames;
 					timer = 0.0f;
+				}
+				if (!repeat && currentFrame == totalFrames - 1)
+				{
+					finished = true;
+					return;
 				}
 			}
 		}

@@ -7,17 +7,8 @@ using namespace std::placeholders;
 
 namespace Crocodile
 {
-    bool Vec2i::operator==(const Vec2i &coordinates_)
-    {
-        return (x == coordinates_.x && y == coordinates_.y);
-    }
 
-    Vec2i operator+(const Vec2i &left_, const Vec2i &right_)
-    {
-        return {left_.x + right_.x, left_.y + right_.y};
-    }
-
-    Node::Node(Vec2i coordinates_, Node *parent_)
+    Node::Node(glm::vec2 coordinates_, Node *parent_)
     {
         parent = parent_;
         coordinates = coordinates_;
@@ -37,7 +28,7 @@ namespace Crocodile
             {0, 1}, {1, 0}, {0, -1}, {-1, 0}, {-1, -1}, {1, 1}, {-1, 1}, {1, -1}};
     }
 
-    void Generator::setWorldSize(Vec2i worldSize_)
+    void Generator::setWorldSize(glm::vec2 worldSize_)
     {
         worldSize = worldSize_;
     }
@@ -52,12 +43,12 @@ namespace Crocodile
         heuristic = std::bind(heuristic_, _1, _2);
     }
 
-    void Generator::addCollision(Vec2i coordinates_)
+    void Generator::addCollision(glm::vec2 coordinates_)
     {
         walls.push_back(coordinates_);
     }
 
-    void Generator::removeCollision(Vec2i coordinates_)
+    void Generator::removeCollision(glm::vec2 coordinates_)
     {
         auto it = std::find(walls.begin(), walls.end(), coordinates_);
         if (it != walls.end())
@@ -71,7 +62,7 @@ namespace Crocodile
         walls.clear();
     }
 
-    CoordinateList Generator::findPath(Vec2i source_, Vec2i target_)
+    CoordinateList Generator::findPath(glm::vec2 source_, glm::vec2 target_)
     {
         Node *current = nullptr;
         NodeSet openSet, closedSet;
@@ -104,7 +95,7 @@ namespace Crocodile
 
             for (uint i = 0; i < directions; ++i)
             {
-                Vec2i newCoordinates(current->coordinates + direction[i]);
+                glm::vec2 newCoordinates(current->coordinates + direction[i]);
                 if (detectCollision(newCoordinates) ||
                     findNodeOnList(closedSet, newCoordinates))
                 {
@@ -142,7 +133,7 @@ namespace Crocodile
         return path;
     }
 
-    Node *Generator::findNodeOnList(NodeSet &nodes_, Vec2i coordinates_)
+    Node *Generator::findNodeOnList(NodeSet &nodes_, glm::vec2 coordinates_)
     {
         for (auto node : nodes_)
         {
@@ -163,7 +154,7 @@ namespace Crocodile
         }
     }
 
-    bool Generator::detectCollision(Vec2i coordinates_)
+    bool Generator::detectCollision(glm::vec2 coordinates_)
     {
         if (coordinates_.x < 0 || coordinates_.x >= worldSize.x ||
             coordinates_.y < 0 || coordinates_.y >= worldSize.y ||
@@ -174,24 +165,24 @@ namespace Crocodile
         return false;
     }
 
-    Vec2i Heuristic::getDelta(Vec2i source_, Vec2i target_)
+    glm::vec2 Heuristic::getDelta(glm::vec2 source_, glm::vec2 target_)
     {
         return {abs(source_.x - target_.x), abs(source_.y - target_.y)};
     }
 
-    uint Heuristic::manhattan(Vec2i source_, Vec2i target_)
+    uint Heuristic::manhattan(glm::vec2 source_, glm::vec2 target_)
     {
         auto delta = std::move(getDelta(source_, target_));
         return static_cast<uint>(10 * (delta.x + delta.y));
     }
 
-    uint Heuristic::euclidean(Vec2i source_, Vec2i target_)
+    uint Heuristic::euclidean(glm::vec2 source_, glm::vec2 target_)
     {
         auto delta = std::move(getDelta(source_, target_));
         return static_cast<uint>(10 * sqrt(pow(delta.x, 2) + pow(delta.y, 2)));
     }
 
-    uint Heuristic::octagonal(Vec2i source_, Vec2i target_)
+    uint Heuristic::octagonal(glm::vec2 source_, glm::vec2 target_)
     {
         auto delta = std::move(getDelta(source_, target_));
         return 10 * (delta.x + delta.y) + (-6) * std::min(delta.x, delta.y);

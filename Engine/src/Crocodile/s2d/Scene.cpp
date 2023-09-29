@@ -234,6 +234,15 @@ namespace Crocodile
 					circle->alpha,
 					layer->alpha);
 			}
+			else if (obj->renderMethod == "batch_sprite")
+			{
+				BatchSprite *batchSprite = (BatchSprite *)obj;
+				batchSprite->render(
+					view,
+					projection,
+					batchSprite->texture.textureID,
+					batchSprite->alpha);
+			}
 			else
 			{
 				std::cout << "Undefined render method" << std::endl;

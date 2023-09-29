@@ -39,6 +39,7 @@ namespace Crocodile
 #else
 		while (!window.closed())
 		{
+			bool b = clock.tick(0);
 			window.beginRender();
 			if (useImGui)
 			{
@@ -46,12 +47,10 @@ namespace Crocodile
 				ImGui_ImplGlfw_NewFrame();
 				ImGui::NewFrame();
 			}
-			if (clock.tick(60))
-			{
-				update(clock.deltaTime);
+			update(clock.deltaTime);
+			if (b)
 				fixedUpdate(clock.deltaTime);
-				scene->update(clock.deltaTime);
-			}
+			scene->update(clock.deltaTime);
 			render();
 			if (useImGui)
 			{
@@ -118,6 +117,7 @@ namespace Crocodile
 		resourceManager.loadShader("assets/shaders/opengl/grid_vertex.vs", "assets/shaders/opengl/grid_fragment.fs", "grid");
 		resourceManager.loadShader("assets/shaders/opengl/line_vertex.vs", "assets/shaders/opengl/line_fragment.fs", "line");
 		resourceManager.loadShader("assets/shaders/opengl/circle_vertex.vs", "assets/shaders/opengl/circle_fragment.fs", "circle");
+		resourceManager.loadShader("assets/shaders/opengl/batch_sprite_vertex.vs", "assets/shaders/opengl/batch_sprite_fragment.fs", "batch_sprite");
 #endif
 	}
 
