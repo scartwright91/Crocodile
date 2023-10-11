@@ -3,6 +3,8 @@
 #include "../../Core.h"
 #include "../../graphics/Shader.h"
 
+#include "../../ResourceManager.h"
+
 namespace Crocodile
 {
     namespace s2d
@@ -13,13 +15,16 @@ namespace Crocodile
             BatchRenderer(
                 graphics::Shader *shader,
                 std::vector<glm::vec2> positions,
-                glm::vec2 size);
+                std::vector<glm::vec2> tilesetPositions,
+                glm::vec2 size,
+                float tilesetWidth,
+                float tilesetHeight);
             ~BatchRenderer();
 
             void render(
                 glm::mat4 view,
                 glm::mat4 projection,
-                unsigned int textureID,
+                ResourceManager::TextureData texture,
                 float alpha);
             void initShader();
 
@@ -29,7 +34,10 @@ namespace Crocodile
         private:
             void init();
             std::vector<glm::vec2> positions;
+            std::vector<glm::vec2> tilesetPositions;
             glm::vec2 size;
+            float tilesetWidth;
+            float tilesetHeight;
         };
     }
 }

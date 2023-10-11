@@ -64,7 +64,7 @@ namespace Crocodile
 			else
 				glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-			glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
+			// glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
 
 			// create window
 			int count;

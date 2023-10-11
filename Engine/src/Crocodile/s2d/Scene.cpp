@@ -240,7 +240,7 @@ namespace Crocodile
 				batchSprite->render(
 					view,
 					projection,
-					batchSprite->texture.textureID,
+					batchSprite->texture,
 					batchSprite->alpha);
 			}
 			else
