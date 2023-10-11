@@ -1,20 +1,22 @@
-cmake_minimum_required(VERSION 3.26.3)
+cmake_minimum_required(VERSION 3.22)
 
-project(Crocodile-dialogues)
+project(Sandbox)
 
-add_executable(${PROJECT_NAME} main.cpp)
+add_executable(${PROJECT_NAME} 
+    main.cpp
+)
 
 target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURE_DIR}/build)
 target_link_libraries(${PROJECT_NAME} PRIVATE Crocodile::Crocodile)
 
 ## Dependencies
 
-# OpenGL
-find_package(OpenGL REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARIES})
-target_include_directories(${PROJECT_NAME} PRIVATE ${OPENGL_INCLUDE_DIR})
-
 if (NOT EMSCRIPTEN)
+
+    # OpenGL
+    find_package(OpenGL REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARIES})
+    target_include_directories(${PROJECT_NAME} PRIVATE ${OPENGL_INCLUDE_DIR})
 
     # GLEW
     find_package(GLEW REQUIRED)
@@ -35,5 +37,5 @@ if (NOT EMSCRIPTEN)
     # libsndfile
     find_package(SndFile CONFIG REQUIRED)
     target_link_libraries(${PROJECT_NAME} PRIVATE SndFile::sndfile)
-    
+
 endif()

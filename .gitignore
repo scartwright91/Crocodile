@@ -1,12 +1,10 @@
+
 # Cmake stuff
 build/
 build_web/
 out/
 CMakeFiles/
 CmakeCache.txt
-
-# Game stuff not for repos
-TestGame/
 
 # VSCode stuff
 .vscode/

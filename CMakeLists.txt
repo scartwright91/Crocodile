@@ -4,50 +4,22 @@ project(Project)
 
 set(CMAKE_CXX_STANDARD 17)
 
-## Compile options
-
 if (EMSCRIPTEN)
-
     # Set emscripten flags
     set(USE_FLAGS "-lopenal -s ALLOW_MEMORY_GROWTH=1 -s USE_GLFW=3 -s FULL_ES3=1 -s USE_FREETYPE=1 -D CROCODILE_EMSCRIPTEN=1 --preload-file res --preload-file assets")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${USE_FLAGS}")
     set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} ${USE_FLAGS}")
     set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${USE_FLAGS}")
     set(CMAKE_EXECUTABLE_SUFFIX .html)
-
 endif() # Emscripten
 
 # build engine library
 add_subdirectory(Engine)
-# build ldtk loader
-add_subdirectory(LDtkLoader)
 
-# build example
-add_subdirectory(Examples/collision)
-file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/collision/Release)
-file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/collision/Debug)
-
-# add_subdirectory(Examples/dialogues)
-# file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/dialogues)
-
-# add_subdirectory(Examples/platformer)
-# file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/platformer/Release)
-# file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/platformer/Debug)
-
-# add_subdirectory(Examples/box2d)
-# file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/box2d/Release)
-# file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/box2d/Debug)
-
-add_subdirectory(Examples/sandbox)
-file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/sandbox/Release)
-file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Examples/sandbox/Debug)
-
-# # build level editor
-# add_subdirectory(LevelEditor)
-# file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/LevelEditor)
-
-add_subdirectory(TestGame)
-file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/TestGame/Release)
-file(COPY TestGame/res DESTINATION ${CMAKE_BINARY_DIR}/TestGame/Release)
-file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/TestGame/Debug)
-file(COPY TestGame/res DESTINATION ${CMAKE_BINARY_DIR}/TestGame/Debug)
+if (MSVC)
+    add_subdirectory(Sandbox)
+    file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Sandbox/Release)
+    file(COPY Sandbox/res DESTINATION ${CMAKE_BINARY_DIR}/Sandbox/Release)
+    file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Sandbox/Debug)
+    file(COPY Sandbox/res DESTINATION ${CMAKE_BINARY_DIR}/Sandbox/Debug)
+endif()
