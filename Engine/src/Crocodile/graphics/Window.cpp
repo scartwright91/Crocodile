@@ -9,7 +9,6 @@ namespace Crocodile
 
 		// callbacks
 		void window_resize(GLFWwindow *window, int width, int height);
-		// void framebuffer_size_callback(GlfWwindow *window, int width, int height);
 		void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods);
 		void mouse_button_callback(GLFWwindow *window, int button, int action, int mods);
 		void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);

@@ -15,11 +15,14 @@ endif() # Emscripten
 
 # build engine library
 add_subdirectory(Engine)
+add_subdirectory(Sandbox)
 
 if (MSVC)
-    add_subdirectory(Sandbox)
     file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Sandbox/Release)
     file(COPY Sandbox/res DESTINATION ${CMAKE_BINARY_DIR}/Sandbox/Release)
     file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Sandbox/Debug)
     file(COPY Sandbox/res DESTINATION ${CMAKE_BINARY_DIR}/Sandbox/Debug)
+else()
+    file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Sandbox)
+    file(COPY Sandbox/res DESTINATION ${CMAKE_BINARY_DIR}/Sandbox)
 endif()
