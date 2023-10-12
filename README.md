@@ -56,7 +56,7 @@ $ emmake make
 5. Run application
 
 ```
-emrun <PROJECT>.html
+emrun <PROJECT>/<PROJECT>.html
 ```
 
 ## Project structure

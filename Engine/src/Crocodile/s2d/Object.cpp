@@ -13,6 +13,7 @@ namespace Crocodile
 		{
 		}
 
+		/*
 		void Object::addChild(Object *o)
 		{
 			if (parent == NULL)
@@ -47,6 +48,7 @@ namespace Crocodile
 		{
 			children.clear();
 		}
+		*/
 
 		glm::mat4 Object::calculateModelMatrix(glm::vec2 pos, float layerDepth)
 		{
@@ -60,16 +62,12 @@ namespace Crocodile
 		void Object::move(float dx, float dy)
 		{
 			position += glm::vec2(dx, dy);
-			for (Object *child : children)
-			{
-				child->move(dx, dy);
-			}
 		}
 
-		void Object::moveTowards(glm::vec2 targetPosition, float speed)
+		void Object::moveTowards(glm::vec2 targetPosition, float distance)
 		{
 			float theta = std::atan2(targetPosition.y - position.y, targetPosition.x - position.x);
-			move(std::cos(theta) * speed, std::sin(theta) * speed);
+			move(std::cos(theta) * distance, std::sin(theta) * distance);
 		}
 
 		void Object::scale(glm::vec2 s)
@@ -194,24 +192,6 @@ namespace Crocodile
 			this->distortionSpeed = distortionSpeed;
 		}
 
-		glm::vec2 Object::getAbsolutePosition()
-		{
-			bool parentExists = true;
-			Object *currentParent = parent;
-			glm::vec2 absPosition = position;
-			while (parentExists)
-			{
-				if (currentParent == NULL)
-					parentExists = false;
-				else
-				{
-					absPosition += currentParent->position;
-					currentParent = currentParent->parent;
-				}
-			}
-			return absPosition;
-		}
-
 		glm::vec2 Object::getScreenPosition(bool centre, glm::mat4 view, glm::mat4 projection, float width, float height, float layerDepth)
 		{
 			glm::mat4 model = calculateModelMatrix(centre ? getCenteredPosition() : getPosition(), layerDepth);
@@ -252,11 +232,6 @@ namespace Crocodile
 		s2d::col::BoundingBox Object::getShiftedBoundingBox(float dx, float dy)
 		{
 			return s2d::col::BoundingBox(position.x + dx, position.y + dy, size.x, size.y, rotation);
-		}
-
-		void Object::syncParentPosition()
-		{
-			position += parent->position;
 		}
 
 	}

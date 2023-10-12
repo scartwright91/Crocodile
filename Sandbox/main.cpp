@@ -7,7 +7,7 @@ class Sandbox : public Crocodile::Application
 {
 
 public:
-    Sandbox() : Crocodile::Application("Sandbox", true, 1280, 720, true)
+    Sandbox() : Crocodile::Application("Sandbox", false, 1280, 720, false)
     {
         init();
     }
@@ -24,15 +24,10 @@ public:
     {
     }
 
-    void renderImGui()
-    {
-        ImGui::Begin("Features");
-        ImGui::End();
-        ImGui::Render();
-    }
-
     void init()
     {
+        window.setBackgroundColor(glm::vec3(0.f, 0.5f, 0.7f));
+
         // create layer and add to scene
         s2d::Layer *layer = new s2d::Layer("objects");
         scene->layerStack->addLayer(layer);
@@ -40,7 +35,7 @@ public:
         // create square and to objects layer
         s2d::Object *square = new s2d::Object();
         square->size = glm::vec2(100.f);
-        square->color = glm::vec3(1.f, 0.f, 0.f);
+        square->color = glm::vec3(1.f, 0.f, 1.f);
         scene->addObject(square, "objects");
 
         // set the camera's focus to the square

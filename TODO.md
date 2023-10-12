@@ -2,7 +2,6 @@
 ## Releasing Game Engine
 
 * Document code
-* Check all shaders
-* Check web build
+* Fix web build
 * Prepare repos for release
 * Finish README.md

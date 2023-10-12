@@ -59,10 +59,12 @@ namespace Crocodile
 			bool flipX = false;
 			bool flipY = false;
 
+			/*
 			// children
 			Object *parent = nullptr;
 			std::vector<Object *> children = {};
 			unsigned int nChildren = 0;
+			*/
 
 			// rendering
 			std::string renderMethod = "";
@@ -80,21 +82,22 @@ namespace Crocodile
 			bool animated = false;
 
 		public:
+			/*
 			void addChild(Object *o);
 			void addParent(Object *o);
 			void removeChild(Object *o);
 			void removeParent();
 			void clear();
+			*/
 
 			glm::mat4 calculateModelMatrix(glm::vec2 pos, float layerDepth);
 			void move(float dx, float dy);
-			void moveTowards(glm::vec2 targetPosition, float speed);
+			void moveTowards(glm::vec2 targetPosition, float distance);
 			void scale(glm::vec2 s);
 			void rotate(float v);
 			glm::vec2 getScaledSize();
 			glm::vec2 getScaledPosition();
 			glm::vec2 getPosition();
-			glm::vec2 getAbsolutePosition();
 			glm::vec2 getCenteredPosition();
 			glm::vec2 getScaledCenteredPosition();
 			glm::vec2 getScreenPosition(bool centre, glm::mat4 view, glm::mat4 projection, float width, float height, float layerDepth);
@@ -103,6 +106,7 @@ namespace Crocodile
 			float getYSortValue();
 			void setPosition(glm::vec2 pos);
 
+			// textures and animations
 			void setTexture(ResourceManager::TextureData texture);
 			void setTileMapTexture(
 				ResourceManager::TextureData texture,
@@ -118,7 +122,6 @@ namespace Crocodile
 			s2d::col::BoundingBox getShiftedBoundingBox(float dx, float dy);
 
 		private:
-			void syncParentPosition();
 			glm::mat4 applyRotation(glm::mat4 model);
 		};
 	}

@@ -34,15 +34,16 @@ namespace Crocodile
 
             bool BoundingBox::intersectsBounds(BoundingBox b)
             {
-                if (rotation != 0.0 || b.rotation != 0.0)
-                    return intersectsRotatedBounds(b);
+                // TODO: Fix rotated bbox collision
+                // if (rotation != 0.0 || b.rotation != 0.0)
+                //     return intersectsRotatedBounds(b);
                 return !(xMin >= b.xMax || yMin >= b.yMax || xMax <= b.xMin || yMax <= b.yMin);
             }
 
             bool BoundingBox::intersectsPoint(glm::vec2 p)
             {
-                if (rotation != 0.0)
-                    return intersectsRotatedPoint(p);
+                // if (rotation != 0.0)
+                //     return intersectsRotatedPoint(p);
                 return (p.x <= xMax && p.x >= xMin && p.y <= yMax && p.y >= yMin);
             }
 
