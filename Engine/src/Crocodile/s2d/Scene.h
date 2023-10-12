@@ -92,7 +92,7 @@ namespace Crocodile
 			void updateObjects(float dt);
 			void render();
 			void clear();
-			void scaleScene(glm::vec2 s);
+			void scaleScene();
 
 			// postprocessing
 			unsigned int getTextureBuffer();

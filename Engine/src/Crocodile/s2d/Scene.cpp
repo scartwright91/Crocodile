@@ -12,6 +12,9 @@ namespace Crocodile
 			windowHeight = window->getHeight();
 			this->resourceManager = resourceManager;
 			init();
+#ifdef CROCODILE_EMSCRIPTEN
+			enablePostprocessing = false;
+#endif
 		}
 
 		Scene::~Scene()
@@ -60,7 +63,7 @@ namespace Crocodile
 			camera->update(viewportScale);
 			// screen resizing
 			if ((window->getViewportWidth() != windowWidth) || (window->getViewportHeight() != windowHeight))
-				scaleScene(window->getViewportScale());
+				scaleScene();
 			// objects
 			updateObjects(dt);
 			// transitions
@@ -108,13 +111,7 @@ namespace Crocodile
 			for (Layer *layer : layerStack->layers)
 				if (!layer->hide)
 					for (Object *obj : layer->objects)
-					{
-						std::vector<Object *> objectStack = {obj};
-						for (Object *child : obj->children)
-							objectStack.push_back(child);
-						for (Object *o : objectStack)
-							renderObject(o, layer);
-					}
+						renderObject(obj, layer);
 			// finish and render postprocessing
 			if (enablePostprocessing)
 			{
@@ -391,7 +388,7 @@ namespace Crocodile
 			transitionEffect = effect;
 		}
 
-		void Scene::scaleScene(glm::vec2 s)
+		void Scene::scaleScene()
 		{
 			windowWidth = window->getViewportWidth();
 			windowHeight = window->getViewportHeight();

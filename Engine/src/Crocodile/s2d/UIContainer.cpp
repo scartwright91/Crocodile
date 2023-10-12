@@ -45,7 +45,6 @@ namespace Crocodile
 			updateCurrentElementPosition(obj->size.x, obj->size.y);
 			if (!staticSize)
 				updateContainer(obj->size.x, obj->size.y);
-			addChild(obj);
 		}
 
 		void UIContainer::updateCurrentElementPosition(float width, float height)
@@ -62,9 +61,6 @@ namespace Crocodile
 
 		void UIContainer::updateContainer(float width, float height)
 		{
-			if (nChildren == 0)
-				size += padding;
-
 			if (layout == VERTICAL)
 			{
 				size.y += (height + padding.y);
