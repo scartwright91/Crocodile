@@ -1,10 +1,9 @@
 
 ## Releasing Game Engine
 
-* Fix scaling issue
-* Check all shaders
-* Check dependencies
+* Fix scaling issue **
 * Document code
+* Check all shaders
 * Check web build
 * Finish examples
 * Prepare repos for release

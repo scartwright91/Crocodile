@@ -14,16 +14,23 @@ namespace Crocodile
 		class CROCODILE_API Animation
 		{
 		public:
+			// Constructor for animations contained within a spritesheet
 			Animation(ResourceManager::TextureData spritesheet, float width, unsigned int gridSize, float frameDuration);
+			// Constructor for animations stored as separate images
 			Animation(std::vector<ResourceManager::TextureData> textures, float frameDuration);
 			~Animation();
 
 			bool spritesheetAnimation = false;
+
+			// animation variables
 			bool freezeAnimation = false;
 			bool repeat = true;
 			bool finished = false;
+
+			// spritesheet variables
 			ResourceManager::TextureData spritesheet = {};
 			unsigned int gridSize;
+
 			float frameDuration;
 			float width;
 			std::vector<ResourceManager::TextureData> textures = {};

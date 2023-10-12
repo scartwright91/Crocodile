@@ -16,37 +16,40 @@ target_include_directories(Crocodile PUBLIC src)
 target_include_directories(Crocodile PUBLIC src/utils)
 target_include_directories(Crocodile PUBLIC src/utils/imgui)
 target_include_directories(Crocodile PUBLIC src/utils/imgui/backends)
-target_include_directories(Crocodile PUBLIC src/utils/imgui/dirent)
 
 ### Dependencies
 
 ## Cross-platform dependencies
 
-# OpenGL
-find_package(OpenGL REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARIES})
-target_include_directories(${PROJECT_NAME} PRIVATE ${OPENGL_INCLUDE_DIR})
+if (NOT EMSCRIPTEN)
 
-# GLEW
-find_package(GLEW REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW)
+    # OpenGL
+    find_package(OpenGL REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARIES})
+    target_include_directories(${PROJECT_NAME} PRIVATE ${OPENGL_INCLUDE_DIR})
 
-# GLFW
-find_package(glfw3 3.3 REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
+    # GLEW
+    find_package(GLEW REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PRIVATE GLEW::GLEW)
 
-# Freetype
-find_package(Freetype 2.12.1 REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE Freetype::Freetype)
+    # GLFW
+    find_package(glfw3 3.3 REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PRIVATE glfw)
 
-# OpenAL
-find_package(OpenAL CONFIG REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE OpenAL::OpenAL)
+    # Freetype
+    find_package(Freetype 2.12.1 REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PRIVATE Freetype::Freetype)
 
-# libsndfile
-find_package(SndFile CONFIG REQUIRED)
-target_link_libraries(${PROJECT_NAME} PRIVATE SndFile::sndfile)
+    # OpenAL
+    find_package(OpenAL CONFIG REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PRIVATE OpenAL::OpenAL)
 
-# Box2d
-find_package(box2d CONFIG REQUIRED)
-target_link_libraries(${PROJECT_NAME}  PRIVATE box2d::box2d)
+    # libsndfile
+    find_package(SndFile CONFIG REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PRIVATE SndFile::sndfile)
+
+    # Box2d
+    find_package(box2d CONFIG REQUIRED)
+    target_link_libraries(${PROJECT_NAME}  PRIVATE box2d::box2d)
+    
+endif()

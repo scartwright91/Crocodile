@@ -26,6 +26,21 @@ public:
 
     void renderImGui()
     {
+        ImGui::Begin("Features");
+
+        // Objects
+        // text
+        // particles
+
+        // Camera
+
+        // Scene
+
+        // Batch rendering
+
+        //
+
+        ImGui::End();
         ImGui::Render();
     }
 
