@@ -47,9 +47,5 @@ if (NOT EMSCRIPTEN)
     # libsndfile
     find_package(SndFile CONFIG REQUIRED)
     target_link_libraries(${PROJECT_NAME} PRIVATE SndFile::sndfile)
-
-    # Box2d
-    find_package(box2d CONFIG REQUIRED)
-    target_link_libraries(${PROJECT_NAME}  PRIVATE box2d::box2d)
     
 endif()

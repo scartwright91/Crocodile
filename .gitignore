@@ -2,13 +2,9 @@
 # Cmake stuff
 build/
 build_web/
-out/
 CMakeFiles/
 CmakeCache.txt
 
 # VSCode stuff
 .vscode/
 .vs/
-
-# ImGui stuff
-imgui.ini
