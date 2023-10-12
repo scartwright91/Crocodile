@@ -123,7 +123,7 @@ namespace Crocodile
 
 	void Application::loadTextures()
 	{
-		resourceManager.loadTexture("assets/textures/waterDUDV.png", "waterDUDV", true);
+		resourceManager.loadTexture("assets/textures/distortion_texture.png", "distortion_texture", true);
 	}
 
 	void Application::loadAudio()

@@ -407,7 +407,7 @@ namespace Crocodile
 		{
 			camera = new s2d::Camera(window);
 			lightSystem = new s2d::LightSystem();
-			distortionTexture = resourceManager->getTexture("waterDUDV").textureID;
+			distortionTexture = resourceManager->getTexture("distortion_texture").textureID;
 			layerStack = new LayerStack();
 			// renderers
 			spriteRenderer = new s2d::SpriteRenderer(resourceManager->getShader("sprite"));
