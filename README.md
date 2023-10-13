@@ -1,7 +1,7 @@
 
 # Crocodile Game Engine
 
-Crocodile is a hobby project to learn C++, OpenGL and game engine development. Whilst there is still a lot of work and improvement to be done, I have used it to create game-jam games. Contributions of any form (albeit with polite communication) are very much welcome.
+Crocodile is a hobby project to learn C++, OpenGL and game engine development. It is a 2D code-based game engine for Windows and Web (with some limited functionality). Whilst there is still a lot of work and improvement to be done, I have used it to create game-jam games. Contributions of any form (albeit with polite communication) are very much welcome.
 
 ## Installation
 
@@ -11,7 +11,7 @@ Crocodile is a hobby project to learn C++, OpenGL and game engine development. W
 $ git clone https://github.com/scartwright91/Crocodile.git
 ```
 
-1. Install dependencies
+2. Install dependencies
 
 The engine requires the following packages to be installed:
 * GLEW
@@ -26,9 +26,7 @@ I installed them using [vcpkg](https://vcpkg.io/en/)
 
 ### Windows
 
-```
-$ cmake .
-```
+Build using CMake from your favourite development environment (personally I use VSCode / Visual Studio).
 
 ### Web (Emscripten)
 
