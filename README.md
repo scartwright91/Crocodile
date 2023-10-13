@@ -3,6 +3,8 @@
 
 Crocodile is a hobby project to learn C++, OpenGL and game engine development. It is a 2D code-based game engine for Windows and Web (with some limited functionality). Whilst there is still a lot of work and improvement to be done, I have used it to create game-jam games. Contributions of any form (albeit with polite communication) are very much welcome.
 
+![Crocodile](/Resources/crocodile_screenshot.png?raw=true "Crocodile")
+
 ## Installation
 
 1. Clone repository
