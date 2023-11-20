@@ -31,8 +31,7 @@ public:
         glm::vec2 mousePos = window.getMouseScreenPosition();
         glm::vec2 center = glm::vec2(scene->windowWidth / 2, scene->windowHeight / 2);
         float theta = glm::atan(mousePos.y - center.y, mousePos.x - center.x);
-        square->move(glm::cos(theta) * 5.f, glm::sin(theta) * 5.f);
-
+        square->velocity = glm::vec2(glm::cos(theta) * 5.f, glm::sin(theta) * 5.f);
     }
 
     void init()

@@ -30,6 +30,9 @@ namespace Crocodile
 			std::string label = "";
 			double id = glfwGetTime();
 
+			// movement
+			glm::vec2 velocity = glm::vec2(0.f);
+
 			// vertex
 			glm::vec2 size = glm::vec2(0.0f);
 			glm::vec3 modelScale = glm::vec3(1.0f);
@@ -101,9 +104,11 @@ namespace Crocodile
 			s2d::col::BoundingBox getScreenBoundingBox(glm::mat4 view, glm::mat4 projection, float zoom, float width, float height, float layerDepth);
 			s2d::col::BoundingBox getBoundingBox();
 			s2d::col::BoundingBox getShiftedBoundingBox(float dx, float dy);
+			void resolveMovement(float dt);
 
 		private:
 			glm::mat4 applyRotation(glm::mat4 model);
+
 		};
 	}
 }

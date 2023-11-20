@@ -33,8 +33,6 @@ namespace Crocodile
 			bool applyCamera = true;
 			// layer visibility
 			bool hide = false;
-			// collision layer (0 represents no collision)
-			unsigned int collisionLayer = 0;
 
 			std::vector<Object *> objects = {};
 		};

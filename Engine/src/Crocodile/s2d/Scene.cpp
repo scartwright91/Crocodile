@@ -92,6 +92,7 @@ namespace Crocodile
 						if (obj->collisionLayers.size() > 0)
 							for (unsigned int collisionLayer : obj->collisionLayers)
 								resolveCollisions(obj, collisionLayer);
+						obj->resolveMovement(dt);
 					}
 				}
 			}
@@ -420,36 +421,30 @@ namespace Crocodile
 
 		void Scene::resolveCollisions(Object* obj, unsigned int collisionLayer)
 		{
-			glm::vec2 movement = {0.f, 0.f};
+			float d = 0.f;
 			for (s2d::Object *e : collisionLayers[collisionLayer])
 			{
 				// y-axis collision
-				bool yCollision = obj->getShiftedBoundingBox(0.0f, 1.f).intersectsBounds(e->getBoundingBox());
-				float d = 0.f;
+				bool yCollision = obj->getShiftedBoundingBox(0.0f, obj->velocity.y).intersectsBounds(e->getBoundingBox());
 				if (yCollision)
 				{
 					d = obj->getBoundingBox().getMinDistanceFromBounds(e->getBoundingBox(), "y");
-					if (movement.y >= 0)
-					{
-						movement.y = d;
-					}
+					if (obj->velocity.y >= 0)
+						obj->velocity.y = d;
 					else
-						movement.y = -d;
-					if (d < 0)
-						break;
+						obj->velocity.y = -d;
 				}
 				// x-axis collision
-				bool xCollision = obj->getShiftedBoundingBox(movement.x, 0.0f).intersectsBounds(e->getBoundingBox());
+				bool xCollision = obj->getShiftedBoundingBox(obj->velocity.x, 0.0f).intersectsBounds(e->getBoundingBox());
 				if (xCollision)
 				{
 					d = obj->getBoundingBox().getMinDistanceFromBounds(e->getBoundingBox(), "x");
-					if (movement.x >= 0)
-						movement.x = d;
+					if (obj->velocity.x >= 0)
+						obj->velocity.x = d;
 					else
-						movement.x = -d;
+						obj->velocity.x = -d;
 				}
 			}
-			obj->move(movement.x, movement.y);
 		}
 
 		void Scene::init()

@@ -197,5 +197,11 @@ namespace Crocodile
 			return s2d::col::BoundingBox(position.x + dx, position.y + dy, size.x, size.y, rotation);
 		}
 
+		void Object::resolveMovement(float dt)
+		{
+			move(velocity.x, velocity.y);
+			velocity = glm::vec2(0.f);
+		}
+
 	}
 }
