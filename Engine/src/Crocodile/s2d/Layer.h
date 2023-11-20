@@ -29,9 +29,12 @@ namespace Crocodile
 			float alpha = 1.f;
 			// layer will sort all objects by increasing y-position at render time
 			bool ySort = false;
-			bool cameraScroll = true;
-			bool applyZoom = true;
+			// layer will be moved by camera zoom / scrolling
+			bool applyCamera = true;
+			// layer visibility
 			bool hide = false;
+			// collision layer (0 represents no collision)
+			unsigned int collisionLayer = 0;
 
 			std::vector<Object *> objects = {};
 		};

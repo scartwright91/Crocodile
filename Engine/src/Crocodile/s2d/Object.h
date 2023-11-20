@@ -62,6 +62,9 @@ namespace Crocodile
 			// animation
 			Animation *animation = nullptr;
 
+			// collisions
+			std::vector<unsigned int> collisionLayers = {};
+
 		private:
 			glm::vec2 position = glm::vec2(0.0f);
 			bool animated = false;

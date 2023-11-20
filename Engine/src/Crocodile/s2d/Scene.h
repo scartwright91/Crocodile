@@ -98,6 +98,10 @@ namespace Crocodile
 			CircleRenderer *circleRenderer;
 			PostProcessing *postProcessing;
 
+			// collisions
+			void addObjectToCollisionLayer(Object* obj, unsigned int collisionLayer);
+			void removeObjectFromCollisionLayer(Object* obj, unsigned int collisionLayer);
+
 		private:
 
 			// postprocessing
@@ -114,6 +118,14 @@ namespace Crocodile
 
 			// scaling
 			glm::vec2 viewportScale = glm::vec2(1.f);
+
+			// collisions
+			std::map<unsigned int, std::vector<Object*>> collisionLayers = {
+				{0, {}},
+				{1, {}},
+				{2, {}}
+			};
+			void resolveCollisions(Object* obj, unsigned int collisionLayer);
 
 			void init();
 		};

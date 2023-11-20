@@ -38,4 +38,8 @@ if (NOT EMSCRIPTEN)
     find_package(SndFile CONFIG REQUIRED)
     target_link_libraries(${PROJECT_NAME} PRIVATE SndFile::sndfile)
 
+    # LDTKLoader
+    find_package(LDTKLoader 1.4)
+    target_link_libraries(${PROJECT_NAME} PRIVATE LDtkLoader)
+
 endif()

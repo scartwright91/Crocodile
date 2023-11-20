@@ -89,6 +89,9 @@ namespace Crocodile
 					{
 						obj->updateAnimation(dt);
 						obj->modelScale = glm::vec3(viewportScale, 1.f);
+						if (obj->collisionLayers.size() > 0)
+							for (unsigned int collisionLayer : obj->collisionLayers)
+								resolveCollisions(obj, collisionLayer);
 					}
 				}
 			}
@@ -135,13 +138,13 @@ namespace Crocodile
 		{
 			// calculating view matrix
 			glm::mat4 view;
-			if (!layer->cameraScroll)
+			if (!layer->applyCamera)
 				view = glm::mat4(1.0f);
 			else
 				view = camera->getViewMatrix(layer->depth);
 
 			// calculating projection matrix
-			glm::mat4 projection = camera->getProjectionMatrix(layer->applyZoom);
+			glm::mat4 projection = camera->getProjectionMatrix(layer->applyCamera);
 			// get object position
 			glm::vec2 pos = obj->getScaledPosition();
 
@@ -398,6 +401,55 @@ namespace Crocodile
 				delete postProcessing;
 				postProcessing = new s2d::PostProcessing(resourceManager->getShader("postprocessing"), windowWidth, windowHeight);
 			}
+		}
+
+		void Scene::addObjectToCollisionLayer(Object* obj, unsigned int collisionLayer)
+		{
+			if (collisionLayer > 2)
+			{
+				std::cout << "Collision layer must be 0, 1, 2" << std::endl;
+				return;
+			}
+			collisionLayers[collisionLayer].push_back(obj);
+		}
+
+		void Scene::removeObjectFromCollisionLayer(Object* obj, unsigned int collisionLayer)
+		{
+
+		}
+
+		void Scene::resolveCollisions(Object* obj, unsigned int collisionLayer)
+		{
+			glm::vec2 movement = {0.f, 0.f};
+			for (s2d::Object *e : collisionLayers[collisionLayer])
+			{
+				// y-axis collision
+				bool yCollision = obj->getShiftedBoundingBox(0.0f, 1.f).intersectsBounds(e->getBoundingBox());
+				float d = 0.f;
+				if (yCollision)
+				{
+					d = obj->getBoundingBox().getMinDistanceFromBounds(e->getBoundingBox(), "y");
+					if (movement.y >= 0)
+					{
+						movement.y = d;
+					}
+					else
+						movement.y = -d;
+					if (d < 0)
+						break;
+				}
+				// x-axis collision
+				bool xCollision = obj->getShiftedBoundingBox(movement.x, 0.0f).intersectsBounds(e->getBoundingBox());
+				if (xCollision)
+				{
+					d = obj->getBoundingBox().getMinDistanceFromBounds(e->getBoundingBox(), "x");
+					if (movement.x >= 0)
+						movement.x = d;
+					else
+						movement.x = -d;
+				}
+			}
+			obj->move(movement.x, movement.y);
 		}
 
 		void Scene::init()
