@@ -13,43 +13,6 @@ namespace Crocodile
 		{
 		}
 
-		/*
-		void Object::addChild(Object *o)
-		{
-			if (parent == NULL)
-			{
-				children.push_back(o);
-				o->addParent(this);
-				nChildren++;
-			}
-			else
-				std::cout << "Cannot be added: object has parent and recursive relationships not implemented.";
-		}
-
-		void Object::addParent(Object *o)
-		{
-			this->parent = o;
-			syncParentPosition();
-		}
-
-		void Object::removeChild(Object *o)
-		{
-			o->removeParent();
-			children.erase(std::remove(children.begin(), children.end(), o), children.end());
-			nChildren--;
-		}
-
-		void Object::removeParent()
-		{
-			this->parent = nullptr;
-		}
-
-		void Object::clear()
-		{
-			children.clear();
-		}
-		*/
-
 		glm::mat4 Object::calculateModelMatrix(glm::vec2 pos, float layerDepth)
 		{
 			glm::mat4 model = glm::mat4(1);

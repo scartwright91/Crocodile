@@ -19,23 +19,11 @@ namespace Crocodile
 		{
 		}
 
-		bool tick(unsigned int fps)
+		void tick()
 		{
 			float currentFrame = (float)glfwGetTime();
 			deltaTime = currentFrame - lastFrame;
-			if (fps > 0)
-			{
-				if ((1 / deltaTime) <= fps)
-				{
-					lastFrame = currentFrame;
-					return true;
-				}
-				else
-					return false;
-			}
-			else
-				lastFrame = currentFrame;
-			return true;
+			lastFrame = currentFrame;
 		}
 
 		int getFPS()

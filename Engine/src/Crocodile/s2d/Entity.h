@@ -1,6 +1,4 @@
-#include "Scene.h"
-#include "../audio/SoundManager.h"
-
+#include "Object.h"
 #include "../Core.h"
 
 namespace Crocodile
@@ -10,19 +8,12 @@ namespace Crocodile
         class CROCODILE_API Entity
         {
         public:
-            Entity(Scene *scene, std::string layer, ResourceManager *rm, SoundManager *sm);
+            Entity(std::string name);
             ~Entity();
 
+            std::string name;
             Object *sprite = nullptr;
 
-            void add();
-            void remove();
-
-        private:
-            Scene *scene = nullptr;
-            std::string layer = "";
-            ResourceManager *rm = nullptr;
-            SoundManager *sm = nullptr;
         };
     }
 }

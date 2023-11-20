@@ -64,6 +64,7 @@ namespace Crocodile
 				glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
 			// glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
+			// glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
 
 			// create window
 			int count;
@@ -124,6 +125,7 @@ namespace Crocodile
 		void Window::endRender()
 		{
 			glfwSwapBuffers(window);
+			// glFlush();
 			glfwPollEvents();
 		}
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <vector>
-#include <map>
 #include <algorithm>
 
 #include "../Core.h"
@@ -30,47 +29,6 @@ namespace Crocodile
 {
 	namespace s2d
 	{
-
-		struct SceneEntityData
-		{
-			std::string label;
-			std::string layer;
-			std::string texture;
-			glm::vec2 pos;		// pos represents position in level space
-			glm::vec2 worldPos; // worldPos represents position in world space
-			glm::vec2 size;
-			glm::vec3 color;
-			float rotation;
-			float alpha;
-			std::vector<glm::vec2> path;
-			std::vector<glm::vec2> worldPath;
-		};
-
-		struct SceneTextEntityData
-		{
-			std::string text;
-			std::string layer;
-			glm::vec2 pos;
-			glm::vec2 worldPos;
-			glm::vec3 color;
-			glm::vec2 textScale;
-			float alpha;
-		};
-
-		struct SceneParticleEntityData
-		{
-			std::string layer;
-			glm::vec2 pos;
-			glm::vec2 worldPos;
-			glm::vec3 color;
-			std::string texture;
-			int amount;
-			float alpha;
-			float direction;
-			float dispersion;
-			float scale;
-			float velocity;
-		};
 
 		class CROCODILE_API Scene
 		{
@@ -141,6 +99,7 @@ namespace Crocodile
 			PostProcessing *postProcessing;
 
 		private:
+
 			// postprocessing
 			bool greyscale = false;
 			bool wavey = false;

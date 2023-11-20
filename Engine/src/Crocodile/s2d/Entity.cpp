@@ -4,7 +4,7 @@ namespace Crocodile
 {
     namespace s2d
     {
-        Entity::Entity(Scene *scene, std::string layer, ResourceManager *rm, SoundManager *sm) : scene(scene), layer(layer), rm(rm), sm(sm)
+        Entity::Entity(std::string name) : name(name)
         {
             sprite = new Object();
         }
@@ -14,14 +14,5 @@ namespace Crocodile
             delete sprite;
         }
 
-        void Entity::add()
-        {
-            scene->addObject(sprite, layer);
-        }
-
-        void Entity::remove()
-        {
-            scene->removeObject(sprite, layer);
-        }
     }
 }

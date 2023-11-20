@@ -19,14 +19,6 @@ namespace Crocodile
 	namespace s2d
 	{
 
-		struct EntityData
-		{
-			std::string label;
-			glm::vec2 size;
-			glm::vec3 colour;
-			ResourceManager::TextureData texture;
-		};
-
 		class CROCODILE_API Object
 		{
 
@@ -59,13 +51,6 @@ namespace Crocodile
 			bool flipX = false;
 			bool flipY = false;
 
-			/*
-			// children
-			Object *parent = nullptr;
-			std::vector<Object *> children = {};
-			unsigned int nChildren = 0;
-			*/
-
 			// rendering
 			std::string renderMethod = "";
 
@@ -82,13 +67,6 @@ namespace Crocodile
 			bool animated = false;
 
 		public:
-			/*
-			void addChild(Object *o);
-			void addParent(Object *o);
-			void removeChild(Object *o);
-			void removeParent();
-			void clear();
-			*/
 
 			glm::mat4 calculateModelMatrix(glm::vec2 pos, float layerDepth);
 			void move(float dx, float dy);

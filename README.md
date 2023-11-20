@@ -5,6 +5,7 @@ Crocodile is a hobby project to learn C++, OpenGL and game engine development. I
 
 ![Crocodile](/Resources/crocodile_screenshot.png?raw=true "Crocodile")
 
+
 ## Installation
 
 1. Clone repository
@@ -22,7 +23,15 @@ The engine requires the following packages to be installed:
 * OpenAL
 * libsndfile
 
-I installed them using [vcpkg](https://vcpkg.io/en/)
+I installed them using [vcpkg](https://vcpkg.io/en/) with the following commands
+
+```
+$ vcpkg install glew:x64-windows
+$ vcpkg install glfw:x64-windows
+$ vcpkg install freetype:x64-windows
+$ vcpkg install openal-soft:x64-windows
+$ vcpkg install libsndfile:x64-windows
+```
 
 ## Build
 

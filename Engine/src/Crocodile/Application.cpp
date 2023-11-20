@@ -39,7 +39,7 @@ namespace Crocodile
 #else
 		while (!window.closed())
 		{
-			bool b = clock.tick(0);
+			clock.tick();
 			window.beginRender();
 			if (useImGui)
 			{
@@ -48,8 +48,7 @@ namespace Crocodile
 				ImGui::NewFrame();
 			}
 			update(clock.deltaTime);
-			if (b)
-				fixedUpdate(clock.deltaTime);
+			fixedUpdate(clock.deltaTime);
 			scene->update(clock.deltaTime);
 			render();
 			if (useImGui)
