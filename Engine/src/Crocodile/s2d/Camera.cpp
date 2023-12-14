@@ -101,8 +101,8 @@ namespace Crocodile
 		{
 			float width;
 			float height;
-			width = window->getViewportWidth();
-			height = window->getViewportHeight();
+			width = (float)window->getViewportWidth();
+			height = (float)window->getViewportHeight();
 			if (applyZoom)
 			{
 				width *= zoom;
@@ -149,7 +149,6 @@ namespace Crocodile
 				else
 					pos = target->getScaledCenteredPosition();
 				cameraScaledPosition = glm::vec3(pos, 0.0f);
-				cameraPosition = glm::vec3(target->getPosition(), 0.0f);
 			}
 
 			if (clampX || clampY)

@@ -16,8 +16,7 @@ namespace Crocodile
 
 			Object *target = nullptr;
 
-			glm::vec3 cameraPosition = glm::vec3(0.0f);		  // used for offseting parallax layers
-			glm::vec3 cameraScaledPosition = glm::vec3(0.0f); // used for rendering/calculating view matrix
+			glm::vec3 cameraScaledPosition = glm::vec3(0.0f);
 			glm::vec2 screenPos = glm::vec2(0.0f);
 
 			bool capMinimumZoom = true;

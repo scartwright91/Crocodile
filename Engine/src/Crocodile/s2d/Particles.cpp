@@ -89,6 +89,7 @@ namespace Crocodile
 
 		void ParticleGenerator::createParticles()
 		{
+			particles = {};
 			for (unsigned int i = 0; i < this->amount; ++i)
 				particles.push_back(createParticle());
 		}

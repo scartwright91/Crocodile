@@ -53,7 +53,7 @@ namespace Crocodile
 		void Scene::update(float dt)
 		{
 			// update timer (used for shaders)
-			time += 0.05 * dt;
+			time += 0.05f * dt;
 			if (time >= 1.0)
 				time = 0.0;
 			if (enableScaling)
@@ -88,11 +88,13 @@ namespace Crocodile
 					else
 					{
 						obj->updateAnimation(dt);
+						obj->updateSqueezeEffect(dt);
 						obj->modelScale = glm::vec3(viewportScale, 1.f);
+						glm::vec2 velocity = obj->velocity * glm::vec2(dt);
 						if (obj->collisionLayers.size() > 0)
 							for (unsigned int collisionLayer : obj->collisionLayers)
-								resolveCollisions(obj, collisionLayer);
-						obj->resolveMovement(dt);
+								velocity = resolveCollisions(obj, collisionLayer, velocity);
+						obj->move(velocity.x, velocity.y);
 					}
 				}
 			}
@@ -106,10 +108,10 @@ namespace Crocodile
 			// render grid
 			if (grid->active)
 				grid->render(
-					windowWidth,
-					windowHeight,
-					camera->cameraPosition.x,
-					camera->cameraPosition.y,
+					(float)windowWidth,
+					(float)windowHeight,
+					camera->cameraScaledPosition.x,
+					camera->cameraScaledPosition.y,
 					camera->zoom);
 			// render scene objects
 			for (Layer *layer : layerStack->layers)
@@ -130,8 +132,8 @@ namespace Crocodile
 					fadeinTransition,
 					fadeoutTransition,
 					transitionCounter,
-					windowWidth,
-					windowHeight);
+					(float)windowWidth,
+					(float)windowHeight);
 			}
 		}
 
@@ -149,14 +151,14 @@ namespace Crocodile
 			// get object position
 			glm::vec2 pos = obj->getScaledPosition();
 
+			std::vector<Light *> lights;
+			if (enableLighting)
+				lights = lightSystem->getScaledLights(obj->modelScale);
+			else
+				lights = {};
+				
 			if (obj->renderMethod == "sprite")
 			{
-				std::vector<Light *> lights;
-				if (enableLighting)
-					lights = lightSystem->getScaledLights(obj->modelScale);
-				else
-					lights = {};
-
 				spriteRenderer->render(
 					time,
 					obj->calculateModelMatrix(pos, 1.f),
@@ -181,7 +183,10 @@ namespace Crocodile
 					obj->distortionSpeed,
 					obj->flipX,
 					obj->flipY,
-					layer->alpha);
+					layer->alpha,
+					obj->useSqueeze,
+					obj->deformationMagnitude
+					);
 			}
 			else if (obj->renderMethod == "particles")
 			{
@@ -195,7 +200,10 @@ namespace Crocodile
 					pg->useTexture,
 					pg->color,
 					pg->alpha,
-					layer->alpha);
+					layer->alpha,
+					ambientLighting,
+					lights
+					);
 			}
 			else if (obj->renderMethod == "text")
 			{
@@ -242,7 +250,10 @@ namespace Crocodile
 					view,
 					projection,
 					batchSprite->texture,
-					batchSprite->alpha);
+					batchSprite->alpha,
+					ambientLighting,
+					lights
+					);
 			}
 			else
 			{
@@ -311,6 +322,7 @@ namespace Crocodile
 			lightSystem->clear();
 			for (Layer *layer : layerStack->layers)
 				layer->objects.clear();
+			collisionLayers.clear();
 		}
 
 		unsigned int Scene::getTextureBuffer()
@@ -416,35 +428,87 @@ namespace Crocodile
 
 		void Scene::removeObjectFromCollisionLayer(Object* obj, unsigned int collisionLayer)
 		{
-
+			if (collisionLayer > 2)
+			{
+				std::cout << "Collision layer must be 0, 1, 2" << std::endl;
+				return;
+			}
+			collisionLayers[collisionLayer].erase(
+				std::remove(
+					collisionLayers[collisionLayer].begin(), 
+					collisionLayers[collisionLayer].end(),
+					obj
+				),
+				collisionLayers[collisionLayer].end()
+			);
 		}
 
-		void Scene::resolveCollisions(Object* obj, unsigned int collisionLayer)
+		glm::vec2 Scene::resolveCollisions(Object* obj, unsigned int collisionLayer, glm::vec2 velocity)
 		{
+			obj->collisionData[collisionLayer].on_floor = false;
+			obj->collisionData[collisionLayer].on_ceiling = false;
+			obj->collisionData[collisionLayer].on_wall_left = false;
+			obj->collisionData[collisionLayer].on_wall_right = false;
 			float d = 0.f;
 			for (s2d::Object *e : collisionLayers[collisionLayer])
 			{
 				// y-axis collision
-				bool yCollision = obj->getShiftedBoundingBox(0.0f, obj->velocity.y).intersectsBounds(e->getBoundingBox());
+				bool yCollision = obj->getShiftedBoundingBox(0.0f, velocity.y).intersectsBounds(e->getBoundingBox());
 				if (yCollision)
 				{
 					d = obj->getBoundingBox().getMinDistanceFromBounds(e->getBoundingBox(), "y");
-					if (obj->velocity.y >= 0)
-						obj->velocity.y = d;
+					if (velocity.y >= 0)
+					{
+						obj->collisionData[collisionLayer].on_floor = true;
+						velocity.y = d;
+						obj->velocity.y = 0.f;
+					}
 					else
-						obj->velocity.y = -d;
+					{
+						velocity.y = -d;
+						obj->collisionData[collisionLayer].on_ceiling = true;
+					}
 				}
 				// x-axis collision
-				bool xCollision = obj->getShiftedBoundingBox(obj->velocity.x, 0.0f).intersectsBounds(e->getBoundingBox());
+				bool xCollision = obj->getShiftedBoundingBox(velocity.x, 0.0f).intersectsBounds(e->getBoundingBox());
 				if (xCollision)
 				{
 					d = obj->getBoundingBox().getMinDistanceFromBounds(e->getBoundingBox(), "x");
-					if (obj->velocity.x >= 0)
-						obj->velocity.x = d;
+					if (velocity.x >= 0)
+					{
+						velocity.x = d;
+						obj->collisionData[collisionLayer].on_wall_left = true;
+					}
 					else
-						obj->velocity.x = -d;
+					{
+						velocity.x = -d;
+						obj->collisionData[collisionLayer].on_wall_right = true;
+					}
 				}
 			}
+			return velocity;
+		}
+
+		std::vector<std::string> Scene::getEntityGroupNames()
+		{
+			std::vector<std::string> keys;
+			for (auto it = entityGroups.begin(); it != entityGroups.end(); it++) {
+				keys.push_back(it->first);
+			}
+			return keys;
+		}
+
+		void Scene::addEntityToGroup(Object* obj, std::string group)
+		{
+			if (entityGroups.find(group) == entityGroups.end())
+				entityGroups[group] = {obj};
+			else
+				entityGroups[group].push_back(obj);
+		}
+
+		std::vector<Object*> Scene::getEntityGroup(std::string group)
+		{
+			return entityGroups[group];
 		}
 
 		void Scene::init()

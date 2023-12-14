@@ -3,6 +3,7 @@
 #include <vector>
 #include "Renderer.h"
 #include "../Particles.h"
+#include "../LightSystem.h"
 
 namespace Crocodile
 {
@@ -23,7 +24,10 @@ namespace Crocodile
 				bool useTexture,
 				glm::vec3 spriteColor,
 				float alpha,
-				float layerAlpha);
+				float layerAlpha,
+                float ambientLighting,
+                std::vector<Light *> lights
+				);
 
 		private:
 			void initShader();

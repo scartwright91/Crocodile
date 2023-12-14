@@ -38,8 +38,8 @@ namespace Crocodile
 			// Particle attributes
 			float w = 0;
 			float h = 0;
-			float direction = 0.5;
-			float dispersion = 0.1;
+			float direction = 0.5f;
+			float dispersion = 0.1f;
 			float scale = 1.0f;
 			float velocity = 1.0f;
 			float life = .5f;

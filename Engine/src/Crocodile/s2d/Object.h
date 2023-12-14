@@ -19,6 +19,15 @@ namespace Crocodile
 	namespace s2d
 	{
 
+		struct CollisionData {
+			inline bool hasCollided() const { return on_floor || on_ceiling || on_wall_left || on_wall_right; }
+			bool on_floor = false;
+			bool on_ceiling = false;
+			bool on_wall_left = false;
+			bool on_wall_right = false;
+			CollisionData() {};
+		};
+
 		class CROCODILE_API Object
 		{
 
@@ -67,6 +76,11 @@ namespace Crocodile
 
 			// collisions
 			std::vector<unsigned int> collisionLayers = {};
+			std::map<unsigned int, CollisionData> collisionData = {
+				{0, CollisionData()},
+				{1, CollisionData()},
+				{2, CollisionData()}
+			};
 
 		private:
 			glm::vec2 position = glm::vec2(0.0f);
@@ -90,7 +104,7 @@ namespace Crocodile
 			float getYSortValue();
 			void setPosition(glm::vec2 pos);
 
-			// textures and animations
+			// textures, animations, vfx
 			void setTexture(ResourceManager::TextureData texture);
 			void setTileMapTexture(
 				ResourceManager::TextureData texture,
@@ -101,10 +115,20 @@ namespace Crocodile
 			void updateAnimation(float dt);
 			void setDistortionProperties(bool useDistortion, bool scrollX, bool scrollY, float distortionSpeed);
 
+			// squeeze & stretch vfx
+			void setSqueezeEffect(glm::vec2 maxDeformation, float squeezeDuration);
+			void updateSqueezeEffect(float dt);
+			float currentSqueezeElapsed = 0.0f;
+			float squeezeDuration = 0.0f;
+			bool useSqueeze = false;
+			bool squeezeOut = true;
+			glm::vec2 deformationMagnitude = glm::vec2(0.f);
+			glm::vec2 maxDeformation = glm::vec2(0.f);
+
+			bool intersects(Object* obj);
 			s2d::col::BoundingBox getScreenBoundingBox(glm::mat4 view, glm::mat4 projection, float zoom, float width, float height, float layerDepth);
 			s2d::col::BoundingBox getBoundingBox();
 			s2d::col::BoundingBox getShiftedBoundingBox(float dx, float dy);
-			void resolveMovement(float dt);
 
 		private:
 			glm::mat4 applyRotation(glm::mat4 model);

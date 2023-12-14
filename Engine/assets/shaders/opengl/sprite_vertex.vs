@@ -1,5 +1,5 @@
 #version 330 core
-layout (location = 0) in vec4 vertex; // <vec2 position, vec2 texCoords>
+layout (location = 0) in vec4 vertex;
 
 out vec2 TexCoords;
 out vec3 FragPos;
@@ -16,6 +16,10 @@ uniform vec2 u_TextureOffset;
 uniform bool u_FlipX;
 uniform bool u_FlipY;
 
+// squeeze effect
+uniform bool u_Squeeze;
+uniform vec2 u_Deformation;
+
 void main()
 {
 
@@ -29,6 +33,15 @@ void main()
 	if (u_FlipY)
 		TexCoords.y = 1 - TexCoords.y;
 
-	FragPos = vec3(u_Model * vec4(vertex.xy, 0.0, 1.0));
+	vec2 v = vertex.xy;
+	if (u_Squeeze)
+	{
+		v -= vec2(0.5);
+		v *= vec2(1. + u_Deformation.x, 1. + u_Deformation.y);
+		v += vec2(0.5);
+	}
+
+	FragPos = vec3(u_Model * vec4(v, 0.0, 1.0));
 	gl_Position = u_Projection * u_View * vec4(FragPos, 1.0);
+
 }

@@ -38,7 +38,7 @@ namespace Crocodile
                 {
                     Character ch = characters[*c];
                     x += (ch.Advance >> 6);
-                    float ySize = (2 * ch.Size.y - ch.Bearing.y);
+                    float ySize = (float)(2 * ch.Size.y - ch.Bearing.y);
                     if (ySize > y)
                         y = ySize;
                 }

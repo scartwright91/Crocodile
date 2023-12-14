@@ -26,7 +26,10 @@ namespace Crocodile
                 glm::mat4 view,
                 glm::mat4 projection,
                 ResourceManager::TextureData texture,
-                float alpha);
+                float alpha,
+                float ambientLighting,
+                std::vector<Light *> lights
+                );
 
             void createRenderer(graphics::Shader *shader);
 

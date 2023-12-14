@@ -26,6 +26,7 @@ namespace Crocodile
 			bool freezeAnimation = false;
 			bool repeat = true;
 			bool finished = false;
+			float delayBetweenAnimations = 0.f;
 
 			// spritesheet variables
 			ResourceManager::TextureData spritesheet = {};
@@ -41,6 +42,7 @@ namespace Crocodile
 
 		private:
 			float timer = 0.0f;
+			float finishTimer = 0.0f;
 		};
 	}
 }

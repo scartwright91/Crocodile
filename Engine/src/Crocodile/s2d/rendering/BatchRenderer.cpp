@@ -96,7 +96,10 @@ namespace Crocodile
             glm::mat4 view,
             glm::mat4 projection,
             ResourceManager::TextureData texture,
-            float alpha)
+            float alpha,
+            float ambientLighting,
+            std::vector<Light *> lights
+            )
         {
             // prepare shader
             shader->use();
@@ -106,6 +109,17 @@ namespace Crocodile
             glActiveTexture(GL_TEXTURE0);
             glBindTexture(GL_TEXTURE_2D, texture.textureID);
             shader->setFloat("u_Alpha", alpha);
+            // lighting
+            shader->setBool("u_EnableLighting", true);
+            shader->setFloat("u_AmbientLighting", ambientLighting);
+            if (lights.size() > 0)
+            {
+                for (unsigned int i = 0; i < lights.size(); i++)
+                {
+                    shader->setVec3("u_Light[" + std::to_string(i) + "].position", glm::vec3(lights[i]->position, 1.0f));
+                    shader->setFloat("u_Light[" + std::to_string(i) + "].dist", lights[i]->radius);
+                }
+            }
             // bind and draw
             glBindVertexArray(VAO);
             glDrawArrays(GL_TRIANGLES, 0, 6 * positions.size());

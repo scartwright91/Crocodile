@@ -4,6 +4,7 @@
 #include "../../graphics/Shader.h"
 
 #include "../../ResourceManager.h"
+#include "../LightSystem.h"
 
 namespace Crocodile
 {
@@ -25,7 +26,9 @@ namespace Crocodile
                 glm::mat4 view,
                 glm::mat4 projection,
                 ResourceManager::TextureData texture,
-                float alpha);
+                float alpha,
+                float ambientLighting,
+                std::vector<Light *> lights);
             void initShader();
 
             graphics::Shader *shader;

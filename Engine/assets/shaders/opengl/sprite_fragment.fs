@@ -74,8 +74,13 @@ void main()
 	{
 		float light = 0.0f;
 		for(int i = 0; i < NR_POINT_LIGHTS; i++)
-			light += u_Light[i].dist / (distance(u_Light[i].position, FragPos));
+		{
+			float d = distance(u_Light[i].position, FragPos);
+			if (d < u_Light[i].dist)
+				light += (u_Light[i].dist - d) / u_Light[i].dist;
+		}
 		result.rgb *= max(min(1.0, light), u_AmbientLighting);
+
 	}
 
 	// outline shader
@@ -90,7 +95,7 @@ void main()
 					texture(u_Texture, vec2(TexCoords.x - offset, TexCoords.y)).a +
 					texture(u_Texture, vec2(TexCoords.x, TexCoords.y + offset)).a;
 				if (result.a < 1.0 && a > 0.0)
-					result = vec4(1.0, 0.0, 0.0, 1.0);
+					result = vec4(1.0, 1.0, 1.0, 1.0);
 			}
 		}
 		else
@@ -102,7 +107,7 @@ void main()
 
 		   if (!(TexCoords.x < maxX && TexCoords.x > minX &&
 			   TexCoords.y < maxY && TexCoords.y > minY))
-			   result = vec4(1.0, 0.0, 0.0, 1.0);
+			   result = vec4(1.0, 1.0, 1.0, 1.0);
 		}
 	}
 

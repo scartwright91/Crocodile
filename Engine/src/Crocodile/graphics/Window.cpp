@@ -64,7 +64,7 @@ namespace Crocodile
 				glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
 			// glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
-			// glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
+			glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
 
 			// create window
 			int count;
@@ -124,8 +124,8 @@ namespace Crocodile
 
 		void Window::endRender()
 		{
-			glfwSwapBuffers(window);
-			// glFlush();
+			// glfwSwapBuffers(window);
+			glFlush();
 			glfwPollEvents();
 		}
 
@@ -180,7 +180,7 @@ namespace Crocodile
 		void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 		{
 			Window *win = (Window *)glfwGetWindowUserPointer(window);
-			win->scroll.y += yoffset;
+			win->scroll.y += (float)yoffset;
 		}
 
 	}

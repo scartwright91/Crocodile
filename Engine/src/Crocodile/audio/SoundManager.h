@@ -31,10 +31,15 @@ namespace Crocodile
             sources.clear();
         };
 
-        void play(std::string name, unsigned int source)
+        void play(std::string name, unsigned int source, bool repeat)
         {
             ALuint sound = soundBuffer->getSound(name);
-            sources[source]->play(sound);
+            sources[source]->play(sound, repeat);
+        }
+
+        void setSourceVolume(unsigned int source, float volume)
+        {
+            sources[source]->setVolume(volume);
         }
 
         SoundBuffer *soundBuffer = nullptr;

@@ -40,7 +40,10 @@ namespace Crocodile
 				float distortionSpeed,
 				bool flipX,
 				bool flipY,
-				float layerAlpha);
+				float layerAlpha,
+				bool useSqueeze,
+				glm::vec2 deformation
+				);
 
 		private:
 			void initShader();

@@ -1,4 +1,4 @@
-#include "Object.h"
+#include "Scene.h"
 #include "../Core.h"
 
 namespace Crocodile
@@ -8,11 +8,12 @@ namespace Crocodile
         class CROCODILE_API Entity
         {
         public:
-            Entity(std::string name);
+            Entity(s2d::Scene* scene, ResourceManager* rm);
             ~Entity();
 
-            std::string name;
             Object *sprite = nullptr;
+            s2d::Scene* scene = nullptr;
+            ResourceManager* rm = nullptr;
 
         };
     }

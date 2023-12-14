@@ -22,7 +22,17 @@ namespace Crocodile
 		void tick()
 		{
 			float currentFrame = (float)glfwGetTime();
-			deltaTime = currentFrame - lastFrame;
+			if (firstFrame)
+			{
+				deltaTime = 0.f;
+				firstFrame = false;
+			}
+			else
+			{
+				deltaTime = currentFrame - lastFrame;
+				if (deltaTime > 0.1)
+					deltaTime = 0.0;
+			}
 			lastFrame = currentFrame;
 		}
 
@@ -33,5 +43,6 @@ namespace Crocodile
 
 	private:
 		float lastFrame = 0.0f;
+		bool firstFrame = true;
 	};
 }

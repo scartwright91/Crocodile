@@ -18,7 +18,10 @@ namespace Crocodile
 			bool useTexture,
 			glm::vec3 spriteColor,
 			float alpha,
-			float layerAlpha)
+			float layerAlpha,
+			float ambientLighting,
+			std::vector<Light *> lights
+			)
 		{
 			// use additive blending to give it a 'glow' effect
 			// glBlendFunc(GL_SRC_ALPHA, GL_ONE);
@@ -54,6 +57,19 @@ namespace Crocodile
 					glBindVertexArray(0);
 				}
 			}
+
+            // lighting
+            shader->setBool("u_EnableLighting", true);
+            shader->setFloat("u_AmbientLighting", ambientLighting);
+            if (lights.size() > 0)
+            {
+                for (unsigned int i = 0; i < lights.size(); i++)
+                {
+                    shader->setVec3("u_Light[" + std::to_string(i) + "].position", glm::vec3(lights[i]->position, 1.0f));
+                    shader->setFloat("u_Light[" + std::to_string(i) + "].dist", lights[i]->radius);
+                }
+            }
+
 			// reset blending
 			// aaglBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 		}

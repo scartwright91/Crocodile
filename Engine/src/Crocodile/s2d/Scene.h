@@ -102,6 +102,11 @@ namespace Crocodile
 			void addObjectToCollisionLayer(Object* obj, unsigned int collisionLayer);
 			void removeObjectFromCollisionLayer(Object* obj, unsigned int collisionLayer);
 
+			// entity groups
+			std::vector<std::string> getEntityGroupNames();
+			void addEntityToGroup(Object* obj, std::string group);
+			std::vector<Object*> getEntityGroup(std::string group);
+
 		private:
 
 			// postprocessing
@@ -125,7 +130,10 @@ namespace Crocodile
 				{1, {}},
 				{2, {}}
 			};
-			void resolveCollisions(Object* obj, unsigned int collisionLayer);
+			glm::vec2 resolveCollisions(Object* obj, unsigned int collisionLayer, glm::vec2 velocity);
+
+			// entity groups
+			std::map<std::string, std::vector<Object*>> entityGroups = {};
 
 			void init();
 		};

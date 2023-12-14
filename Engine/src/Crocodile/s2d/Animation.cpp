@@ -35,18 +35,32 @@ namespace Crocodile
 
 		void Animation::updateAnimation(float dt)
 		{
-			if (!freezeAnimation && !finished)
+			if (!freezeAnimation)
 			{
-				timer += dt;
-				if (timer > frameDuration)
+				if (!finished)
 				{
-					currentFrame = (currentFrame + 1) % totalFrames;
-					timer = 0.0f;
+					timer += dt;
+					if (timer > frameDuration)
+					{
+						currentFrame += 1;
+						timer = 0.0f;
+						if (currentFrame == totalFrames)
+						{
+							finishTimer = (float)glfwGetTime();
+							finished = true;
+							currentFrame = 0;
+						}
+					}
 				}
-				if (!repeat && currentFrame == totalFrames - 1)
+				else
 				{
-					finished = true;
-					return;
+					if (!repeat)
+						return;
+					if (glfwGetTime() - finishTimer > delayBetweenAnimations)
+					{
+						finished = false;
+						timer = 0.0f;
+					}
 				}
 			}
 		}

@@ -33,7 +33,10 @@ namespace Crocodile
             float distortionSpeed,
             bool flipX,
             bool flipY,
-            float layerAlpha)
+            float layerAlpha,
+            bool useSqueeze,
+            glm::vec2 deformation
+            )
         {
             // prepare shader
             shader->use();
@@ -80,6 +83,9 @@ namespace Crocodile
             // filter effects
             shader->setBool("u_Outline", outline);
             shader->setFloat("u_AspectRatio", aspectRatio);
+            // squeeze effect
+            shader->setBool("u_Squeeze", useSqueeze);
+            shader->setVec2("u_Deformation", deformation);
             // bind and draw
             glBindVertexArray(VAO);
             glDrawArrays(GL_TRIANGLES, 0, 6);

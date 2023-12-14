@@ -21,7 +21,7 @@ namespace Crocodile
 
 		void LightSystem::removeLight(Light* light)
 		{
-
+			lights.erase(std::remove(lights.begin(), lights.end(), light), lights.end());
 		}
 
 		void LightSystem::clear()

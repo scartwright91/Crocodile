@@ -30,7 +30,8 @@ namespace Crocodile
 		void Object::moveTowards(glm::vec2 targetPosition, float distance)
 		{
 			float theta = std::atan2(targetPosition.y - position.y, targetPosition.x - position.x);
-			move(std::cos(theta) * distance, std::sin(theta) * distance);
+			velocity.x = std::cos(theta) * distance;
+			velocity.y = std::sin(theta) * distance;
 		}
 
 		void Object::scale(glm::vec2 s)
@@ -41,8 +42,8 @@ namespace Crocodile
 		void Object::rotate(float v)
 		{
 			rotation += v;
-			if (rotation > 2 * 3.14159265358979323846)
-				rotation -= (2 * 3.14159265358979323846);
+			if (rotation > 2 * 3.14159265358979323846f)
+				rotation -= (2 * 3.14159265358979323846f);
 		}
 
 		glm::mat4 Object::applyRotation(glm::mat4 model)
@@ -84,7 +85,7 @@ namespace Crocodile
 
 		float Object::getDistanceFrom(glm::vec2 targetPosition)
 		{
-			float sqDifference = std::pow(targetPosition.x - position.x, 2) + std::pow(targetPosition.y - position.y, 2);
+			float sqDifference = (float)std::pow(targetPosition.x - position.x, 2) + (float)std::pow(targetPosition.y - position.y, 2);
 			return std::sqrt(sqDifference);
 		}
 
@@ -155,6 +156,16 @@ namespace Crocodile
 			this->distortionSpeed = distortionSpeed;
 		}
 
+		void Object::setSqueezeEffect(glm::vec2 maxDeformation, float squeezeDuration)
+		{
+			if (!useSqueeze)
+			{
+				this->maxDeformation = maxDeformation;
+				this->squeezeDuration = squeezeDuration;
+				useSqueeze = true;
+			}
+		}
+
 		glm::vec2 Object::getScreenPosition(bool centre, glm::mat4 view, glm::mat4 projection, float width, float height, float layerDepth)
 		{
 			glm::mat4 model = calculateModelMatrix(centre ? getCenteredPosition() : getPosition(), layerDepth);
@@ -178,12 +189,17 @@ namespace Crocodile
 			glm::vec2 pos = mvp * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 			glm::vec2 scaledSize = getScaledSize();
 			s2d::col::BoundingBox bbox = s2d::col::BoundingBox(
-				(pos.x * 0.5 + 0.5) * width,
-				height - (pos.y * 0.5 + 0.5) * height,
+				(pos.x * 0.5f + 0.5f) * width,
+				height - (pos.y * 0.5f + 0.5f) * height,
 				scaledSize.x / zoom,
 				scaledSize.y / zoom,
 				rotation);
 			return bbox;
+		}
+
+		bool Object::intersects(Object* obj)
+		{
+			return getBoundingBox().intersectsBounds(obj->getBoundingBox());
 		}
 
 		s2d::col::BoundingBox Object::getBoundingBox()
@@ -197,10 +213,32 @@ namespace Crocodile
 			return s2d::col::BoundingBox(position.x + dx, position.y + dy, size.x, size.y, rotation);
 		}
 
-		void Object::resolveMovement(float dt)
+		void Object::updateSqueezeEffect(float dt)
 		{
-			move(velocity.x, velocity.y);
-			velocity = glm::vec2(0.f);
+			if (!useSqueeze)
+				return;
+
+			if (squeezeOut)
+			{
+				currentSqueezeElapsed += dt;
+				if (currentSqueezeElapsed > squeezeDuration)
+				{
+					squeezeOut = false;
+				}
+			}
+			else
+			{
+				currentSqueezeElapsed -= dt;
+				if (currentSqueezeElapsed < 0.0f)
+				{
+					useSqueeze = false;
+					squeezeOut = true;
+					currentSqueezeElapsed = 0.0f;
+				}
+			}
+			float r =  currentSqueezeElapsed / squeezeDuration;
+			deformationMagnitude.x = maxDeformation.x * r;
+			deformationMagnitude.y = maxDeformation.y * r;
 		}
 
 	}

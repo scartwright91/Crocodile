@@ -29,7 +29,7 @@ namespace Crocodile
 			Layer *getLayer(std::string name);
 
 			unsigned int getLayerPosition(std::string name);
-			unsigned int inline getLayerNumber() { return layers.size(); }
+			unsigned int inline getLayerNumber() { return (unsigned int)layers.size(); }
 
 			std::vector<Layer *> layers = {};
 

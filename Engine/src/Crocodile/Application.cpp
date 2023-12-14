@@ -55,7 +55,7 @@ namespace Crocodile
 			{
 				renderImGui();
 				ImGuiIO &io = ImGui::GetIO();
-				io.DisplaySize = ImVec2(window.getWidth(), window.getHeight());
+				io.DisplaySize = ImVec2((float)window.getWidth(), (float)window.getHeight());
 				io.FontGlobalScale = fontImGuiScale;
 				mouseOnImGuiWindow = io.WantCaptureMouse;
 				ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());

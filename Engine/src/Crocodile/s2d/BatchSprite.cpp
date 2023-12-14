@@ -27,9 +27,12 @@ namespace Crocodile
             glm::mat4 view,
             glm::mat4 projection,
             ResourceManager::TextureData texture,
-            float alpha)
+            float alpha,
+            float ambientLighting,
+            std::vector<Light *> lights
+            )
         {
-            renderer->render(view, projection, texture, alpha);
+            renderer->render(view, projection, texture, alpha, ambientLighting, lights);
         }
 
         void BatchSprite::createRenderer(graphics::Shader *shader)
