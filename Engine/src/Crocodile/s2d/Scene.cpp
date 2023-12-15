@@ -117,7 +117,11 @@ namespace Crocodile
 			for (Layer *layer : layerStack->layers)
 				if (!layer->hide)
 					for (Object *obj : layer->objects)
+					{
 						renderObject(obj, layer);
+						for (Object* childObject : obj->children)
+							renderObject(childObject, layer);
+					}
 			// finish and render postprocessing
 			if (enablePostprocessing)
 			{

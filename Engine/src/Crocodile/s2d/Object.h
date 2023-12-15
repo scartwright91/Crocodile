@@ -87,6 +87,8 @@ namespace Crocodile
 			bool animated = false;
 
 		public:
+			std::vector<Object*> children = {};
+			void addChildObject(Object* obj);
 
 			glm::mat4 calculateModelMatrix(glm::vec2 pos, float layerDepth);
 			void move(float dx, float dy);

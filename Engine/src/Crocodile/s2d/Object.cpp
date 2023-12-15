@@ -13,6 +13,12 @@ namespace Crocodile
 		{
 		}
 
+		void Object::addChildObject(Object* obj)
+		{
+			obj->setPosition(position + obj->getPosition());
+			children.push_back(obj);
+		}
+
 		glm::mat4 Object::calculateModelMatrix(glm::vec2 pos, float layerDepth)
 		{
 			glm::mat4 model = glm::mat4(1);
@@ -25,6 +31,8 @@ namespace Crocodile
 		void Object::move(float dx, float dy)
 		{
 			position += glm::vec2(dx, dy);
+			for (Object* obj : children)
+				obj->move(dx, dy);
 		}
 
 		void Object::moveTowards(glm::vec2 targetPosition, float distance)
@@ -32,6 +40,8 @@ namespace Crocodile
 			float theta = std::atan2(targetPosition.y - position.y, targetPosition.x - position.x);
 			velocity.x = std::cos(theta) * distance;
 			velocity.y = std::sin(theta) * distance;
+			for (Object* obj : children)
+				obj->velocity = velocity;
 		}
 
 		void Object::scale(glm::vec2 s)
