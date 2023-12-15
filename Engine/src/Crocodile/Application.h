@@ -51,6 +51,7 @@ namespace Crocodile
 		// imgui variables
 		float fontImGuiScale = 1.f;
 		bool mouseOnImGuiWindow = false;
+		bool running = true;
 
 	private:
 		void loadShaders();

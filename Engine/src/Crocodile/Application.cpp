@@ -37,7 +37,7 @@ namespace Crocodile
 		};
 		emscripten_set_main_loop_arg(dispatch_main, &mainLoop, 0, 1);
 #else
-		while (!window.closed())
+		while (!window.closed() && running)
 		{
 			clock.tick();
 			window.beginRender();
