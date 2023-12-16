@@ -17,14 +17,10 @@ namespace Crocodile
             std::string fullText = "";
             std::string text = "";
 
-            Text()
-            {
-                renderMethod = "text";
-            }
+            std::string fontName;
 
-            Text(std::string text, bool unravelByLetter)
+            Text(std::string fontName) : fontName(fontName)
             {
-                setText(text, unravelByLetter);
                 renderMethod = "text";
             }
 

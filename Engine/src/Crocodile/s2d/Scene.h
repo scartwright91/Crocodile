@@ -90,13 +90,16 @@ namespace Crocodile
 			ResourceManager *resourceManager;
 			virtual void renderObject(Object *obj, Layer *layer);
 
+			// text
+			void addTextRenderer(const std::string name, const std::string fontPath, unsigned int fontSize);
+
 			// render pipelines
 			SpriteRenderer *spriteRenderer;
 			ParticleRenderer *particleRenderer;
-			TextRenderer *textRenderer;
 			LineRenderer *lineRenderer;
 			CircleRenderer *circleRenderer;
 			PostProcessing *postProcessing;
+			std::map<std::string, TextRenderer*> textRenderers = {};
 
 			// collisions
 			void addObjectToCollisionLayer(Object* obj, unsigned int collisionLayer);

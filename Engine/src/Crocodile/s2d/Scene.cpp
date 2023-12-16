@@ -21,7 +21,7 @@ namespace Crocodile
 		{
 			delete spriteRenderer;
 			delete particleRenderer;
-			delete textRenderer;
+			// delete textRenderer;
 			delete postProcessing;
 			delete grid;
 			delete lightSystem;
@@ -212,7 +212,7 @@ namespace Crocodile
 			else if (obj->renderMethod == "text")
 			{
 				Text *text = (Text *)obj;
-				textRenderer->render(
+				textRenderers[text->fontName]->render(
 					text->text,
 					text->calculateModelMatrix(pos, 1.f),
 					view,
@@ -515,6 +515,11 @@ namespace Crocodile
 			return entityGroups[group];
 		}
 
+		void Scene::addTextRenderer(const std::string name, const std::string fontPath, unsigned int fontSize)
+		{
+			textRenderers[name] = new s2d::TextRenderer(fontPath, fontSize, resourceManager->getShader("text")); 
+		}
+
 		void Scene::init()
 		{
 			camera = new s2d::Camera(window);
@@ -527,8 +532,8 @@ namespace Crocodile
 			lineRenderer = new s2d::LineRenderer(resourceManager->getShader("line"));
 			circleRenderer = new s2d::CircleRenderer(resourceManager->getShader("circle"));
 			postProcessing = new s2d::PostProcessing(resourceManager->getShader("postprocessing"), windowWidth, windowHeight);
-			textRenderer = new s2d::TextRenderer("assets/fonts/OpenSans-Regular.ttf", resourceManager->getShader("text"));
 			grid = new s2d::BackgroundGrid(resourceManager->getShader("grid"));
+			textRenderers["default"] = new s2d::TextRenderer("assets/fonts/OpenSans-Regular.ttf", 48, resourceManager->getShader("text"));
 		}
 
 	}

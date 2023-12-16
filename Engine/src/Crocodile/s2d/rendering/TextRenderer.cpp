@@ -4,10 +4,12 @@ namespace Crocodile
 {
     namespace s2d
     {
-        TextRenderer::TextRenderer(std::string fontPath, graphics::Shader *shader)
+        TextRenderer::TextRenderer(
+            std::string fontPath,
+            unsigned int fontSize,
+            graphics::Shader *shader
+        ) : fontPath(fontPath), fontSize(fontSize), shader(shader)
         {
-            this->fontPath = fontPath;
-            this->shader = shader;
             this->shader->setInt("u_Text", 0);
             init();
         }
@@ -53,7 +55,6 @@ namespace Crocodile
                 Character ch = characters[*c];
 
                 float xpos = x + ch.Bearing.x * textScale.x;
-                // float ypos = y - (ch.Size.y - ch.Bearing.y) * textScale.y;
                 float ypos = y + (characters['H'].Bearing.y - ch.Bearing.y) * textScale.y;
 
                 float w = ch.Size.x * textScale.x;
@@ -102,7 +103,6 @@ namespace Crocodile
             // load font as face
             FT_Face face;
             if (FT_New_Face(ft, fontPath.c_str(), 0, &face))
-            // if (FT_New_Memory_Face(ft, Vollkorn_Regular_ttf, Vollkorn_Regular_ttf_len, 0, &face))
             {
                 std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
                 return false;
@@ -110,7 +110,7 @@ namespace Crocodile
             else
             {
                 // set size to load glyphs as
-                FT_Set_Pixel_Sizes(face, 0, 48);
+                FT_Set_Pixel_Sizes(face, 0, fontSize);
 
                 // disable byte-alignment restriction
                 glPixelStorei(GL_UNPACK_ALIGNMENT, 1);

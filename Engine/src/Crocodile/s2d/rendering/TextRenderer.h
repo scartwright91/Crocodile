@@ -33,7 +33,7 @@ namespace Crocodile
 		{
 
 		public:
-			TextRenderer(std::string fontPath, graphics::Shader *shader);
+			TextRenderer(std::string fontPath, unsigned int fontSize, graphics::Shader *shader);
 			~TextRenderer();
 
 			void render(
@@ -49,6 +49,7 @@ namespace Crocodile
 		private:
 			FT_Library ft;
 			std::string fontPath;
+			unsigned int fontSize = 24;
 			graphics::Shader *shader;
 			unsigned int VAO, VBO;
 			std::map<char, Character> characters;
