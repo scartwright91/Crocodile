@@ -32,7 +32,7 @@ public:
     void init()
     {
         s2d::Layer* layer = new s2d::Layer("objects");
-        scene->layerStack->addLayer(layer);
+        scene2d->layerStack->addLayer(layer);
 
         obj->setPosition(glm::vec2(400.f));
         obj->size = glm::vec2(50.f);
@@ -44,8 +44,8 @@ public:
         
         obj->addChildObject(obj2);
 
-        scene->addObject(obj, "objects");
-        scene->camera->setTarget(obj, false);
+        scene2d->addObject(obj, "objects");
+        scene2d->camera->setTarget(obj, false);
     }
 
 };

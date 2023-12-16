@@ -15,12 +15,14 @@ namespace Crocodile
 		init();
 		loadShaders();
 		loadTextures();
-		scene = new s2d::Scene(&window, &resourceManager);
+		scene2d = new s2d::Scene(&window, &resourceManager);
+		scene3d = new s3d::Scene();
 	}
 
 	Application::~Application()
 	{
-		delete scene;
+		delete scene2d;
+		delete scene3d;
 	}
 
 	void Application::run()
@@ -31,7 +33,7 @@ namespace Crocodile
 			clock.tick(60);
 			window.beginRender();
 			update(clock.deltaTime);
-			scene->update(clock.deltaTime);
+			scene2d->update(clock.deltaTime);
 			render();
 			window.endRender();
 		};
@@ -49,7 +51,8 @@ namespace Crocodile
 			}
 			update(clock.deltaTime);
 			fixedUpdate(clock.deltaTime);
-			scene->update(clock.deltaTime);
+			scene3d->update(clock.deltaTime);
+			scene2d->update(clock.deltaTime);
 			render();
 			if (useImGui)
 			{
@@ -67,13 +70,14 @@ namespace Crocodile
 
 	void Application::render()
 	{
-		scene->render();
+		scene3d->render();
+		scene2d->render();
 	}
 
 	void Application::setCurrentScene(s2d::Scene *scene)
 	{
-		delete this->scene;
-		this->scene = scene;
+		delete this->scene2d;
+		this->scene2d = scene;
 	}
 
 	void Application::init() const

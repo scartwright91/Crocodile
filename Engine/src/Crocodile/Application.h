@@ -17,6 +17,7 @@
 #include "audio/SoundManager.h"
 
 #include "s2d/Scene.h"
+#include "s3d/Scene.h"
 
 #ifdef CROCODILE_EMSCRIPTEN
 #include <functional>
@@ -45,7 +46,8 @@ namespace Crocodile
 		SoundManager soundManager;
 
 		graphics::Window window;
-		s2d::Scene *scene;
+		s2d::Scene *scene2d;
+		s3d::Scene *scene3d;
 		Clock clock;
 
 		// imgui variables
