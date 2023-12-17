@@ -27,7 +27,7 @@ namespace Crocodile
 			shader->setFloat("u_ScreenHeight", height);
 			shader->setFloat("u_OffsetX", offsetX);
 			shader->setFloat("u_OffsetY", offsetY);
-			shader->setFloat("u_GridSize", gridSize);
+			shader->setFloat("u_GridSize", (float)gridSize);
 			shader->setFloat("u_Zoom", 1.0f);
 			shader->setVec3("u_Color1", color1);
 			shader->setVec3("u_Color2", color2);

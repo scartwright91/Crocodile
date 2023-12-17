@@ -13,7 +13,11 @@ namespace Crocodile
                 Renderer(graphics::Shader *shader);
                 ~Renderer();
 
-                void render();
+                void render(
+                    glm::mat4 model,
+                    glm::mat4 view,
+                    glm::mat4 projection
+                );
 
                 graphics::Shader *shader;
                 unsigned int VAO = 0;

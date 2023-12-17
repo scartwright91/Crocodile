@@ -185,7 +185,7 @@ namespace Crocodile
     uint Heuristic::octagonal(glm::vec2 source_, glm::vec2 target_)
     {
         auto delta = std::move(getDelta(source_, target_));
-        return 10 * (delta.x + delta.y) + (-6) * std::min(delta.x, delta.y);
+        return 10 * (delta.x + delta.y) + (-6) * (uint)std::min(delta.x, delta.y);
     }
 
 }

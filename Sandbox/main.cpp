@@ -28,7 +28,8 @@ public:
 
     void init()
     {
-
+        s3d::Object* obj = new s3d::Object(glm::vec3(0.f), glm::vec3(10.f));
+        scene3d->addObject(obj);
     }
 
 };

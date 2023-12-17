@@ -7,6 +7,7 @@ namespace Crocodile
         Scene::Scene(graphics::Window *window, ResourceManager *resourceManager) : window(window), resourceManager(resourceManager)
         {
             init();
+            camera = new Camera();
         };
 
         Scene::~Scene()
@@ -22,7 +23,11 @@ namespace Crocodile
         void Scene::render()
         {
             for (Object* obj : objects)
-                renderer->render();
+                renderer->render(
+                    obj->calculateModelMatrix(),
+                    camera->getViewMatrix(),
+                    camera->getProjectionMatrix()
+                );
         };
 
         void Scene::addObject(Object* obj)

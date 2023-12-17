@@ -7,6 +7,7 @@
 
 #include "Object.h"
 #include "rendering/Renderer.h"
+#include "Camera.h"
 
 namespace Crocodile
 {
@@ -23,6 +24,8 @@ namespace Crocodile
                 
                 void addObject(Object* obj);
                 void removeObject(Object* obj);
+
+                Camera* camera = nullptr;
 
             private:
                 std::vector<Object*> objects = {};

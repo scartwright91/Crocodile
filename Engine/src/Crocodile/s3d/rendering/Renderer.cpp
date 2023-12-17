@@ -14,9 +14,20 @@ namespace Crocodile
             glDeleteVertexArrays(1, &this->VAO);
         }
 
-        void Renderer::render()
+        void Renderer::render(
+            glm::mat4 model,
+            glm::mat4 view,
+            glm::mat4 projection
+        )
         {
-            // TODO implement shader
+            shader->use();
+            shader->setMat4("u_Model", model);
+            shader->setMat4("u_View", view);
+            shader->setMat4("u_Projection", projection);
+            // bind and draw
+            glBindVertexArray(VAO);
+            glDrawArrays(GL_TRIANGLES, 0, 6);
+            glBindVertexArray(0);
         }
 
         void Renderer::init()

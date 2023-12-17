@@ -33,8 +33,8 @@ namespace Crocodile
 
             std::vector<float> vertices = {};
 
-            unsigned int ncols = tilesetWidth / size.x;
-            unsigned int nrows = tilesetHeight / size.y;
+            unsigned int ncols = (unsigned int)(tilesetWidth / size.x);
+            unsigned int nrows = (unsigned int)(tilesetHeight / size.y);
             for (unsigned int idx = 0; idx < positions.size(); idx++)
             {
                 glm::vec2 pos = positions[idx];
