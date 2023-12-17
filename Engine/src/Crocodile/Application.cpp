@@ -16,7 +16,7 @@ namespace Crocodile
 		loadShaders();
 		loadTextures();
 		scene2d = new s2d::Scene(&window, &resourceManager);
-		scene3d = new s3d::Scene();
+		scene3d = new s3d::Scene(&window, &resourceManager);
 	}
 
 	Application::~Application()
@@ -74,10 +74,16 @@ namespace Crocodile
 		scene2d->render();
 	}
 
-	void Application::setCurrentScene(s2d::Scene *scene)
+	void Application::setCurrentScene2d(s2d::Scene *scene)
 	{
 		delete this->scene2d;
 		this->scene2d = scene;
+	}
+
+	void Application::setCurrentScene3d(s3d::Scene *scene)
+	{
+		delete this->scene3d;
+		this->scene3d = scene;
 	}
 
 	void Application::init() const
@@ -105,26 +111,29 @@ namespace Crocodile
 
 	void Application::loadShaders()
 	{
+		// 2d shaders
 #ifdef CROCODILE_EMSCRIPTEN
-		resourceManager.loadShader("assets/shaders/webgl/sprite_vertex.vs", "assets/shaders/webgl/sprite_fragment.fs", "sprite");
-		resourceManager.loadShader("assets/shaders/webgl/particles_vertex.vs", "assets/shaders/webgl/particles_fragment.fs", "particle");
-		resourceManager.loadShader("assets/shaders/webgl/text_vertex.vs", "assets/shaders/webgl/text_fragment.fs", "text");
-		resourceManager.loadShader("assets/shaders/webgl/postprocessing_vertex.vs", "assets/shaders/webgl/postprocessing_fragment.fs", "postprocessing");
-		resourceManager.loadShader("assets/shaders/webgl/grid_vertex.vs", "assets/shaders/webgl/grid_fragment.fs", "grid");
-		resourceManager.loadShader("assets/shaders/webgl/line_vertex.vs", "assets/shaders/webgl/line_fragment.fs", "line");
-		resourceManager.loadShader("assets/shaders/webgl/circle_vertex.vs", "assets/shaders/webgl/circle_fragment.fs", "circle");
-		resourceManager.loadShader("assets/shaders/webgl/batch_sprite_vertex.vs", "assets/shaders/webgl/batch_sprite_fragment.fs", "batch_sprite");
+		resourceManager.loadShader("assets/shaders/s2d/webgl/sprite_vertex.vs", "assets/shaders/s2d/webgl/sprite_fragment.fs", "sprite");
+		resourceManager.loadShader("assets/shaders/s2d/webgl/particles_vertex.vs", "assets/shaders/s2d/webgl/particles_fragment.fs", "particle");
+		resourceManager.loadShader("assets/shaders/s2d/webgl/text_vertex.vs", "assets/shaders/s2d/webgl/text_fragment.fs", "text");
+		resourceManager.loadShader("assets/shaders/s2d/webgl/postprocessing_vertex.vs", "assets/shaders/s2d/webgl/postprocessing_fragment.fs", "postprocessing");
+		resourceManager.loadShader("assets/shaders/s2d/webgl/grid_vertex.vs", "assets/shaders/s2d/webgl/grid_fragment.fs", "grid");
+		resourceManager.loadShader("assets/shaders/s2d/webgl/line_vertex.vs", "assets/shaders/s2d/webgl/line_fragment.fs", "line");
+		resourceManager.loadShader("assets/shaders/s2d/webgl/circle_vertex.vs", "assets/shaders/s2d/webgl/circle_fragment.fs", "circle");
+		resourceManager.loadShader("assets/shaders/s2d/webgl/batch_sprite_vertex.vs", "assets/shaders/s2d/webgl/batch_sprite_fragment.fs", "batch_sprite");
 
 #else
-		resourceManager.loadShader("assets/shaders/opengl/sprite_vertex.vs", "assets/shaders/opengl/sprite_fragment.fs", "sprite");
-		resourceManager.loadShader("assets/shaders/opengl/particles_vertex.vs", "assets/shaders/opengl/particles_fragment.fs", "particle");
-		resourceManager.loadShader("assets/shaders/opengl/text_vertex.vs", "assets/shaders/opengl/text_fragment.fs", "text");
-		resourceManager.loadShader("assets/shaders/opengl/postprocessing_vertex.vs", "assets/shaders/opengl/postprocessing_fragment.fs", "postprocessing");
-		resourceManager.loadShader("assets/shaders/opengl/grid_vertex.vs", "assets/shaders/opengl/grid_fragment.fs", "grid");
-		resourceManager.loadShader("assets/shaders/opengl/line_vertex.vs", "assets/shaders/opengl/line_fragment.fs", "line");
-		resourceManager.loadShader("assets/shaders/opengl/circle_vertex.vs", "assets/shaders/opengl/circle_fragment.fs", "circle");
-		resourceManager.loadShader("assets/shaders/opengl/batch_sprite_vertex.vs", "assets/shaders/opengl/batch_sprite_fragment.fs", "batch_sprite");
+		resourceManager.loadShader("assets/shaders/s2d/opengl/sprite_vertex.vs", "assets/shaders/s2d/opengl/sprite_fragment.fs", "sprite");
+		resourceManager.loadShader("assets/shaders/s2d/opengl/particles_vertex.vs", "assets/shaders/s2d/opengl/particles_fragment.fs", "particle");
+		resourceManager.loadShader("assets/shaders/s2d/opengl/text_vertex.vs", "assets/shaders/s2d/opengl/text_fragment.fs", "text");
+		resourceManager.loadShader("assets/shaders/s2d/opengl/postprocessing_vertex.vs", "assets/shaders/s2d//opengl/postprocessing_fragment.fs", "postprocessing");
+		resourceManager.loadShader("assets/shaders/s2d/opengl/grid_vertex.vs", "assets/shaders/s2d/opengl/grid_fragment.fs", "grid");
+		resourceManager.loadShader("assets/shaders/s2d/opengl/line_vertex.vs", "assets/shaders/s2d/opengl/line_fragment.fs", "line");
+		resourceManager.loadShader("assets/shaders/s2d/opengl/circle_vertex.vs", "assets/shaders/s2d/opengl/circle_fragment.fs", "circle");
+		resourceManager.loadShader("assets/shaders/s2d/opengl/batch_sprite_vertex.vs", "assets/shaders/s2d/opengl/batch_sprite_fragment.fs", "batch_sprite");
 #endif
+		// 3d shaders
+		resourceManager.loadShader("assets/shaders/s3d/opengl/shader.vs", "assets/shaders/s3d/opengl/shader.fs", "shader");
 	}
 
 	void Application::loadTextures()

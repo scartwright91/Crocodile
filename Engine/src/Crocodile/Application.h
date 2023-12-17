@@ -66,7 +66,8 @@ namespace Crocodile
 
 		void run();
 		void render();
-		void setCurrentScene(s2d::Scene *scene);
+		void setCurrentScene2d(s2d::Scene *scene);
+		void setCurrentScene3d(s3d::Scene *scene);
 		virtual void update(float dt){};
 		virtual void fixedUpdate(float dt){};
 		virtual void renderImGui(){};
