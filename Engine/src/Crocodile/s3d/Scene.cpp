@@ -17,7 +17,7 @@ namespace Crocodile
 
         void Scene::update(float dt)
         {
-            
+            camera->update(dt);
         }
 
         void Scene::render()

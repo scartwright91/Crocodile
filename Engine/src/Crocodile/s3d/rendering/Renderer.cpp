@@ -26,7 +26,7 @@ namespace Crocodile
             shader->setMat4("u_Projection", projection);
             // bind and draw
             glBindVertexArray(VAO);
-            glDrawArrays(GL_TRIANGLES, 0, 6);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
             glBindVertexArray(0);
         }
 
