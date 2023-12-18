@@ -22,12 +22,17 @@ namespace Crocodile
 
         glm::mat4 Camera::getProjectionMatrix()
         {
-            return glm::perspective(glm::radians(Zoom), 1280.f / 720.f, 0.1f, 100.0f);
+            glm::mat4 proj;
+            if (projectionType == ORTHOGRAPHIC)
+                proj = glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, 0.1f, 100.0f);
+            else if (projectionType == PERSPECTIVE)
+                proj = glm::perspective(glm::radians(Zoom), 1280.f / 720.f, 0.1f, 100.0f);
+            return proj;
         }
 
         void Camera::update(float dt)
         {
-
+            updateCameraVectors();
         }
 
         void Camera::updateCameraVectors()

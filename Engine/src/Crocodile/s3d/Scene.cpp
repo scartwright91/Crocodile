@@ -12,7 +12,7 @@ namespace Crocodile
 
         Scene::~Scene()
         {
-
+            delete camera;
         };
 
         void Scene::update(float dt)

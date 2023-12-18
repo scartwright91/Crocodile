@@ -23,7 +23,10 @@ public:
 
     void update(float dt)
     {
+        if (window.isKeyPressed(GLFW_KEY_ESCAPE))
+            running = false;
 
+        scene3d->camera->position.z += dt;
     }
 
     void init()
@@ -46,7 +49,7 @@ public:
 
         for (glm::vec3 cube : cubes)
         {
-            s3d::Object* obj = new s3d::Object(cube, glm::vec3(1.));
+            s3d::Object* obj = new s3d::Object(cube);
             scene3d->addObject(obj);
         }
         

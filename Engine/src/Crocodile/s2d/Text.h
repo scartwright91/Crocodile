@@ -19,6 +19,11 @@ namespace Crocodile
 
             std::string fontName;
 
+            Text() : fontName("default")
+            {
+                renderMethod = "text";
+            }
+
             Text(std::string fontName) : fontName(fontName)
             {
                 renderMethod = "text";
