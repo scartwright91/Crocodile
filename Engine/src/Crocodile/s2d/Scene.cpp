@@ -510,6 +510,11 @@ namespace Crocodile
 				entityGroups[group].push_back(obj);
 		}
 
+		void Scene::removeEntityFromGroup(Object* obj, std::string group)
+		{
+			entityGroups[group].erase(std::remove(entityGroups[group].begin(), entityGroups[group].end(), obj), entityGroups[group].end());
+		}
+
 		std::vector<Object*> Scene::getEntityGroup(std::string group)
 		{
 			return entityGroups[group];

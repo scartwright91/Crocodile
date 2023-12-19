@@ -108,6 +108,7 @@ namespace Crocodile
 			// entity groups
 			std::vector<std::string> getEntityGroupNames();
 			void addEntityToGroup(Object* obj, std::string group);
+			void removeEntityFromGroup(Object* obj, std::string group);
 			std::vector<Object*> getEntityGroup(std::string group);
 
 		private:
