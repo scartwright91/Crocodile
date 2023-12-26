@@ -33,7 +33,10 @@ namespace Crocodile
 		{
 			Layer *layer = layerStack->getLayer(layerName);
 			if (layer != NULL)
+			{
 				layer->addObject(object);
+				object->layer = layerName;
+			}
 			else
 				std::cout << "Layer " << layerName << " does not exist in layerstack" << std::endl;
 		}
@@ -44,7 +47,10 @@ namespace Crocodile
 			if (layer != NULL)
 			{
 				if (object != NULL)
+				{
 					layer->removeObject(object);
+					object->layer = "";
+				}
 			}
 			else
 				std::cout << "Layer " << layerName << " does not exist in layerstack" << std::endl;
@@ -66,6 +72,8 @@ namespace Crocodile
 				scaleScene();
 			// objects
 			updateObjects(dt);
+			// particles
+			updateParticles(dt);
 			// transitions
 			if (isTransitioning() && (transitionCounter > 0.0f))
 			{
@@ -524,6 +532,28 @@ namespace Crocodile
 		void Scene::addTextRenderer(const std::string name, const std::string fontPath, unsigned int fontSize)
 		{
 			textRenderers[name] = new s2d::TextRenderer(fontPath, fontSize, resourceManager->getShader("text")); 
+		}
+
+		void Scene::addParticleEffect(glm::vec2 position, ParticleSettings settings, std::string layer)
+		{
+			ParticleGenerator* pg = new ParticleGenerator(settings);
+			pg->setPosition(position);
+			addObject(pg, layer);
+			particles.push_back(pg);
+		}
+
+		void Scene::updateParticles(float dt)
+		{
+			for (ParticleGenerator* pg : particles)
+			{
+				pg->update(dt);
+				if (pg->finished)
+				{
+					removeObject(pg, pg->layer);
+					particles.erase(std::remove(particles.begin(), particles.end(), pg), particles.end());
+					delete pg;
+				}
+			}
 		}
 
 		void Scene::init()

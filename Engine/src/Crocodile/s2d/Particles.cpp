@@ -5,11 +5,14 @@ namespace Crocodile
 	namespace s2d
 	{
 
-		ParticleGenerator::ParticleGenerator(unsigned int amount)
+		ParticleGenerator::ParticleGenerator(ParticleSettings settings) : settings(settings)
 		{
-			this->amount = amount;
-			this->size = glm::vec2(1.0f);
+			this->size = glm::vec2(1.f);
+			this->color = settings.colour;
+			if (settings.texture.name != "")
+				setTexture(settings.texture);
 			renderMethod = "particles";
+			createParticles();
 		}
 
 		ParticleGenerator::~ParticleGenerator()
@@ -20,14 +23,14 @@ namespace Crocodile
 		void ParticleGenerator::update(float dt)
 		{
 			// update particle duration
-			if (duration > 0.f)
+			if (settings.duration > 0.f)
 			{
-				duration -= dt;
-				if (duration < 0 && active)
+				settings.duration -= dt;
+				if (settings.duration < 0 && active)
 					active = false;
 			}
 
-			if (particles.size() == 0)
+			if ((particles.size() == 0) && (settings.createOnce))
 				finished = true;
 
 			// update all particles
@@ -38,9 +41,14 @@ namespace Crocodile
 					p.life -= dt; // reduce life
 				if (p.life > 0.0f)
 				{ // particle is alive, thus update
-					p.position -= p.velocity * dt;
+					glm::vec2 velocity = {0.0, 0.0};
+					velocity.x = glm::cos(p.direction) * p.speed * dt;
+					velocity.y = glm::sin(p.direction) * p.speed * dt;
+					// if (settings.applyGravity)
+					// 	velocity.y += 200.f * dt;
+					p.position += velocity;
 				}
-				else if (active && !createOnce)
+				else if (active && !settings.createOnce)
 				{
 					// reset particle attributes
 					p = createParticle();
@@ -65,32 +73,36 @@ namespace Crocodile
 
 			// assign particle attributes
 			p.position = glm::vec2(0.0f);
-			if (w > 0)
+			if (settings.w > 0)
 			{
 				float r = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
-				p.position.x += (r * w);
+				p.position.x += (r * settings.w);
 			}
-			if (h > 0)
+			if (settings.h > 0)
 			{
 				float r = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
-				p.position.y += (r * h);
+				p.position.y += (r * settings.h);
 			}
-			p.scale = scale;
-			p.life = life + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 1.5));
+			p.scale = settings.scale;
+			p.life = settings.life + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX / 1.5));
 
-			// calculate velocity
-			float dispX = -dispersion + 2 * dispersion * static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
-			float dispY = -dispersion + 2 * dispersion * static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
+			float disp = -settings.dispersion + 2 * settings.dispersion * static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
+			p.speed = settings.speed;
+			if (settings.type == SCATTER)
+			{
+				float r = static_cast<float>(rand()) / (static_cast<float>(RAND_MAX));
+				p.speed *= r;
+			}
 
-			p.velocity.x = glm::cos(direction + dispX) * velocity * 100.f;
-			p.velocity.y = glm::sin(direction + dispY) * velocity * 100.f;
+			p.direction = settings.direction + disp;
+
 			return p;
 		}
 
 		void ParticleGenerator::createParticles()
 		{
 			particles = {};
-			for (unsigned int i = 0; i < this->amount; ++i)
+			for (unsigned int i = 0; i < settings.amount; ++i)
 				particles.push_back(createParticle());
 		}
 

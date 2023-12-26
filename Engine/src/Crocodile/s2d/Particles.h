@@ -12,13 +12,39 @@ namespace Crocodile
 	namespace s2d
 	{
 
+		enum CROCODILE_API ParticleType
+		{
+			SCATTER,
+			RADIAL
+		};
+
 		struct CROCODILE_API Particle
 		{
-			glm::vec2 position, velocity;
+			glm::vec2 position;
+			float direction;
+			float speed;
 			float life;
 			float scale;
 			bool alive;
-			Particle() : position(0.0f), velocity(0.0f), life(1.0f), scale(10.0f), alive(true) {}
+			Particle() : position(0.0f), direction(0.0f), life(1.0f), scale(10.0f), alive(true) {}
+		};
+
+		struct CROCODILE_API ParticleSettings
+		{
+			ParticleType type = SCATTER;
+			glm::vec3 colour = glm::vec3(1.f);
+			ResourceManager::TextureData texture;
+			float w = 0;
+			float h = 0;
+			float direction = 0.5f;
+			float dispersion = 3.14f;
+			float scale = 1.0f;
+			float speed = 300.0f;
+			float life = .5f;
+			unsigned int amount = 50;
+			float duration = 0.0f;
+			bool createOnce = false;
+			bool applyGravity = false;
 		};
 
 		class CROCODILE_API ParticleGenerator : public Object
@@ -28,25 +54,15 @@ namespace Crocodile
 			bool active = true;
 			std::vector<Particle> particles;
 
-			ParticleGenerator(unsigned int amount);
+			ParticleGenerator(ParticleSettings settings);
 			~ParticleGenerator();
 
 			void update(float dt);
 
 			unsigned int getNParticles();
 
-			// Particle attributes
-			float w = 0;
-			float h = 0;
-			float direction = 0.5f;
-			float dispersion = 0.1f;
-			float scale = 1.0f;
-			float velocity = 1.0f;
-			float life = .5f;
-			unsigned int amount = 0;
+			ParticleSettings settings;
 
-			float duration = 0.0f;
-			bool createOnce = false;
 			bool finished = false;
 
 			void createParticles();

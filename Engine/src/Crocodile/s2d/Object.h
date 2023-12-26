@@ -37,6 +37,7 @@ namespace Crocodile
 
 			// label
 			std::string label = "";
+			std::string layer = "";
 			double id = glfwGetTime();
 
 			// movement

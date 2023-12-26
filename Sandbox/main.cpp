@@ -1,5 +1,6 @@
 
 #include "Crocodile.h"
+#include "Crocodile/s2d/Particles.h"
 
 #include "LDtkLoader/Project.hpp"
 
@@ -10,6 +11,11 @@ class Sandbox : public Crocodile::Application
 {
 
 public:
+
+    float timer = 0.0f;
+    float elapsed = 0.0f;
+
+    s2d::Text* fps = new s2d::Text();
 
     Sandbox() : Crocodile::Application("Sandbox", false, 1280, 720, false)
     {
@@ -23,8 +29,28 @@ public:
 
     void update(float dt)
     {
+        elapsed += dt;
+        fps->text = std::to_string(clock.getFPS());
+
         if (window.isKeyPressed(GLFW_KEY_ESCAPE))
             running = false;
+
+        float now = (float)glfwGetTime();
+        if (window.isButtonPressed(GLFW_MOUSE_BUTTON_1) && (now - timer > 0.5f))
+        {
+            timer = now;
+            s2d::ParticleSettings settings;
+            settings.amount = 500;
+            settings.life = .5f;
+            settings.scale = 2.0f;
+            settings.direction = 1.4f;
+            // settings.dispersion = 1.5f;
+            settings.createOnce = false;
+            settings.type = s2d::RADIAL;
+            // settings.applyGravity = true;
+            settings.colour = glm::vec3(glm::cos(elapsed), glm::sin(elapsed), glm::tan(elapsed));
+            scene2d->addParticleEffect(window.getMouseScreenPosition(), settings, "hud");
+        }
 
         scene3d->camera->position.z += dt;
     }
@@ -32,7 +58,13 @@ public:
     void init()
     {
         window.setBackgroundColor(glm::vec3(0.02f, 0.13f, 0.22f));
-        scene2d->enablePostprocessing = false;
+
+        s2d::Layer* layer = new s2d::Layer("hud");
+        layer->applyCamera = false;
+        scene2d->layerStack->addLayer(layer);
+
+        fps->color = glm::vec3(1.f);
+        scene2d->addObject(fps, "hud");
 
         // create cubes
         std::vector<glm::vec3> cubes = {

@@ -111,6 +111,11 @@ namespace Crocodile
 			void removeEntityFromGroup(Object* obj, std::string group);
 			std::vector<Object*> getEntityGroup(std::string group);
 
+			// particles
+			std::vector<ParticleGenerator*> particles = {};
+			void addParticleEffect(glm::vec2 position, ParticleSettings settings, std::string layer);
+			void updateParticles(float dt);
+
 		private:
 
 			// postprocessing
