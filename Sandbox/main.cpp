@@ -32,6 +32,7 @@ public:
     void init()
     {
         window.setBackgroundColor(glm::vec3(0.02f, 0.13f, 0.22f));
+        scene2d->enablePostprocessing = false;
 
         // create cubes
         std::vector<glm::vec3> cubes = {

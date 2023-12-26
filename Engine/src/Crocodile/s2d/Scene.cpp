@@ -251,6 +251,7 @@ namespace Crocodile
 			{
 				BatchSprite *batchSprite = (BatchSprite *)obj;
 				batchSprite->render(
+					viewportScale,
 					view,
 					projection,
 					batchSprite->texture,
@@ -463,9 +464,9 @@ namespace Crocodile
 					d = obj->getBoundingBox().getMinDistanceFromBounds(e->getBoundingBox(), "y");
 					if (velocity.y >= 0)
 					{
-						obj->collisionData[collisionLayer].on_floor = true;
 						velocity.y = d;
 						obj->velocity.y = 0.f;
+						obj->collisionData[collisionLayer].on_floor = true;
 					}
 					else
 					{
@@ -481,12 +482,12 @@ namespace Crocodile
 					if (velocity.x >= 0)
 					{
 						velocity.x = d;
-						obj->collisionData[collisionLayer].on_wall_left = true;
+						obj->collisionData[collisionLayer].on_wall_right = true;
 					}
 					else
 					{
 						velocity.x = -d;
-						obj->collisionData[collisionLayer].on_wall_right = true;
+						obj->collisionData[collisionLayer].on_wall_left = true;
 					}
 				}
 			}

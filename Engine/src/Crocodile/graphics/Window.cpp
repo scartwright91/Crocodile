@@ -70,6 +70,13 @@ namespace Crocodile
 			int count;
 			GLFWmonitor **monitors = glfwGetMonitors(&count);
 			window = glfwCreateWindow(width, height, name, NULL, NULL);
+			// window = glfwCreateWindow(
+			// 	glfwGetVideoMode(glfwGetPrimaryMonitor())->width,
+            //     glfwGetVideoMode(glfwGetPrimaryMonitor())->height,
+			// 	name,
+			// 	glfwGetPrimaryMonitor(),
+			// 	NULL
+			// );
 
 			if (!window)
 			{

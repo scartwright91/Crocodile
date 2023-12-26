@@ -23,6 +23,7 @@ namespace Crocodile
             ~BatchRenderer();
 
             void render(
+                glm::vec2 viewportScale,
                 glm::mat4 view,
                 glm::mat4 projection,
                 ResourceManager::TextureData texture,

@@ -71,7 +71,7 @@ namespace Crocodile
 	void Application::render()
 	{
 		scene3d->render();
-		// scene2d->render();
+		scene2d->render();
 	}
 
 	void Application::setCurrentScene2d(s2d::Scene *scene)

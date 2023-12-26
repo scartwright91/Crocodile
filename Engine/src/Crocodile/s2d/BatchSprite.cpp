@@ -24,6 +24,7 @@ namespace Crocodile
         }
 
         void BatchSprite::render(
+            glm::vec2 viewportScale,
             glm::mat4 view,
             glm::mat4 projection,
             ResourceManager::TextureData texture,
@@ -32,7 +33,7 @@ namespace Crocodile
             std::vector<Light *> lights
             )
         {
-            renderer->render(view, projection, texture, alpha, ambientLighting, lights);
+            renderer->render(viewportScale, view, projection, texture, alpha, ambientLighting, lights);
         }
 
         void BatchSprite::createRenderer(graphics::Shader *shader)

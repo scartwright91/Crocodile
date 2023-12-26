@@ -6,7 +6,6 @@ namespace Crocodile
 	{
 	public:
 		UUID();
-		UUID(unsigned int uuid);
 
 	private:
 		unsigned int uuid;

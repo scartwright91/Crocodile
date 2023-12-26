@@ -93,6 +93,7 @@ namespace Crocodile
         }
 
         void BatchRenderer::render(
+            glm::vec2 viewportScale,
             glm::mat4 view,
             glm::mat4 projection,
             ResourceManager::TextureData texture,
@@ -103,7 +104,7 @@ namespace Crocodile
         {
             // prepare shader
             shader->use();
-            shader->setMat4("u_Model", glm::mat4(1.f));
+            shader->setMat4("u_Model", glm::scale(glm::mat4(1.f), glm::vec3(viewportScale, 1.0f)));
             shader->setMat4("u_View", view);
             shader->setMat4("u_Projection", projection);
             glActiveTexture(GL_TEXTURE0);
