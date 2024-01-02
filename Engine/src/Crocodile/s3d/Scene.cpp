@@ -22,6 +22,12 @@ namespace Crocodile
 
         void Scene::render()
         {
+            for (Surface* surf : surfaces)
+                surf->render(
+                    glm::mat4(1.f),
+                    camera->getViewMatrix(),
+                    camera->getProjectionMatrix()
+                );
             for (Object* obj : objects)
                 renderer->render(
                     obj->calculateModelMatrix(),

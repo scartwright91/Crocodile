@@ -7,6 +7,7 @@
 
 #include "../Core.h"
 #include "../ResourceManager.h"
+#include "../graphics/Shader.h"
 
 namespace Crocodile
 {
@@ -15,14 +16,24 @@ namespace Crocodile
         class CROCODILE_API Surface
         {
             public:
-                Surface(ResourceManager::TextureData heightMap); // from heightmap
-                Surface(std::vector<glm::vec3> vertices); // from data
+                Surface(ResourceManager::TextureData heightMap, graphics::Shader* shader); // from heightmap
+                Surface(std::vector<glm::vec3> vertices, graphics::Shader* shader); // from data
                 ~Surface();
+
+                void render(
+                    glm::mat4 model,
+                    glm::mat4 view,
+                    glm::mat4 projection
+                );
 
             private:
                 std::string type;
                 std::vector<glm::vec3> vertices = {};
                 ResourceManager::TextureData heightMap;
+
+                graphics::Shader* shader = nullptr;
+                unsigned int terrainVAO;
+                int numTrisPerStrip, numStrips;
 
                 void init();
                 void createSurfaceFromVertices();

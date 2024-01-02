@@ -1,6 +1,7 @@
 
 #include "Crocodile.h"
 #include "Crocodile/s2d/Particles.h"
+#include "Crocodile/s3d/Surface.h"
 
 #include "LDtkLoader/Project.hpp"
 
@@ -31,26 +32,8 @@ public:
     {
         elapsed += dt;
         fps->text = std::to_string(clock.getFPS());
-
         if (window.isKeyPressed(GLFW_KEY_ESCAPE))
             running = false;
-
-        float now = (float)glfwGetTime();
-        if (window.isButtonPressed(GLFW_MOUSE_BUTTON_1) && (now - timer > 0.5f))
-        {
-            timer = now;
-            s2d::ParticleSettings settings;
-            settings.amount = 500;
-            settings.life = .5f;
-            settings.scale = 2.0f;
-            settings.direction = 1.4f;
-            // settings.dispersion = 1.5f;
-            settings.createOnce = false;
-            settings.type = s2d::RADIAL;
-            // settings.applyGravity = true;
-            settings.colour = glm::vec3(glm::cos(elapsed), glm::sin(elapsed), glm::tan(elapsed));
-            scene2d->addParticleEffect(window.getMouseScreenPosition(), settings, "hud");
-        }
 
         scene3d->camera->position.z += dt;
     }
@@ -58,6 +41,7 @@ public:
     void init()
     {
         window.setBackgroundColor(glm::vec3(0.02f, 0.13f, 0.22f));
+        scene2d->enablePostprocessing = false;
 
         s2d::Layer* layer = new s2d::Layer("hud");
         layer->applyCamera = false;
@@ -86,6 +70,10 @@ public:
             scene3d->addObject(obj);
         }
         
+        // add surface
+        s3d::Surface* surface = new s3d::Surface(resourceManager.getTexture("heightmap"), resourceManager.getShader("surface_shader"));
+        scene3d->surfaces.push_back(surface);
+
     }
 
 };

@@ -6,6 +6,7 @@
 #include "../ResourceManager.h"
 
 #include "Object.h"
+#include "Surface.h"
 #include "rendering/Renderer.h"
 #include "Camera.h"
 
@@ -26,6 +27,7 @@ namespace Crocodile
                 void removeObject(Object* obj);
 
                 Camera* camera = nullptr;
+                std::vector<Surface*> surfaces = {};
 
             private:
                 std::vector<Object*> objects = {};

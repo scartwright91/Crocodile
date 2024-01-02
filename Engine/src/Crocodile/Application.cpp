@@ -135,11 +135,13 @@ namespace Crocodile
 #endif
 		// 3d shaders
 		resourceManager.loadShader("assets/shaders/s3d/opengl/shader.vs", "assets/shaders/s3d/opengl/shader.fs", "shader");
+		resourceManager.loadShader("assets/shaders/s3d/opengl/surface_shader.vs", "assets/shaders/s3d/opengl/surface_shader.fs", "surface_shader");
 	}
 
 	void Application::loadTextures()
 	{
 		resourceManager.loadTexture("assets/textures/distortion_texture.png", "distortion_texture", true);
+		resourceManager.loadTexture("assets/textures/iceland_heightmap.png", "heightmap", true);
 	}
 
 	void Application::loadAudio()
