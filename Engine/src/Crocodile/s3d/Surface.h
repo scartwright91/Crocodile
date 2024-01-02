@@ -17,7 +17,7 @@ namespace Crocodile
         {
             public:
                 Surface(ResourceManager::TextureData heightMap, graphics::Shader* shader); // from heightmap
-                Surface(std::vector<glm::vec3> vertices, graphics::Shader* shader); // from data
+                Surface(std::vector<glm::vec3> vertices, unsigned int rows, unsigned int cols, graphics::Shader* shader); // from data
                 ~Surface();
 
                 void render(
@@ -28,6 +28,7 @@ namespace Crocodile
 
             private:
                 std::string type;
+                unsigned int nRows, nCols;
                 std::vector<glm::vec3> vertices = {};
                 ResourceManager::TextureData heightMap;
 

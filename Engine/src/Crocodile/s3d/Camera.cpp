@@ -1,4 +1,5 @@
 #include "Camera.h"
+#include <iostream>
 
 namespace Crocodile
 {
@@ -13,6 +14,37 @@ namespace Crocodile
         Camera::~Camera()
         {
 
+        }
+
+        void Camera::processMovement(Camera_Movement direction, float dt)
+        {
+            float velocity = 4.f * dt;
+            if (direction == FORWARD)
+                position += front * velocity;
+            if (direction == BACKWARD)
+                position -= front * velocity;
+            if (direction == LEFT)
+                position -= right * velocity;
+            if (direction == RIGHT)
+                position += right * velocity;
+        }
+
+        void Camera::processMouseMovement(float xoffset, float yoffset)
+        {
+            xoffset *= Sensitivity;
+            yoffset *= Sensitivity;
+
+            Yaw   += xoffset;
+            Pitch += yoffset;
+
+            // make sure that when pitch is out of bounds, screen doesn't get flipped
+            if (Pitch > 89.0f)
+                Pitch = 89.0f;
+            if (Pitch < -89.0f)
+                Pitch = -89.0f;
+
+            // update Front, Right and Up Vectors using the updated Euler angles
+            updateCameraVectors();
         }
 
         glm::mat4 Camera::getViewMatrix()

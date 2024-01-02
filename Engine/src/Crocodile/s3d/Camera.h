@@ -10,13 +10,20 @@ namespace Crocodile
         class CROCODILE_API Camera
         {
 
-            enum ProjectionType
-            {
-                ORTHOGRAPHIC,
-                PERSPECTIVE
-            };
-
             public:
+                enum Camera_Movement {
+                    FORWARD,
+                    BACKWARD,
+                    LEFT,
+                    RIGHT
+                };
+
+                enum ProjectionType
+                {
+                    ORTHOGRAPHIC,
+                    PERSPECTIVE
+                };
+
                 Camera();
                 ~Camera();
 
@@ -26,6 +33,10 @@ namespace Crocodile
                 glm::mat4 getProjectionMatrix();
 
                 ProjectionType projectionType = PERSPECTIVE;
+
+                // move camera
+                void processMovement(Camera_Movement direction, float dt);
+                void processMouseMovement(float xoffset, float yoffset);
 
                 // camera vectors
                 glm::vec3 position = glm::vec3(0.f, 0.f, 3.f);

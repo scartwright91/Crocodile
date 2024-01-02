@@ -5,6 +5,12 @@
 
 #include "LDtkLoader/Project.hpp"
 
+#include <iostream>
+#include <fstream>
+#include <sstream>
+#include <vector>
+#include <string>
+
 using namespace Crocodile;
 
 
@@ -16,11 +22,16 @@ public:
     float timer = 0.0f;
     float elapsed = 0.0f;
 
+    // mouse
+    float lastX = 0.0f;
+    float lastY = 0.0f;
+
     s2d::Text* fps = new s2d::Text();
 
     Sandbox() : Crocodile::Application("Sandbox", false, 1280, 720, false)
     {
         init();
+        readData();
     }
 
     ~Sandbox()
@@ -35,7 +46,9 @@ public:
         if (window.isKeyPressed(GLFW_KEY_ESCAPE))
             running = false;
 
-        scene3d->camera->position.z += dt;
+        // scene3d->camera->position.z += dt;
+        processCommands(dt);
+
     }
 
     void init()
@@ -69,9 +82,82 @@ public:
             s3d::Object* obj = new s3d::Object(cube);
             scene3d->addObject(obj);
         }
-        
+
+    }
+
+    void processCommands(float dt)
+    {
+        if (window.isKeyPressed(GLFW_KEY_LEFT))
+            scene3d->camera->processMovement(s3d::Camera::LEFT, dt);
+        if (window.isKeyPressed(GLFW_KEY_RIGHT))
+            scene3d->camera->processMovement(s3d::Camera::RIGHT, dt);
+        if (window.isKeyPressed(GLFW_KEY_UP))
+            scene3d->camera->processMovement(s3d::Camera::FORWARD, dt);
+        if (window.isKeyPressed(GLFW_KEY_DOWN))
+            scene3d->camera->processMovement(s3d::Camera::BACKWARD, dt);
+
+        glm::vec2 mouse = window.getMouseScreenPosition();
+        float xpos = mouse.x;
+        float ypos = mouse.y;
+        float xoffset = xpos - lastX;
+        float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+        lastX = xpos;
+        lastY = ypos;
+
+        scene3d->camera->processMouseMovement(xoffset, yoffset);
+    }
+
+    void readData()
+    {
+        // Open the CSV file
+        std::ifstream file("assets/data/topography.csv");
+
+        // Check if the file is open
+        if (!file.is_open()) {
+            std::cerr << "Error opening file!" << std::endl;
+        }
+
+        // Define vectors to store each row of data
+        std::vector<std::vector<std::string>> data;
+
+        // Read the file line by line
+        std::string line;
+        while (std::getline(file, line)) {
+            // Use a stringstream to split the line into tokens based on commas
+            std::stringstream ss(line);
+            std::vector<std::string> row;
+            std::string token;
+
+            while (std::getline(ss, token, ',')) {
+                row.push_back(token);
+            }
+
+            // Add the row to the data vector
+            data.push_back(row);
+        }
+
+        // Close the file
+        file.close();
+
+        // Display the imported data
+        unsigned int idx = 0;
+        std::vector<glm::vec3> vertices = {};
+        for (auto& row : data)
+        {
+            if (idx > 0)
+            {
+                glm::vec3 v;
+                v.x = std::stof(row[3]);
+                v.y = std::stof(row[5]);
+                v.z = std::stof(row[4]);
+                vertices.push_back(v);
+            }
+            idx++;
+        }
+
         // add surface
-        s3d::Surface* surface = new s3d::Surface(resourceManager.getTexture("heightmap"), resourceManager.getShader("surface_shader"));
+        s3d::Surface* surface = new s3d::Surface(vertices, 30, 178, resourceManager.getShader("surface_shader"));
         scene3d->surfaces.push_back(surface);
 
     }

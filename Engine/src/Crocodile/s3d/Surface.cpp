@@ -10,7 +10,11 @@ namespace Crocodile
             init();
         }
 
-        Surface::Surface(std::vector<glm::vec3> vertices, graphics::Shader* shader) : vertices(vertices), type("vertices"), shader(shader)
+        Surface::Surface(
+            std::vector<glm::vec3> vertices,
+            unsigned int rows,
+            unsigned int cols,
+            graphics::Shader* shader) : vertices(vertices), nRows(rows), nCols(cols), type("vertices"), shader(shader)
         {
             init();
         }
@@ -110,7 +114,51 @@ namespace Crocodile
 
         void Surface::createSurfaceFromVertices()
         {
-            
+
+            std::vector<float> vertices_ = {};
+            for (glm::vec3 v : vertices)
+            {
+                vertices_.push_back(v.x * 10);
+                // vertices_.push_back(v.y);
+                vertices_.push_back(0.0);
+                vertices_.push_back(v.z * 10);
+            }
+
+            std::vector<unsigned> indices;
+            for(unsigned i = 0; i < nCols - 1; i++)
+            {
+                for(unsigned j = 0; j < nRows; j++)
+                {
+                    for(unsigned k = 0; k < 2; k++)
+                    {
+                        indices.push_back(j + nRows * (i + k));
+                    }
+                }
+            }
+            std::cout << "Loaded " << indices.size() << " indices" << std::endl;
+
+            numStrips = nCols - 1;
+            numTrisPerStrip = nRows * 2 - 2;
+            std::cout << "Created lattice of " << numStrips << " strips with " << numTrisPerStrip << " triangles each" << std::endl;
+            std::cout << "Created " << numStrips * numTrisPerStrip << " triangles total" << std::endl;
+
+            // first, configure the cube's VAO (and terrainVBO + terrainIBO)
+            unsigned int terrainVBO, terrainIBO;
+            glGenVertexArrays(1, &terrainVAO);
+            glBindVertexArray(terrainVAO);
+
+            glGenBuffers(1, &terrainVBO);
+            glBindBuffer(GL_ARRAY_BUFFER, terrainVBO);
+            glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
+
+            // position attribute
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+            glEnableVertexAttribArray(0);
+
+            glGenBuffers(1, &terrainIBO);
+            glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainIBO);
+            glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
+
         }
 
     }
