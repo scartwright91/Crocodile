@@ -34,6 +34,7 @@ namespace Crocodile
                     camera->getViewMatrix(),
                     camera->getProjectionMatrix()
                 );
+                
         };
 
         void Scene::addObject(Object* obj)

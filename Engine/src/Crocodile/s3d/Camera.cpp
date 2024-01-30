@@ -47,18 +47,28 @@ namespace Crocodile
             updateCameraVectors();
         }
 
+        void Camera::processMouseScroll(float yoffset)
+        {
+            Zoom -= yoffset;
+            if (Zoom < 1.0f)
+                Zoom = 1.0f;
+            if (Zoom > 45.0f)
+                Zoom = 45.0f;
+        }
+
         glm::mat4 Camera::getViewMatrix()
         {
             return  glm::lookAt(position, position + front, up);
+            // return  glm::lookAt(position, target, up);
         }
 
         glm::mat4 Camera::getProjectionMatrix()
         {
             glm::mat4 proj;
             if (projectionType == ORTHOGRAPHIC)
-                proj = glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, 0.1f, 100.0f);
+                proj = glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, 0.1f, 1000.0f);
             else if (projectionType == PERSPECTIVE)
-                proj = glm::perspective(glm::radians(Zoom), 1280.f / 720.f, 0.1f, 100.0f);
+                proj = glm::perspective(glm::radians(Zoom), 1280.f / 720.f, 0.1f, 1000.0f);
             return proj;
         }
 

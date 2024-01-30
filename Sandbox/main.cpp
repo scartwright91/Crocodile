@@ -31,7 +31,6 @@ public:
     Sandbox() : Crocodile::Application("Sandbox", false, 1280, 720, false)
     {
         init();
-        readData();
     }
 
     ~Sandbox()
@@ -83,6 +82,9 @@ public:
             scene3d->addObject(obj);
         }
 
+        s3d::Surface* surface = new s3d::Surface("assets/textures/iceland_heightmap.png", resourceManager.getShader("surface_shader"));
+        scene3d->surfaces.push_back(surface);
+
     }
 
     void processCommands(float dt)
@@ -111,7 +113,7 @@ public:
     void readData()
     {
         // Open the CSV file
-        std::ifstream file("assets/data/topography.csv");
+        std::ifstream file("assets/data/data_clean.csv");
 
         // Check if the file is open
         if (!file.is_open()) {
@@ -142,22 +144,18 @@ public:
 
         // Display the imported data
         unsigned int idx = 0;
-        std::vector<glm::vec3> vertices = {};
+        std::vector<float> gravity = {};
         for (auto& row : data)
         {
             if (idx > 0)
-            {
-                glm::vec3 v;
-                v.x = std::stof(row[3]);
-                v.y = std::stof(row[5]);
-                v.z = std::stof(row[4]);
-                vertices.push_back(v);
-            }
-            idx++;
+                gravity.push_back(std::stof(row[5]));
+            else
+                idx++;
         }
+        std::cout << "Heights: " << gravity.size() << std::endl;
 
         // add surface
-        s3d::Surface* surface = new s3d::Surface(vertices, 30, 178, resourceManager.getShader("surface_shader"));
+        s3d::Surface* surface = new s3d::Surface(gravity, 178, 900, resourceManager.getShader("surface_shader"));
         scene3d->surfaces.push_back(surface);
 
     }

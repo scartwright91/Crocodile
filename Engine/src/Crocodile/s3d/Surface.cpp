@@ -5,16 +5,18 @@ namespace Crocodile
     namespace s3d
     {
 
-        Surface::Surface(ResourceManager::TextureData heightMap, graphics::Shader* shader) : heightMap(heightMap), type("height_map"), shader(shader)
+        Surface::Surface(
+            std::string heightMapPath,
+            graphics::Shader* shader) : heightMapPath(heightMapPath), type("height_map"), shader(shader)
         {
             init();
         }
 
         Surface::Surface(
-            std::vector<glm::vec3> vertices,
+            std::vector<float> heights,
             unsigned int rows,
             unsigned int cols,
-            graphics::Shader* shader) : vertices(vertices), nRows(rows), nCols(cols), type("vertices"), shader(shader)
+            graphics::Shader* shader) : heights(heights), nRows(rows), nCols(cols), type("data"), shader(shader)
         {
             init();
         }
@@ -51,48 +53,48 @@ namespace Crocodile
 
         void Surface::init()
         {
-            if (type == "vertices")
-                createSurfaceFromVertices();
+            if (type == "data")
+                createSurfaceFromData();
             else if (type == "height_map")
                 createSurfaceFromHeightMap();
         }
 
         void Surface::createSurfaceFromHeightMap()
         {
-            // // ------------------------------------------------------------------
+
+            std::cout << std::endl << "---Creating surface from height map---" << std::endl;
+
+            int width, height, channels;
+            unsigned char* image = stbi_load(heightMapPath.c_str(), &width, &height, &channels, 0);
+
             std::vector<float> vertices;
             float yScale = 64.0f / 256.0f, yShift = 16.0f;
-            int rez = 1;
-            unsigned bytePerPixel = 1;
-            for(int i = 0; i < heightMap.height; i++)
+            for(int i = 0; i < height; i++)
             {
-                for(int j = 0; j < heightMap.width; j++)
+                for(int j = 0; j < width; j++)
                 {
+                    int pixelIndex = (i * width + j) * channels;
+                    unsigned char pixelValue = image[pixelIndex];
+
+                    float hh = pixelValue * yScale - yShift;
                     // vertex
-                    vertices.push_back( -heightMap.height/2.0f + heightMap.height*i/(float)heightMap.height );   // vx
-                    vertices.push_back( (int) 0 * yScale - yShift);   // vy
-                    vertices.push_back( -heightMap.width/2.0f + heightMap.width*j/(float)heightMap.width );   // vz
+                    vertices.push_back( -height/2.0f + height*i/(float)height );   // vx
+                    vertices.push_back( (float)hh );   // vy
+                    vertices.push_back( -width/2.0f + width*j/(float)width );   // vz
                 }
             }
-            std::cout << "Loaded " << vertices.size() / 3 << " vertices" << std::endl;
+
+            stbi_image_free(image);
 
             std::vector<unsigned> indices;
-            for(unsigned i = 0; i < heightMap.height-1; i += rez)
-            {
-                for(unsigned j = 0; j < heightMap.width; j += rez)
-                {
+            for(int i = 0; i < height - 1; i++)
+                for(int j = 0; j < width; j++)
                     for(unsigned k = 0; k < 2; k++)
-                    {
-                        indices.push_back(j + (int)heightMap.width * (i + k*rez));
-                    }
-                }
-            }
+                        indices.push_back(j + width * (i + k));
             std::cout << "Loaded " << indices.size() << " indices" << std::endl;
 
-            numStrips = (int)(heightMap.height - 1) / rez;
-            numTrisPerStrip = (int)(heightMap.width/rez) * 2 - 2;
-            std::cout << "Created lattice of " << numStrips << " strips with " << numTrisPerStrip << " triangles each" << std::endl;
-            std::cout << "Created " << numStrips * numTrisPerStrip << " triangles total" << std::endl;
+            numStrips = (height - 1);
+            numTrisPerStrip = (width)*2-2;
 
             // first, configure the cube's VAO (and terrainVBO + terrainIBO)
             unsigned int terrainVBO, terrainIBO;
@@ -110,37 +112,40 @@ namespace Crocodile
             glGenBuffers(1, &terrainIBO);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainIBO);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
+
         }
 
-        void Surface::createSurfaceFromVertices()
+        void Surface::createSurfaceFromData()
         {
 
-            std::vector<float> vertices_ = {};
-            for (glm::vec3 v : vertices)
+            std::vector<float> vertices;
+            int idx = 0;
+            for(int i = 0; i < nCols; i++)
             {
-                vertices_.push_back(v.x * 10);
-                // vertices_.push_back(v.y);
-                vertices_.push_back(0.0);
-                vertices_.push_back(v.z * 10);
+                for(int j = 0; j < nRows; j++)
+                {
+                    float h = heights[idx];
+                    // position
+                    vertices.push_back( -nCols/2.0f + nCols*i/(float)nCols );   // vx
+                    vertices.push_back( h );   // vy
+                    vertices.push_back( -nRows/2.0f + nRows*j/(float)nRows );   // vz
+                    // colour
+                    glm::vec3 col = interpolateRGB(glm::vec3(1.f), glm::vec3(0.f), h);
+                    vertices.push_back(col.r);
+                    vertices.push_back(col.g);
+                    vertices.push_back(col.b);
+                    idx++;
+                }
             }
 
             std::vector<unsigned> indices;
-            for(unsigned i = 0; i < nCols - 1; i++)
-            {
-                for(unsigned j = 0; j < nRows; j++)
-                {
-                    for(unsigned k = 0; k < 2; k++)
-                    {
-                        indices.push_back(j + nRows * (i + k));
-                    }
-                }
-            }
-            std::cout << "Loaded " << indices.size() << " indices" << std::endl;
+            for(int i = 0; i < nCols-1; i++)
+                for(int j = 0; j < nRows; j++)
+                    for(int k = 0; k < 2; k++)
+                        indices.push_back(j + (int)nRows * (i + k));
 
             numStrips = nCols - 1;
             numTrisPerStrip = nRows * 2 - 2;
-            std::cout << "Created lattice of " << numStrips << " strips with " << numTrisPerStrip << " triangles each" << std::endl;
-            std::cout << "Created " << numStrips * numTrisPerStrip << " triangles total" << std::endl;
 
             // first, configure the cube's VAO (and terrainVBO + terrainIBO)
             unsigned int terrainVBO, terrainIBO;
@@ -152,13 +157,29 @@ namespace Crocodile
             glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
 
             // position attribute
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
             glEnableVertexAttribArray(0);
+            // color attribute
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
+            glEnableVertexAttribArray(1);
 
             glGenBuffers(1, &terrainIBO);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainIBO);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
 
+        }
+
+        glm::vec3 Surface::interpolateRGB(const glm::vec3 color1, const glm::vec3 color2, float t)
+        {
+            // Ensure t is within the range [0, 1]
+            t = std::fmin(1.0f, std::fmax(0.0f, t));
+
+            glm::vec3 result;
+            result.r = (color1.r + t * (color2.r - color1.r));
+            result.g = (color1.g + t * (color2.g - color1.g));
+            result.b = (color1.b + t * (color2.b - color1.b));
+
+            return result;
         }
 
     }

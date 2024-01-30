@@ -16,8 +16,8 @@ namespace Crocodile
         class CROCODILE_API Surface
         {
             public:
-                Surface(ResourceManager::TextureData heightMap, graphics::Shader* shader); // from heightmap
-                Surface(std::vector<glm::vec3> vertices, unsigned int rows, unsigned int cols, graphics::Shader* shader); // from data
+                Surface(std::string heightMapPath, graphics::Shader* shader); // from heightmap
+                Surface(std::vector<float> heights, unsigned int rows, unsigned int cols, graphics::Shader* shader); // from data
                 ~Surface();
 
                 void render(
@@ -28,17 +28,20 @@ namespace Crocodile
 
             private:
                 std::string type;
-                unsigned int nRows, nCols;
-                std::vector<glm::vec3> vertices = {};
-                ResourceManager::TextureData heightMap;
+                int nRows, nCols;
+                std::vector<float> heights = {};
+                std::string heightMapPath;
 
                 graphics::Shader* shader = nullptr;
                 unsigned int terrainVAO;
                 int numTrisPerStrip, numStrips;
 
                 void init();
-                void createSurfaceFromVertices();
+                void createSurfaceFromData();
                 void createSurfaceFromHeightMap();
+
+                glm::vec3 interpolateRGB(const glm::vec3 colour1, const glm::vec3 colour2, float t);
+
         };
     }
 }

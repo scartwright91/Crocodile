@@ -27,10 +27,11 @@ namespace Crocodile
                 void removeObject(Object* obj);
 
                 Camera* camera = nullptr;
+
+                std::vector<Object*> objects = {};
                 std::vector<Surface*> surfaces = {};
 
             private:
-                std::vector<Object*> objects = {};
 
                 Renderer* renderer = nullptr;
 

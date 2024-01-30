@@ -37,10 +37,12 @@ namespace Crocodile
                 // move camera
                 void processMovement(Camera_Movement direction, float dt);
                 void processMouseMovement(float xoffset, float yoffset);
+                void processMouseScroll(float yoffset);
 
                 // camera vectors
                 glm::vec3 position = glm::vec3(0.f, 0.f, 3.f);
                 glm::vec3 front = glm::vec3(0.f, 0.f, -1.f);
+                glm::vec3 target = glm::vec3(0.f);
                 glm::vec3 up = glm::vec3(0.f, 1.f, 0.f);
                 glm::vec3 right;
 
