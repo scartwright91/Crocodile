@@ -126,7 +126,7 @@ namespace Crocodile
 		resourceManager.loadShader("assets/shaders/s2d/opengl/sprite_vertex.vs", "assets/shaders/s2d/opengl/sprite_fragment.fs", "sprite");
 		resourceManager.loadShader("assets/shaders/s2d/opengl/particles_vertex.vs", "assets/shaders/s2d/opengl/particles_fragment.fs", "particle");
 		resourceManager.loadShader("assets/shaders/s2d/opengl/text_vertex.vs", "assets/shaders/s2d/opengl/text_fragment.fs", "text");
-		resourceManager.loadShader("assets/shaders/s2d/opengl/postprocessing_vertex.vs", "assets/shaders/s2d//opengl/postprocessing_fragment.fs", "postprocessing");
+		resourceManager.loadShader("assets/shaders/s2d/opengl/postprocessing_vertex.vs", "assets/shaders/s2d/opengl/postprocessing_fragment.fs", "postprocessing");
 		resourceManager.loadShader("assets/shaders/s2d/opengl/grid_vertex.vs", "assets/shaders/s2d/opengl/grid_fragment.fs", "grid");
 		resourceManager.loadShader("assets/shaders/s2d/opengl/line_vertex.vs", "assets/shaders/s2d/opengl/line_fragment.fs", "line");
 		resourceManager.loadShader("assets/shaders/s2d/opengl/circle_vertex.vs", "assets/shaders/s2d/opengl/circle_fragment.fs", "circle");
