@@ -117,14 +117,14 @@ namespace Crocodile
 
 		void Object::setTileMapTexture(
 			ResourceManager::TextureData texture,
-			unsigned int gridSize,
+			float gridSize,
 			unsigned int x,
 			unsigned int y)
 		{
 			this->texture = texture;
 			useTexture = true;
-			numberOfRows = (int)texture.height / gridSize;
-			numberOfCols = (int)texture.width / gridSize;
+			numberOfRows = texture.height / gridSize;
+			numberOfCols = texture.width / gridSize;
 			textureOffset = glm::vec2((int)x / texture.width, (int)y / texture.height);
 		}
 
@@ -156,6 +156,11 @@ namespace Crocodile
 			{
 				this->texture = this->animation->textures[animation->currentFrame];
 			}
+		}
+
+		void Object::resetCollisionData(unsigned int layer)
+		{
+			collisionData[layer].reset();
 		}
 
 		void Object::setDistortionProperties(bool useDistortion, bool scrollX, bool scrollY, float distortionSpeed)

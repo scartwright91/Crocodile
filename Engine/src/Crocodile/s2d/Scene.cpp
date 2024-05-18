@@ -100,8 +100,13 @@ namespace Crocodile
 						obj->modelScale = glm::vec3(viewportScale, 1.f);
 						glm::vec2 velocity = obj->velocity * glm::vec2(dt);
 						if (obj->collisionLayers.size() > 0)
-							for (unsigned int collisionLayer : obj->collisionLayers)
+						{
+							// static tile-based collisions
+							velocity = resolveTilemapCollisions(obj, velocity);
+							// dynamic entitiy collisions
+							for (unsigned int collisionLayer = 1; collisionLayer <= 3; collisionLayer++)
 								velocity = resolveCollisions(obj, collisionLayer, velocity);
+						}
 						obj->move(velocity.x, velocity.y);
 					}
 				}
@@ -314,19 +319,6 @@ namespace Crocodile
 					obj->color,
 					obj->alpha,
 					layer->alpha);
-				for (unsigned int i = 0; i < 4; i++)
-				{
-					shapes::Circle c(4);
-					circleRenderer->render(
-						c.thickness,
-						c.fade,
-						c.calculateModelMatrix((vertices[i]) * viewportScale, 1.f),
-						view,
-						projection,
-						glm::vec3(1., 0., 0.),
-						1.,
-						layer->alpha);
-				}
 			}
 		}
 
@@ -429,6 +421,20 @@ namespace Crocodile
 			}
 		}
 
+		bool Scene::isTileCollideable(int x, int y)
+		{
+			if ((x >= 0) && (x < tilemapSize.x) && (y >= 0) && (y < tilemapSize.y))
+			{
+				return collisionTilemap[y][x].collideable;
+			}
+			return 0;
+		}
+
+		col::BoundingBox Scene::getTileBoundingBox(int x, int y)
+		{
+			return col::BoundingBox(x * tileSize, y * tileSize, tileSize, tileSize, 0.0f);
+		}
+
 		void Scene::addObjectToCollisionLayer(Object* obj, unsigned int collisionLayer)
 		{
 			if (collisionLayer > 2)
@@ -456,12 +462,67 @@ namespace Crocodile
 			);
 		}
 
+		glm::vec2 Scene::resolveTilemapCollisions(Object* obj, glm::vec2 velocity)
+		{
+			obj->resetCollisionData(tilemapLayer);
+
+			// get sprite's current position and tile
+			glm::vec2 pos = obj->getPosition();
+			int tileX = (int)(pos.x / tileSize);
+			int tileY = (int)(pos.y / tileSize);
+			float d = 0.f;
+
+			for (int x = std::max(tileX - 3, 0); x < std::min(tileX + 3, (int)tilemapSize.x); x++)
+			{
+				for (int y = std::max(tileY - 3, 0); y < std::min(tileY + 3, (int)tilemapSize.y); y++)
+				{
+					s2d::Tile tile = collisionTilemap[y][x];
+					if (tile.collideable)
+					{
+						col::BoundingBox tb = tile.getBoundingBox();
+						// y-axis collision
+						bool yCollision = obj->getShiftedBoundingBox(0.0f, velocity.y).intersectsBounds(tb);
+						if (yCollision)
+						{
+							d = obj->getBoundingBox().getMinDistanceFromBounds(tb, "y");
+							if (velocity.y >= 0)
+							{
+								velocity.y = d;
+								obj->velocity.y = 0.f;
+								obj->collisionData[tilemapLayer].on_floor = true;
+							}
+							else
+							{
+								velocity.y = -d;
+								obj->collisionData[tilemapLayer].on_ceiling = true;
+							}
+						}
+						// x-axis collision
+						bool xCollision = obj->getShiftedBoundingBox(velocity.x, 0.0f).intersectsBounds(tb);
+						if (xCollision)
+						{
+							d = obj->getBoundingBox().getMinDistanceFromBounds(tb, "x");
+							if (velocity.x >= 0)
+							{
+								velocity.x = d;
+								obj->collisionData[tilemapLayer].on_wall_right = true;
+							}
+							else
+							{
+								velocity.x = -d;
+								obj->collisionData[tilemapLayer].on_wall_left = true;
+							}
+						}
+					}
+				}
+			}
+
+			return velocity;
+		}
+
 		glm::vec2 Scene::resolveCollisions(Object* obj, unsigned int collisionLayer, glm::vec2 velocity)
 		{
-			obj->collisionData[collisionLayer].on_floor = false;
-			obj->collisionData[collisionLayer].on_ceiling = false;
-			obj->collisionData[collisionLayer].on_wall_left = false;
-			obj->collisionData[collisionLayer].on_wall_right = false;
+			obj->resetCollisionData(collisionLayer);
 			float d = 0.f;
 			for (s2d::Object *e : collisionLayers[collisionLayer])
 			{

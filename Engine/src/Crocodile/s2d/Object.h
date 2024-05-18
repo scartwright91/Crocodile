@@ -26,6 +26,18 @@ namespace Crocodile
 			bool on_wall_left = false;
 			bool on_wall_right = false;
 			CollisionData() {};
+			void reset()
+			{
+				on_floor = false;
+				on_ceiling = false;
+				on_wall_left = false;
+				on_wall_right = false;
+			};
+		};
+
+		struct CollisionLayer {
+			std::string name;
+			bool dynamic;
 		};
 
 		class CROCODILE_API Object
@@ -76,6 +88,7 @@ namespace Crocodile
 			Animation *animation = nullptr;
 
 			// collisions
+			void resetCollisionData(unsigned int layer);
 			std::vector<unsigned int> collisionLayers = {};
 			std::map<unsigned int, CollisionData> collisionData = {
 				{0, CollisionData()},
@@ -111,7 +124,7 @@ namespace Crocodile
 			void setTexture(ResourceManager::TextureData texture);
 			void setTileMapTexture(
 				ResourceManager::TextureData texture,
-				unsigned int gridSize,
+				float gridSize,
 				unsigned int x,
 				unsigned int y);
 			void setAnimation(Animation *animation);

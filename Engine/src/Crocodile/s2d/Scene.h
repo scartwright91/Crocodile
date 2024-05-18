@@ -14,6 +14,7 @@
 #include "shapes/Circle.h"
 #include "LightSystem.h"
 #include "LayerStack.h"
+#include "Tile.h"
 
 #include "rendering/SpriteRenderer.h"
 #include "rendering/ParticleRenderer.h"
@@ -29,7 +30,6 @@ namespace Crocodile
 {
 	namespace s2d
 	{
-
 		class CROCODILE_API Scene
 		{
 
@@ -51,6 +51,11 @@ namespace Crocodile
 			void render();
 			void clear();
 			void scaleScene();
+
+			// tilemap (for grid based games)
+			unsigned int tilemapLayer = 0;
+			float tileSize = 0;
+			glm::vec2 tilemapSize = {0, 0};
 
 			// postprocessing
 			unsigned int getTextureBuffer();
@@ -102,6 +107,9 @@ namespace Crocodile
 			std::map<std::string, TextRenderer*> textRenderers = {};
 
 			// collisions
+			bool isTileCollideable(int x, int y);
+			col::BoundingBox getTileBoundingBox(int x, int y);
+			std::vector<std::vector<Tile>> collisionTilemap = {};
 			void addObjectToCollisionLayer(Object* obj, unsigned int collisionLayer);
 			void removeObjectFromCollisionLayer(Object* obj, unsigned int collisionLayer);
 
@@ -139,6 +147,7 @@ namespace Crocodile
 				{1, {}},
 				{2, {}}
 			};
+			glm::vec2 resolveTilemapCollisions(Object* obj, glm::vec2 velocity);
 			glm::vec2 resolveCollisions(Object* obj, unsigned int collisionLayer, glm::vec2 velocity);
 
 			// entity groups
