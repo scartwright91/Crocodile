@@ -30,6 +30,20 @@ namespace Crocodile
             glBindVertexArray(0);
         }
 
+        void Renderer::setRenderMode(RenderMode mode)
+        {
+            renderMode = mode;
+            if (renderMode == LINE)
+                glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+            else if (renderMode == FILL)
+                glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+        }
+
+        RenderMode Renderer::getRenderMode()
+        {
+            return renderMode;
+        }
+
         void Renderer::init()
         {
             float vertices[] = {

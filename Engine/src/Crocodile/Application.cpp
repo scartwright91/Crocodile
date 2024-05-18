@@ -105,6 +105,8 @@ namespace Crocodile
 		glewInit();
 #endif
 		glEnable(GL_BLEND);
+		// NOTE we might want to disable this for 2d games for correct render ordering
+		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_TEXTURE_2D);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	}

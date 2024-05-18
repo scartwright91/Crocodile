@@ -18,7 +18,7 @@ namespace Crocodile
 
         void Camera::processMovement(Camera_Movement direction, float dt)
         {
-            float velocity = 4.f * dt;
+            float velocity = Speed * dt;
             if (direction == FORWARD)
                 position += front * velocity;
             if (direction == BACKWARD)

@@ -38,7 +38,6 @@ namespace Crocodile
             shader->setMat4("u_Projection", projection);
             // render the cube
             glBindVertexArray(terrainVAO);
-            // glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
             for(int strip = 0; strip < numStrips; strip++)
             {
                 glDrawElements(
@@ -77,6 +76,8 @@ namespace Crocodile
                     unsigned char pixelValue = image[pixelIndex];
 
                     float hh = pixelValue * yScale - yShift;
+                    if (hh > maxHeight)
+                        maxHeight = hh; 
                     // vertex
                     vertices.push_back( -height/2.0f + height*i/(float)height );   // vx
                     vertices.push_back( (float)hh );   // vy
@@ -125,6 +126,8 @@ namespace Crocodile
                 for(int j = 0; j < nRows; j++)
                 {
                     float h = heights[idx];
+                    if (h > maxHeight)
+                        maxHeight = h;
                     // position
                     vertices.push_back( -nCols/2.0f + nCols*i/(float)nCols );   // vx
                     vertices.push_back( h );   // vy

@@ -63,20 +63,12 @@ namespace Crocodile
 			else
 				glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
-			// glfwWindowHint(GLFW_SCALE_TO_MONITOR, GLFW_TRUE);
 			glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
 
 			// create window
 			int count;
 			GLFWmonitor **monitors = glfwGetMonitors(&count);
 			window = glfwCreateWindow(width, height, name, NULL, NULL);
-			// window = glfwCreateWindow(
-			// 	glfwGetVideoMode(glfwGetPrimaryMonitor())->width,
-            //     glfwGetVideoMode(glfwGetPrimaryMonitor())->height,
-			// 	name,
-			// 	glfwGetPrimaryMonitor(),
-			// 	NULL
-			// );
 
 			if (!window)
 			{

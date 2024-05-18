@@ -30,10 +30,9 @@ namespace Crocodile
 
                 std::vector<Object*> objects = {};
                 std::vector<Surface*> surfaces = {};
+                Renderer* renderer = nullptr;
 
             private:
-
-                Renderer* renderer = nullptr;
 
                 graphics::Window* window = nullptr;
                 ResourceManager *resourceManager = nullptr;

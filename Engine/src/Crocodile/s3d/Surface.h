@@ -25,12 +25,14 @@ namespace Crocodile
                     glm::mat4 view,
                     glm::mat4 projection
                 );
+                
+                float maxHeight = 0.0f;
 
             private:
+                std::string heightMapPath;
                 std::string type;
                 int nRows, nCols;
                 std::vector<float> heights = {};
-                std::string heightMapPath;
 
                 graphics::Shader* shader = nullptr;
                 unsigned int terrainVAO;

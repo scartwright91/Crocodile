@@ -3,8 +3,6 @@
 #include "Crocodile/s2d/Particles.h"
 #include "Crocodile/s3d/Surface.h"
 
-#include "LDtkLoader/Project.hpp"
-
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -48,6 +46,15 @@ public:
         // scene3d->camera->position.z += dt;
         processCommands(dt);
 
+        if (window.isKeyPressed(GLFW_KEY_SPACE) && (elapsed > 1.0f))
+        {
+            elapsed = 0.0f;
+            if (scene3d->renderer->getRenderMode() == s3d::FILL)
+                scene3d->renderer->setRenderMode(s3d::LINE);
+            else
+                scene3d->renderer->setRenderMode(s3d::FILL);
+        }
+
     }
 
     void init()
@@ -84,6 +91,7 @@ public:
 
         s3d::Surface* surface = new s3d::Surface("assets/textures/iceland_heightmap.png", resourceManager.getShader("surface_shader"));
         scene3d->surfaces.push_back(surface);
+        scene3d->camera->position = glm::vec3(0.0f, surface->maxHeight * 2.0, 0.0f);
 
     }
 
@@ -108,56 +116,7 @@ public:
         lastY = ypos;
 
         scene3d->camera->processMouseMovement(xoffset, yoffset);
-    }
-
-    void readData()
-    {
-        // Open the CSV file
-        std::ifstream file("assets/data/data_clean.csv");
-
-        // Check if the file is open
-        if (!file.is_open()) {
-            std::cerr << "Error opening file!" << std::endl;
-        }
-
-        // Define vectors to store each row of data
-        std::vector<std::vector<std::string>> data;
-
-        // Read the file line by line
-        std::string line;
-        while (std::getline(file, line)) {
-            // Use a stringstream to split the line into tokens based on commas
-            std::stringstream ss(line);
-            std::vector<std::string> row;
-            std::string token;
-
-            while (std::getline(ss, token, ',')) {
-                row.push_back(token);
-            }
-
-            // Add the row to the data vector
-            data.push_back(row);
-        }
-
-        // Close the file
-        file.close();
-
-        // Display the imported data
-        unsigned int idx = 0;
-        std::vector<float> gravity = {};
-        for (auto& row : data)
-        {
-            if (idx > 0)
-                gravity.push_back(std::stof(row[5]));
-            else
-                idx++;
-        }
-        std::cout << "Heights: " << gravity.size() << std::endl;
-
-        // add surface
-        s3d::Surface* surface = new s3d::Surface(gravity, 178, 900, resourceManager.getShader("surface_shader"));
-        scene3d->surfaces.push_back(surface);
-
+        scene3d->camera->Speed = 20.0f;
     }
 
 };
