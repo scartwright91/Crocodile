@@ -1,11 +1,20 @@
 #version 330 core
-out vec4 color;
+out vec4 colour;
 
 in float Height;
 
+uniform float u_AmbientLighting;
+uniform vec3 u_LightPosition;
+uniform vec3 u_LightColour;
+
 void main()
 {
-    // float h = (Height + 16) / 32.0f;	// shift and scale the height into a grayscale value
+    // ambient
+
+    // diffuse
+
+    // specular
+
     float h = Height;
-    color = vec4(h, h, h, 1.0);
+    colour = vec4(h, h, h, 1.0);
 }

@@ -28,6 +28,11 @@ namespace Crocodile
 
                 Camera* camera = nullptr;
 
+                // lighting
+                float ambientLighting = 1.0f;
+                glm::vec3 lightPosition = glm::vec3(50.f);
+                glm::vec3 lightColour = glm::vec3(1.f);
+
                 std::vector<Object*> objects = {};
                 std::vector<Surface*> surfaces = {};
                 Renderer* renderer = nullptr;

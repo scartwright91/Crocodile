@@ -26,7 +26,10 @@ namespace Crocodile
                 surf->render(
                     glm::mat4(1.f),
                     camera->getViewMatrix(),
-                    camera->getProjectionMatrix()
+                    camera->getProjectionMatrix(),
+                    ambientLighting,
+                    lightPosition,
+                    lightColour
                 );
             for (Object* obj : objects)
                 renderer->render(

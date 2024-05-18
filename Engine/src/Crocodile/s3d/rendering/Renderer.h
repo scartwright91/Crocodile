@@ -7,7 +7,7 @@ namespace Crocodile
 {
     namespace s3d
     {
-        
+
         enum RenderMode
         {
             LINE,
