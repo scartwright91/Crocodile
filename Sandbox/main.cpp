@@ -18,13 +18,15 @@ public:
 
     float timer = 0.0f;
     float elapsed = 0.0f;
+    float rotateSpeed = 10.f;
 
     // mouse
     float lastX = 0.0f;
     float lastY = 0.0f;
 
     s2d::Text* fps = new s2d::Text();
-    s3d::Surface* surface = nullptr;
+    s3d::Surface* earthSurface = nullptr;
+    s3d::Surface* waterSurface = nullptr;
 
     Sandbox() : Crocodile::Application("Sandbox", false, 1280, 720, false)
     {
@@ -65,7 +67,7 @@ public:
 
     void init()
     {
-        // window.setBackgroundColor(glm::vec3(0.02f, 0.13f, 0.22f));
+        window.setBackgroundColor(glm::vec3(0.02f, 0.13f, 0.22f));
         scene2d->enablePostprocessing = false;
 
         s2d::Layer* layer = new s2d::Layer("hud");
@@ -95,13 +97,26 @@ public:
             scene3d->addObject(obj);
         }
 
-        surface = new s3d::Surface("assets/textures/iceland_heightmap.png", resourceManager.getShader("surface_shader"));
-        surface->adjacentVertexDistance = 8;
-        surface->createSurface();
+        s3d::HeightMap telemetryHeightMap("res/medium_earth_topography.png", 10.f, false);
+        s3d::HeightMap bathymetrycHeightMap("res/medium_earth_bathymetry.png", -10.f, true);
+        s3d::HeightMap earthHeightMap(
+            telemetryHeightMap.nCols,
+            telemetryHeightMap.nRows,
+            calculateEarthHeightMap(telemetryHeightMap, bathymetrycHeightMap)
+        );
 
-        scene3d->surfaces.push_back(surface);
-        scene3d->camera->position = glm::vec3(surface->nRows / 2, surface->maxHeight * 2.0, surface->nCols / 2);
-        scene3d->lightPosition = glm::vec3(surface->nRows / 2, surface->maxHeight * 2.0, surface->nCols / 2);
+        earthSurface = new s3d::Surface(earthHeightMap, resourceManager.getShader("surface_shader"));
+        earthSurface->adjacentVertexDistance = 4;
+        earthSurface->createSurface();
+
+        scene3d->surfaces.push_back(earthSurface);
+
+        scene3d->camera->position = glm::vec3(0, earthSurface->heightMap.maxHeight * 2.0, 0);
+        scene3d->lightPosition = glm::vec3(
+            earthSurface->heightMap.nCols / 2,
+            earthSurface->heightMap.maxHeight * 10.0,
+            earthSurface->heightMap.nRows / 2
+        );
 
         scene3d->camera->Speed = 200.0f;
         scene3d->ambientLighting = 0.2f;
@@ -122,19 +137,37 @@ public:
         float xoffset = 0.0;
         float yoffset = 0.0;
         if (window.isKeyPressed(GLFW_KEY_LEFT))
-            xoffset = -1;
+            xoffset = -rotateSpeed;
         if (window.isKeyPressed(GLFW_KEY_RIGHT))
-            xoffset = 1;
+            xoffset = rotateSpeed;
 
         if (xoffset == 0.0)
         {
             if (window.isKeyPressed(GLFW_KEY_UP))
-                yoffset = -1;
+                yoffset = -rotateSpeed;
             if (window.isKeyPressed(GLFW_KEY_DOWN))
-                yoffset = 1;
+                yoffset = rotateSpeed;
         }
 
         scene3d->camera->processMouseMovement(xoffset, yoffset);
+    }
+
+    std::vector<float> calculateEarthHeightMap(s3d::HeightMap telemetry, s3d::HeightMap bathymetry)
+    {
+        std::vector<float> heights = {};
+        for(int i = 0; i < telemetry.nRows; i++)
+        {
+            for(int j = 0; j < telemetry.nCols; j++)
+            {
+                float h1 = telemetry.getHeight(i, j);
+                float h2 = bathymetry.getHeight(i, j);
+                if (h1 != 0.0)
+                    heights.push_back(h1);
+                else
+                    heights.push_back(h2);
+            }
+        }
+        return heights;
     }
 
 };

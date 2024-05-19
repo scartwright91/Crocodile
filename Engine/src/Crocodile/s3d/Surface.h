@@ -13,11 +13,25 @@ namespace Crocodile
 {
     namespace s3d
     {
+
+        struct HeightMap
+        {
+            int nCols;
+            int nRows;
+            std::vector<float> heights;
+            float minHeight;
+            float maxHeight;
+            HeightMap();
+            HeightMap(std::string heightMapPath, float scale, bool inverse);
+            HeightMap(int nCols, int nRows, std::vector<float> heights);
+            void init();
+            float getHeight(int i, int j);
+        };
+
         class CROCODILE_API Surface
         {
             public:
-                Surface(std::string heightMapPath, graphics::Shader* shader); // from heightmap
-                Surface(std::vector<float> heights, unsigned int rows, unsigned int cols, graphics::Shader* shader); // from data
+                Surface(HeightMap heightMap, graphics::Shader* shader) : heightMap(heightMap), shader(shader) {};
                 ~Surface();
 
                 void createSurface();
@@ -32,16 +46,13 @@ namespace Crocodile
                     glm::vec3 lightColour
                 );
 
-                float maxHeight = 0.0f;
-                int nRows, nCols, nChannels;
+                HeightMap heightMap;
+
                 // This is for calculating the normal vector. A larger value will create a smoother effect.
                 int adjacentVertexDistance = 1;
                 glm::vec3 colour = glm::vec3(1.f);
 
             private:
-                std::string heightMapPath;
-                std::string type;
-                std::vector<float> heights = {};
 
                 graphics::Shader* shader = nullptr;
                 unsigned int terrainVAO;

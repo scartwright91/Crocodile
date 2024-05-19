@@ -30,9 +30,13 @@ void main()
     vec3 specular = specularStrength * spec * u_LightColour;
 
     vec3 light = (ambient + diffuse + specular);
+    
+    vec3 col;
     if (Height > 0)
-        colour = vec4(light * u_SurfaceColour, 1.0);
+        col = vec3(1.f, 1.f, 0.f);
     else
-        colour = vec4(0.03, 0.28, 0.51, 1.0);
+        col = vec3(0., 0.5, 0.5);
+
+    colour = vec4(light * col, 1.0);
 
 }

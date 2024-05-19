@@ -5,18 +5,54 @@ namespace Crocodile
     namespace s3d
     {
 
-        Surface::Surface(
-            std::string heightMapPath,
-            graphics::Shader* shader) : heightMapPath(heightMapPath), type("height_map"), shader(shader)
+        HeightMap::HeightMap()
         {
+
+        };
+
+        HeightMap::HeightMap(std::string heightMapPath, float scale, bool inverse)
+        {
+            unsigned char* image;
+            int nChannels;
+            std::cout << std::endl << "Creating surface from height map..." << std::endl;
+            std::cout << "Reading data from: " << heightMapPath << std::endl;
+            image = stbi_load(heightMapPath.c_str(), &nCols, &nRows, &nChannels, 0);
+            std::cout << nCols << ", " << nRows << std::endl;
+            for(int i = 0; i < nRows; i++)
+            {
+                for(int j = 0; j < nCols; j++)
+                {
+                    int pixelIndex = (i * nCols + j) * nChannels;
+                    unsigned char pixelValue = image[pixelIndex];
+                    float height = pixelValue / 255.f;
+                    if (inverse)
+                        height = abs(height - 1.);
+                    heights.push_back((float)height * scale);
+                }
+            }
+            std::cout << "Finished creating height map..." << std::endl;
+            init();
         }
 
-        Surface::Surface(
-            std::vector<float> heights,
-            unsigned int rows,
-            unsigned int cols,
-            graphics::Shader* shader) : heights(heights), nRows(rows), nCols(cols), type("data"), shader(shader)
+        HeightMap::HeightMap(int nCols, int nRows, std::vector<float> heights) : nCols(nCols), nRows(nRows), heights(heights)
         {
+            init();
+        }
+
+        void HeightMap::init()
+        {
+            // find min and max heights
+            auto min = std::min_element(heights.begin(), heights.end());
+            if (min != heights.end())
+                minHeight = *min;
+            auto max = std::max_element(heights.begin(), heights.end());
+            if (max != heights.end())
+                maxHeight = *max;
+        }
+
+        float HeightMap::getHeight(int i, int j)
+        {
+            return heights[i * nCols + j];
         }
 
         Surface::~Surface()
@@ -65,40 +101,18 @@ namespace Crocodile
         void Surface::createSurface()
         {
             
-            unsigned char* image;
-            // calculate height from pixel value in height map image
-            if (type == "height_map")
-            {
-                std::cout << std::endl << "---Creating surface from height map---" << std::endl;
-                image = stbi_load(heightMapPath.c_str(), &nCols, &nRows, &nChannels, 0);
-
-                for(int i = 0; i < nRows; i++)
-                {
-                    for(int j = 0; j < nCols; j++)
-                    {
-                        int pixelIndex = (i * nCols + j) * nChannels;
-                        unsigned char pixelValue = image[pixelIndex];
-                        float height = 50.f * pixelValue / 255.f;
-                        heights.push_back((float)height);
-
-                        if (height > maxHeight)
-                            maxHeight = height;
-                    }
-                }
-            }
-
             // vertices calculation
             std::vector<float> vertices;
-            for(int i = 0; i < nRows; i++)
+            for(int i = 0; i < heightMap.nRows; i++)
             {
-                for(int j = 0; j < nCols; j++)
+                for(int j = 0; j < heightMap.nCols; j++)
                 {
-                    float height = heights[i * nCols + j];
+                    float height = heightMap.heights[i * heightMap.nCols + j];
 
                     // positions
-                    vertices.push_back( -nCols/2.0f + j );   // vz
+                    vertices.push_back( -heightMap.nCols/2.0f + j );   // vz
                     vertices.push_back( (float)height );   // vy
-                    vertices.push_back( -nRows/2.0f + i );   // vx
+                    vertices.push_back( -heightMap.nRows/2.0f + i );   // vx
 
                     // normals
                     glm::vec3 normal = calculateNormal(i, j);
@@ -108,16 +122,18 @@ namespace Crocodile
 
                 }
             }
+            std::cout << "Created vertices..." << std::endl;
 
             // indices
             std::vector<unsigned> indices;
-            for(int i = 0; i < nRows - 1; i++)
-                for(int j = 0; j < nCols; j++)
+            for(int i = 0; i < heightMap.nRows - 1; i++)
+                for(int j = 0; j < heightMap.nCols; j++)
                     for(unsigned k = 0; k < 2; k++)
-                        indices.push_back(j + nCols * (i + k));
+                        indices.push_back(j + heightMap.nCols * (i + k));
+            std::cout << "Created indices..." << std::endl;
 
-            numStrips = (nRows - 1);
-            numTrisPerStrip = (nCols)*2-2;
+            numStrips = (heightMap.nRows - 1);
+            numTrisPerStrip = (heightMap.nCols)*2-2;
 
             // first, configure the cube's VAO (and terrainVBO + terrainIBO)
             unsigned int terrainVBO, terrainIBO;
@@ -146,21 +162,21 @@ namespace Crocodile
             // extract adjacent vertices
             glm::vec3 l, r, u, d;
             if (i - adjacentVertexDistance < 0)
-                l = {i, heights[i * nCols + j], j};
+                l = {i, heightMap.getHeight(i, j), j};
             else
-                l = {i - adjacentVertexDistance, heights[(i - adjacentVertexDistance) * nCols + j], j};
-            if (i + adjacentVertexDistance > nRows - 1)
-                r = {i, heights[i * nCols + j], j};
+                l = {i - adjacentVertexDistance, heightMap.getHeight(i - adjacentVertexDistance, j), j};
+            if (i + adjacentVertexDistance > heightMap.nRows - 1)
+                r = {i, heightMap.getHeight(i, j), j};
             else
-                r = {i + adjacentVertexDistance, heights[(i + adjacentVertexDistance) * nCols + j], j};
+                r = {i + adjacentVertexDistance, heightMap.getHeight(i + adjacentVertexDistance, j), j};
             if (j - 1 < 0)
-                u = {i, heights[i * nCols + j], j};
+                u = {i, heightMap.getHeight(i, j), j};
             else
-                u = {i, heights[i * nCols + (j - adjacentVertexDistance)], j - adjacentVertexDistance};
-            if (j + adjacentVertexDistance > nCols - 1)
-                d = {i, heights[i * nCols + j], j};
+                u = {i, heightMap.getHeight(i, j - adjacentVertexDistance), j - adjacentVertexDistance};
+            if (j + adjacentVertexDistance > heightMap.nCols - 1)
+                d = {i, heightMap.getHeight(i, j), j};
             else
-                d = {i, heights[i * nCols + (j + adjacentVertexDistance)], j + adjacentVertexDistance};
+                d = {i, heightMap.getHeight(i, j + adjacentVertexDistance), j + adjacentVertexDistance};
 
             // calculate directional vectors across adjacent vertices
             glm::vec3 u_d = {u.x - d.x, u.y - d.y, u.z - d.z};
