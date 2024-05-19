@@ -27,6 +27,7 @@ namespace Crocodile
                     glm::mat4(1.f),
                     camera->getViewMatrix(),
                     camera->getProjectionMatrix(),
+                    camera->position,
                     ambientLighting,
                     lightPosition,
                     lightColour

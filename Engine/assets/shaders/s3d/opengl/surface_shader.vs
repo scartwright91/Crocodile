@@ -2,9 +2,9 @@
 layout (location = 0) in vec3 aPos;
 layout (location = 1) in vec3 aNormal;
 
-out float Height;
 out vec3 FragPos;
 out vec3 Normal;
+out float Height;
 
 uniform mat4 u_Model;
 uniform mat4 u_View;

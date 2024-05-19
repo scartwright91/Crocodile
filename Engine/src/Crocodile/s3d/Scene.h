@@ -29,7 +29,7 @@ namespace Crocodile
                 Camera* camera = nullptr;
 
                 // lighting
-                float ambientLighting = 1.0f;
+                float ambientLighting = .4f;
                 glm::vec3 lightPosition = glm::vec3(50.f);
                 glm::vec3 lightColour = glm::vec3(1.f);
 

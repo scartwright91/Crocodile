@@ -20,16 +20,22 @@ namespace Crocodile
                 Surface(std::vector<float> heights, unsigned int rows, unsigned int cols, graphics::Shader* shader); // from data
                 ~Surface();
 
+                void createSurface();
+
                 void render(
                     glm::mat4 model,
                     glm::mat4 view,
                     glm::mat4 projection,
+                    glm::vec3 cameraPosition,
                     float ambientLighting,
                     glm::vec3 lightPosition,
                     glm::vec3 lightColour
                 );
 
                 float maxHeight = 0.0f;
+                // This is for calculating the normal vector. A larger value will create a smoother effect.
+                int adjacentVertexPositions = 1;
+                glm::vec3 colour = glm::vec3(1.f);
 
             private:
                 std::string heightMapPath;
@@ -42,7 +48,6 @@ namespace Crocodile
                 int numTrisPerStrip, numStrips;
 
                 void init();
-                void createSurface();
 
                 glm::vec3 calculateNormal(int i, int j);
                 glm::vec3 interpolateRGB(const glm::vec3 colour1, const glm::vec3 colour2, float t);

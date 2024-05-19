@@ -9,7 +9,6 @@ namespace Crocodile
             std::string heightMapPath,
             graphics::Shader* shader) : heightMapPath(heightMapPath), type("height_map"), shader(shader)
         {
-            init();
         }
 
         Surface::Surface(
@@ -18,7 +17,6 @@ namespace Crocodile
             unsigned int cols,
             graphics::Shader* shader) : heights(heights), nRows(rows), nCols(cols), type("data"), shader(shader)
         {
-            init();
         }
 
         Surface::~Surface()
@@ -30,6 +28,7 @@ namespace Crocodile
             glm::mat4 model,
             glm::mat4 view,
             glm::mat4 projection,
+            glm::vec3 cameraPosition,
             float ambientLighting,
             glm::vec3 lightPosition,
             glm::vec3 lightColour
@@ -42,6 +41,8 @@ namespace Crocodile
             shader->setFloat("u_AmbientLighting", ambientLighting);
             shader->setVec3("u_LightPosition", lightPosition);
             shader->setVec3("u_LightColour", lightColour);
+            shader->setVec3("u_CameraPosition", cameraPosition);
+            shader->setVec3("u_SurfaceColour", colour);
             // render the cube
             glBindVertexArray(terrainVAO);
             for(int strip = 0; strip < numStrips; strip++)
@@ -71,14 +72,13 @@ namespace Crocodile
                 std::cout << std::endl << "---Creating surface from height map---" << std::endl;
                 image = stbi_load(heightMapPath.c_str(), &nCols, &nRows, &nChannels, 0);
 
-                float yScale = 64.0f / 256.0f, yShift = 16.0f;
                 for(int i = 0; i < nRows; i++)
                 {
                     for(int j = 0; j < nCols; j++)
                     {
                         int pixelIndex = (i * nCols + j) * nChannels;
                         unsigned char pixelValue = image[pixelIndex];
-                        float height = pixelValue * yScale - yShift;
+                        float height = 50.f * pixelValue / 255.f;
                         heights.push_back((float)height);
 
                         if (height > maxHeight)
@@ -95,7 +95,7 @@ namespace Crocodile
                 {
                     float height = heights[i * nCols + j];
 
-                    // vertex
+                    // positions
                     vertices.push_back( -nRows/2.0f + i );   // vx
                     vertices.push_back( (float)height );   // vy
                     vertices.push_back( -nCols/2.0f + j );   // vz
@@ -150,24 +150,24 @@ namespace Crocodile
         {
             // extract adjacent vertices
             glm::vec3 l, r, u, d;
-            if (i - 1 < 0)
+            if (i - adjacentVertexPositions < 0)
                 l = {i, heights[i * nCols + j], j};
             else
-                l = {i - 1, heights[(i - 1) * nCols + j], j};
-            if (i + 1 > nRows - 1)
+                l = {i - adjacentVertexPositions, heights[(i - adjacentVertexPositions) * nCols + j], j};
+            if (i + adjacentVertexPositions > nRows - 1)
                 r = {i, heights[i * nCols + j], j};
             else
-                r = {i + 1, heights[(i + 1) * nCols + j], j};
+                r = {i + adjacentVertexPositions, heights[(i + adjacentVertexPositions) * nCols + j], j};
             if (j - 1 < 0)
                 u = {i, heights[i * nCols + j], j};
             else
-                u = {i, heights[i * nCols + (j - 1)], j - 1};
-            if (j + 1 > nCols - 1)
+                u = {i, heights[i * nCols + (j - adjacentVertexPositions)], j - adjacentVertexPositions};
+            if (j + adjacentVertexPositions > nCols - 1)
                 d = {i, heights[i * nCols + j], j};
             else
-                d = {i, heights[i * nCols + (j + 1)], j + 1};
+                d = {i, heights[i * nCols + (j + adjacentVertexPositions)], j + adjacentVertexPositions};
 
-            // calculate x and y vectors
+            // calculate directional vectors across adjacent vertices
             glm::vec3 u_d = {u.x - d.x, u.y - d.y, u.z - d.z};
             glm::vec3 l_r = {l.x - r.x, l.y - r.y, l.z - r.z};
 

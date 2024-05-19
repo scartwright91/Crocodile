@@ -25,6 +25,7 @@ public:
     float lastY = 0.0f;
 
     s2d::Text* fps = new s2d::Text();
+    s3d::Surface* surface = nullptr;
 
     Sandbox() : Crocodile::Application("Sandbox", false, 1280, 720, false)
     {
@@ -46,6 +47,9 @@ public:
         // scene3d->camera->position.z += dt;
         processCommands(dt);
 
+        // rotate light position
+        scene3d->lightPosition = glm::vec3(400 * glm::cos(elapsed), surface->maxHeight * 2.0, 400 * sin(elapsed));
+
         if (window.isKeyPressed(GLFW_KEY_SPACE) && (elapsed > 1.0f))
         {
             elapsed = 0.0f;
@@ -59,7 +63,7 @@ public:
 
     void init()
     {
-        window.setBackgroundColor(glm::vec3(0.02f, 0.13f, 0.22f));
+        // window.setBackgroundColor(glm::vec3(0.02f, 0.13f, 0.22f));
         scene2d->enablePostprocessing = false;
 
         s2d::Layer* layer = new s2d::Layer("hud");
@@ -89,9 +93,13 @@ public:
             scene3d->addObject(obj);
         }
 
-        s3d::Surface* surface = new s3d::Surface("assets/textures/iceland_heightmap.png", resourceManager.getShader("surface_shader"));
+        surface = new s3d::Surface("assets/textures/iceland_heightmap.png", resourceManager.getShader("surface_shader"));
+        surface->adjacentVertexPositions = 8;
+        surface->createSurface();
+
         scene3d->surfaces.push_back(surface);
         scene3d->camera->position = glm::vec3(0.0f, surface->maxHeight * 2.0, 0.0f);
+        scene3d->lightPosition = glm::vec3(0.0f, surface->maxHeight * 2.0, 0.0f);
 
     }
 
