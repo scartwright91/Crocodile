@@ -1,6 +1,5 @@
 
 #include "Crocodile.h"
-#include "Crocodile/s2d/Particles.h"
 #include "Crocodile/s3d/Surface.h"
 
 #include <iostream>
@@ -97,7 +96,7 @@ public:
         }
 
         surface = new s3d::Surface("assets/textures/iceland_heightmap.png", resourceManager.getShader("surface_shader"));
-        surface->adjacentVertexPositions = 8;
+        surface->adjacentVertexDistance = 8;
         surface->createSurface();
 
         scene3d->surfaces.push_back(surface);

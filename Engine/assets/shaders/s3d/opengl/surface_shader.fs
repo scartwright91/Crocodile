@@ -27,11 +27,12 @@ void main()
     vec3 viewDir = normalize(u_CameraPosition - FragPos);
     vec3 reflectDir = reflect(-lightDir, norm);  
     float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-    vec3 specular = specularStrength * spec * u_LightColour;  
+    vec3 specular = specularStrength * spec * u_LightColour;
 
     vec3 light = (ambient + diffuse + specular);
     if (Height > 0)
         colour = vec4(light * u_SurfaceColour, 1.0);
     else
         colour = vec4(0.03, 0.28, 0.51, 1.0);
+
 }

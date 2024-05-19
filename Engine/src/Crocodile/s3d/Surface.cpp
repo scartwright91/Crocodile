@@ -128,11 +128,6 @@ namespace Crocodile
             glBindBuffer(GL_ARRAY_BUFFER, terrainVBO);
             glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
 
-
-            // position attribute
-            // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-            // glEnableVertexAttribArray(0);
-
             // position attribute
             glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
             glEnableVertexAttribArray(0);
@@ -150,22 +145,22 @@ namespace Crocodile
         {
             // extract adjacent vertices
             glm::vec3 l, r, u, d;
-            if (i - adjacentVertexPositions < 0)
+            if (i - adjacentVertexDistance < 0)
                 l = {i, heights[i * nCols + j], j};
             else
-                l = {i - adjacentVertexPositions, heights[(i - adjacentVertexPositions) * nCols + j], j};
-            if (i + adjacentVertexPositions > nRows - 1)
+                l = {i - adjacentVertexDistance, heights[(i - adjacentVertexDistance) * nCols + j], j};
+            if (i + adjacentVertexDistance > nRows - 1)
                 r = {i, heights[i * nCols + j], j};
             else
-                r = {i + adjacentVertexPositions, heights[(i + adjacentVertexPositions) * nCols + j], j};
+                r = {i + adjacentVertexDistance, heights[(i + adjacentVertexDistance) * nCols + j], j};
             if (j - 1 < 0)
                 u = {i, heights[i * nCols + j], j};
             else
-                u = {i, heights[i * nCols + (j - adjacentVertexPositions)], j - adjacentVertexPositions};
-            if (j + adjacentVertexPositions > nCols - 1)
+                u = {i, heights[i * nCols + (j - adjacentVertexDistance)], j - adjacentVertexDistance};
+            if (j + adjacentVertexDistance > nCols - 1)
                 d = {i, heights[i * nCols + j], j};
             else
-                d = {i, heights[i * nCols + (j + adjacentVertexPositions)], j + adjacentVertexPositions};
+                d = {i, heights[i * nCols + (j + adjacentVertexDistance)], j + adjacentVertexDistance};
 
             // calculate directional vectors across adjacent vertices
             glm::vec3 u_d = {u.x - d.x, u.y - d.y, u.z - d.z};
