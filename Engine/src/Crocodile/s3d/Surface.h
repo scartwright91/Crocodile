@@ -33,6 +33,7 @@ namespace Crocodile
                 );
 
                 float maxHeight = 0.0f;
+                int nRows, nCols, nChannels;
                 // This is for calculating the normal vector. A larger value will create a smoother effect.
                 int adjacentVertexPositions = 1;
                 glm::vec3 colour = glm::vec3(1.f);
@@ -40,7 +41,6 @@ namespace Crocodile
             private:
                 std::string heightMapPath;
                 std::string type;
-                int nRows, nCols, nChannels;
                 std::vector<float> heights = {};
 
                 graphics::Shader* shader = nullptr;

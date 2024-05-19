@@ -44,11 +44,14 @@ public:
         if (window.isKeyPressed(GLFW_KEY_ESCAPE))
             running = false;
 
-        // scene3d->camera->position.z += dt;
         processCommands(dt);
 
         // rotate light position
-        scene3d->lightPosition = glm::vec3(400 * glm::cos(elapsed), surface->maxHeight * 2.0, 400 * sin(elapsed));
+        // scene3d->lightPosition = glm::vec3(
+        //     surface->nRows / 2 + 800 * glm::cos(elapsed),
+        //     surface->maxHeight * 10.0,
+        //     surface->nCols / 2 + 800 * glm::sin(elapsed)
+        // );
 
         if (window.isKeyPressed(GLFW_KEY_SPACE) && (elapsed > 1.0f))
         {
@@ -98,33 +101,41 @@ public:
         surface->createSurface();
 
         scene3d->surfaces.push_back(surface);
-        scene3d->camera->position = glm::vec3(0.0f, surface->maxHeight * 2.0, 0.0f);
-        scene3d->lightPosition = glm::vec3(0.0f, surface->maxHeight * 2.0, 0.0f);
+        scene3d->camera->position = glm::vec3(surface->nRows / 2, surface->maxHeight * 2.0, surface->nCols / 2);
+        scene3d->lightPosition = glm::vec3(surface->nRows / 2, surface->maxHeight * 2.0, surface->nCols / 2);
+
+        scene3d->camera->Speed = 200.0f;
+        scene3d->ambientLighting = 0.2f;
 
     }
 
     void processCommands(float dt)
     {
-        if (window.isKeyPressed(GLFW_KEY_LEFT))
+        if (window.isKeyPressed(GLFW_KEY_A))
             scene3d->camera->processMovement(s3d::Camera::LEFT, dt);
-        if (window.isKeyPressed(GLFW_KEY_RIGHT))
+        if (window.isKeyPressed(GLFW_KEY_D))
             scene3d->camera->processMovement(s3d::Camera::RIGHT, dt);
-        if (window.isKeyPressed(GLFW_KEY_UP))
+        if (window.isKeyPressed(GLFW_KEY_W))
             scene3d->camera->processMovement(s3d::Camera::FORWARD, dt);
-        if (window.isKeyPressed(GLFW_KEY_DOWN))
+        if (window.isKeyPressed(GLFW_KEY_S))
             scene3d->camera->processMovement(s3d::Camera::BACKWARD, dt);
 
-        glm::vec2 mouse = window.getMouseScreenPosition();
-        float xpos = mouse.x;
-        float ypos = mouse.y;
-        float xoffset = xpos - lastX;
-        float yoffset = lastY - ypos; // reversed since y-coordinates go from bottom to top
+        float xoffset = 0.0;
+        float yoffset = 0.0;
+        if (window.isKeyPressed(GLFW_KEY_LEFT))
+            xoffset = -1;
+        if (window.isKeyPressed(GLFW_KEY_RIGHT))
+            xoffset = 1;
 
-        lastX = xpos;
-        lastY = ypos;
+        if (xoffset == 0.0)
+        {
+            if (window.isKeyPressed(GLFW_KEY_UP))
+                yoffset = -1;
+            if (window.isKeyPressed(GLFW_KEY_DOWN))
+                yoffset = 1;
+        }
 
         scene3d->camera->processMouseMovement(xoffset, yoffset);
-        scene3d->camera->Speed = 20.0f;
     }
 
 };

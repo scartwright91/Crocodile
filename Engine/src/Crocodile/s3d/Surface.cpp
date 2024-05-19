@@ -96,9 +96,9 @@ namespace Crocodile
                     float height = heights[i * nCols + j];
 
                     // positions
-                    vertices.push_back( -nRows/2.0f + i );   // vx
-                    vertices.push_back( (float)height );   // vy
                     vertices.push_back( -nCols/2.0f + j );   // vz
+                    vertices.push_back( (float)height );   // vy
+                    vertices.push_back( -nRows/2.0f + i );   // vx
 
                     // normals
                     glm::vec3 normal = calculateNormal(i, j);

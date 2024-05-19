@@ -31,6 +31,7 @@ namespace Crocodile
 
         void Camera::processMouseMovement(float xoffset, float yoffset)
         {
+
             xoffset *= Sensitivity;
             yoffset *= Sensitivity;
 
@@ -67,7 +68,7 @@ namespace Crocodile
             if (projectionType == ORTHOGRAPHIC)
                 proj = glm::ortho(0.0f, 1280.0f, 0.0f, 720.0f, 0.1f, 1000.0f);
             else if (projectionType == PERSPECTIVE)
-                proj = glm::perspective(glm::radians(Zoom), 1280.f / 720.f, 0.1f, 1000.0f);
+                proj = glm::perspective(glm::radians(Zoom), 1280.f / 720.f, 0.1f, 10000.0f);
             return proj;
         }
 
