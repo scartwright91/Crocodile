@@ -36,7 +36,6 @@ namespace Crocodile
                 std::string type;
                 int nRows, nCols, nChannels;
                 std::vector<float> heights = {};
-                std::vector<float> normals = {};
 
                 graphics::Shader* shader = nullptr;
                 unsigned int terrainVAO;
@@ -45,6 +44,7 @@ namespace Crocodile
                 void init();
                 void createSurface();
 
+                glm::vec3 calculateNormal(int i, int j);
                 glm::vec3 interpolateRGB(const glm::vec3 colour1, const glm::vec3 colour2, float t);
 
         };

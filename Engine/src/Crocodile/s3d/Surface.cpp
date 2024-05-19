@@ -65,46 +65,49 @@ namespace Crocodile
         {
             
             unsigned char* image;
+            // calculate height from pixel value in height map image
             if (type == "height_map")
             {
                 std::cout << std::endl << "---Creating surface from height map---" << std::endl;
                 image = stbi_load(heightMapPath.c_str(), &nCols, &nRows, &nChannels, 0);
+
+                float yScale = 64.0f / 256.0f, yShift = 16.0f;
+                for(int i = 0; i < nRows; i++)
+                {
+                    for(int j = 0; j < nCols; j++)
+                    {
+                        int pixelIndex = (i * nCols + j) * nChannels;
+                        unsigned char pixelValue = image[pixelIndex];
+                        float height = pixelValue * yScale - yShift;
+                        heights.push_back((float)height);
+
+                        if (height > maxHeight)
+                            maxHeight = height;
+                    }
+                }
             }
 
             // vertices calculation
             std::vector<float> vertices;
-            float yScale = 64.0f / 256.0f, yShift = 16.0f;
-            int idx = 0;
             for(int i = 0; i < nRows; i++)
             {
                 for(int j = 0; j < nCols; j++)
                 {
-                    float height;
-                    // we don't have the height vector but we extract it from the pixels
-                    if (type == "height_map")
-                    {
-                        int pixelIndex = (i * nCols + j) * nChannels;
-                        unsigned char pixelValue = image[pixelIndex];
-                        height = pixelValue * yScale - yShift;
-                        heights.push_back((float)height);
-                    }
-                    else
-                    {
-                        height = heights[idx];
-                        idx++;
-                    }
-
-                    if (height > maxHeight)
-                        maxHeight = height;
+                    float height = heights[i * nCols + j];
 
                     // vertex
                     vertices.push_back( -nRows/2.0f + i );   // vx
                     vertices.push_back( (float)height );   // vy
                     vertices.push_back( -nCols/2.0f + j );   // vz
+
+                    // normals
+                    glm::vec3 normal = calculateNormal(i, j);
+                    vertices.push_back(normal.x);
+                    vertices.push_back(normal.y);
+                    vertices.push_back(normal.z);
+
                 }
             }
-
-            // normals
 
             // indices
             std::vector<unsigned> indices;
@@ -125,14 +128,53 @@ namespace Crocodile
             glBindBuffer(GL_ARRAY_BUFFER, terrainVBO);
             glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
 
+
             // position attribute
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+            // glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+            // glEnableVertexAttribArray(0);
+
+            // position attribute
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
             glEnableVertexAttribArray(0);
+            // color attribute
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
+            glEnableVertexAttribArray(1);
 
             glGenBuffers(1, &terrainIBO);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainIBO);
             glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(unsigned), &indices[0], GL_STATIC_DRAW);
 
+        }
+
+        glm::vec3 Surface::calculateNormal(int i, int j)
+        {
+            // extract adjacent vertices
+            glm::vec3 l, r, u, d;
+            if (i - 1 < 0)
+                l = {i, heights[i * nCols + j], j};
+            else
+                l = {i - 1, heights[(i - 1) * nCols + j], j};
+            if (i + 1 > nRows - 1)
+                r = {i, heights[i * nCols + j], j};
+            else
+                r = {i + 1, heights[(i + 1) * nCols + j], j};
+            if (j - 1 < 0)
+                u = {i, heights[i * nCols + j], j};
+            else
+                u = {i, heights[i * nCols + (j - 1)], j - 1};
+            if (j + 1 > nCols - 1)
+                d = {i, heights[i * nCols + j], j};
+            else
+                d = {i, heights[i * nCols + (j + 1)], j + 1};
+
+            // calculate x and y vectors
+            glm::vec3 u_d = {u.x - d.x, u.y - d.y, u.z - d.z};
+            glm::vec3 l_r = {l.x - r.x, l.y - r.y, l.z - r.z};
+
+            // cross-product and normalise to find normal vector
+            glm::vec3 normal = glm::normalize(glm::cross(u_d, l_r));
+
+            return normal;
         }
 
         glm::vec3 Surface::interpolateRGB(const glm::vec3 color1, const glm::vec3 color2, float t)
