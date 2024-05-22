@@ -45,6 +45,7 @@ namespace Crocodile
 		ResourceManager resourceManager;
 		SoundManager soundManager;
 
+		bool running = true;
 		graphics::Window window;
 		s2d::Scene *scene2d;
 		s3d::Scene *scene3d;
@@ -53,7 +54,6 @@ namespace Crocodile
 		// imgui variables
 		float fontImGuiScale = 1.f;
 		bool mouseOnImGuiWindow = false;
-		bool running = true;
 
 	private:
 		void loadShaders();

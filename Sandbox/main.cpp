@@ -1,12 +1,14 @@
 
-#include "Crocodile.h"
-#include "Crocodile/s3d/Surface.h"
-
 #include <iostream>
 #include <fstream>
 #include <sstream>
 #include <vector>
 #include <string>
+
+#include "Crocodile.h"
+#include "Crocodile/s3d/Surface.h"
+
+#include "src/Scene.h"
 
 using namespace Crocodile;
 
@@ -24,11 +26,12 @@ public:
     float lastX = 0.0f;
     float lastY = 0.0f;
 
+    Scene* scene = nullptr;
     s2d::Text* fps = new s2d::Text();
     s3d::Surface* earthSurface = nullptr;
     s3d::Surface* waterSurface = nullptr;
 
-    Sandbox() : Crocodile::Application("Sandbox", false, 1280, 720, false)
+    Sandbox() : Crocodile::Application("Sandbox", true, 1280, 720, false)
     {
         init();
     }
@@ -47,13 +50,6 @@ public:
 
         processCommands(dt);
 
-        // rotate light position
-        // scene3d->lightPosition = glm::vec3(
-        //     surface->nRows / 2 + 800 * glm::cos(elapsed),
-        //     surface->maxHeight * 10.0,
-        //     surface->nCols / 2 + 800 * glm::sin(elapsed)
-        // );
-
         if (window.isKeyPressed(GLFW_KEY_SPACE) && (elapsed > 1.0f))
         {
             elapsed = 0.0f;
@@ -67,6 +63,11 @@ public:
 
     void init()
     {
+
+        // create new scene and set it as current scene
+        scene = new Scene(&window, &resourceManager);
+        setCurrentScene3d(scene);
+
         window.setBackgroundColor(glm::vec3(0.02f, 0.13f, 0.22f));
         scene2d->enablePostprocessing = false;
 
@@ -77,44 +78,17 @@ public:
         fps->color = glm::vec3(1.f);
         scene2d->addObject(fps, "hud");
 
-        // create cubes
-        std::vector<glm::vec3> cubes = {
-            glm::vec3( 0.0f,  0.0f,  0.0f),
-            glm::vec3( 2.0f,  5.0f, -15.0f),
-            glm::vec3(-1.5f, -2.2f, -2.5f),
-            glm::vec3(-3.8f, -2.0f, -12.3f),
-            glm::vec3( 2.4f, -0.4f, -3.5f),
-            glm::vec3(-1.7f,  3.0f, -7.5f),
-            glm::vec3( 1.3f, -2.0f, -2.5f),
-            glm::vec3( 1.5f,  2.0f, -2.5f),
-            glm::vec3( 1.5f,  0.2f, -1.5f),
-            glm::vec3(-1.3f,  1.0f, -1.5f)
-        };
+        createEarthSurface();
+        createWaterSurface();
 
-        for (glm::vec3 cube : cubes)
-        {
-            s3d::Object* obj = new s3d::Object(cube);
-            scene3d->addObject(obj);
-        }
-
-        s3d::HeightMap telemetryHeightMap("res/medium_earth_topography.png", 10.f, false);
-        s3d::HeightMap bathymetrycHeightMap("res/medium_earth_bathymetry.png", -10.f, true);
-        s3d::HeightMap earthHeightMap(
-            telemetryHeightMap.nCols,
-            telemetryHeightMap.nRows,
-            calculateEarthHeightMap(telemetryHeightMap, bathymetrycHeightMap)
+        scene3d->camera->position = glm::vec3(
+            earthSurface->heightMap.nCols / 2,
+            earthSurface->heightMap.maxHeight * 2.0,
+            earthSurface->heightMap.nRows / 2
         );
-
-        earthSurface = new s3d::Surface(earthHeightMap, resourceManager.getShader("surface_shader"));
-        earthSurface->adjacentVertexDistance = 4;
-        earthSurface->createSurface();
-
-        scene3d->surfaces.push_back(earthSurface);
-
-        scene3d->camera->position = glm::vec3(0, earthSurface->heightMap.maxHeight * 2.0, 0);
         scene3d->lightPosition = glm::vec3(
             earthSurface->heightMap.nCols / 2,
-            earthSurface->heightMap.maxHeight * 10.0,
+            earthSurface->heightMap.maxHeight * 100.0,
             earthSurface->heightMap.nRows / 2
         );
 
@@ -168,6 +142,74 @@ public:
             }
         }
         return heights;
+    }
+
+    std::vector<float> smoothHeightMap(s3d::HeightMap heightMap)
+    {
+        std::vector<float> heights = {};
+        for(int i = 0; i < heightMap.nRows; i++)
+        {
+            for(int j = 0; j < heightMap.nCols; j++)
+            {
+                if ((i == 0) || (i == heightMap.nRows - 1) || (j == 0) || (j == heightMap.nCols - 1))
+                    heights.push_back(heightMap.getHeight(i, j));
+                else
+                {
+                    float h = (
+                        heightMap.getHeight(i, j) +
+                        heightMap.getHeight(i - 1, j) +
+                        heightMap.getHeight(i + 1, j) +
+                        heightMap.getHeight(i, j - 1) +
+                        heightMap.getHeight(i, j + 1)
+                    ) / 5;
+                    heights.push_back(h);
+                }
+            }
+        }
+        return heights;
+    }
+
+    void createEarthSurface()
+    {
+        // height maps
+        s3d::HeightMap telemetryHeightMap("res/medium_earth_topography.png", 20.f, false);
+        telemetryHeightMap.heights = smoothHeightMap(telemetryHeightMap);
+        telemetryHeightMap.heights = smoothHeightMap(telemetryHeightMap);
+        telemetryHeightMap.heights = smoothHeightMap(telemetryHeightMap);
+        s3d::HeightMap bathymetrycHeightMap("res/medium_earth_bathymetry.png", -25.f, true);
+        bathymetrycHeightMap.heights = smoothHeightMap(bathymetrycHeightMap);
+        bathymetrycHeightMap.heights = smoothHeightMap(bathymetrycHeightMap);
+        bathymetrycHeightMap.heights = smoothHeightMap(bathymetrycHeightMap);
+        s3d::HeightMap earthHeightMap(
+            telemetryHeightMap.nCols,
+            telemetryHeightMap.nRows,
+            calculateEarthHeightMap(telemetryHeightMap, bathymetrycHeightMap)
+        );
+        
+        // create earth surface
+        earthSurface = new s3d::Surface(earthHeightMap, resourceManager.getShader("surface_shader"));
+        earthSurface->adjacentVertexDistance = 4;
+        earthSurface->createSurface();
+        scene3d->surfaces.push_back(earthSurface);
+    }
+
+    void createWaterSurface()
+    {
+        graphics::Shader* waterShader = new graphics::Shader(
+            "assets/shaders/s3d/opengl/water_shader.vs",
+            "assets/shaders/s3d/opengl/water_shader.fs"
+        );
+
+        // create water surface
+        float h = -.5f;
+        s3d::HeightMap waterHeightMap(2, 2, {h, h, h, h});
+        waterSurface = new s3d::Surface(waterHeightMap, waterShader);
+        waterSurface->alpha = .5f;
+        waterSurface->colour = glm::vec3(0.f, 0.f, 1.f);
+        waterSurface->gridSize = {earthSurface->heightMap.nCols, earthSurface->heightMap.nRows};
+        waterSurface->createSurface();
+        scene3d->surfaces.push_back(waterSurface);
+
     }
 
 };

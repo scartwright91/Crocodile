@@ -50,7 +50,10 @@ namespace Crocodile
 
                 // This is for calculating the normal vector. A larger value will create a smoother effect.
                 int adjacentVertexDistance = 1;
+                float alpha = 1.0f;
                 glm::vec3 colour = glm::vec3(1.f);
+                glm::vec2 pos = glm::vec2(0.f);
+                glm::vec2 gridSize = glm::vec2(1.f);
 
             private:
 

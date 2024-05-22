@@ -21,7 +21,7 @@ namespace Crocodile
                 ~Scene();
 
                 void update(float dt);
-                void render();
+                virtual void render();
                 
                 void addObject(Object* obj);
                 void removeObject(Object* obj);

@@ -10,6 +10,7 @@ uniform vec3 u_LightPosition;
 uniform vec3 u_LightColour;
 uniform vec3 u_CameraPosition;
 uniform vec3 u_SurfaceColour;
+uniform float u_Alpha;
 
 void main()
 {
@@ -33,10 +34,10 @@ void main()
     
     vec3 col;
     if (Height > 0)
-        col = vec3(1.f, 1.f, 0.f);
+        col = light * vec3(0.4f, .8f, 0.1f);
     else
-        col = vec3(0., 0.5, 0.5);
+        col = light * vec3(0., 0.5, 0.8);
 
-    colour = vec4(light * col, 1.0);
+    colour = vec4(light * u_SurfaceColour, 1.0);
 
 }

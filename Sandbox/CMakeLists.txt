@@ -4,6 +4,12 @@ project(Sandbox)
 
 add_executable(${PROJECT_NAME} 
     main.cpp
+    src/Scene.h
+    src/Scene.cpp
+    src/World.h
+    src/World.cpp
+    src/Water.h
+    src/Water.cpp
 )
 
 target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURE_DIR}/build)

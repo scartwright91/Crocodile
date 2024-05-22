@@ -47,6 +47,8 @@ namespace Crocodile
                 glm::vec3 right;
 
                 // camera parameters
+                float frustrumMin = 0.1f;
+                float frustrumMax = 10000.f;
                 float Yaw         = -90.0f;
                 float Pitch       =  0.0f;
                 float Speed       =  2.5f;

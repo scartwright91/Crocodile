@@ -26,7 +26,7 @@ namespace Crocodile
                     unsigned char pixelValue = image[pixelIndex];
                     float height = pixelValue / 255.f;
                     if (inverse)
-                        height = abs(height - 1.);
+                        height = std::fabs(height - 1.);
                     heights.push_back((float)height * scale);
                 }
             }
@@ -79,6 +79,7 @@ namespace Crocodile
             shader->setVec3("u_LightColour", lightColour);
             shader->setVec3("u_CameraPosition", cameraPosition);
             shader->setVec3("u_SurfaceColour", colour);
+            shader->setFloat("u_Alpha", alpha);
             // render the cube
             glBindVertexArray(terrainVAO);
             for(int strip = 0; strip < numStrips; strip++)
@@ -110,16 +111,15 @@ namespace Crocodile
                     float height = heightMap.heights[i * heightMap.nCols + j];
 
                     // positions
-                    vertices.push_back( -heightMap.nCols/2.0f + j );   // vz
+                    vertices.push_back( pos.x + j * gridSize.x );   // vz
                     vertices.push_back( (float)height );   // vy
-                    vertices.push_back( -heightMap.nRows/2.0f + i );   // vx
+                    vertices.push_back( pos.y + i *gridSize.y );   // vx
 
                     // normals
                     glm::vec3 normal = calculateNormal(i, j);
                     vertices.push_back(normal.x);
                     vertices.push_back(normal.y);
                     vertices.push_back(normal.z);
-
                 }
             }
             std::cout << "Created vertices..." << std::endl;
