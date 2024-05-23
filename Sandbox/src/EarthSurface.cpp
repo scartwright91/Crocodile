@@ -1,27 +1,36 @@
-#include "WaterSurface.h"
+#include "EarthSurface.h"
 
-WaterSurface::WaterSurface(s3d::HeightMap heightMap, graphics::Shader* shader) : s3d::Surface(heightMap, shader)
+EarthSurface::EarthSurface(s3d::HeightMap heightMap, graphics::Shader* shader) : s3d::Surface(heightMap, shader)
+{
+}
+
+EarthSurface::~EarthSurface()
 {
 
 }
 
-WaterSurface::~WaterSurface()
-{
-
-}
-
-void WaterSurface::customRender(
+void EarthSurface::customRender(
     glm::mat4 model,
     glm::mat4 view,
-    glm::mat4 projection
+    glm::mat4 projection,
+    glm::vec3 cameraPosition,
+    float ambientLighting,
+    glm::vec3 lightPosition,
+    glm::vec3 lightColour
 )
 {
     shader->use();
     shader->setMat4("u_Model", model);
     shader->setMat4("u_View", view);
     shader->setMat4("u_Projection", projection);
+    shader->setFloat("u_AmbientLighting", ambientLighting);
+    shader->setVec3("u_LightPosition", lightPosition);
+    shader->setVec3("u_LightColour", lightColour);
+    shader->setVec3("u_CameraPosition", cameraPosition);
     shader->setVec3("u_SurfaceColour", colour);
     shader->setFloat("u_Alpha", alpha);
+    shader->setFloat("u_MinHeight", heightMap.minHeight);
+    shader->setFloat("u_MaxHeight", heightMap.maxHeight);
     // render the cube
     glBindVertexArray(terrainVAO);
     for(int strip = 0; strip < numStrips; strip++)

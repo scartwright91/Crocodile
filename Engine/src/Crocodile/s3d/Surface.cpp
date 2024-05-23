@@ -122,7 +122,6 @@ namespace Crocodile
                     vertices.push_back(normal.z);
                 }
             }
-            std::cout << "Created vertices..." << std::endl;
 
             // indices
             std::vector<unsigned> indices;
@@ -130,7 +129,6 @@ namespace Crocodile
                 for(int j = 0; j < heightMap.nCols; j++)
                     for(unsigned k = 0; k < 2; k++)
                         indices.push_back(j + heightMap.nCols * (i + k));
-            std::cout << "Created indices..." << std::endl;
 
             numStrips = (heightMap.nRows - 1);
             numTrisPerStrip = (heightMap.nCols)*2-2;

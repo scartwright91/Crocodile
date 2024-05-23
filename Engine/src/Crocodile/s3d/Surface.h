@@ -55,12 +55,12 @@ namespace Crocodile
                 glm::vec2 pos = glm::vec2(0.f);
                 glm::vec2 gridSize = glm::vec2(1.f);
 
-            private:
-
+            protected:
                 graphics::Shader* shader = nullptr;
                 unsigned int terrainVAO;
                 int numTrisPerStrip, numStrips;
 
+            private:
                 void init();
 
                 glm::vec3 calculateNormal(int i, int j);

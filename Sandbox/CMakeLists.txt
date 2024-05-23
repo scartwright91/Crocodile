@@ -8,8 +8,10 @@ add_executable(${PROJECT_NAME}
     src/Scene.cpp
     src/World.h
     src/World.cpp
-    src/Water.h
-    src/Water.cpp
+    src/WaterSurface.h
+    src/WaterSurface.cpp
+    src/EarthSurface.h
+    src/EarthSurface.cpp
 )
 
 target_link_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURE_DIR}/build)

@@ -28,8 +28,8 @@ public:
 
     Scene* scene = nullptr;
     s2d::Text* fps = new s2d::Text();
-    s3d::Surface* earthSurface = nullptr;
-    s3d::Surface* waterSurface = nullptr;
+    EarthSurface* earthSurface = nullptr;
+    WaterSurface* waterSurface = nullptr;
 
     Sandbox() : Crocodile::Application("Sandbox", true, 1280, 720, false)
     {
@@ -71,6 +71,8 @@ public:
         window.setBackgroundColor(glm::vec3(0.02f, 0.13f, 0.22f));
         scene2d->enablePostprocessing = false;
 
+        resourceManager.loadTexture("res/earth_texture_october.jpg", "earth_texture", false);
+
         s2d::Layer* layer = new s2d::Layer("hud");
         layer->applyCamera = false;
         scene2d->layerStack->addLayer(layer);
@@ -79,7 +81,7 @@ public:
         scene2d->addObject(fps, "hud");
 
         createEarthSurface();
-        createWaterSurface();
+        // createWaterSurface();
 
         scene3d->camera->position = glm::vec3(
             earthSurface->heightMap.nCols / 2,
@@ -136,9 +138,9 @@ public:
                 float h1 = telemetry.getHeight(i, j);
                 float h2 = bathymetry.getHeight(i, j);
                 if (h1 != 0.0)
-                    heights.push_back(h1);
+                    heights.push_back(h1 + 0.1f);
                 else
-                    heights.push_back(h2);
+                    heights.push_back(h2 - 0.1f);
             }
         }
         return heights;
@@ -185,30 +187,35 @@ public:
             telemetryHeightMap.nRows,
             calculateEarthHeightMap(telemetryHeightMap, bathymetrycHeightMap)
         );
+
+        graphics::Shader* earthShader = new graphics::Shader(
+            "res/shaders/earth_shader.vs",
+            "res/shaders/earth_shader.fs"
+        );
         
         // create earth surface
-        earthSurface = new s3d::Surface(earthHeightMap, resourceManager.getShader("surface_shader"));
-        earthSurface->adjacentVertexDistance = 4;
+        earthSurface = new EarthSurface(earthHeightMap, earthShader);
+        earthSurface->adjacentVertexDistance = 10;
         earthSurface->createSurface();
-        scene3d->surfaces.push_back(earthSurface);
+        scene->earthSurfaces.push_back(earthSurface);
     }
 
     void createWaterSurface()
     {
         graphics::Shader* waterShader = new graphics::Shader(
-            "assets/shaders/s3d/opengl/water_shader.vs",
-            "assets/shaders/s3d/opengl/water_shader.fs"
+            "res/shaders/water_shader.vs",
+            "res/shaders/water_shader.fs"
         );
 
         // create water surface
-        float h = -.5f;
+        float h = 0.f;
         s3d::HeightMap waterHeightMap(2, 2, {h, h, h, h});
-        waterSurface = new s3d::Surface(waterHeightMap, waterShader);
-        waterSurface->alpha = .5f;
+        waterSurface = new WaterSurface(waterHeightMap, waterShader);
+        waterSurface->alpha = 0.3f;
         waterSurface->colour = glm::vec3(0.f, 0.f, 1.f);
         waterSurface->gridSize = {earthSurface->heightMap.nCols, earthSurface->heightMap.nRows};
         waterSurface->createSurface();
-        scene3d->surfaces.push_back(waterSurface);
+        scene->waterSurfaces.push_back(waterSurface);
 
     }
 
