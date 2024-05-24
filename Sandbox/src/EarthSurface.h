@@ -17,6 +17,7 @@ class EarthSurface : public s3d::Surface
             glm::vec3 cameraPosition,
             float ambientLighting,
             glm::vec3 lightPosition,
-            glm::vec3 lightColour
+            glm::vec3 lightColour,
+            ResourceManager::TextureData earthTexture
         );
 };

@@ -2,6 +2,8 @@
 
 EarthSurface::EarthSurface(s3d::HeightMap heightMap, graphics::Shader* shader) : s3d::Surface(heightMap, shader)
 {
+    shader->use();
+    shader->setInt("u_EarthTexture", 0);
 }
 
 EarthSurface::~EarthSurface()
@@ -16,7 +18,8 @@ void EarthSurface::customRender(
     glm::vec3 cameraPosition,
     float ambientLighting,
     glm::vec3 lightPosition,
-    glm::vec3 lightColour
+    glm::vec3 lightColour,
+    ResourceManager::TextureData earthTexture
 )
 {
     shader->use();
@@ -31,6 +34,8 @@ void EarthSurface::customRender(
     shader->setFloat("u_Alpha", alpha);
     shader->setFloat("u_MinHeight", heightMap.minHeight);
     shader->setFloat("u_MaxHeight", heightMap.maxHeight);
+    glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding texture
+    glBindTexture(GL_TEXTURE_2D, earthTexture.textureID);
     // render the cube
     glBindVertexArray(terrainVAO);
     for(int strip = 0; strip < numStrips; strip++)

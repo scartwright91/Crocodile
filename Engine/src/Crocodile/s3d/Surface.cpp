@@ -26,7 +26,7 @@ namespace Crocodile
                     unsigned char pixelValue = image[pixelIndex];
                     float height = pixelValue / 255.f;
                     if (inverse)
-                        height = std::fabs(height - 1.);
+                        height = (float)std::fabs(height - 1.);
                     heights.push_back((float)height * scale);
                 }
             }
@@ -120,6 +120,10 @@ namespace Crocodile
                     vertices.push_back(normal.x);
                     vertices.push_back(normal.y);
                     vertices.push_back(normal.z);
+
+                    // uv coords
+                    vertices.push_back( (float)j / (float)heightMap.nCols );
+                    vertices.push_back( (float)i / (float)heightMap.nRows );
                 }
             }
 
@@ -143,11 +147,14 @@ namespace Crocodile
             glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), &vertices[0], GL_STATIC_DRAW);
 
             // position attribute
-            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+            glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
             glEnableVertexAttribArray(0);
             // color attribute
-            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3* sizeof(float)));
+            glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3* sizeof(float)));
             glEnableVertexAttribArray(1);
+            // texture coord attribute
+            glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+            glEnableVertexAttribArray(2);  
 
             glGenBuffers(1, &terrainIBO);
             glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, terrainIBO);

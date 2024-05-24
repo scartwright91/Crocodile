@@ -45,7 +45,8 @@ void Scene::render()
             camera->position,
             ambientLighting,
             lightPosition,
-            lightColour
+            lightColour,
+            resourceManager->getTexture("earth_texture")
         );
     }
 }

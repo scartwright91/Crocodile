@@ -1,6 +1,7 @@
 #version 330 core
 out vec4 colour;
 
+in vec2 TexCoords;
 in vec3 FragPos;
 in vec3 Normal;
 in float Height;
@@ -10,6 +11,7 @@ uniform vec3 u_LightPosition;
 uniform vec3 u_LightColour;
 uniform vec3 u_CameraPosition;
 
+uniform sampler2D u_EarthTexture;
 uniform float u_MaxHeight;
 uniform float u_MinHeight;
 
@@ -41,7 +43,7 @@ void main()
     float f2 = abs(Height / u_MinHeight);
     
     if (Height > 0)
-        col = light * mix(vec3(0.f, 0.f, 1.f), vec3(0.f), f1);
+        col = light * texture2D(u_EarthTexture, TexCoords).rgb;
     else
         col = light * mix(vec3(0.02, 0.88, 0.81), vec3(0.11, 0.0, 0.57), f2);
 

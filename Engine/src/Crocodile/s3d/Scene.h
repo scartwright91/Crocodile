@@ -37,11 +37,11 @@ namespace Crocodile
                 std::vector<Surface*> surfaces = {};
                 Renderer* renderer = nullptr;
 
-            private:
-
+            protected:
                 graphics::Window* window = nullptr;
                 ResourceManager *resourceManager = nullptr;
 
+            private:
                 void init();
 
         };
