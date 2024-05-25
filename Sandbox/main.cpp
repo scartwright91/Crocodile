@@ -20,11 +20,7 @@ public:
 
     float timer = 0.0f;
     float elapsed = 0.0f;
-    float rotateSpeed = 10.f;
-
-    // mouse
-    float lastX = 0.0f;
-    float lastY = 0.0f;
+    float rotateSpeed = 1000.f;
 
     Scene* scene = nullptr;
     s2d::Text* fps = new s2d::Text();
@@ -67,11 +63,12 @@ public:
         // create new scene and set it as current scene
         scene = new Scene(&window, &resourceManager);
         setCurrentScene3d(scene);
+        scene->camera->frustrumMax = 100000.f;
 
         window.setBackgroundColor(glm::vec3(0.02f, 0.13f, 0.22f));
         scene2d->enablePostprocessing = false;
 
-        resourceManager.loadTexture("res/earth_texture_october.jpg", "earth_texture", false);
+        resourceManager.loadTexture("res/earth_texture_oct_medium.png", "earth_texture", false);
 
         s2d::Layer* layer = new s2d::Layer("hud");
         layer->applyCamera = false;
@@ -81,11 +78,11 @@ public:
         scene2d->addObject(fps, "hud");
 
         createEarthSurface();
-        // createWaterSurface();
+        createWaterSurface();
 
         scene3d->camera->position = glm::vec3(
             earthSurface->heightMap.nCols / 2,
-            earthSurface->heightMap.maxHeight * 2.0,
+            earthSurface->heightMap.maxHeight * 10.0,
             earthSurface->heightMap.nRows / 2
         );
         scene3d->lightPosition = glm::vec3(
@@ -94,7 +91,7 @@ public:
             earthSurface->heightMap.nRows / 2
         );
 
-        scene3d->camera->Speed = 200.0f;
+        scene3d->camera->Speed = 2000.0f;
         scene3d->ambientLighting = 0.2f;
 
     }
@@ -113,16 +110,16 @@ public:
         float xoffset = 0.0;
         float yoffset = 0.0;
         if (window.isKeyPressed(GLFW_KEY_LEFT))
-            xoffset = -rotateSpeed;
+            xoffset = -rotateSpeed * dt;
         if (window.isKeyPressed(GLFW_KEY_RIGHT))
-            xoffset = rotateSpeed;
+            xoffset = rotateSpeed * dt;
 
         if (xoffset == 0.0)
         {
             if (window.isKeyPressed(GLFW_KEY_UP))
-                yoffset = -rotateSpeed;
+                yoffset = -rotateSpeed * dt;
             if (window.isKeyPressed(GLFW_KEY_DOWN))
-                yoffset = rotateSpeed;
+                yoffset = rotateSpeed * dt;
         }
 
         scene3d->camera->processMouseMovement(xoffset, yoffset);
@@ -138,9 +135,9 @@ public:
                 float h1 = telemetry.getHeight(i, j);
                 float h2 = bathymetry.getHeight(i, j);
                 if (h1 != 0.0)
-                    heights.push_back(h1 + 0.1f);
+                    heights.push_back(h1 + 1.f);
                 else
-                    heights.push_back(h2 - 0.1f);
+                    heights.push_back(h2 - 1.f);
             }
         }
         return heights;
@@ -174,11 +171,11 @@ public:
     void createEarthSurface()
     {
         // height maps
-        s3d::HeightMap telemetryHeightMap("res/medium_earth_topography.png", 20.f, false);
+        s3d::HeightMap telemetryHeightMap("res/earth_topography_high_res.png", 100.f, false);
         telemetryHeightMap.heights = smoothHeightMap(telemetryHeightMap);
         telemetryHeightMap.heights = smoothHeightMap(telemetryHeightMap);
         telemetryHeightMap.heights = smoothHeightMap(telemetryHeightMap);
-        s3d::HeightMap bathymetrycHeightMap("res/medium_earth_bathymetry.png", -25.f, true);
+        s3d::HeightMap bathymetrycHeightMap("res/earth_bathymetry_high_res.png", -150.f, true);
         bathymetrycHeightMap.heights = smoothHeightMap(bathymetrycHeightMap);
         bathymetrycHeightMap.heights = smoothHeightMap(bathymetrycHeightMap);
         bathymetrycHeightMap.heights = smoothHeightMap(bathymetrycHeightMap);
@@ -195,6 +192,7 @@ public:
         
         // create earth surface
         earthSurface = new EarthSurface(earthHeightMap, earthShader);
+        // earthSurface->gridSize = glm::vec2(10.f);
         earthSurface->adjacentVertexDistance = 10;
         earthSurface->createSurface();
         scene->earthSurfaces.push_back(earthSurface);

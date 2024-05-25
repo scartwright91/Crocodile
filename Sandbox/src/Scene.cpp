@@ -27,15 +27,6 @@ void Scene::render()
             lightPosition,
             lightColour
         );
-    
-    for (WaterSurface* surf : waterSurfaces)
-    {
-        surf->customRender(
-            model,
-            view,
-            proj
-        );
-    }
     for (EarthSurface* surf : earthSurfaces)
     {
         surf->customRender(
@@ -47,6 +38,15 @@ void Scene::render()
             lightPosition,
             lightColour,
             resourceManager->getTexture("earth_texture")
+        );
+    }
+    // render water last
+    for (WaterSurface* surf : waterSurfaces)
+    {
+        surf->customRender(
+            model,
+            view,
+            proj
         );
     }
 }
