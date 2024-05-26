@@ -60,6 +60,8 @@ public:
     void init()
     {
 
+        postProcessing->setPostProcessingEffect(graphics::GREYSCALE);
+        
         // create new scene and set it as current scene
         scene = new Scene(&window, &resourceManager);
         setCurrentScene3d(scene);

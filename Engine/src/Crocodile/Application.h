@@ -62,6 +62,9 @@ namespace Crocodile
 		void loadShaders();
 		void loadTextures();
 		void loadAudio();
+
+		void resize();
+
 		void init() const;
 
 	public:
@@ -78,6 +81,7 @@ namespace Crocodile
 	private:
 		static Application *s_Instance;
 		bool useImGui = false;
+		unsigned int windowWidth, windowHeight;
 
 	};
 
