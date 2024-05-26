@@ -1,75 +1,28 @@
-#include "PostProcessing.h"
+#include "FrameBuffer.h"
 
 namespace Crocodile
 {
-	namespace s2d
-	{
-		PostProcessing::PostProcessing(graphics::Shader *shader, unsigned int width, unsigned int height) : width(width), height(height)
-		{
-			this->shader = shader;
-			this->shader->use();
-			this->shader->setInt("u_Scene", 0);
-			init();
-		}
+    namespace graphics
+    {
 
-		PostProcessing::~PostProcessing()
-		{
-		}
+        FrameBuffer::FrameBuffer(unsigned int width, unsigned int height) : width(width), height(height)
+        {
+            init();
+        }
 
-		void PostProcessing::beginRender()
-		{
-			glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
-			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		}
+        FrameBuffer::~FrameBuffer()
+        {
 
-		void PostProcessing::endRender()
-		{
-			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			glClear(GL_COLOR_BUFFER_BIT);
-		}
+        }
 
-		void PostProcessing::render(
-			float dt,
-			bool greyscale,
-			bool wavey,
-			bool blur,
-			bool screenShake,
-			TransitionEffect effect,
-			bool fadeinTransition,
-			bool fadeoutTransition,
-			float transitionCounter,
-			float width,
-			float height)
-		{
-			shader->use();
-			shader->setFloat("u_DeltaTime", dt);
-			shader->setBool("u_Greyscale", greyscale);
-			shader->setBool("u_Wavey", wavey);
-			shader->setBool("u_Blur", blur);
-			shader->setBool("u_ScreenShake", screenShake);
-			if (effect == FADE)
-				shader->setBool("u_FadeTransition", true);
-			else if (effect == DIAMOND)
-				shader->setBool("u_DiamondTransition", true);
-			shader->setBool("u_BeginScene", fadeinTransition);
-			shader->setBool("u_EndScene", fadeoutTransition);
-			shader->setFloat("u_TransitionCounter", transitionCounter);
-			shader->setFloat("u_ScreenWidth", width);
-			shader->setFloat("u_ScreenHeight", height);
-			glBindVertexArray(VAO);
-			glActiveTexture(GL_TEXTURE0);
-			glBindTexture(GL_TEXTURE_2D, textureColorbuffer);
-			glDrawArrays(GL_TRIANGLES, 0, 6);
-		}
+        void FrameBuffer::resize(unsigned int width, unsigned int height)
+        {
+            this->width = width;
+            this->height = height;
+            init();
+        }
 
-		void PostProcessing::resize(unsigned int width, unsigned int height)
-		{
-			this->width = width;
-			this->height = height;
-			init();
-		}
-
-		void PostProcessing::init()
+		void FrameBuffer::init()
 		{
 			// init framebuffer
 			glGenFramebuffers(1, &framebuffer);
@@ -115,5 +68,7 @@ namespace Crocodile
 			glEnableVertexAttribArray(1);
 			glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)(2 * sizeof(float)));
 		}
-	}
+
+    }
 }
+

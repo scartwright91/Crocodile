@@ -21,8 +21,6 @@ namespace Crocodile
 		{
 			delete spriteRenderer;
 			delete particleRenderer;
-			// delete textRenderer;
-			delete postProcessing;
 			delete grid;
 			delete lightSystem;
 			delete camera;
@@ -74,13 +72,6 @@ namespace Crocodile
 			updateObjects(dt);
 			// particles
 			updateParticles(dt);
-			// transitions
-			if (isTransitioning() && (transitionCounter > 0.0f))
-			{
-				transitionCounter -= dt * 1.f;
-				if (transitionCounter < 0.0f)
-					transitionCounter = 0.0;
-			}
 		}
 
 		void Scene::updateObjects(float dt)
@@ -115,9 +106,6 @@ namespace Crocodile
 
 		void Scene::render()
 		{
-			// start postprocessing scene capture
-			if (enablePostprocessing)
-				postProcessing->beginRender();
 			// render grid
 			if (grid->active)
 				grid->render(
@@ -135,23 +123,6 @@ namespace Crocodile
 						for (Object* childObject : obj->children)
 							renderObject(childObject, layer);
 					}
-			// finish and render postprocessing
-			if (enablePostprocessing)
-			{
-				postProcessing->endRender();
-				postProcessing->render(
-					(float)glfwGetTime(),
-					greyscale,
-					wavey,
-					blur,
-					screenShake,
-					transitionEffect,
-					fadeinTransition,
-					fadeoutTransition,
-					transitionCounter,
-					(float)windowWidth,
-					(float)windowHeight);
-			}
 		}
 
 		void Scene::renderObject(Object *obj, Layer *layer)
@@ -330,95 +301,10 @@ namespace Crocodile
 			collisionLayers.clear();
 		}
 
-		unsigned int Scene::getTextureBuffer()
-		{
-			return postProcessing->textureColorbuffer;
-		}
-
-		void Scene::setScreenShake(bool v)
-		{
-			screenShake = v;
-		}
-
-		void Scene::setPostProcessingEffect(PostProcessing::PostProcessingEffect effect)
-		{
-			if (effect == PostProcessing::None)
-			{
-				greyscale = false;
-				wavey = false;
-				blur = false;
-			}
-			else if (effect == PostProcessing::GREYSCALE)
-			{
-				greyscale = true;
-				wavey = false;
-				blur = false;
-			}
-			else if (effect == PostProcessing::WAVEY)
-			{
-				greyscale = false;
-				wavey = true;
-				blur = false;
-			}
-			else if (effect == PostProcessing::BLUR)
-			{
-				greyscale = false;
-				wavey = false;
-				blur = true;
-			}
-		}
-
-		bool Scene::isTransitioning()
-		{
-			return (fadeinTransition) || (fadeoutTransition);
-		}
-
-		bool Scene::isBeginSceneTransitionFinished()
-		{
-			return (transitionCounter == 0.0f) && (fadeinTransition);
-		}
-
-		bool Scene::isEndSceneTransitionFinished()
-		{
-			return (transitionCounter == 0.0f) && (fadeoutTransition);
-		}
-
-		void Scene::resetTransitions()
-		{
-			fadeinTransition = false;
-			fadeoutTransition = false;
-			transitionCounter = 1.0f;
-		}
-
-		void Scene::beginSceneTransition()
-		{
-			fadeinTransition = true;
-			fadeoutTransition = false;
-			transitionCounter = 1.0f;
-		}
-
-		void Scene::endSceneTransition()
-		{
-			fadeoutTransition = true;
-			fadeinTransition = false;
-			transitionCounter = 1.0f;
-		}
-
-		void Scene::setTransitionType(PostProcessing::TransitionEffect effect)
-		{
-			transitionEffect = effect;
-		}
-
 		void Scene::scaleScene()
 		{
 			windowWidth = window->getViewportWidth();
 			windowHeight = window->getViewportHeight();
-			// scale postprocessing texture
-			if (enablePostprocessing)
-			{
-				delete postProcessing;
-				postProcessing = new s2d::PostProcessing(resourceManager->getShader("postprocessing"), windowWidth, windowHeight);
-			}
 		}
 
 		bool Scene::isTileCollideable(int x, int y)
@@ -628,7 +514,6 @@ namespace Crocodile
 			particleRenderer = new s2d::ParticleRenderer(resourceManager->getShader("particle"));
 			lineRenderer = new s2d::LineRenderer(resourceManager->getShader("line"));
 			circleRenderer = new s2d::CircleRenderer(resourceManager->getShader("circle"));
-			postProcessing = new s2d::PostProcessing(resourceManager->getShader("postprocessing"), windowWidth, windowHeight);
 			grid = new s2d::BackgroundGrid(resourceManager->getShader("grid"));
 			textRenderers["default"] = new s2d::TextRenderer("assets/fonts/OpenSans-Regular.ttf", 48, resourceManager->getShader("text"));
 		}

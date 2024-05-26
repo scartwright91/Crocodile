@@ -13,6 +13,7 @@
 #include "Core.h"
 #include "Clock.h"
 #include "graphics/Window.h"
+#include "graphics/PostProcessing.h"
 #include "ResourceManager.h"
 #include "audio/SoundManager.h"
 
@@ -47,6 +48,7 @@ namespace Crocodile
 
 		bool running = true;
 		graphics::Window window;
+		graphics::PostProcessing* postProcessing = nullptr;
 		s2d::Scene *scene2d;
 		s3d::Scene *scene3d;
 		Clock clock;
@@ -54,6 +56,7 @@ namespace Crocodile
 		// imgui variables
 		float fontImGuiScale = 1.f;
 		bool mouseOnImGuiWindow = false;
+		bool enablePostprocessing = true;
 
 	private:
 		void loadShaders();
@@ -75,6 +78,7 @@ namespace Crocodile
 	private:
 		static Application *s_Instance;
 		bool useImGui = false;
+
 	};
 
 	// to be defined in client

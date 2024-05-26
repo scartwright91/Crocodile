@@ -66,7 +66,6 @@ public:
         scene->camera->frustrumMax = 100000.f;
 
         window.setBackgroundColor(glm::vec3(0.02f, 0.13f, 0.22f));
-        scene2d->enablePostprocessing = false;
 
         resourceManager.loadTexture("res/earth_texture_oct_medium.png", "earth_texture", false);
 

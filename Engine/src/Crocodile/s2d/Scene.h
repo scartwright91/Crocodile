@@ -19,7 +19,6 @@
 #include "rendering/SpriteRenderer.h"
 #include "rendering/ParticleRenderer.h"
 #include "rendering/TextRenderer.h"
-#include "rendering/PostProcessing.h"
 #include "rendering/BackgroundGrid.h"
 #include "rendering/LineRenderer.h"
 #include "rendering/CircleRenderer.h"
@@ -57,25 +56,9 @@ namespace Crocodile
 			float tileSize = 0;
 			glm::vec2 tilemapSize = {0, 0};
 
-			// postprocessing
-			unsigned int getTextureBuffer();
-			void setScreenShake(bool v);
-			void setPostProcessingEffect(PostProcessing::PostProcessingEffect effect);
-
-			// transitions
-			float transitionSpeed = 1.f;
-			bool isTransitioning();
-			bool isBeginSceneTransitionFinished();
-			bool isEndSceneTransitionFinished();
-			void resetTransitions();
-			void beginSceneTransition();
-			void endSceneTransition();
-			void setTransitionType(PostProcessing::TransitionEffect effect);
-
 			// options
 			bool enableScaling = true;
 			bool enableLighting = true;
-			bool enablePostprocessing = true;
 
 			// lights
 			float ambientLighting = 1.0f;
@@ -103,7 +86,6 @@ namespace Crocodile
 			ParticleRenderer *particleRenderer;
 			LineRenderer *lineRenderer;
 			CircleRenderer *circleRenderer;
-			PostProcessing *postProcessing;
 			std::map<std::string, TextRenderer*> textRenderers = {};
 
 			// collisions
@@ -125,18 +107,6 @@ namespace Crocodile
 			void updateParticles(float dt);
 
 		private:
-
-			// postprocessing
-			bool greyscale = false;
-			bool wavey = false;
-			bool blur = false;
-			bool screenShake = false;
-
-			// transitions
-			PostProcessing::TransitionEffect transitionEffect = PostProcessing::NO_TRANSITION;
-			float transitionCounter = 1.0;
-			bool fadeinTransition = false;
-			bool fadeoutTransition = false;
 
 			// scaling
 			glm::vec2 viewportScale = glm::vec2(1.f);

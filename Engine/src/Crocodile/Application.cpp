@@ -15,6 +15,11 @@ namespace Crocodile
 		init();
 		loadShaders();
 		loadTextures();
+		postProcessing = new graphics::PostProcessing(
+			resourceManager.getShader("postprocessing"),
+			window.getWidth(),
+			window.getHeight()	
+		);
 		scene2d = new s2d::Scene(&window, &resourceManager);
 		scene3d = new s3d::Scene(&window, &resourceManager);
 	}
@@ -53,6 +58,8 @@ namespace Crocodile
 			fixedUpdate(clock.deltaTime);
 			scene3d->update(clock.deltaTime);
 			scene2d->update(clock.deltaTime);
+			if (enablePostprocessing)
+				postProcessing->update(clock.deltaTime);
 			render();
 			if (useImGui)
 			{
@@ -70,8 +77,17 @@ namespace Crocodile
 
 	void Application::render()
 	{
+		// start postprocessing scene capture
+		if (enablePostprocessing)
+			postProcessing->beginRender();
 		scene3d->render();
 		scene2d->render();
+		// finish and render postprocessing
+		if (enablePostprocessing)
+		{
+			postProcessing->endRender();
+			postProcessing->render((float)glfwGetTime());
+		}
 	}
 
 	void Application::setCurrentScene2d(s2d::Scene *scene)
