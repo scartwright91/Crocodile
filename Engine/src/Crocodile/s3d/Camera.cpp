@@ -38,13 +38,20 @@ namespace Crocodile
             Yaw   += xoffset;
             Pitch += yoffset;
 
+
+
+            // update Front, Right and Up Vectors using the updated Euler angles
+            updateCameraVectors();
+        }
+        
+        void Camera::invertPitch()
+        {
+            Pitch = -Pitch;
             // make sure that when pitch is out of bounds, screen doesn't get flipped
             if (Pitch > 89.0f)
                 Pitch = 89.0f;
             if (Pitch < -89.0f)
                 Pitch = -89.0f;
-
-            // update Front, Right and Up Vectors using the updated Euler angles
             updateCameraVectors();
         }
 
@@ -80,10 +87,11 @@ namespace Crocodile
         void Camera::updateCameraVectors()
         {
             // calculate the new Front vector
-            front.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
-            front.y = sin(glm::radians(Pitch));
-            front.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
-            front = glm::normalize(front);
+            glm::vec3 f;
+            f.x = cos(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+            f.y = sin(glm::radians(Pitch));
+            f.z = sin(glm::radians(Yaw)) * cos(glm::radians(Pitch));
+            front = glm::normalize(f);
             // also re-calculate the Right and Up vector
             right = glm::normalize(glm::cross(front, up));
             up = glm::normalize(glm::cross(right, front));

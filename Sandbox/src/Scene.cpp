@@ -2,8 +2,8 @@
 
 Scene::Scene(graphics::Window *window, ResourceManager *resourceManager) : s3d::Scene(window, resourceManager)
 {
-    reflectionFB = new graphics::FrameBuffer(window->getWidth() / 8, window->getHeight() / 8);
-    refractionFB = new graphics::FrameBuffer(window->getWidth() / 8, window->getHeight() / 8);
+    reflectionFB = new graphics::FrameBuffer(window->getWidth() / 2, window->getHeight() / 2);
+    refractionFB = new graphics::FrameBuffer(window->getWidth() / 2, window->getHeight() / 2);
 }
 
 Scene::~Scene()
@@ -16,26 +16,29 @@ void Scene::render()
 {
 
     glm::mat4 model = glm::mat4(1.f);
-    glm::mat4 view = camera->getViewMatrix();
-    glm::mat4 proj = camera->getProjectionMatrix();
 
     // reflection pass
     glViewport(0, 0, reflectionFB->width, reflectionFB->height);
     reflectionFB->bind();
+    float d = 2 * camera->position.y; 
+    camera->position.y -= d;
+    camera->invertPitch();
     for (EarthSurface* surf : earthSurfaces)
     {
         surf->customRender(
             model,
-            view,
-            proj,
+            camera->getViewMatrix(),
+            camera->getProjectionMatrix(),
             camera->position,
             ambientLighting,
             lightPosition,
             lightColour,
             resourceManager->getTexture("earth_texture"),
-            glm::vec4(0, -1, 0, 0)
+            glm::vec4(0, 1, 0, 0)
         );
     }
+    camera->position.y += d;
+    camera->invertPitch();
     reflectionFB->unbind();
 
     // refraction pass
@@ -45,14 +48,14 @@ void Scene::render()
     {
         surf->customRender(
             model,
-            view,
-            proj,
+            camera->getViewMatrix(),
+            camera->getProjectionMatrix(),
             camera->position,
             ambientLighting,
             lightPosition,
             lightColour,
             resourceManager->getTexture("earth_texture"),
-            glm::vec4(0, 1, 0, 0)
+            glm::vec4(0, -1, 0, 0)
         );
     }
     refractionFB->unbind();
@@ -62,8 +65,8 @@ void Scene::render()
     {
         surf->customRender(
             model,
-            view,
-            proj,
+            camera->getViewMatrix(),
+            camera->getProjectionMatrix(),
             camera->position,
             ambientLighting,
             lightPosition,
@@ -78,8 +81,10 @@ void Scene::render()
     {
         surf->customRender(
             model,
-            view,
-            proj
+            camera->getViewMatrix(),
+            camera->getProjectionMatrix(),
+            reflectionFB->textureColorbuffer,
+            refractionFB->textureColorbuffer
         );
     }
 }

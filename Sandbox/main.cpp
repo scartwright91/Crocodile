@@ -27,7 +27,7 @@ public:
     EarthSurface* earthSurface = nullptr;
     WaterSurface* waterSurface = nullptr;
 
-    Sandbox() : Crocodile::Application("Sandbox", true, 1280, 720, false)
+    Sandbox() : Crocodile::Application("Sandbox", false, 1280, 720, false)
     {
         init();
     }
@@ -69,7 +69,7 @@ public:
         setCurrentScene3d(scene);
         scene->camera->frustrumMax = 100000.f;
 
-        resourceManager.loadTexture("res/earth_texture_oct_medium.png", "earth_texture", false);
+        resourceManager.loadTexture("res/textures/earth_texture_oct_medium.png", "earth_texture", false);
 
         s2d::Layer* layer = new s2d::Layer("hud");
         layer->applyCamera = false;
@@ -108,13 +108,13 @@ public:
 
         scene3d->camera->position = glm::vec3(
             earthSurface->heightMap.nCols / 2,
-            earthSurface->heightMap.maxHeight * 10.0,
+            earthSurface->heightMap.maxHeight * 2.0,
             earthSurface->heightMap.nRows / 2
         );
         scene3d->lightPosition = glm::vec3(
             earthSurface->heightMap.nCols / 2,
-            earthSurface->heightMap.maxHeight * 100.0,
-            earthSurface->heightMap.nRows / 2
+            earthSurface->heightMap.maxHeight * 10.0,
+            0
         );
 
         scene3d->camera->Speed = 2000.0f;
@@ -197,11 +197,11 @@ public:
     void createEarthSurface()
     {
         // height maps
-        s3d::HeightMap telemetryHeightMap("res/earth_topography_high_res.png", 100.f, false);
+        s3d::HeightMap telemetryHeightMap("res/textures/earth_topography_high_res.png", 100.f, false);
         telemetryHeightMap.heights = smoothHeightMap(telemetryHeightMap);
         telemetryHeightMap.heights = smoothHeightMap(telemetryHeightMap);
         telemetryHeightMap.heights = smoothHeightMap(telemetryHeightMap);
-        s3d::HeightMap bathymetrycHeightMap("res/earth_bathymetry_high_res.png", -150.f, true);
+        s3d::HeightMap bathymetrycHeightMap("res/textures/earth_bathymetry_high_res.png", -150.f, true);
         bathymetrycHeightMap.heights = smoothHeightMap(bathymetrycHeightMap);
         bathymetrycHeightMap.heights = smoothHeightMap(bathymetrycHeightMap);
         bathymetrycHeightMap.heights = smoothHeightMap(bathymetrycHeightMap);

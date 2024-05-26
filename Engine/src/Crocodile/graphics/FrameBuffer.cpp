@@ -24,7 +24,6 @@ namespace Crocodile
 		void FrameBuffer::unbind()
 		{
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
-			glClear(GL_COLOR_BUFFER_BIT);
 		}
 
         void FrameBuffer::resize(unsigned int width, unsigned int height)

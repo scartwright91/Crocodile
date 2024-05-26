@@ -20,6 +20,8 @@ class WaterSurface : public s3d::Surface
         void customRender(
             glm::mat4 model,
             glm::mat4 view,
-            glm::mat4 projection
+            glm::mat4 projection,
+            unsigned int reflectionTexture,
+            unsigned int refractionTexture
         );
 };
