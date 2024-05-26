@@ -12,8 +12,20 @@ namespace Crocodile
 
         FrameBuffer::~FrameBuffer()
         {
-
+			glDeleteFramebuffers(1, &framebuffer);
         }
+
+		void FrameBuffer::bind()
+		{
+			glBindFramebuffer(GL_FRAMEBUFFER, framebuffer);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		}
+
+		void FrameBuffer::unbind()
+		{
+			glBindFramebuffer(GL_FRAMEBUFFER, 0);
+			glClear(GL_COLOR_BUFFER_BIT);
+		}
 
         void FrameBuffer::resize(unsigned int width, unsigned int height)
         {

@@ -19,6 +19,10 @@ class Scene : public s3d::Scene
         std::vector<EarthSurface*> earthSurfaces = {};
         std::vector<WaterSurface*> waterSurfaces = {};
 
+        // water rendering
+        graphics::FrameBuffer* reflectionFB = nullptr;
+        graphics::FrameBuffer* refractionFB = nullptr;
+
         void render() override;
 
 };

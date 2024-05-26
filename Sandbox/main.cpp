@@ -60,14 +60,14 @@ public:
     void init()
     {
 
+        window.setBackgroundColor(glm::vec3(0.02f, 0.13f, 0.22f));
         postProcessing->setPostProcessingEffect(graphics::GREYSCALE);
-        
+        enablePostprocessing = false;
+
         // create new scene and set it as current scene
         scene = new Scene(&window, &resourceManager);
         setCurrentScene3d(scene);
         scene->camera->frustrumMax = 100000.f;
-
-        window.setBackgroundColor(glm::vec3(0.02f, 0.13f, 0.22f));
 
         resourceManager.loadTexture("res/earth_texture_oct_medium.png", "earth_texture", false);
 
@@ -80,6 +80,31 @@ public:
 
         createEarthSurface();
         createWaterSurface();
+
+        // debug reflection pass
+        resourceManager.addTexture(
+            scene->reflectionFB->textureColorbuffer,
+            window.getWidth() / 4,
+            window.getHeight() / 4,
+            "reflection"
+        );
+        s2d::Object* t = new s2d::Object();
+        t->size = glm::vec2(window.getWidth() / 4, window.getHeight() / 4);
+        t->setTexture(resourceManager.getTexture("reflection"));
+        scene2d->addObject(t, "hud");
+
+        // debug refraction pass
+        resourceManager.addTexture(
+            scene->refractionFB->textureColorbuffer,
+            window.getWidth() / 4,
+            window.getHeight() / 4,
+            "refraction"
+        );
+        s2d::Object* t2 = new s2d::Object();
+        t2->setPosition(glm::vec2(0.75 * window.getWidth(), 0));
+        t2->size = glm::vec2(window.getWidth() / 4, window.getHeight() / 4);
+        t2->setTexture(resourceManager.getTexture("refraction"));
+        scene2d->addObject(t2, "hud");
 
         scene3d->camera->position = glm::vec3(
             earthSurface->heightMap.nCols / 2,
@@ -209,7 +234,7 @@ public:
         // create water surface
         float h = 0.f;
         s3d::HeightMap waterHeightMap(2, 2, {h, h, h, h});
-        waterSurface = new WaterSurface(waterHeightMap, waterShader);
+        waterSurface = new WaterSurface(&window, waterHeightMap, waterShader);
         waterSurface->alpha = 0.3f;
         waterSurface->colour = glm::vec3(0.f, 0.f, 1.f);
         waterSurface->gridSize = {earthSurface->heightMap.nCols, earthSurface->heightMap.nRows};

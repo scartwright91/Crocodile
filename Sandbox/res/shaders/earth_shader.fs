@@ -12,7 +12,6 @@ uniform vec3 u_LightColour;
 uniform vec3 u_CameraPosition;
 
 uniform sampler2D u_EarthTexture;
-uniform float u_MaxHeight;
 uniform float u_MinHeight;
 
 
@@ -39,13 +38,12 @@ void main()
     vec3 col;
 
     // colour mixing based on altitude / depth
-    float f1 = abs(Height / u_MaxHeight);
-    float f2 = abs(Height / u_MinHeight);
+    float waterDepth = abs(Height / u_MinHeight);
     
     if (Height > 0)
         col = light * texture2D(u_EarthTexture, TexCoords).rgb;
     else
-        col = light * mix(vec3(0.02, 0.88, 0.81), vec3(0.11, 0.0, 0.57), f2);
+        col = light * mix(vec3(0.02, 0.88, 0.81), vec3(0.11, 0.0, 0.57), waterDepth);
 
     colour = vec4(col, 1.0);
 

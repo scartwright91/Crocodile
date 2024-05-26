@@ -24,6 +24,8 @@ namespace Crocodile
                 unsigned int framebuffer, RBO;
                 unsigned int VAO;
 
+                void bind();
+                void unbind();
                 void resize(unsigned int width, unsigned int height);
 
             private:

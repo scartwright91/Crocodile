@@ -12,6 +12,9 @@ uniform mat4 u_Model;
 uniform mat4 u_View;
 uniform mat4 u_Projection;
 
+// water rendering
+uniform vec4 u_ClippingPlane;
+
 void main()
 {
 	// Output for fragment shader
@@ -20,5 +23,6 @@ void main()
 	Normal = aNormal;
 	Height = aPos.y;
 
+	gl_ClipDistance[0] = dot(vec4(aPos, 1.0), u_ClippingPlane);
 	gl_Position = u_Projection * u_View * vec4(FragPos, 1.0);
 }

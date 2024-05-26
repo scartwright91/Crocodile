@@ -82,6 +82,17 @@ namespace Crocodile
             textureIDs[name] = textureID;
         }
 
+        void addTexture(unsigned int texture, unsigned int width, unsigned int height, std::string name)
+        {
+            TextureData td;
+            td.textureID = texture;
+            td.path = "";
+            td.name = name;
+            td.width = (float)width;
+            td.height = (float)height;
+            textureIDs[name] = td;
+        }
+
         TextureData getTexture(std::string name)
         {
             return textureIDs[name];

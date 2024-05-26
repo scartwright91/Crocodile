@@ -19,7 +19,8 @@ void EarthSurface::customRender(
     float ambientLighting,
     glm::vec3 lightPosition,
     glm::vec3 lightColour,
-    ResourceManager::TextureData earthTexture
+    ResourceManager::TextureData earthTexture,
+    glm::vec4 clippingPlane
 )
 {
     shader->use();
@@ -33,7 +34,7 @@ void EarthSurface::customRender(
     shader->setVec3("u_SurfaceColour", colour);
     shader->setFloat("u_Alpha", alpha);
     shader->setFloat("u_MinHeight", heightMap.minHeight);
-    shader->setFloat("u_MaxHeight", heightMap.maxHeight);
+    shader->setVec4("u_ClippingPlane", clippingPlane);
     glActiveTexture(GL_TEXTURE0); // activate the texture unit first before binding texture
     glBindTexture(GL_TEXTURE_2D, earthTexture.textureID);
     // render the cube

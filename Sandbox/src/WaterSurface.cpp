@@ -1,13 +1,15 @@
 #include "WaterSurface.h"
 
-WaterSurface::WaterSurface(s3d::HeightMap heightMap, graphics::Shader* shader) : s3d::Surface(heightMap, shader)
+WaterSurface::WaterSurface(
+    graphics::Window* window,
+    s3d::HeightMap heightMap,
+    graphics::Shader* shader
+    ) : s3d::Surface(heightMap, shader)
 {
-
 }
 
 WaterSurface::~WaterSurface()
 {
-
 }
 
 void WaterSurface::customRender(
@@ -34,4 +36,7 @@ void WaterSurface::customRender(
         ); // offset to starting index
     }
     glBindVertexArray(0);
+
+
+
 }

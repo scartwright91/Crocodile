@@ -136,6 +136,7 @@ namespace Crocodile
 		// NOTE we might want to disable this for 2d games for correct render ordering
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_TEXTURE_2D);
+    	glEnable(GL_CLIP_DISTANCE0);
 	}
 
 	void Application::loadShaders()
