@@ -24,6 +24,9 @@ class Scene : public s3d::Scene
         graphics::FrameBuffer* refractionFB = nullptr;
 
         void render() override;
+        void updateTimer(float dt);
+
+        float timer = 0.0f;
 
 };
 

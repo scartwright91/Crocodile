@@ -14,7 +14,6 @@ Scene::~Scene()
 
 void Scene::render()
 {
-
     glm::mat4 model = glm::mat4(1.f);
 
     // reflection pass
@@ -85,7 +84,15 @@ void Scene::render()
             camera->getProjectionMatrix(),
             reflectionFB->textureColorbuffer,
             refractionFB->textureColorbuffer,
-            resourceManager->getTexture("distortion_texture").textureID
+            resourceManager->getTexture("distortion_texture").textureID,
+            timer
         );
     }
+}
+
+void Scene::updateTimer(float dt)
+{
+    timer += 0.01f * dt;
+    if (timer > 1.0)
+        timer = 0.0f;
 }

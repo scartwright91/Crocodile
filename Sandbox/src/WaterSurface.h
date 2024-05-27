@@ -23,6 +23,7 @@ class WaterSurface : public s3d::Surface
             glm::mat4 projection,
             unsigned int reflectionTexture,
             unsigned int refractionTexture,
-            unsigned int dudvTexture
+            unsigned int dudvTexture,
+            float timer
         );
 };

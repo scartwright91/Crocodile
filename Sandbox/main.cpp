@@ -55,6 +55,8 @@ public:
                 scene3d->renderer->setRenderMode(s3d::FILL);
         }
 
+        scene->updateTimer(dt);
+
     }
 
     void init()
