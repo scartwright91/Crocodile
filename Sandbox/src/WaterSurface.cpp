@@ -9,6 +9,7 @@ WaterSurface::WaterSurface(
     shader->use();
     shader->setInt("u_Reflection", 0);
     shader->setInt("u_Refraction", 1);
+    shader->setInt("u_DuDv", 2);
 }
 
 WaterSurface::~WaterSurface()
@@ -20,7 +21,8 @@ void WaterSurface::customRender(
     glm::mat4 view,
     glm::mat4 projection,
     unsigned int reflectionTexture,
-    unsigned int refractionTexture
+    unsigned int refractionTexture,
+    unsigned int dudvTexture
 )
 {
     shader->use();
@@ -33,6 +35,8 @@ void WaterSurface::customRender(
     glBindTexture(GL_TEXTURE_2D, reflectionTexture);
     glActiveTexture(GL_TEXTURE1);
     glBindTexture(GL_TEXTURE_2D, refractionTexture);
+    glActiveTexture(GL_TEXTURE2);
+    glBindTexture(GL_TEXTURE_2D, dudvTexture);
     // render the cube
     glBindVertexArray(terrainVAO);
     for(int strip = 0; strip < numStrips; strip++)

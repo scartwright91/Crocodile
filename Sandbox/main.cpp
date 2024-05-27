@@ -108,7 +108,7 @@ public:
 
         scene3d->camera->position = glm::vec3(
             earthSurface->heightMap.nCols / 2,
-            earthSurface->heightMap.maxHeight * 2.0,
+            earthSurface->heightMap.maxHeight * 1.0,
             earthSurface->heightMap.nRows / 2
         );
         scene3d->lightPosition = glm::vec3(
@@ -218,7 +218,6 @@ public:
         
         // create earth surface
         earthSurface = new EarthSurface(earthHeightMap, earthShader);
-        // earthSurface->gridSize = glm::vec2(10.f);
         earthSurface->adjacentVertexDistance = 10;
         earthSurface->createSurface();
         scene->earthSurfaces.push_back(earthSurface);
@@ -233,11 +232,16 @@ public:
 
         // create water surface
         float h = 0.f;
-        s3d::HeightMap waterHeightMap(2, 2, {h, h, h, h});
+        std::vector<float> heights = {};
+        int nCols = earthSurface->heightMap.nCols / 100;
+        int nRows = earthSurface->heightMap.nRows / 100;
+        for (int i = 0; i < nCols; i++)
+            for (int j = 0; j < nRows; j++)
+                heights.push_back(0.f);
+        s3d::HeightMap waterHeightMap(nCols, nRows, heights);
         waterSurface = new WaterSurface(&window, waterHeightMap, waterShader);
-        waterSurface->alpha = 0.3f;
         waterSurface->colour = glm::vec3(0.f, 0.f, 1.f);
-        waterSurface->gridSize = {earthSurface->heightMap.nCols, earthSurface->heightMap.nRows};
+        waterSurface->gridSize = {100, 100};
         waterSurface->createSurface();
         scene->waterSurfaces.push_back(waterSurface);
 

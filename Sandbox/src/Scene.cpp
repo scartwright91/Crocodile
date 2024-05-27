@@ -84,7 +84,8 @@ void Scene::render()
             camera->getViewMatrix(),
             camera->getProjectionMatrix(),
             reflectionFB->textureColorbuffer,
-            refractionFB->textureColorbuffer
+            refractionFB->textureColorbuffer,
+            resourceManager->getTexture("distortion_texture").textureID
         );
     }
 }
