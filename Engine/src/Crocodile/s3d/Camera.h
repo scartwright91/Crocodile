@@ -51,11 +51,11 @@ namespace Crocodile
                 void invertPitch();
                 float frustrumMin = 0.1f;
                 float frustrumMax = 10000.f;
-                float Yaw         = -90.0f;
-                float Pitch       =  0.0f;
-                float Speed       =  2.5f;
-                float Sensitivity =  0.1f;
-                float Zoom        =  45.0f;
+                float yaw         = -90.0f;
+                float pitch       =  0.0f;
+                float speed       =  2.5f;
+                float sensitivity =  0.01f;
+                float zoom        =  45.0f;
 
         };
     }

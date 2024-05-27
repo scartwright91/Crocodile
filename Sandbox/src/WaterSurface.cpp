@@ -23,7 +23,8 @@ void WaterSurface::customRender(
     unsigned int reflectionTexture,
     unsigned int refractionTexture,
     unsigned int dudvTexture,
-    float timer
+    float timer,
+    glm::vec3 cameraPosition
 )
 {
     shader->use();
@@ -39,6 +40,7 @@ void WaterSurface::customRender(
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, dudvTexture);
     shader->setFloat("u_Time", timer);
+    shader->setVec3("u_CameraPosition", cameraPosition);
     // render the cube
     glBindVertexArray(terrainVAO);
     for(int strip = 0; strip < numStrips; strip++)

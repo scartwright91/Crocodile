@@ -55,7 +55,7 @@ namespace Crocodile
 			inline int getViewportWidth() const { return viewportWidth; }
 			inline int getViewportHeight() const { return viewportHeight; }
 			inline glm::vec2 getViewportScale() const { return viewportScale; }
-			inline glm::vec2 getScroll() const { return scroll; }
+			inline int getScroll() const { return scroll; }
 			inline GLFWwindow *getWindow() const { return window; }
 
 			static bool isKeyPressed(unsigned int keycode);
@@ -64,7 +64,7 @@ namespace Crocodile
 
 			void setBackgroundColor(glm::vec3 color);
 
-			static glm::vec2 scroll;
+			static int scroll;
 			static bool keys[MAX_KEYS];
 			static bool buttons[MAX_BUTTONS];
 

@@ -15,7 +15,7 @@ namespace Crocodile
 
 		bool Window::keys[MAX_KEYS];
 		bool Window::buttons[MAX_BUTTONS];
-		glm::vec2 Window::scroll = glm::vec2(0.f);
+		int Window::scroll = 0;
 
 		Window::Window(const char *name, bool resizeable, unsigned int width, unsigned int height) : width(width), height(height), initialWidth(width), initialHeight(height)
 		{
@@ -179,7 +179,7 @@ namespace Crocodile
 		void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 		{
 			Window *win = (Window *)glfwGetWindowUserPointer(window);
-			win->scroll.y += (float)yoffset;
+			win->scroll += (int)yoffset;
 		}
 
 	}

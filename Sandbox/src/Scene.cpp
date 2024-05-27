@@ -85,7 +85,8 @@ void Scene::render()
             reflectionFB->textureColorbuffer,
             refractionFB->textureColorbuffer,
             resourceManager->getTexture("distortion_texture").textureID,
-            timer
+            timer,
+            camera->position
         );
     }
 }

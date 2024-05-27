@@ -24,6 +24,7 @@ class WaterSurface : public s3d::Surface
             unsigned int reflectionTexture,
             unsigned int refractionTexture,
             unsigned int dudvTexture,
-            float timer
+            float timer,
+            glm::vec3 cameraPosition
         );
 };
