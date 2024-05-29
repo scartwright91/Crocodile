@@ -7,7 +7,7 @@ namespace Crocodile
         Scene::Scene(graphics::Window *window, ResourceManager *resourceManager) : window(window), resourceManager(resourceManager)
         {
             init();
-            camera = new Camera();
+            camera = new CameraEuler();
         };
 
         Scene::~Scene()

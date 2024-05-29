@@ -1,31 +1,54 @@
 #pragma once
 
-#include "Object.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 #include "../Core.h"
+#include "Quaternion.h"
+
 
 namespace Crocodile
 {
     namespace s3d
     {
-        class CROCODILE_API Camera
+        enum Camera_Movement {
+            FORWARD,
+            BACKWARD,
+            LEFT,
+            RIGHT
+        };
+
+        enum ProjectionType
+        {
+            ORTHOGRAPHIC,
+            PERSPECTIVE
+        };
+
+        class CROCODILE_API CameraQuaternion
+        {
+            public:
+                CameraQuaternion();
+
+                void update(float dt);
+                void move(Camera_Movement direction, float dt);
+                void rotate(float theta, glm::vec3 axis);
+
+                Quaternion orientation;
+
+                void updateCameraVectors();
+                glm::vec3 position;
+                glm::vec3 up;
+                glm::vec3 forward;
+                glm::vec3 right;
+
+                float speed = 2.5f;
+
+        };
+
+        class CROCODILE_API CameraEuler
         {
 
             public:
-                enum Camera_Movement {
-                    FORWARD,
-                    BACKWARD,
-                    LEFT,
-                    RIGHT
-                };
-
-                enum ProjectionType
-                {
-                    ORTHOGRAPHIC,
-                    PERSPECTIVE
-                };
-
-                Camera();
-                ~Camera();
+                CameraEuler();
 
                 void update(float dt);
 
@@ -47,7 +70,7 @@ namespace Crocodile
                 glm::vec3 up = glm::vec3(0.f, 1.f, 0.f);
                 glm::vec3 right;
 
-                // camera parameters
+                // euler parameters
                 void invertPitch();
                 float frustrumMin = 0.1f;
                 float frustrumMax = 10000.f;

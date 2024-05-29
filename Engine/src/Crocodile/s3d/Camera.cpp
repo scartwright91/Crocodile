@@ -6,17 +6,64 @@ namespace Crocodile
     namespace s3d
     {
 
-        Camera::Camera()
+        CameraQuaternion::CameraQuaternion() : position(0, 0, 0), orientation(), up(0, 1, 0), forward(0, 0, -1), right(1, 0, 0)
         {
             updateCameraVectors();
         }
 
-        Camera::~Camera()
+        void CameraQuaternion::update(float dt)
         {
 
         }
 
-        void Camera::processMovement(Camera_Movement direction, float dt)
+        void CameraQuaternion::move(Camera_Movement direction, float dt)
+        {
+            float velocity = speed * dt;
+            if (direction == FORWARD)
+                position += forward * velocity;
+            if (direction == BACKWARD)
+                position -= forward * velocity;
+            if (direction == LEFT)
+                position -= right * velocity;
+            if (direction == RIGHT)
+                position += right * velocity;
+        }
+
+        void CameraQuaternion::rotate(float theta, glm::vec3 axis)
+        {
+            Quaternion q = Quaternion::fromAxisAngle(theta, axis.x, axis.y, axis.z);
+            orientation = q * orientation;
+            orientation.normalize();
+            updateCameraVectors();
+        }
+
+        void CameraQuaternion::updateCameraVectors()
+        {
+            // Rotate the forward vector
+            Quaternion forwardQuat = Quaternion(0, forward.x, forward.y, forward.z);
+            Quaternion result = orientation * forwardQuat * orientation.conjugate();
+            forward = {result.x, result.y, result.z};
+            forward = glm::normalize(forward);
+
+            // Rotate the right vector
+            Quaternion rightQuat = Quaternion(0, right.x, right.y, right.z);
+            result = orientation * rightQuat * orientation.conjugate();
+            right = {result.x, result.y, result.z};
+            right = glm::normalize(right);
+
+            // Rotate the up vector
+            Quaternion upQuat = Quaternion(0, up.x, up.y, up.z);
+            result = orientation * upQuat * orientation.conjugate();
+            up = {result.x, result.y, result.z};
+            up = glm::normalize(up);
+        }
+
+        CameraEuler::CameraEuler()
+        {
+            updateCameraVectors();
+        }
+
+        void CameraEuler::processMovement(Camera_Movement direction, float dt)
         {
             float velocity = speed * dt;
             if (direction == FORWARD)
@@ -29,7 +76,7 @@ namespace Crocodile
                 position += right * velocity;
         }
 
-        void Camera::processMouseMovement(float xoffset, float yoffset)
+        void CameraEuler::processMouseMovement(float xoffset, float yoffset)
         {
             xoffset *= sensitivity;
             yoffset *= sensitivity;
@@ -47,7 +94,7 @@ namespace Crocodile
             updateCameraVectors();
         }
         
-        void Camera::invertPitch()
+        void CameraEuler::invertPitch()
         {
             pitch = -pitch;
             // make sure that when pitch is out of bounds, screen doesn't get flipped
@@ -58,7 +105,7 @@ namespace Crocodile
             updateCameraVectors();
         }
 
-        void Camera::processMouseScroll(float yoffset)
+        void CameraEuler::processMouseScroll(float yoffset)
         {
             zoom -= yoffset;
             if (zoom < 1.0f)
@@ -67,12 +114,12 @@ namespace Crocodile
                 zoom = 45.0f;
         }
 
-        glm::mat4 Camera::getViewMatrix()
+        glm::mat4 CameraEuler::getViewMatrix()
         {
             return  glm::lookAt(position, position + front, up);
         }
 
-        glm::mat4 Camera::getProjectionMatrix()
+        glm::mat4 CameraEuler::getProjectionMatrix()
         {
             glm::mat4 proj;
             if (projectionType == ORTHOGRAPHIC)
@@ -82,12 +129,12 @@ namespace Crocodile
             return proj;
         }
 
-        void Camera::update(float dt)
+        void CameraEuler::update(float dt)
         {
             updateCameraVectors();
         }
 
-        void Camera::updateCameraVectors()
+        void CameraEuler::updateCameraVectors()
         {
             // calculate the new Front vector
             glm::vec3 f;

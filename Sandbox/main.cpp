@@ -67,13 +67,13 @@ public:
     void processCommands(float dt)
     {
         if (window.isKeyPressed(GLFW_KEY_A))
-            scene3d->camera->processMovement(s3d::Camera::LEFT, dt);
+            scene3d->camera->processMovement(s3d::LEFT, dt);
         if (window.isKeyPressed(GLFW_KEY_D))
-            scene3d->camera->processMovement(s3d::Camera::RIGHT, dt);
+            scene3d->camera->processMovement(s3d::RIGHT, dt);
         if (window.isKeyPressed(GLFW_KEY_W))
-            scene3d->camera->processMovement(s3d::Camera::FORWARD, dt);
+            scene3d->camera->processMovement(s3d::FORWARD, dt);
         if (window.isKeyPressed(GLFW_KEY_S))
-            scene3d->camera->processMovement(s3d::Camera::BACKWARD, dt);
+            scene3d->camera->processMovement(s3d::BACKWARD, dt);
 
         // if (window.isKeyPressed(GLFW_KEY_LEFT))
         //     xoffset = -rotateSpeed * dt;
@@ -97,7 +97,7 @@ public:
         if (mouseDown)
         {
             glm::vec2 offset = clickPosition - window.getMouseScreenPosition();
-            scene3d->camera->processMouseMovement(offset.x, offset.y);
+            scene3d->camera->processMouseMovement(offset.x, 0.0f);
             if (!window.isButtonPressed(GLFW_MOUSE_BUTTON_1))
                 mouseDown = false;
         }
