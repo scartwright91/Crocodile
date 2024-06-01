@@ -22,11 +22,12 @@ namespace Crocodile
 
                 void update(float dt);
                 virtual void render();
+                void resize();
                 
                 void addObject(Object* obj);
                 void removeObject(Object* obj);
 
-                CameraEuler* camera = nullptr;
+                CameraQuaternion* camera = nullptr;
 
                 // lighting
                 float ambientLighting = .4f;

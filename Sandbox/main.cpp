@@ -66,51 +66,25 @@ public:
 
     void processCommands(float dt)
     {
+        // moving camera
         if (window.isKeyPressed(GLFW_KEY_A))
-            scene3d->camera->processMovement(s3d::LEFT, dt);
+            scene3d->camera->move(s3d::LEFT, dt);
         if (window.isKeyPressed(GLFW_KEY_D))
-            scene3d->camera->processMovement(s3d::RIGHT, dt);
+            scene3d->camera->move(s3d::RIGHT, dt);
         if (window.isKeyPressed(GLFW_KEY_W))
-            scene3d->camera->processMovement(s3d::FORWARD, dt);
+            scene3d->camera->move(s3d::FORWARD, dt);
         if (window.isKeyPressed(GLFW_KEY_S))
-            scene3d->camera->processMovement(s3d::BACKWARD, dt);
+            scene3d->camera->move(s3d::BACKWARD, dt);
 
-        // if (window.isKeyPressed(GLFW_KEY_LEFT))
-        //     xoffset = -rotateSpeed * dt;
-        // if (window.isKeyPressed(GLFW_KEY_RIGHT))
-        //     xoffset = rotateSpeed * dt;
-        // if (xoffset == 0.0)
-        // {
-        //     if (window.isKeyPressed(GLFW_KEY_UP))
-        //         yoffset = -rotateSpeed * dt;
-        //     if (window.isKeyPressed(GLFW_KEY_DOWN))
-        //         yoffset = rotateSpeed * dt;
-        // }
-
-        float xoffset = 0.0;
-        float yoffset = 0.0;
-        if (window.isButtonPressed(GLFW_MOUSE_BUTTON_1) && !mouseDown)
-        {
-            mouseDown = true;
-            clickPosition = window.getMouseScreenPosition();
-        }
-        if (mouseDown)
-        {
-            glm::vec2 offset = clickPosition - window.getMouseScreenPosition();
-            scene3d->camera->processMouseMovement(offset.x, 0.0f);
-            if (!window.isButtonPressed(GLFW_MOUSE_BUTTON_1))
-                mouseDown = false;
-        }
-
-        // scrolling
-        int scroll = window.getScroll();
-        if (scroll != currentScroll)
-        {
-            int scrollDelta = scroll - currentScroll;
-            scene->camera->processMouseScroll((float)scrollDelta);
-            currentScroll = scroll;
-        }
-
+        // rotating camera
+        if (window.isKeyPressed(GLFW_KEY_LEFT))
+            scene->camera->rotateYaw(1.f);
+        if (window.isKeyPressed(GLFW_KEY_RIGHT))
+            scene->camera->rotateYaw(-1.f);
+        if (window.isKeyPressed(GLFW_KEY_UP))
+            scene->camera->rotatePitch(1.f);
+        if (window.isKeyPressed(GLFW_KEY_DOWN))
+            scene->camera->rotatePitch(-1.f);
     }
 
     std::vector<float> calculateEarthHeightMap(s3d::HeightMap telemetry, s3d::HeightMap bathymetry)
@@ -219,7 +193,6 @@ public:
         // create new scene and set it as current scene
         scene = new Scene(&window, &resourceManager);
         setCurrentScene3d(scene);
-        scene->camera->frustrumMax = 100000.f;
 
         resourceManager.loadTexture("res/textures/earth_texture_oct_medium.png", "earth_texture", false);
 
@@ -233,6 +206,7 @@ public:
         createEarthSurface();
         createWaterSurface();
 
+        /*
         // debug reflection pass
         resourceManager.addTexture(
             scene->reflectionFB->textureColorbuffer,
@@ -257,19 +231,19 @@ public:
         t2->size = glm::vec2(window.getWidth() / 4, window.getHeight() / 4);
         t2->setTexture(resourceManager.getTexture("refraction"));
         scene2d->addObject(t2, "hud");
+        */
 
-        scene3d->camera->position = glm::vec3(
+        scene3d->camera->setPosition(glm::vec3(
             earthSurface->heightMap.nCols / 2,
             earthSurface->heightMap.maxHeight * 5.0,
             earthSurface->heightMap.nRows / 2
-        );
+        ));
         scene3d->lightPosition = glm::vec3(
             earthSurface->heightMap.nCols / 2,
             earthSurface->heightMap.maxHeight * 10.0,
             0
         );
 
-        scene3d->camera->speed = 2000.0f;
         scene3d->ambientLighting = 0.2f;
 
     }

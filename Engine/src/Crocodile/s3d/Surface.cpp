@@ -5,7 +5,7 @@ namespace Crocodile
     namespace s3d
     {
 
-        HeightMap::HeightMap()
+        HeightMap::HeightMap() : nCols(0), nRows(0), minHeight(0.f), maxHeight(0.f)
         {
 
         };
@@ -174,7 +174,7 @@ namespace Crocodile
                 r = {i, heightMap.getHeight(i, j), j};
             else
                 r = {i + adjacentVertexDistance, heightMap.getHeight(i + adjacentVertexDistance, j), j};
-            if (j - 1 < 0)
+            if (j - adjacentVertexDistance < 0)
                 u = {i, heightMap.getHeight(i, j), j};
             else
                 u = {i, heightMap.getHeight(i, j - adjacentVertexDistance), j - adjacentVertexDistance};

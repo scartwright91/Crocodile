@@ -99,6 +99,7 @@ namespace Crocodile
 		windowWidth = window.getViewportWidth();
 		windowHeight = window.getViewportHeight();
 		postProcessing->resize(windowWidth, windowHeight);
+		scene3d->resize();
 	}
 
 	void Application::setCurrentScene2d(s2d::Scene *scene)

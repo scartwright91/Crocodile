@@ -3,7 +3,7 @@ out vec4 colour;
 
 in vec2 TexCoords;
 in vec4 ClipSpace;
-in vec3 ToCameraPositon;
+in vec3 ToCameraVector;
 
 uniform sampler2D u_Reflection;
 uniform sampler2D u_Refraction;
@@ -46,7 +46,7 @@ void main()
     vec4 refraction = texture2D(u_Refraction, refractionTexCoords);
 
     // calculate fresnel effect based on camera position
-    vec3 viewFactor = normalize(ToCameraPositon);
+    vec3 viewFactor = normalize(ToCameraVector);
     float fresnel = dot(viewFactor, vec3(0, 1, 0));
 
     colour = mix(reflection, refraction, 0.5);

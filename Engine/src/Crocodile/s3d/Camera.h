@@ -2,6 +2,8 @@
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/quaternion.hpp>
+
 #include "../Core.h"
 #include "Quaternion.h"
 
@@ -26,60 +28,47 @@ namespace Crocodile
         class CROCODILE_API CameraQuaternion
         {
             public:
-                CameraQuaternion();
+                CameraQuaternion(int windowWidth, int windowHeight);
 
-                void update(float dt);
                 void move(Camera_Movement direction, float dt);
-                void rotate(float theta, glm::vec3 axis);
+                // left-right rotation
+                void rotateYaw(const float theta);
+                // up-down rotation
+                void rotatePitch(const float theta);
 
-                Quaternion orientation;
+                inline glm::vec3 getPosition() const { return m_position; };
+                inline glm::mat4 getViewMatrix() const { return m_view; };
+                inline glm::mat4 getProjectionMatrix() const { return m_proj; };
+                void setPosition(glm::vec3 position);
+                void setWindowDimensions(int windowWidth, int windowHeight);
 
-                void updateCameraVectors();
-                glm::vec3 position;
-                glm::vec3 up;
-                glm::vec3 forward;
-                glm::vec3 right;
+            private:
 
-                float speed = 2.5f;
+                ProjectionType m_projectionType = PERSPECTIVE;
 
-        };
-
-        class CROCODILE_API CameraEuler
-        {
-
-            public:
-                CameraEuler();
-
-                void update(float dt);
-
-                glm::mat4 getViewMatrix();
-                glm::mat4 getProjectionMatrix();
-
-                ProjectionType projectionType = PERSPECTIVE;
-
-                // move camera
-                void processMovement(Camera_Movement direction, float dt);
-                void processMouseMovement(float xoffset, float yoffset);
-                void processMouseScroll(float yoffset);
-
-                // camera vectors
-                void updateCameraVectors();
-                glm::vec3 position = glm::vec3(0.f, 0.f, 3.f);
-                glm::vec3 front = glm::vec3(0.f, 0.f, -1.f);
-                glm::vec3 target = glm::vec3(0.f);
-                glm::vec3 up = glm::vec3(0.f, 1.f, 0.f);
-                glm::vec3 right;
-
-                // euler parameters
-                void invertPitch();
+                // projection parameters
+                int windowWidth;
+                int windowHeight;
                 float frustrumMin = 0.1f;
                 float frustrumMax = 10000.f;
-                float yaw         = -90.0f;
-                float pitch       =  0.0f;
-                float speed       =  2.5f;
-                float sensitivity =  0.01f;
+                float speed       =  2000.f;
                 float zoom        =  45.0f;
+                // view parameters
+                glm::vec3 m_position;
+                glm::quat m_orientation;
 
+                // movement vectors
+                inline glm::vec3 getForwardVector() const { return m_orientation * glm::vec3(0.0f, 0.0f, -1.0f); };
+                inline glm::vec3 getRightVector() const { return m_orientation * glm::vec3(1.0f, 0.0f, 0.0f); };
+                inline glm::vec3 getUpVector() const { return m_orientation * glm::vec3(0.0f, 1.0f, 0.0f); };
+                
+                // view and projection matrices
+                glm::mat4 m_view;
+                glm::mat4 m_proj;
+                void calculateViewMatrix();
+                void calculateProjectionMatrix();
+            
         };
+
     }
 }

@@ -16,19 +16,20 @@ void Scene::render()
 {
     glm::mat4 model = glm::mat4(1.f);
 
+    /*
     // reflection pass
     glViewport(0, 0, reflectionFB->width, reflectionFB->height);
     reflectionFB->bind();
-    float d = 2 * camera->position.y; 
-    camera->position.y -= d;
-    camera->invertPitch();
+    float d = 2 * camera->getPosition().y;
+    //camera->getPosition().y -= d;
+    // camera->invertPitch();
     for (EarthSurface* surf : earthSurfaces)
     {
         surf->customRender(
             model,
             camera->getViewMatrix(),
             camera->getProjectionMatrix(),
-            camera->position,
+            camera->getPosition(),
             ambientLighting,
             lightPosition,
             lightColour,
@@ -36,9 +37,10 @@ void Scene::render()
             glm::vec4(0, 1, 0, 0)
         );
     }
-    camera->position.y += d;
-    camera->invertPitch();
+    //camera->position.y += d;
+    // camera->invertPitch();
     reflectionFB->unbind();
+    */
 
     // refraction pass
     glViewport(0, 0, refractionFB->width, refractionFB->height);
@@ -49,7 +51,7 @@ void Scene::render()
             model,
             camera->getViewMatrix(),
             camera->getProjectionMatrix(),
-            camera->position,
+            camera->getPosition(),
             ambientLighting,
             lightPosition,
             lightColour,
@@ -66,7 +68,7 @@ void Scene::render()
             model,
             camera->getViewMatrix(),
             camera->getProjectionMatrix(),
-            camera->position,
+            camera->getPosition(),
             ambientLighting,
             lightPosition,
             lightColour,
@@ -86,7 +88,7 @@ void Scene::render()
             refractionFB->textureColorbuffer,
             resourceManager->getTexture("distortion_texture").textureID,
             timer,
-            camera->position
+            camera->getPosition()
         );
     }
 }

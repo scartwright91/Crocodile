@@ -7,7 +7,7 @@ namespace Crocodile
         Scene::Scene(graphics::Window *window, ResourceManager *resourceManager) : window(window), resourceManager(resourceManager)
         {
             init();
-            camera = new CameraEuler();
+            camera = new CameraQuaternion(window->getWidth(), window->getHeight());
         };
 
         Scene::~Scene()
@@ -17,7 +17,12 @@ namespace Crocodile
 
         void Scene::update(float dt)
         {
-            camera->update(dt);
+            // camera->update(dt);
+        }
+
+        void Scene::resize()
+        {
+            camera->setWindowDimensions(window->getWidth(), window->getHeight());
         }
 
         void Scene::render()
@@ -27,7 +32,7 @@ namespace Crocodile
                     glm::mat4(1.f),
                     camera->getViewMatrix(),
                     camera->getProjectionMatrix(),
-                    camera->position,
+                    camera->getPosition(),
                     ambientLighting,
                     lightPosition,
                     lightColour
