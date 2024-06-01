@@ -16,13 +16,14 @@ void Scene::render()
 {
     glm::mat4 model = glm::mat4(1.f);
 
-    /*
     // reflection pass
     glViewport(0, 0, reflectionFB->width, reflectionFB->height);
     reflectionFB->bind();
-    float d = 2 * camera->getPosition().y;
-    //camera->getPosition().y -= d;
-    // camera->invertPitch();
+    glm::vec3 camPos = camera->getPosition();
+    float d = 2 * camPos.y;
+    camPos.y -= d;
+    camera->setPosition(camPos);
+    //camera->invertPitch();
     for (EarthSurface* surf : earthSurfaces)
     {
         surf->customRender(
@@ -37,10 +38,10 @@ void Scene::render()
             glm::vec4(0, 1, 0, 0)
         );
     }
-    //camera->position.y += d;
-    // camera->invertPitch();
+    camPos.y += d;
+    camera->setPosition(camPos);
+    //camera->invertPitch();
     reflectionFB->unbind();
-    */
 
     // refraction pass
     glViewport(0, 0, refractionFB->width, refractionFB->height);

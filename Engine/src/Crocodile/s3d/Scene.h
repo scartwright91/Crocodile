@@ -27,7 +27,7 @@ namespace Crocodile
                 void addObject(Object* obj);
                 void removeObject(Object* obj);
 
-                CameraQuaternion* camera = nullptr;
+                CameraController* camera = nullptr;
 
                 // lighting
                 float ambientLighting = .4f;

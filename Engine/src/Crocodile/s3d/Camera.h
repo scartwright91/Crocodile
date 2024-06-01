@@ -25,16 +25,17 @@ namespace Crocodile
             PERSPECTIVE
         };
 
-        class CROCODILE_API CameraQuaternion
+        class CROCODILE_API CameraController
         {
             public:
-                CameraQuaternion(int windowWidth, int windowHeight);
+                CameraController(int windowWidth, int windowHeight);
 
                 void move(Camera_Movement direction, float dt);
                 // left-right rotation
                 void rotateYaw(const float theta);
                 // up-down rotation
                 void rotatePitch(const float theta);
+                void invertPitch();
 
                 inline glm::vec3 getPosition() const { return m_position; };
                 inline glm::mat4 getViewMatrix() const { return m_view; };
