@@ -170,7 +170,8 @@ namespace Crocodile
 
 	void Application::loadTextures()
 	{
-		resourceManager.loadTexture("assets/textures/distortion_texture.png", "distortion_texture", true);
+		resourceManager.loadTexture("assets/textures/distortion_texture.png", "dudv", true);
+		resourceManager.loadTexture("assets/textures/normal_map.png", "normal_map", true);
 	}
 
 	void Application::loadAudio()

@@ -23,6 +23,7 @@ namespace Crocodile
         {
             this->windowWidth = windowWidth;
             this->windowHeight = windowHeight;
+            calculateProjectionMatrix();
         }
 
         void CameraController::move(Camera_Movement direction, float dt)
@@ -36,7 +37,6 @@ namespace Crocodile
                 m_position -= glm::normalize(getRightVector()) * velocity;
             if (direction == RIGHT)
                 m_position += glm::normalize(getRightVector()) * velocity;
-
             calculateViewMatrix();
         }
 

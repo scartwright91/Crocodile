@@ -10,6 +10,7 @@ WaterSurface::WaterSurface(
     shader->setInt("u_Reflection", 0);
     shader->setInt("u_Refraction", 1);
     shader->setInt("u_DuDv", 2);
+    shader->setInt("u_NormalMap", 3);
 }
 
 WaterSurface::~WaterSurface()
@@ -23,8 +24,11 @@ void WaterSurface::customRender(
     unsigned int reflectionTexture,
     unsigned int refractionTexture,
     unsigned int dudvTexture,
+    unsigned int normalTexture,
     float timer,
-    glm::vec3 cameraPosition
+    glm::vec3 cameraPosition,
+    glm::vec3 lightPositon,
+    glm::vec3 lightColour
 )
 {
     shader->use();
@@ -39,8 +43,12 @@ void WaterSurface::customRender(
     glBindTexture(GL_TEXTURE_2D, refractionTexture);
     glActiveTexture(GL_TEXTURE2);
     glBindTexture(GL_TEXTURE_2D, dudvTexture);
+    glActiveTexture(GL_TEXTURE3);
+    glBindTexture(GL_TEXTURE_2D, normalTexture);
     shader->setFloat("u_Time", timer);
     shader->setVec3("u_CameraPosition", cameraPosition);
+    shader->setVec3("u_LightPosition", lightPositon);
+    shader->setVec3("u_LightColour", lightColour);
     // render the cube
     glBindVertexArray(terrainVAO);
     for(int strip = 0; strip < numStrips; strip++)

@@ -87,9 +87,12 @@ void Scene::render()
             camera->getProjectionMatrix(),
             reflectionFB->textureColorbuffer,
             refractionFB->textureColorbuffer,
-            resourceManager->getTexture("distortion_texture").textureID,
+            resourceManager->getTexture("dudv").textureID,
+            resourceManager->getTexture("normal_map").textureID,
             timer,
-            camera->getPosition()
+            camera->getPosition(),
+            lightPosition,
+            lightColour
         );
     }
 }

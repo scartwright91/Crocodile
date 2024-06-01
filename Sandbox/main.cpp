@@ -48,6 +48,15 @@ public:
         if (window.isKeyPressed(GLFW_KEY_ESCAPE))
             running = false;
 
+        // rotate light
+        glm::vec3 p = glm::vec3(
+            earthSurface->heightMap.nCols / 2,
+            earthSurface->heightMap.maxHeight * 5.0,
+            earthSurface->heightMap.nRows / 2
+        );
+        glm::mat4 rot_mat = glm::rotate(glm::mat4(1.0f), glm::radians(elapsed), {0.f, 1.f, 0.f});
+        scene3d->lightPosition = glm::vec3(glm::vec4(p, 1.0f) * rot_mat);
+
         processCommands(dt);
 
         if (window.isKeyPressed(GLFW_KEY_SPACE) && (elapsed > 1.0f))
@@ -134,13 +143,13 @@ public:
     {
         // height maps
         s3d::HeightMap telemetryHeightMap("res/textures/earth_topography_high_res.png", 20.f, false);
-        telemetryHeightMap.heights = smoothHeightMap(telemetryHeightMap);
-        telemetryHeightMap.heights = smoothHeightMap(telemetryHeightMap);
-        telemetryHeightMap.heights = smoothHeightMap(telemetryHeightMap);
+        // telemetryHeightMap.heights = smoothHeightMap(telemetryHeightMap);
+        // telemetryHeightMap.heights = smoothHeightMap(telemetryHeightMap);
+        // telemetryHeightMap.heights = smoothHeightMap(telemetryHeightMap);
         s3d::HeightMap bathymetrycHeightMap("res/textures/earth_bathymetry_high_res.png", -30.f, true);
-        bathymetrycHeightMap.heights = smoothHeightMap(bathymetrycHeightMap);
-        bathymetrycHeightMap.heights = smoothHeightMap(bathymetrycHeightMap);
-        bathymetrycHeightMap.heights = smoothHeightMap(bathymetrycHeightMap);
+        // bathymetrycHeightMap.heights = smoothHeightMap(bathymetrycHeightMap);
+        // bathymetrycHeightMap.heights = smoothHeightMap(bathymetrycHeightMap);
+        // bathymetrycHeightMap.heights = smoothHeightMap(bathymetrycHeightMap);
         s3d::HeightMap earthHeightMap(
             telemetryHeightMap.nCols,
             telemetryHeightMap.nRows,
@@ -169,8 +178,8 @@ public:
         // create water surface
         float h = 0.f;
         std::vector<float> heights = {};
-        int nCols = earthSurface->heightMap.nCols / 100;
-        int nRows = earthSurface->heightMap.nRows / 100;
+        int nCols = earthSurface->heightMap.nCols / 100 + 1;
+        int nRows = earthSurface->heightMap.nRows / 100 + 1;
         for (int i = 0; i < nCols; i++)
             for (int j = 0; j < nRows; j++)
                 heights.push_back(0.f);
@@ -233,17 +242,13 @@ public:
         scene2d->addObject(t2, "hud");
         */
 
-        scene3d->camera->setPosition(glm::vec3(
+        glm::vec3 p = glm::vec3(
             earthSurface->heightMap.nCols / 2,
             earthSurface->heightMap.maxHeight * 5.0,
             earthSurface->heightMap.nRows / 2
-        ));
-        scene3d->lightPosition = glm::vec3(
-            earthSurface->heightMap.nCols / 2,
-            earthSurface->heightMap.maxHeight * 10.0,
-            0
         );
-
+        scene3d->camera->setPosition(p);
+        scene3d->lightPosition = p;
         scene3d->ambientLighting = 0.2f;
 
     }
