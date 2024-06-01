@@ -52,7 +52,7 @@ namespace Crocodile
                 int windowHeight;
                 float frustrumMin = 0.1f;
                 float frustrumMax = 10000.f;
-                float speed       =  2000.f;
+                float speed       =  1000.f;
                 float zoom        =  45.0f;
                 // view parameters
                 glm::vec3 m_position;

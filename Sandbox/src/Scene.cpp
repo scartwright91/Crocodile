@@ -23,7 +23,7 @@ void Scene::render()
     float d = 2 * camPos.y;
     camPos.y -= d;
     camera->setPosition(camPos);
-    //camera->invertPitch();
+    camera->invertPitch();
     for (EarthSurface* surf : earthSurfaces)
     {
         surf->customRender(
@@ -40,7 +40,7 @@ void Scene::render()
     }
     camPos.y += d;
     camera->setPosition(camPos);
-    //camera->invertPitch();
+    camera->invertPitch();
     reflectionFB->unbind();
 
     // refraction pass

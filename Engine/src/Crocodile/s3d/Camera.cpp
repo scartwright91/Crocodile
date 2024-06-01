@@ -56,18 +56,10 @@ namespace Crocodile
 
         void CameraController::invertPitch()
         {
-            // Get the current Euler angles
-            glm::vec3 eulerAngles = glm::eulerAngles(m_orientation);
-            // Invert the pitch angle (X-axis rotation)
-            float invertedPitch = -eulerAngles.x;
-            // Create a new quaternion with the inverted pitch
-            glm::quat pitchQuat = glm::angleAxis(invertedPitch, glm::vec3(1.0f, 0.0f, 0.0f));
-            // Keep the yaw (Y-axis rotation) and roll (Z-axis rotation) from the original orientation
-            glm::quat yawQuat = glm::angleAxis(eulerAngles.y, glm::vec3(0.0f, 1.0f, 0.0f));
-            glm::quat rollQuat = glm::angleAxis(eulerAngles.z, glm::vec3(0.0f, 0.0f, 1.0f));
-            // Combine the quaternions
-            m_orientation = yawQuat * pitchQuat * rollQuat;
-            m_orientation = glm::normalize(m_orientation);
+            glm::vec3 euler = glm::eulerAngles(m_orientation);
+            euler.x *= -1;
+            m_orientation = glm::quat(euler);
+            calculateViewMatrix();
         }
 
         void CameraController::calculateViewMatrix()
