@@ -18,7 +18,7 @@ namespace Crocodile
 			if (!layerExists(layer))
 				layers.push_back(layer);
 			else
-				std::cout << "Layer " << layer->name << " already exists in layer stack" << std::endl;
+				LOG(WARNING, "Layer " + layer->name + " already exists in layer stack");
 		}
 
 		void LayerStack::insertLayer(Layer *layer, unsigned int position)
@@ -26,7 +26,7 @@ namespace Crocodile
 			if (!layerExists(layer))
 				layers.insert(layers.begin() + position, layer);
 			else
-				std::cout << "Layer " << layer->name << " already exists in layer stack" << std::endl;
+				LOG(WARNING, "Layer " + layer->name + " already exists in layer stack");
 		}
 
 		void LayerStack::removeLayer(Layer *layer)
@@ -45,7 +45,7 @@ namespace Crocodile
 			for (Layer *layer : layers)
 				if (layer->name == name)
 					return layer;
-			std::cout << "ERROR: " << name << " not found in layer stack." << std::endl;
+			LOG(ERROR, "ERROR: " + name + " not found in layer stack.");
 			return NULL;
 		}
 

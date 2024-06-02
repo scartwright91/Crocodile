@@ -51,7 +51,7 @@ public:
         // rotate light
         glm::vec3 p = glm::vec3(
             earthSurface->heightMap.nCols / 2,
-            earthSurface->heightMap.maxHeight * 5.0,
+            earthSurface->heightMap.maxHeight * 100.0,
             earthSurface->heightMap.nRows / 2
         );
         glm::mat4 rot_mat = glm::rotate(glm::mat4(1.0f), glm::radians(elapsed), {0.f, 1.f, 0.f});
@@ -114,55 +114,22 @@ public:
         return heights;
     }
 
-    std::vector<float> smoothHeightMap(s3d::HeightMap heightMap)
-    {
-        std::vector<float> heights = {};
-        for(int i = 0; i < heightMap.nRows; i++)
-        {
-            for(int j = 0; j < heightMap.nCols; j++)
-            {
-                if ((i == 0) || (i == heightMap.nRows - 1) || (j == 0) || (j == heightMap.nCols - 1))
-                    heights.push_back(heightMap.getHeight(i, j));
-                else
-                {
-                    float h = (
-                        heightMap.getHeight(i, j) +
-                        heightMap.getHeight(i - 1, j) +
-                        heightMap.getHeight(i + 1, j) +
-                        heightMap.getHeight(i, j - 1) +
-                        heightMap.getHeight(i, j + 1)
-                    ) / 5;
-                    heights.push_back(h);
-                }
-            }
-        }
-        return heights;
-    }
-
     void createEarthSurface()
     {
         // height maps
         s3d::HeightMap telemetryHeightMap("res/textures/earth_topography_high_res.png", 20.f, false);
-        // telemetryHeightMap.heights = smoothHeightMap(telemetryHeightMap);
-        // telemetryHeightMap.heights = smoothHeightMap(telemetryHeightMap);
-        // telemetryHeightMap.heights = smoothHeightMap(telemetryHeightMap);
         s3d::HeightMap bathymetrycHeightMap("res/textures/earth_bathymetry_high_res.png", -30.f, true);
-        // bathymetrycHeightMap.heights = smoothHeightMap(bathymetrycHeightMap);
-        // bathymetrycHeightMap.heights = smoothHeightMap(bathymetrycHeightMap);
-        // bathymetrycHeightMap.heights = smoothHeightMap(bathymetrycHeightMap);
         s3d::HeightMap earthHeightMap(
             telemetryHeightMap.nCols,
             telemetryHeightMap.nRows,
             calculateEarthHeightMap(telemetryHeightMap, bathymetrycHeightMap)
         );
 
-        graphics::Shader* earthShader = new graphics::Shader(
-            "res/shaders/earth_shader.vs",
-            "res/shaders/earth_shader.fs"
-        );
+        // add shader
+        resourceManager.shaderManager.addShader("earth_surface", "res/shaders/earth_shader.vs", "res/shaders/earth_shader.fs");
         
         // create earth surface
-        earthSurface = new EarthSurface(earthHeightMap, earthShader);
+        earthSurface = new EarthSurface(earthHeightMap, resourceManager.shaderManager.getShader("earth_surface"));
         earthSurface->adjacentVertexDistance = 10;
         earthSurface->createSurface();
         scene->earthSurfaces.push_back(earthSurface);
@@ -170,10 +137,8 @@ public:
 
     void createWaterSurface()
     {
-        graphics::Shader* waterShader = new graphics::Shader(
-            "res/shaders/water_shader.vs",
-            "res/shaders/water_shader.fs"
-        );
+        // add shader
+        resourceManager.shaderManager.addShader("water_surface", "res/shaders/water_shader.vs", "res/shaders/water_shader.fs");
 
         // create water surface
         float h = 0.f;
@@ -184,7 +149,7 @@ public:
             for (int j = 0; j < nRows; j++)
                 heights.push_back(0.f);
         s3d::HeightMap waterHeightMap(nCols, nRows, heights);
-        waterSurface = new WaterSurface(&window, waterHeightMap, waterShader);
+        waterSurface = new WaterSurface(&window, waterHeightMap, resourceManager.shaderManager.getShader("water_surface"));
         waterSurface->colour = glm::vec3(0.f, 0.f, 1.f);
         waterSurface->gridSize = {100, 100};
         waterSurface->createSurface();

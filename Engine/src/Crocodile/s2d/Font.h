@@ -64,7 +64,7 @@ namespace Crocodile
                 // All functions return a value different than 0 whenever an error occurred
                 if (FT_Init_FreeType(&ft))
                 {
-                    std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
+                    LOG(ERROR, "Could not initialise FreeType library");
                     return false;
                 }
 
@@ -73,7 +73,7 @@ namespace Crocodile
                 if (FT_New_Memory_Face(ft, Vollkorn_Regular_ttf, Vollkorn_Regular_ttf_len, 0, &face))
                 // if (FT_New_Memory_Face(ft, Habana_Vieja_demo_ttf, Habana_Vieja_demo_ttf_len, 0, &face))
                 {
-                    std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
+                    LOG(ERROR, "Failed to load freetype font");
                     return false;
                 }
                 else
@@ -90,7 +90,7 @@ namespace Crocodile
                         // Load character glyph
                         if (FT_Load_Char(face, c, FT_LOAD_RENDER))
                         {
-                            std::cout << "ERROR::FREETYTPE: Failed to load Glyph" << std::endl;
+                            LOG(ERROR, "Failed to load glyph");
                             continue;
                         }
                         // generate texture

@@ -4,7 +4,7 @@ namespace Crocodile
 {
 	namespace s2d
 	{
-		Animation::Animation(ResourceManager::TextureData spritesheet, float width, unsigned int gridSize, float frameDuration)
+		Animation::Animation(TextureData spritesheet, float width, unsigned int gridSize, float frameDuration)
 		{
 			this->spritesheetAnimation = true;
 			this->spritesheet = spritesheet;
@@ -15,12 +15,12 @@ namespace Crocodile
 			this->currentFrame = 0;
 		}
 
-		Animation::Animation(std::vector<ResourceManager::TextureData> textures, float frameDuration)
+		Animation::Animation(std::vector<TextureData> textures, float frameDuration)
 		{
 			this->spritesheetAnimation = false;
 			this->textures = textures;
 			this->frameDuration = frameDuration;
-			this->totalFrames = textures.size();
+			this->totalFrames = (int)textures.size();
 			this->currentFrame = 0;
 		}
 

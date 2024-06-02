@@ -1,5 +1,7 @@
 #include "Surface.h"
 
+#include "Crocodile/utils/Logger.h"
+
 namespace Crocodile
 {
     namespace s3d
@@ -14,10 +16,10 @@ namespace Crocodile
         {
             unsigned char* image;
             int nChannels;
-            std::cout << std::endl << "Creating surface from height map..." << std::endl;
-            std::cout << "Reading data from: " << heightMapPath << std::endl;
+            LOG(INFO, "Creating surface from height map");
+            LOG(INFO, "Reading data from: " + heightMapPath);
             image = stbi_load(heightMapPath.c_str(), &nCols, &nRows, &nChannels, 0);
-            std::cout << nCols << ", " << nRows << std::endl;
+            LOG(INFO, "Height map dimensions: " + std::to_string(nCols) + ", " + std::to_string(nRows));
             for(int i = 0; i < nRows; i++)
             {
                 for(int j = 0; j < nCols; j++)
@@ -30,7 +32,7 @@ namespace Crocodile
                     heights.push_back((float)height * scale);
                 }
             }
-            std::cout << "Finished creating height map..." << std::endl;
+            LOG(INFO, "Heightmap created");
             init();
         }
 

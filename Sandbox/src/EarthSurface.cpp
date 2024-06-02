@@ -19,7 +19,7 @@ void EarthSurface::customRender(
     float ambientLighting,
     glm::vec3 lightPosition,
     glm::vec3 lightColour,
-    ResourceManager::TextureData earthTexture,
+    TextureData earthTexture,
     glm::vec4 clippingPlane
 )
 {

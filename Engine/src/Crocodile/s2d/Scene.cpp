@@ -36,7 +36,7 @@ namespace Crocodile
 				object->layer = layerName;
 			}
 			else
-				std::cout << "Layer " << layerName << " does not exist in layerstack" << std::endl;
+				LOG(ERROR, "Layer " + layerName + " does not exist in layerstack");
 		}
 
 		void Scene::removeObject(s2d::Object *object, std::string layerName)
@@ -51,7 +51,7 @@ namespace Crocodile
 				}
 			}
 			else
-				std::cout << "Layer " << layerName << " does not exist in layerstack" << std::endl;
+				LOG(ERROR, "Layer " + layerName + " does not exist in layerstack");
 		}
 
 		void Scene::update(float dt)
@@ -246,7 +246,7 @@ namespace Crocodile
 			}
 			else
 			{
-				std::cout << "Undefined render method" << std::endl;
+				LOG(WARNING, "object has undefined render type");
 			}
 
 			col::BoundingBox bbox = obj->getBoundingBox();
@@ -325,7 +325,7 @@ namespace Crocodile
 		{
 			if (collisionLayer > 2)
 			{
-				std::cout << "Collision layer must be 0, 1, 2" << std::endl;
+				LOG(WARNING, "Collision layer must be 0, 1, 2");
 				return;
 			}
 			collisionLayers[collisionLayer].push_back(obj);
@@ -335,7 +335,7 @@ namespace Crocodile
 		{
 			if (collisionLayer > 2)
 			{
-				std::cout << "Collision layer must be 0, 1, 2" << std::endl;
+				LOG(WARNING, "Collision layer must be 0, 1, 2");
 				return;
 			}
 			collisionLayers[collisionLayer].erase(
@@ -478,7 +478,7 @@ namespace Crocodile
 
 		void Scene::addTextRenderer(const std::string name, const std::string fontPath, unsigned int fontSize)
 		{
-			textRenderers[name] = new s2d::TextRenderer(fontPath, fontSize, resourceManager->getShader("text")); 
+			textRenderers[name] = new s2d::TextRenderer(fontPath, fontSize, resourceManager->shaderManager.getShader("text")); 
 		}
 
 		void Scene::addParticleEffect(glm::vec2 position, ParticleSettings settings, std::string layer)
@@ -510,12 +510,12 @@ namespace Crocodile
 			distortionTexture = resourceManager->getTexture("distortion_texture").textureID;
 			layerStack = new LayerStack();
 			// renderers
-			spriteRenderer = new s2d::SpriteRenderer(resourceManager->getShader("sprite"));
-			particleRenderer = new s2d::ParticleRenderer(resourceManager->getShader("particle"));
-			lineRenderer = new s2d::LineRenderer(resourceManager->getShader("line"));
-			circleRenderer = new s2d::CircleRenderer(resourceManager->getShader("circle"));
-			grid = new s2d::BackgroundGrid(resourceManager->getShader("grid"));
-			textRenderers["default"] = new s2d::TextRenderer("assets/fonts/OpenSans-Regular.ttf", 48, resourceManager->getShader("text"));
+			spriteRenderer = new s2d::SpriteRenderer(resourceManager->shaderManager.getShader("sprite"));
+			particleRenderer = new s2d::ParticleRenderer(resourceManager->shaderManager.getShader("particle"));
+			lineRenderer = new s2d::LineRenderer(resourceManager->shaderManager.getShader("line"));
+			circleRenderer = new s2d::CircleRenderer(resourceManager->shaderManager.getShader("circle"));
+			grid = new s2d::BackgroundGrid(resourceManager->shaderManager.getShader("grid"));
+			textRenderers["default"] = new s2d::TextRenderer("assets/fonts/OpenSans-Regular.ttf", 48, resourceManager->shaderManager.getShader("text"));
 		}
 
 	}

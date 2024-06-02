@@ -109,14 +109,14 @@ namespace Crocodile
 			position = pos;
 		}
 
-		void Object::setTexture(ResourceManager::TextureData texture)
+		void Object::setTexture(TextureData texture)
 		{
 			this->texture = texture;
 			useTexture = true;
 		}
 
 		void Object::setTileMapTexture(
-			ResourceManager::TextureData texture,
+			TextureData texture,
 			float gridSize,
 			unsigned int x,
 			unsigned int y)

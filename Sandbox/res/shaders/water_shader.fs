@@ -14,8 +14,7 @@ uniform float u_Time;
 uniform vec3 u_LightColour;
 
 const float distortionStrength = 0.05;
-const float shineDamper = 20.0;
-const float reflectivity = 0.6;
+const float shininess = 80.f;
 
 void main()
 {
@@ -47,13 +46,12 @@ void main()
 
     // normal map
     vec4 normalMapColour = texture2D(u_NormalMap, distortionTexCoords);
-    vec3 normal = vec3(normalMapColour.x * 2.0 - 1.0, normalMapColour.g, normalMapColour.z * 2.0 + 1.0);    
+    vec3 normal = vec3(normalMapColour.x * 2.0 - 1.0, normalMapColour.y, normalMapColour.z * 2.0 + 1.0);    
 
-    // lighting
-    vec3 reflectedLight = reflect(normalize(LightDirection), normal);
-    float specular = max(dot(reflectedLight, viewVector), 0.0);
-    specular = pow(specular, shineDamper);
-    vec3 specularHighlights = u_LightColour * specular * reflectivity;
+    // Specular Lighting
+    vec3 halfwayDir = normalize(ViewDirection + LightDirection); // Halfway vector for Blinn-Phong
+    float spec = pow(max(dot(normal, halfwayDir), 0.0), shininess);
+    vec3 specularHighlights = u_LightColour * spec;
 
     colour = mix(reflection, refraction, fresnel);
     colour = mix(colour, vec4(0.0, 0.3, 0.7, 1.0), 0.2) + vec4(specularHighlights, 0.0);

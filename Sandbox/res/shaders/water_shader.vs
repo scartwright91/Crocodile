@@ -22,6 +22,7 @@ void main()
 	TexCoords = aTexCoords * tiling;
 	ClipSpace = u_Projection * u_View * worldPosition;
 	ViewDirection = u_CameraPosition - worldPosition.xyz;
-	LightDirection = worldPosition.xyz - u_LightPosition;
+	// LightDirection = worldPosition.xyz - u_LightPosition;
+	LightDirection = u_LightPosition - worldPosition.xyz;
 	gl_Position = ClipSpace;
 }

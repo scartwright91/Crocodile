@@ -33,7 +33,7 @@ namespace Crocodile
 		{
 			ParticleType type = SCATTER;
 			glm::vec3 colour = glm::vec3(1.f);
-			ResourceManager::TextureData texture;
+			TextureData texture;
 			float w = 0;
 			float h = 0;
 			float direction = 0.5f;

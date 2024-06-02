@@ -1,5 +1,7 @@
 #include "FrameBuffer.h"
 
+#include "Crocodile/utils/Logger.h"
+
 namespace Crocodile
 {
     namespace graphics
@@ -54,7 +56,7 @@ namespace Crocodile
 			glFramebufferRenderbuffer(GL_FRAMEBUFFER, GL_DEPTH_STENCIL_ATTACHMENT, GL_RENDERBUFFER, RBO); // now actually attach it
 			// now that we actually created the framebuffer and added all attachments we want to check if it is actually complete now
 			if (glCheckFramebufferStatus(GL_FRAMEBUFFER) != GL_FRAMEBUFFER_COMPLETE)
-				std::cout << "ERROR::POSTPROCESSING::FRAMEBUFFER:: Framebuffer is not complete!" << std::endl;
+				LOG(WARNING, "Framebuffer is not complete");
 			glBindFramebuffer(GL_FRAMEBUFFER, 0);
 
 			// create render quad

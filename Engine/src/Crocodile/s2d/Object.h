@@ -63,7 +63,7 @@ namespace Crocodile
 			// fragment
 			glm::vec3 color = glm::vec3(0.0f);
 			float alpha = 1.0f;
-			ResourceManager::TextureData texture = {};
+			TextureData texture = {};
 			bool useTexture = false;
 			bool useColorTexture = false;
 			float numberOfRows = 1.f;
@@ -121,9 +121,9 @@ namespace Crocodile
 			void setPosition(glm::vec2 pos);
 
 			// textures, animations, vfx
-			void setTexture(ResourceManager::TextureData texture);
+			void setTexture(TextureData texture);
 			void setTileMapTexture(
-				ResourceManager::TextureData texture,
+				TextureData texture,
 				float gridSize,
 				unsigned int x,
 				unsigned int y);

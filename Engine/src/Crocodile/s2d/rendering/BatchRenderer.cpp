@@ -96,7 +96,7 @@ namespace Crocodile
             glm::vec2 viewportScale,
             glm::mat4 view,
             glm::mat4 projection,
-            ResourceManager::TextureData texture,
+            TextureData texture,
             float alpha,
             float ambientLighting,
             std::vector<Light *> lights
@@ -123,7 +123,7 @@ namespace Crocodile
             }
             // bind and draw
             glBindVertexArray(VAO);
-            glDrawArrays(GL_TRIANGLES, 0, 6 * positions.size());
+            glDrawArrays(GL_TRIANGLES, 0, 6 * (int)positions.size());
             glBindVertexArray(0);
         }
 

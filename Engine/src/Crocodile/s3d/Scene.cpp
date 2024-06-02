@@ -58,7 +58,7 @@ namespace Crocodile
 
         void Scene::init()
         {
-            renderer = new Renderer(resourceManager->getShader("shader"));
+            renderer = new Renderer(resourceManager->shaderManager.getShader("shader"));
         }
     }
 }

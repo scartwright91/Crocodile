@@ -14,7 +14,7 @@ namespace Crocodile
             glm::mat4 model,
             glm::mat4 view,
             glm::mat4 projection,
-            ResourceManager::TextureData texture,
+            TextureData texture,
             bool useTexture,
             bool useColorTexture,
             float numberOfRows,

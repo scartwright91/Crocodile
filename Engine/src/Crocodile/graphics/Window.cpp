@@ -1,6 +1,7 @@
 #include "Window.h"
 
 #include "Crocodile/Application.h"
+#include "Crocodile/utils/Logger.h"
 
 namespace Crocodile
 {
@@ -24,7 +25,7 @@ namespace Crocodile
 			if (!init())
 				glfwTerminate();
 			else
-				std::cout << "Created game window" << std::endl;
+				LOG(INFO, "Window created.");
 
 			for (int i = 0; i < MAX_KEYS; i++)
 			{
@@ -46,7 +47,7 @@ namespace Crocodile
 			// init
 			if (!glfwInit())
 			{
-				std::cout << "Failed to initialise GLFW" << std::endl;
+				LOG(ERROR, "Failed to initialise GLFW");
 				return false;
 			}
 			else
@@ -54,7 +55,7 @@ namespace Crocodile
 				glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 				glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 				glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-				std::cout << "Initialised GLFW" << std::endl;
+				LOG(INFO, "Initialised GLFW");
 			}
 
 			// window resizing
@@ -72,7 +73,7 @@ namespace Crocodile
 
 			if (!window)
 			{
-				std::cout << "Failed to create GLFW window" << std::endl;
+				LOG(ERROR, "Failed to create GLFW window");
 				return false;
 			}
 
@@ -81,7 +82,7 @@ namespace Crocodile
 			// joystick
 			int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
 			if (present)
-				std::cout << "Joystick detected" << std::endl;
+				LOG(INFO, "Joystick connected");
 
 			// set callbacks
 			glfwMakeContextCurrent(window);
@@ -91,7 +92,7 @@ namespace Crocodile
 			glfwSetMouseButtonCallback(window, mouse_button_callback);
 			glfwSetScrollCallback(window, scroll_callback);
 
-			std::cout << "OpenGL version: " << glGetString(GL_VERSION) << std::endl;
+			LOG(INFO, "OpenGL version: " + std::string((const char*)glGetString(GL_VERSION)));
 
 			return true;
 		}
