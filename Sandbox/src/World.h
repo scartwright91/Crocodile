@@ -14,6 +14,6 @@ class World
         void update(float dt);
 
     private:
-        Scene* scene = nullptr;
+        Scene* m_scene = nullptr;
 
 };

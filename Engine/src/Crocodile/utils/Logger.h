@@ -7,6 +7,8 @@
 #include <iomanip>
 #include <sstream>
 
+#include "Crocodile/Core.h"
+
 namespace Crocodile
 {
     enum LoggerLevel {
@@ -36,7 +38,7 @@ namespace Crocodile
         return oss.str();
     }
 
-    static void LOG(LoggerLevel level, const std::string& message) {
+    static void CROCODILE_API LOG(LoggerLevel level, const std::string& message) {
         std::string timestamp = getCurrentTimestamp();
         std::string levelStr = getLevelString(level);
         std::cout << "[" << timestamp << "] [" << levelStr << "] " << message << std::endl;

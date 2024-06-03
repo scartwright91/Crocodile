@@ -6,6 +6,7 @@
 #include <string>
 
 #include "Crocodile.h"
+#include "Crocodile/utils/Logger.h"
 #include "Crocodile/s3d/Surface.h"
 
 #include "src/Scene.h"
@@ -132,7 +133,7 @@ public:
         earthSurface = new EarthSurface(earthHeightMap, resourceManager.shaderManager.getShader("earth_surface"));
         earthSurface->adjacentVertexDistance = 10;
         earthSurface->createSurface();
-        scene->earthSurfaces.push_back(earthSurface);
+        scene->m_earthSurfaces.push_back(earthSurface);
     }
 
     void createWaterSurface()
@@ -153,7 +154,7 @@ public:
         waterSurface->colour = glm::vec3(0.f, 0.f, 1.f);
         waterSurface->gridSize = {100, 100};
         waterSurface->createSurface();
-        scene->waterSurfaces.push_back(waterSurface);
+        scene->m_waterSurfaces.push_back(waterSurface);
 
     }
 
@@ -183,7 +184,7 @@ public:
         /*
         // debug reflection pass
         resourceManager.addTexture(
-            scene->reflectionFB->textureColorbuffer,
+            scene->m_reflectionFB->textureColorbuffer,
             window.getWidth() / 4,
             window.getHeight() / 4,
             "reflection"

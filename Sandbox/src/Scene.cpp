@@ -2,14 +2,14 @@
 
 Scene::Scene(graphics::Window *window, ResourceManager *resourceManager) : s3d::Scene(window, resourceManager)
 {
-    reflectionFB = new graphics::FrameBuffer(window->getWidth() / 2, window->getHeight() / 2);
-    refractionFB = new graphics::FrameBuffer(window->getWidth() / 2, window->getHeight() / 2);
+    m_reflectionFB = new graphics::FrameBuffer(window->getWidth() / 2, window->getHeight() / 2);
+    m_refractionFB = new graphics::FrameBuffer(window->getWidth() / 2, window->getHeight() / 2);
 }
 
 Scene::~Scene()
 {
-    delete reflectionFB;
-    delete refractionFB;
+    delete m_reflectionFB;
+    delete m_refractionFB;
 }
 
 void Scene::render()
@@ -17,14 +17,14 @@ void Scene::render()
     glm::mat4 model = glm::mat4(1.f);
 
     // reflection pass
-    glViewport(0, 0, reflectionFB->width, reflectionFB->height);
-    reflectionFB->bind();
+    glViewport(0, 0, m_reflectionFB->width, m_reflectionFB->height);
+    m_reflectionFB->bind();
     glm::vec3 camPos = camera->getPosition();
     float d = 2 * camPos.y;
     camPos.y -= d;
     camera->setPosition(camPos);
     camera->invertPitch();
-    for (EarthSurface* surf : earthSurfaces)
+    for (EarthSurface* surf : m_earthSurfaces)
     {
         surf->customRender(
             model,
@@ -41,12 +41,12 @@ void Scene::render()
     camPos.y += d;
     camera->setPosition(camPos);
     camera->invertPitch();
-    reflectionFB->unbind();
+    m_reflectionFB->unbind();
 
     // refraction pass
-    glViewport(0, 0, refractionFB->width, refractionFB->height);
-    refractionFB->bind();
-    for (EarthSurface* surf : earthSurfaces)
+    glViewport(0, 0, m_refractionFB->width, m_refractionFB->height);
+    m_refractionFB->bind();
+    for (EarthSurface* surf : m_earthSurfaces)
     {
         surf->customRender(
             model,
@@ -60,10 +60,10 @@ void Scene::render()
             glm::vec4(0, -1, 0, 0)
         );
     }
-    refractionFB->unbind();
+    m_refractionFB->unbind();
 
     glViewport(0, 0, window->getWidth(), window->getHeight());
-    for (EarthSurface* surf : earthSurfaces)
+    for (EarthSurface* surf : m_earthSurfaces)
     {
         surf->customRender(
             model,
@@ -79,17 +79,17 @@ void Scene::render()
     }
 
     // render water last
-    for (WaterSurface* surf : waterSurfaces)
+    for (WaterSurface* surf : m_waterSurfaces)
     {
         surf->customRender(
             model,
             camera->getViewMatrix(),
             camera->getProjectionMatrix(),
-            reflectionFB->textureColorbuffer,
-            refractionFB->textureColorbuffer,
+            m_reflectionFB->textureColorbuffer,
+            m_refractionFB->textureColorbuffer,
             resourceManager->getTexture("dudv").textureID,
             resourceManager->getTexture("normal_map").textureID,
-            timer,
+            m_timer,
             camera->getPosition(),
             lightPosition,
             lightColour
@@ -99,7 +99,7 @@ void Scene::render()
 
 void Scene::updateTimer(float dt)
 {
-    timer += 0.01f * dt;
-    if (timer > 1.0)
-        timer = 0.0f;
+    m_timer += 0.01f * dt;
+    if (m_timer > 1.0)
+        m_timer = 0.0f;
 }

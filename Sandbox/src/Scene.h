@@ -16,17 +16,17 @@ class Scene : public s3d::Scene
         Scene(graphics::Window *window, ResourceManager *resourceManager);
         ~Scene();
 
-        std::vector<EarthSurface*> earthSurfaces = {};
-        std::vector<WaterSurface*> waterSurfaces = {};
+        std::vector<EarthSurface*> m_earthSurfaces = {};
+        std::vector<WaterSurface*> m_waterSurfaces = {};
 
         // water rendering
-        graphics::FrameBuffer* reflectionFB = nullptr;
-        graphics::FrameBuffer* refractionFB = nullptr;
+        graphics::FrameBuffer* m_reflectionFB = nullptr;
+        graphics::FrameBuffer* m_refractionFB = nullptr;
 
         void render() override;
         void updateTimer(float dt);
 
-        float timer = 0.0f;
+        float m_timer = 0.0f;
 
 };
 

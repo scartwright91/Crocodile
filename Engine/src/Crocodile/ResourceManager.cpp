@@ -68,7 +68,7 @@ namespace Crocodile
 
     void ResourceManager::listenToFileChanges()
     {
-
+        // watch shader paths and check for changes
     }
 
     TextureData ResourceManager::loadTextureFromFile(char const* path, std::string name, bool repeat) const

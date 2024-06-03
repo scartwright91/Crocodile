@@ -1,6 +1,6 @@
 #include "World.h"
 
-World::World(Scene* scene) : scene(scene)
+World::World(Scene* scene) : m_scene(scene)
 {
 
 }

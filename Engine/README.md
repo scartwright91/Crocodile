@@ -1,14 +1,10 @@
 
 ## TODO
 
-* Fix rotated bounding box collision
-* Better logging
-* Improved sound
+* Asset hot reloading (2 days)
+* LUA scripting (1 week)
+* 3d models and animations (2 weeks)
+* 3d shadows (1 week)
+* 3d physics and collisions (2 weeks)
+* 2d rotated bounding box collision (3 days)
 * controller support
-
-
-### Scriptable entities
-
-1. Scene should manage entity creation
-2. Scene will update all entities
-
