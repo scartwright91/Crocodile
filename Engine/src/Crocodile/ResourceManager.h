@@ -7,6 +7,7 @@
 #include "Core.h"
 #include "graphics/ShaderManager.h"
 #include "../utils/stb_image.h"
+#include "utils/DirectoryWatcher.h"
 
 namespace fs = std::filesystem;
 
@@ -22,22 +23,12 @@ namespace Crocodile
         TextureData() : name(""), path(""), textureID(0), width(0.f), height(0.f) {}
     };
 
-
     class CROCODILE_API ResourceManager
     {
     public:
 
         ResourceManager();
-
-        // shaders
-        graphics::ShaderManager shaderManager;
-        // textures
-        std::map<std::string, TextureData> textureIDs = {};
-        // animations
-        std::map<std::string, std::vector<std::string>> animations = {};
-
-        // true will use nearest pixel when loading textures; false will use linear
-        bool pixelArt = false;
+        ~ResourceManager();
 
         // textures
         std::vector<std::string> getTextureNames();
@@ -50,11 +41,21 @@ namespace Crocodile
         void loadAnimation(const char* dir, std::string name);
         std::vector<TextureData> getAnimationData(std::string name);
 
-        // hot reloading
-        void listenToFileChanges();
-
     private:
         TextureData loadTextureFromFile(char const* path, std::string name, bool repeat) const;
+
+    public:
+        // shaders
+        graphics::ShaderManager shaderManager;
+        // true will use nearest pixel when loading textures; false will use linear
+        bool m_pixelArt = false;
+
+    private:
+        DirectoryWatcher* dirWatcher = nullptr;;
+        // textures
+        std::map<std::string, TextureData> m_textureIDs = {};
+        // animations
+        std::map<std::string, std::vector<std::string>> m_animations = {};
 
     };
 }

@@ -124,7 +124,6 @@ namespace Crocodile
 
 		void Window::endRender()
 		{
-			// glfwSwapBuffers(window);
 			glFlush();
 			glfwPollEvents();
 		}

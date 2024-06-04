@@ -22,6 +22,8 @@ namespace Crocodile
 				Shader* shader = new Shader(vertexPath, fragmentPath);
 				LOG(INFO, "Compiled " + name + " shader");
 				m_shaders[name] = shader;
+				m_pathsToShaders[vertexPath] = name;
+				m_pathsToShaders[fragmentPath] = name;
 			}
 
 			Shader* getShader(std::string name)
@@ -42,18 +44,16 @@ namespace Crocodile
 				return names;
 			}
 
-			void reloadShaders() const
+			void reloadShader(std::string path)
 			{
-
-			}
-
-			void listenToFileChanges()
-			{
-
+				std::string name = m_pathsToShaders[path];
+				Shader* shader = m_shaders[name];
+				shader->reload();
 			}
 
 		private:
 			std::map<std::string, Shader*> m_shaders = {};
+			std::map<std::string, std::string> m_pathsToShaders = {};
 
 		};
 

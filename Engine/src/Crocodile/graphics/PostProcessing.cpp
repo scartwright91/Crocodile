@@ -132,8 +132,8 @@ namespace Crocodile
 			shader->setBool("u_BeginScene", fadeinTransition);
 			shader->setBool("u_EndScene", fadeoutTransition);
 			shader->setFloat("u_TransitionCounter", transitionCounter);
-			shader->setFloat("u_ScreenWidth", fb->width);
-			shader->setFloat("u_ScreenHeight", fb->height);
+			shader->setFloat("u_ScreenWidth", (float)fb->width);
+			shader->setFloat("u_ScreenHeight", (float)fb->height);
 			glBindVertexArray(fb->VAO);
 			glActiveTexture(GL_TEXTURE0);
 			glBindTexture(GL_TEXTURE_2D, fb->textureColorbuffer);

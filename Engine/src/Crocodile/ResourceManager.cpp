@@ -7,13 +7,25 @@ namespace Crocodile
 
 	ResourceManager::ResourceManager()
 	{
-
+        dirWatcher = new DirectoryWatcher("res/shaders", std::chrono::milliseconds(2000));
+        dirWatcher->start([&](const std::string& path)
+        {
+            std::string normalisedPath = path;
+            std::replace(normalisedPath.begin(), normalisedPath.end(), '\\', '/');
+            LOG(INFO, "Shader modified: " + normalisedPath);
+            shaderManager.reloadShader(normalisedPath);
+        });
 	}
+
+    ResourceManager::~ResourceManager()
+    {
+        delete dirWatcher;
+    }
 
 	std::vector<std::string> ResourceManager::getTextureNames()
 	{
 		std::vector<std::string> textureNames = {};
-		for (std::map<std::string, TextureData>::iterator it = textureIDs.begin(); it != textureIDs.end(); ++it)
+		for (std::map<std::string, TextureData>::iterator it = m_textureIDs.begin(); it != m_textureIDs.end(); ++it)
 			textureNames.push_back(it->first);
 		return textureNames;
 	}
@@ -21,7 +33,7 @@ namespace Crocodile
 	void ResourceManager::loadTexture(const char* path, std::string name, bool repeat)
 	{
 		TextureData textureID = loadTextureFromFile(path, name, repeat);
-		textureIDs[name] = textureID;
+		m_textureIDs[name] = textureID;
 	}
 
 	void ResourceManager::addTexture(unsigned int texture, unsigned int width, unsigned int height, std::string name)
@@ -32,17 +44,17 @@ namespace Crocodile
 		td.name = name;
 		td.width = (float)width;
 		td.height = (float)height;
-		textureIDs[name] = td;
+		m_textureIDs[name] = td;
 	}
 
 	TextureData ResourceManager::getTexture(std::string name)
 	{
-		return textureIDs[name];
+		return m_textureIDs[name];
 	}
 
 	bool ResourceManager::textureExists(std::string name) const
 	{
-		return textureIDs.count(name);
+		return m_textureIDs.count(name);
 	}
 
 	void ResourceManager::loadAnimation(const char* dir, std::string name)
@@ -55,21 +67,16 @@ namespace Crocodile
 			loadTexture(filePath.c_str(), fileName, false);
 			animImageNames.push_back(fileName);
 		}
-		animations[name] = animImageNames;
+		m_animations[name] = animImageNames;
 	}
 
 	std::vector<TextureData> ResourceManager::getAnimationData(std::string name)
 	{
 		std::vector<TextureData> animation = {};
-		for (std::string animImageName : animations[name])
+		for (std::string animImageName : m_animations[name])
 			animation.push_back(getTexture(animImageName));
 		return animation;
 	}
-
-    void ResourceManager::listenToFileChanges()
-    {
-        // watch shader paths and check for changes
-    }
 
     TextureData ResourceManager::loadTextureFromFile(char const* path, std::string name, bool repeat) const
     {
@@ -104,7 +111,7 @@ namespace Crocodile
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
             }
-            if (pixelArt)
+            if (m_pixelArt)
             {
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST_MIPMAP_NEAREST);
                 glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);

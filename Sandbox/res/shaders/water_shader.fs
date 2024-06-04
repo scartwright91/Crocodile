@@ -55,5 +55,6 @@ void main()
 
     colour = mix(reflection, refraction, fresnel);
     colour = mix(colour, vec4(0.0, 0.3, 0.7, 1.0), 0.2) + vec4(specularHighlights, 0.0);
+    colour = normalMapColour;
 
 }

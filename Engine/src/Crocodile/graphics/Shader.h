@@ -27,7 +27,7 @@ namespace Crocodile
 			~Shader();
 
 			void use() const;
-			void load();
+			void reload();
 
 			// set uniforms
 			void setBool(const std::string &name, bool value) const;
@@ -43,11 +43,12 @@ namespace Crocodile
 			void setArrayVec2(const std::string &name, std::vector<glm::vec2> value) const;
 
 		private:
-			void init(std::string vertexCode, std::string fragmentCode);
-			void checkCompileErrors(unsigned int shader, std::string type);
+			void compile();
+			GLuint compileShader(const std::string& source, GLenum shaderType);
+			std::string readShaderSource(const std::string& path);
 
 		public:
-			unsigned int m_id;
+			GLuint m_id;
 			std::string m_vertexPath, m_fragmentPath;
 
 		};

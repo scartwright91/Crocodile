@@ -17,6 +17,7 @@ uniform float u_MinHeight;
 
 void main()
 {
+    vec2 x;
     // ambient
     vec3 ambient = u_AmbientLighting * u_LightColour;
   	
