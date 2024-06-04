@@ -13,13 +13,24 @@ namespace Crocodile
             std::string normalisedPath = path;
             std::replace(normalisedPath.begin(), normalisedPath.end(), '\\', '/');
             LOG(INFO, "Shader modified: " + normalisedPath);
-            shaderManager.reloadShader(normalisedPath);
+            shaderReloadQueue.push_back(normalisedPath);
         });
 	}
 
     ResourceManager::~ResourceManager()
     {
         delete dirWatcher;
+    }
+
+    void ResourceManager::update()
+    {
+        // hot reloading. definitely a better way to do this...
+        if (shaderReloadQueue.size() > 0)
+        {
+            for (std::string shaderPath : shaderReloadQueue)
+                shaderManager.reloadShader(shaderPath);
+            shaderReloadQueue.clear();
+        }
     }
 
 	std::vector<std::string> ResourceManager::getTextureNames()

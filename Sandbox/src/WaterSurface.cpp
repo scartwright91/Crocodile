@@ -7,10 +7,10 @@ WaterSurface::WaterSurface(
     ) : s3d::Surface(heightMap, shader)
 {
     shader->use();
-    shader->setInt("u_Reflection", 0);
-    shader->setInt("u_Refraction", 1);
-    shader->setInt("u_DuDv", 2);
-    shader->setInt("u_NormalMap", 3);
+    shader->setTexture("u_Reflection");
+    shader->setTexture("u_Refraction");
+    shader->setTexture("u_DuDv");
+    shader->setTexture("u_NormalMap");
 }
 
 WaterSurface::~WaterSurface()

@@ -30,6 +30,7 @@ namespace Crocodile
 			void reload();
 
 			// set uniforms
+			void setTexture(const std::string& name);
 			void setBool(const std::string &name, bool value) const;
 			void setInt(const std::string &name, int value) const;
 			void setFloat(const std::string &name, float value) const;
@@ -47,9 +48,13 @@ namespace Crocodile
 			GLuint compileShader(const std::string& source, GLenum shaderType);
 			std::string readShaderSource(const std::string& path);
 
-		public:
 			GLuint m_id;
+			GLuint vertexShader;
+			GLuint fragmentShader;
+
+		public:
 			std::string m_vertexPath, m_fragmentPath;
+			std::vector<std::string> m_textures = {};
 
 		};
 	}

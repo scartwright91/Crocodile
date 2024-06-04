@@ -3,6 +3,7 @@
 #include <map>
 #include <string>
 #include <filesystem>
+#include <vector>
 
 #include "Core.h"
 #include "graphics/ShaderManager.h"
@@ -30,6 +31,8 @@ namespace Crocodile
         ResourceManager();
         ~ResourceManager();
 
+        void update();
+
         // textures
         std::vector<std::string> getTextureNames();
         void loadTexture(const char* path, std::string name, bool repeat);
@@ -45,12 +48,14 @@ namespace Crocodile
         TextureData loadTextureFromFile(char const* path, std::string name, bool repeat) const;
 
     public:
+        bool addNewShader = false;
         // shaders
         graphics::ShaderManager shaderManager;
         // true will use nearest pixel when loading textures; false will use linear
         bool m_pixelArt = false;
 
     private:
+        std::vector<std::string> shaderReloadQueue = {};
         DirectoryWatcher* dirWatcher = nullptr;;
         // textures
         std::map<std::string, TextureData> m_textureIDs = {};

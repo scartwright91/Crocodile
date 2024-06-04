@@ -4,6 +4,11 @@
 #include <chrono>
 #include <unordered_map>
 #include <functional>
+#include <queue>
+#include <mutex>
+#include <condition_variable>
+
+
 
 namespace fs = std::filesystem;
 
@@ -62,4 +67,5 @@ namespace Crocodile
             return paths_.find(key) != paths_.end();
         }
     };
+
 }

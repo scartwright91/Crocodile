@@ -59,6 +59,7 @@ namespace Crocodile
 				ImGui_ImplGlfw_NewFrame();
 				ImGui::NewFrame();
 			}
+			resourceManager.update();
 			update(clock.deltaTime);
 			fixedUpdate(clock.deltaTime);
 			scene3d->update(clock.deltaTime);

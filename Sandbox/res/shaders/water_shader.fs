@@ -54,7 +54,8 @@ void main()
     vec3 specularHighlights = u_LightColour * spec;
 
     colour = mix(reflection, refraction, fresnel);
-    colour = mix(colour, vec4(0.0, 0.3, 0.7, 1.0), 0.2) + vec4(specularHighlights, 0.0);
-    colour = normalMapColour;
+    colour = mix(colour, vec4(0.0, 0.3, 0.7, 1.0), 0.2); //+ vec4(specularHighlights, 0.0);
+    //colour = normalMapColour;
+    //colour = vec4(1.0, 0.0, 0.0, 1.0);
 
 }

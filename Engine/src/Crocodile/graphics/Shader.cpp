@@ -29,6 +29,10 @@ namespace Crocodile
         {
             glDeleteProgram(m_id);
             compile();
+            // we need to reset the texture uniforms
+            use();
+            for (int i = 0; i < m_textures.size(); i++)
+                setInt(m_textures[i], i);
         }
 
         void Shader::compile()
@@ -36,8 +40,8 @@ namespace Crocodile
             std::string vertexCode = readShaderSource(m_vertexPath);
             std::string fragmentCode = readShaderSource(m_fragmentPath);
 
-            GLuint vertexShader = compileShader(vertexCode, GL_VERTEX_SHADER);
-            GLuint fragmentShader = compileShader(fragmentCode, GL_FRAGMENT_SHADER);
+            vertexShader = compileShader(vertexCode, GL_VERTEX_SHADER);
+            fragmentShader = compileShader(fragmentCode, GL_FRAGMENT_SHADER);
 
             m_id = glCreateProgram();
             glAttachShader(m_id, vertexShader);
@@ -96,6 +100,14 @@ namespace Crocodile
         }
 
         // setting functions
+
+        // we need to store texture names incase we hot reload the shader
+        void Shader::setTexture(const std::string& name)
+        {
+            setInt(name, (int)m_textures.size());
+            m_textures.push_back(std::string(name));
+        }
+
         void Shader::setBool(const std::string &name, bool value) const
         {
             glUniform1i(glGetUniformLocation(m_id, name.c_str()), (int)value);

@@ -15,7 +15,9 @@ namespace Crocodile
 		{
 
 		public:
-			ShaderManager() {};
+			ShaderManager()
+			{
+			}
 
 			void addShader(std::string name, const char* vertexPath, const char* fragmentPath)
 			{
@@ -47,8 +49,7 @@ namespace Crocodile
 			void reloadShader(std::string path)
 			{
 				std::string name = m_pathsToShaders[path];
-				Shader* shader = m_shaders[name];
-				shader->reload();
+				m_shaders[name]->reload();
 			}
 
 		private:
