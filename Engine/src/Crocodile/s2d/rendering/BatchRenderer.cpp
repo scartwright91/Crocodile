@@ -129,8 +129,8 @@ namespace Crocodile
 
         void BatchRenderer::initShader()
         {
-            this->shader->use();
-            this->shader->setInt("u_Texture", 0);
+           shader->use();
+           shader->setTexture("u_Texture");
         }
     }
 }

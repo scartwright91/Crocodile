@@ -18,7 +18,7 @@ namespace Crocodile
 			screenPos = glm::vec2(x * zoom, y * zoom);
 		}
 
-		glm::vec2 Camera::getTargetScreenPosition(bool pixels)
+		glm::vec2 Camera::getTargetScreenPosition(bool pixels) const
 		{
 			if (pixels)
 				return glm::vec2(screenPos.x * window->getWidth(), screenPos.y * window->getHeight());
@@ -113,7 +113,7 @@ namespace Crocodile
 			return projection;
 		}
 
-		glm::vec2 Camera::getDifferenceFromTarget(glm::vec2 pos)
+		glm::vec2 Camera::getDifferenceFromTarget(glm::vec2 pos) const
 		{
 			if (target == NULL)
 				return glm::vec3(0.0f);

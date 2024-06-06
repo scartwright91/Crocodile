@@ -10,7 +10,7 @@ namespace Crocodile
             graphics::Shader *shader
         ) : fontPath(fontPath), fontSize(fontSize), shader(shader)
         {
-            this->shader->setInt("u_Text", 0);
+            this->shader->setTexture("u_Text");
             init();
         }
 

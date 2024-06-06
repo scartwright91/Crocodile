@@ -3,7 +3,7 @@
 EarthSurface::EarthSurface(s3d::HeightMap heightMap, graphics::Shader* shader) : s3d::Surface(heightMap, shader)
 {
     shader->use();
-    shader->setInt("u_EarthTexture", 0);
+    shader->setTexture("u_EarthTexture");
 }
 
 EarthSurface::~EarthSurface()

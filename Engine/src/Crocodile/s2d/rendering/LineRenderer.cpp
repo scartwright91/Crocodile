@@ -76,7 +76,7 @@ namespace Crocodile
 
         void LineRenderer::initShader()
         {
-            this->shader->use();
+            shader->use();
         }
 
     }

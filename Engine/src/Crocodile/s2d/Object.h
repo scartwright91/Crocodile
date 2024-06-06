@@ -111,13 +111,13 @@ namespace Crocodile
 			void rotate(float v);
 			glm::vec2 getScaledSize();
 			glm::vec2 getScaledPosition();
-			glm::vec2 getPosition();
+			glm::vec2 getPosition() const;
 			glm::vec2 getCenteredPosition();
 			glm::vec2 getScaledCenteredPosition();
 			glm::vec2 getScreenPosition(bool centre, glm::mat4 view, glm::mat4 projection, float width, float height, float layerDepth);
 			glm::vec2 getShiftedScreenPosition(glm::vec2 offset, glm::mat4 view, glm::mat4 projection, float width, float height, float layerDepth);
-			float getDistanceFrom(glm::vec2 targetPosition);
-			float getYSortValue();
+			float getDistanceFrom(glm::vec2 targetPosition) const;
+			float getYSortValue() const;
 			void setPosition(glm::vec2 pos);
 
 			// textures, animations, vfx
@@ -147,7 +147,7 @@ namespace Crocodile
 			s2d::col::BoundingBox getShiftedBoundingBox(float dx, float dy);
 
 		private:
-			glm::mat4 applyRotation(glm::mat4 model);
+			glm::mat4 applyRotation(glm::mat4 model) const;
 
 		};
 	}

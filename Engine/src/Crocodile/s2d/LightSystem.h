@@ -25,7 +25,6 @@ namespace Crocodile
 			std::vector<Light*> lights = {};
 
 			LightSystem();
-			~LightSystem();
 
 			void addLight(Light* light);
 			void removeLight(Light* light);

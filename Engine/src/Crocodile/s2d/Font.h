@@ -25,10 +25,6 @@ namespace Crocodile
                 init();
             }
 
-            ~Font()
-            {
-            }
-
             glm::vec2 getTextSize(std::string text, glm::vec2 textScale)
             {
                 std::string::const_iterator c;

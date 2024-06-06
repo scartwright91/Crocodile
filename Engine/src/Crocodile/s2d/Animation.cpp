@@ -15,7 +15,7 @@ namespace Crocodile
 			this->currentFrame = 0;
 		}
 
-		Animation::Animation(std::vector<TextureData> textures, float frameDuration)
+		Animation::Animation(std::vector<TextureData> textures, float frameDuration) : gridSize(0), width(0.0f)
 		{
 			this->spritesheetAnimation = false;
 			this->textures = textures;

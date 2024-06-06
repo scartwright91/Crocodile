@@ -9,11 +9,6 @@ namespace Crocodile
 
 		}
 
-		LightSystem::~LightSystem()
-		{
-
-		}
-
 		void LightSystem::addLight(Light* light)
 		{
 			lights.push_back(light);
@@ -26,7 +21,7 @@ namespace Crocodile
 
 		void LightSystem::clear()
 		{
-			lights = {};
+			lights.clear();
 		}
 
 		std::vector<Light*> LightSystem::getScaledLights(glm::vec2 scale)

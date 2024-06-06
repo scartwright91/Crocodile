@@ -5,6 +5,8 @@
 #include <vector>
 #include <string>
 
+#include <lua.hpp>
+
 #include "Crocodile.h"
 #include "Crocodile/utils/Logger.h"
 #include "Crocodile/s3d/Surface.h"
@@ -35,11 +37,24 @@ public:
     Sandbox() : Crocodile::Application("Sandbox", false, 1280, 720, false)
     {
         init();
+
+        // Create a new Lua state
+        lua_State* L = luaL_newstate();
+
+        // Load the standard libraries
+        luaL_openlibs(L);
+
+        // Load and run a Lua script
+        int status = luaL_loadfile(L, "res/scripts/script.lua");
+        if (status == 0) {
+            // Execute the script
+            status = lua_pcall(L, 0, 0, 0);
+        }
+
     }
 
     ~Sandbox()
     {
-
     }
 
     void update(float dt)

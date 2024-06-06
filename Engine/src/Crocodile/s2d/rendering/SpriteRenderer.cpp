@@ -94,9 +94,9 @@ namespace Crocodile
 
         void SpriteRenderer::initShader()
         {
-            this->shader->use();
-            this->shader->setInt("u_Texture", 0);
-            this->shader->setInt("u_DistortionTexture", 1);
+            shader->use();
+            shader->setTexture("u_Texture");
+            shader->setTexture("u_DistortionTexture");
         }
 
     }

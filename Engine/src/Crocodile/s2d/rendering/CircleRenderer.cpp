@@ -37,7 +37,7 @@ namespace Crocodile
 
         void CircleRenderer::initShader()
         {
-            this->shader->use();
+            shader->use();
         }
 
     }

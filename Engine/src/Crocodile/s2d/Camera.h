@@ -31,13 +31,13 @@ namespace Crocodile
 			void changeZoom(float z);
 
 			void setTargetScreenPosition(float x, float y);
-			glm::vec2 getTargetScreenPosition(bool pixels);
+			glm::vec2 getTargetScreenPosition(bool pixels) const;
 
 			void setTarget(Object *t, bool transition);
 			void setLevelBounds(glm::vec2 levelBounds, bool clampX, bool clampY);
 			void removeLevelBounds();
 
-			glm::vec2 getDifferenceFromTarget(glm::vec2 pos);
+			glm::vec2 getDifferenceFromTarget(glm::vec2 pos) const;
 
 			glm::vec2 getWorldfromScreenPosition(glm::vec2 screenPos, float screenWidth, float screenHeight, float layerDepth);
 			glm::mat4 getViewMatrix(float depth);

@@ -4,10 +4,9 @@ namespace Crocodile
 {
     namespace s2d
     {
-        Renderer::Renderer(graphics::Shader *shader)
+        Renderer::Renderer(graphics::Shader *shader) : shader(shader)
         {
             init();
-            this->shader = shader;
         }
 
         Renderer::~Renderer()

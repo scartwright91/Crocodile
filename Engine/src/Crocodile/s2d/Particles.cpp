@@ -66,7 +66,7 @@ namespace Crocodile
 			return (unsigned int)particles.size();
 		}
 
-		Particle ParticleGenerator::createParticle()
+		Particle ParticleGenerator::createParticle() const
 		{
 
 			Particle p;

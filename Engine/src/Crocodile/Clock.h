@@ -10,14 +10,8 @@ namespace Crocodile
 	{
 
 	public:
-		float deltaTime = 0.0f;
 
-		Clock()
-		{
-		}
-		~Clock()
-		{
-		}
+		Clock() {}
 
 		void tick()
 		{
@@ -36,7 +30,7 @@ namespace Crocodile
 			lastFrame = currentFrame;
 		}
 
-		int getFPS()
+		int getFPS() const
 		{
 			return (int)floor(1 / deltaTime);
 		}
@@ -44,5 +38,9 @@ namespace Crocodile
 	private:
 		float lastFrame = 0.0f;
 		bool firstFrame = true;
+
+	public:
+		float deltaTime = 0.0f;
+
 	};
 }

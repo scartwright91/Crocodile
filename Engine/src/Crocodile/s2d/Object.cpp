@@ -56,7 +56,7 @@ namespace Crocodile
 				rotation -= (2 * 3.14159265358979323846f);
 		}
 
-		glm::mat4 Object::applyRotation(glm::mat4 model)
+		glm::mat4 Object::applyRotation(glm::mat4 model) const
 		{
 			model = glm::translate(model, glm::vec3(size.x * modelScale.x / 2, size.y * modelScale.y / 2, 0.0f));
 			model = glm::rotate(model, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
@@ -76,7 +76,7 @@ namespace Crocodile
 			return scaledPosition;
 		}
 
-		glm::vec2 Object::getPosition()
+		glm::vec2 Object::getPosition() const
 		{
 			return position;
 		}
@@ -93,13 +93,13 @@ namespace Crocodile
 			return scaledCenteredPosition;
 		}
 
-		float Object::getDistanceFrom(glm::vec2 targetPosition)
+		float Object::getDistanceFrom(glm::vec2 targetPosition) const
 		{
 			float sqDifference = (float)std::pow(targetPosition.x - position.x, 2) + (float)std::pow(targetPosition.y - position.y, 2);
 			return std::sqrt(sqDifference);
 		}
 
-		float Object::getYSortValue()
+		float Object::getYSortValue() const
 		{
 			return getPosition().y + size.y;
 		}
