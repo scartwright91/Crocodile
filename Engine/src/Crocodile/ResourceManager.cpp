@@ -7,19 +7,14 @@ namespace Crocodile
 
 	ResourceManager::ResourceManager()
 	{
-        dirWatcher = new DirectoryWatcher("res/shaders", std::chrono::milliseconds(2000));
-        dirWatcher->start([&](const std::string& path)
-        {
-            std::string normalisedPath = path;
-            std::replace(normalisedPath.begin(), normalisedPath.end(), '\\', '/');
-            LOG(INFO, "Shader modified: " + normalisedPath);
-            shaderReloadQueue.push_back(normalisedPath);
-        });
+
 	}
 
     ResourceManager::~ResourceManager()
     {
-        delete dirWatcher;
+        for (DirectoryWatcher* dirWatcher : dirWatchers)
+            delete dirWatcher;
+        dirWatchers.clear();
     }
 
     void ResourceManager::update()
@@ -30,6 +25,14 @@ namespace Crocodile
             for (std::string shaderPath : shaderReloadQueue)
                 shaderManager.reloadShader(shaderPath);
             shaderReloadQueue.clear();
+        }
+        if (textureReloadQueue.size() > 0)
+        {
+            for (std::string texturePath : textureReloadQueue)
+            {
+                // reload texture
+            }
+            textureReloadQueue.clear();
         }
     }
 
@@ -88,6 +91,26 @@ namespace Crocodile
 			animation.push_back(getTexture(animImageName));
 		return animation;
 	}
+
+    void ResourceManager::addDirWatcher(std::string path, AssetType assetType)
+    {
+        DirectoryWatcher* dirWatcher = new DirectoryWatcher("res/shaders", std::chrono::milliseconds(2000));
+        dirWatcher->start([&](const std::string& path)
+        {
+            std::string normalisedPath = path;
+            std::replace(normalisedPath.begin(), normalisedPath.end(), '\\', '/');
+            if (assetType == SHADER)
+            {
+                LOG(INFO, "Shader modified: " + normalisedPath);
+                shaderReloadQueue.push_back(normalisedPath);
+            }
+            else if (assetType == TEXTURE)
+            {
+                LOG(INFO, "Texture modified: " + normalisedPath);
+                textureReloadQueue.push_back(normalisedPath);
+            }
+        });
+    }
 
     TextureData ResourceManager::loadTextureFromFile(char const* path, std::string name, bool repeat) const
     {

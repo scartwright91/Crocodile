@@ -24,6 +24,13 @@ namespace Crocodile
         TextureData() : name(""), path(""), textureID(0), width(0.f), height(0.f) {}
     };
 
+    enum AssetType
+    {
+        TEXTURE,
+        SHADER,
+        AUDIO
+    };
+
     class CROCODILE_API ResourceManager
     {
     public:
@@ -44,6 +51,7 @@ namespace Crocodile
         void loadAnimation(const char* dir, std::string name);
         std::vector<TextureData> getAnimationData(std::string name);
 
+        void addDirWatcher(std::string path, AssetType assetType);
     private:
         TextureData loadTextureFromFile(char const* path, std::string name, bool repeat) const;
 
@@ -55,8 +63,10 @@ namespace Crocodile
         bool m_pixelArt = false;
 
     private:
+        // hot reloading
         std::vector<std::string> shaderReloadQueue = {};
-        DirectoryWatcher* dirWatcher = nullptr;;
+        std::vector<std::string> textureReloadQueue = {};
+        std::vector<DirectoryWatcher*> dirWatchers = {};
         // textures
         std::map<std::string, TextureData> m_textureIDs = {};
         // animations
