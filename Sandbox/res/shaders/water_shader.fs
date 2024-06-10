@@ -1,20 +1,21 @@
 #version 330 core
 out vec4 colour;
 
+in vec3 FragPos;
 in vec2 TexCoords;
 in vec4 ClipSpace;
-in vec3 ViewDirection;
-in vec3 LightDirection;
 
 uniform sampler2D u_Reflection;
 uniform sampler2D u_Refraction;
 uniform sampler2D u_DuDv;
 uniform sampler2D u_NormalMap;
 uniform float u_Time;
+uniform vec3 u_CameraPosition;
+uniform vec3 u_LightPosition;
 uniform vec3 u_LightColour;
 
 const float distortionStrength = 0.05;
-const float shininess = 80.f;
+const int shininess = 32;
 
 void main()
 {
@@ -29,7 +30,7 @@ void main()
     
     // apply distortion to texture coordiantes
     // TODO - fix distortion for reflection texture
-    // reflectionTexCoords += distortion;
+    reflectionTexCoords += distortion;
     reflectionTexCoords.x = clamp(reflectionTexCoords.x, 0.001, 0.999);
     reflectionTexCoords.y = clamp(reflectionTexCoords.y, -0.999, -0.001);
 
@@ -41,21 +42,23 @@ void main()
     vec4 refraction = texture2D(u_Refraction, refractionTexCoords);
 
     // calculate fresnel effect based on camera position
-    vec3 viewVector = normalize(ViewDirection);
-    float fresnel = dot(viewVector, vec3(0, 1, 0));
+    vec3 toViewDirection = normalize(u_CameraPosition - FragPos);
+    float fresnel = dot(toViewDirection, vec3(0, 1, 0));
 
     // normal map
     vec4 normalMapColour = texture2D(u_NormalMap, distortionTexCoords);
-    vec3 normal = vec3(normalMapColour.x * 2.0 - 1.0, normalMapColour.y, normalMapColour.z * 2.0 + 1.0);    
+    vec3 normal = vec3(0, 1, 0) * normalMapColour.r;  
 
-    // Specular Lighting
-    vec3 halfwayDir = normalize(ViewDirection + LightDirection); // Halfway vector for Blinn-Phong
-    float spec = pow(max(dot(normal, halfwayDir), 0.0), shininess);
+    // Specular lighting
+    vec3 fromLightDirection = normalize(FragPos - u_LightPosition);
+    vec3 reflectDir = reflect(fromLightDirection, normal);
+    float spec = pow(max(dot(reflectDir, toViewDirection), 0.0), shininess);
     vec3 specularHighlights = u_LightColour * spec;
 
+    // mix between reflection and refraction
     colour = mix(reflection, refraction, fresnel);
-    colour = mix(colour, vec4(0.0, 0.3, 0.7, 1.0), 0.2); //+ vec4(specularHighlights, 0.0);
-    //colour = normalMapColour;
-    //colour = vec4(1.0, 0.0, 0.0, 1.0);
+    // mix between colour and blue, and then add specular highlights
+    colour = mix(colour, vec4(0.0, 0.3, 0.7, 1.0), 0.2);
+    colour += vec4(specularHighlights, 0.0);
 
 }

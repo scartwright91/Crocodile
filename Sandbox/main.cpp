@@ -33,6 +33,7 @@ public:
     s2d::Text* fps = new s2d::Text();
     EarthSurface* earthSurface = nullptr;
     WaterSurface* waterSurface = nullptr;
+    s3d::Object* light = nullptr;
 
     Sandbox() : Crocodile::Application("Sandbox", false, 1280, 720, false)
     {
@@ -65,23 +66,23 @@ public:
             running = false;
 
         // rotate light
-        glm::vec3 p = glm::vec3(
-            earthSurface->heightMap.nCols / 2,
-            earthSurface->heightMap.maxHeight * 100.0,
-            earthSurface->heightMap.nRows / 2
-        );
-        glm::mat4 rot_mat = glm::rotate(glm::mat4(1.0f), glm::radians(elapsed), {0.f, 1.f, 0.f});
-        scene3d->lightPosition = glm::vec3(glm::vec4(p, 1.0f) * rot_mat);
+        // glm::vec3 p = glm::vec3(
+        //     earthSurface->heightMap.nCols / 2,
+        //     earthSurface->heightMap.maxHeight * 10.0,
+        //     earthSurface->heightMap.nRows / 2
+        // );
+        // glm::mat4 rot_mat = glm::rotate(glm::mat4(1.0f), glm::radians(elapsed), {0.f, 1.f, 0.f});
+        // scene3d->m_lightPosition = glm::vec3(glm::vec4(p, 1.0f) * rot_mat);
 
         processCommands(dt);
 
         if (window.isKeyPressed(GLFW_KEY_SPACE) && (elapsed > 1.0f))
         {
             elapsed = 0.0f;
-            if (scene3d->renderer->getRenderMode() == s3d::FILL)
-                scene3d->renderer->setRenderMode(s3d::LINE);
+            if (scene3d->m_renderer->getRenderMode() == s3d::FILL)
+                scene3d->m_renderer->setRenderMode(s3d::LINE);
             else
-                scene3d->renderer->setRenderMode(s3d::FILL);
+                scene3d->m_renderer->setRenderMode(s3d::FILL);
         }
 
         scene->updateTimer(dt);
@@ -93,23 +94,24 @@ public:
     {
         // moving camera
         if (window.isKeyPressed(GLFW_KEY_A))
-            scene3d->camera->move(s3d::LEFT, dt);
+            scene3d->m_camera->move(s3d::LEFT, dt);
         if (window.isKeyPressed(GLFW_KEY_D))
-            scene3d->camera->move(s3d::RIGHT, dt);
+            scene3d->m_camera->move(s3d::RIGHT, dt);
         if (window.isKeyPressed(GLFW_KEY_W))
-            scene3d->camera->move(s3d::FORWARD, dt);
+            scene3d->m_camera->move(s3d::FORWARD, dt);
         if (window.isKeyPressed(GLFW_KEY_S))
-            scene3d->camera->move(s3d::BACKWARD, dt);
+            scene3d->m_camera->move(s3d::BACKWARD, dt);
 
         // rotating camera
+        float rot = 100.f * dt;
         if (window.isKeyPressed(GLFW_KEY_LEFT))
-            scene->camera->rotateYaw(1.f);
+            scene->m_camera->rotateYaw(rot);
         if (window.isKeyPressed(GLFW_KEY_RIGHT))
-            scene->camera->rotateYaw(-1.f);
+            scene->m_camera->rotateYaw(-rot);
         if (window.isKeyPressed(GLFW_KEY_UP))
-            scene->camera->rotatePitch(1.f);
+            scene->m_camera->rotatePitch(rot);
         if (window.isKeyPressed(GLFW_KEY_DOWN))
-            scene->camera->rotatePitch(-1.f);
+            scene->m_camera->rotatePitch(-rot);
     }
 
     std::vector<float> calculateEarthHeightMap(s3d::HeightMap telemetry, s3d::HeightMap bathymetry)
@@ -172,7 +174,7 @@ public:
         scene->m_waterSurfaces.push_back(waterSurface);
 
     }
-
+    
     void init()
     {
 
@@ -195,6 +197,18 @@ public:
 
         createEarthSurface();
         createWaterSurface();
+
+        // create light cube
+        light = new s3d::Object(
+            glm::vec3(
+                earthSurface->heightMap.nCols / 2,
+                earthSurface->heightMap.maxHeight * 10.0,
+                earthSurface->heightMap.nRows / 4
+            )
+        );
+        light->m_size = glm::vec3(50.f);
+        light->m_colour = glm::vec3(1.f);
+        scene3d->addObject(light);
 
         /*
         // debug reflection pass
@@ -228,9 +242,10 @@ public:
             earthSurface->heightMap.maxHeight * 5.0,
             earthSurface->heightMap.nRows / 2
         );
-        scene3d->camera->setPosition(p);
-        scene3d->lightPosition = p;
-        scene3d->ambientLighting = 0.2f;
+        scene3d->m_camera->setPosition(p);
+
+        scene3d->m_lightPosition = light->m_position;
+        scene3d->m_ambientLighting = 0.2f;
 
     }
 

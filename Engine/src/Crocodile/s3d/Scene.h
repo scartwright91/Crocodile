@@ -27,20 +27,20 @@ namespace Crocodile
                 void addObject(Object* obj);
                 void removeObject(Object* obj);
 
-                CameraController* camera = nullptr;
+                CameraController* m_camera = nullptr;
 
                 // lighting
-                float ambientLighting = .4f;
-                glm::vec3 lightPosition = glm::vec3(50.f);
-                glm::vec3 lightColour = glm::vec3(1.f);
+                float m_ambientLighting = .4f;
+                glm::vec3 m_lightPosition = glm::vec3(50.f);
+                glm::vec3 m_lightColour = glm::vec3(1.f);
 
-                std::vector<Object*> objects = {};
-                std::vector<Surface*> surfaces = {};
-                Renderer* renderer = nullptr;
+                std::vector<Object*> m_objects = {};
+                std::vector<Surface*> m_surfaces = {};
+                Renderer* m_renderer = nullptr;
 
             protected:
-                graphics::Window* window = nullptr;
-                ResourceManager *resourceManager = nullptr;
+                graphics::Window* m_window = nullptr;
+                ResourceManager* m_resourceManager = nullptr;
 
             private:
                 void init();

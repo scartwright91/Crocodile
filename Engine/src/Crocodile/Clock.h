@@ -20,13 +20,11 @@ namespace Crocodile
 			{
 				deltaTime = 0.f;
 				firstFrame = false;
+				return;
 			}
-			else
-			{
-				deltaTime = currentFrame - lastFrame;
-				if (deltaTime > 0.1)
-					deltaTime = 0.0;
-			}
+			deltaTime = currentFrame - lastFrame;
+			if (deltaTime > 0.1)
+				deltaTime = 0.0;
 			lastFrame = currentFrame;
 		}
 

@@ -4,15 +4,16 @@ namespace Crocodile
 {
     namespace s3d
     {
-        Scene::Scene(graphics::Window *window, ResourceManager *resourceManager) : window(window), resourceManager(resourceManager)
+        Scene::Scene(graphics::Window *window, ResourceManager *resourceManager) : m_window(window), m_resourceManager(resourceManager)
         {
             init();
-            camera = new CameraController(window->getWidth(), window->getHeight());
+            m_camera = new CameraController(window->getWidth(), window->getHeight());
         };
 
         Scene::~Scene()
         {
-            delete camera;
+            delete m_camera;
+            delete m_renderer;
         };
 
         void Scene::update(float dt)
@@ -22,33 +23,34 @@ namespace Crocodile
 
         void Scene::resize()
         {
-            camera->setWindowDimensions(window->getWidth(), window->getHeight());
+            m_camera->setWindowDimensions(m_window->getWidth(), m_window->getHeight());
         }
 
         void Scene::render()
         {
-            for (Surface* surf : surfaces)
+            for (Surface* surf : m_surfaces)
                 surf->render(
                     glm::mat4(1.f),
-                    camera->getViewMatrix(),
-                    camera->getProjectionMatrix(),
-                    camera->getPosition(),
-                    ambientLighting,
-                    lightPosition,
-                    lightColour
+                    m_camera->getViewMatrix(),
+                    m_camera->getProjectionMatrix(),
+                    m_camera->getPosition(),
+                    m_ambientLighting,
+                    m_lightPosition,
+                    m_lightColour
                 );
-            for (Object* obj : objects)
-                renderer->render(
+            for (Object* obj : m_objects)
+                m_renderer->render(
                     obj->calculateModelMatrix(),
-                    camera->getViewMatrix(),
-                    camera->getProjectionMatrix()
+                    m_camera->getViewMatrix(),
+                    m_camera->getProjectionMatrix(),
+                    obj->m_colour
                 );
                 
         };
 
         void Scene::addObject(Object* obj)
         {
-            objects.push_back(obj);
+            m_objects.push_back(obj);
         }
 
         void Scene::removeObject(Object* obj)
@@ -58,7 +60,7 @@ namespace Crocodile
 
         void Scene::init()
         {
-            renderer = new Renderer(resourceManager->shaderManager.getShader("shader"));
+            m_renderer = new Renderer(m_resourceManager->shaderManager.getShader("shader"));
         }
     }
 }

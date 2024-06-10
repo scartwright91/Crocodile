@@ -68,7 +68,7 @@ namespace Crocodile
 			void createParticles();
 
 		private:
-			Particle createParticle();
+			Particle createParticle() const;
 		};
 	}
 }

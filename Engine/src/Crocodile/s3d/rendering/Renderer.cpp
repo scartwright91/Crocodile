@@ -17,13 +17,15 @@ namespace Crocodile
         void Renderer::render(
             glm::mat4 model,
             glm::mat4 view,
-            glm::mat4 projection
+            glm::mat4 projection,
+            glm::vec3 colour
         )
         {
             shader->use();
             shader->setMat4("u_Model", model);
             shader->setMat4("u_View", view);
             shader->setMat4("u_Projection", projection);
+            shader->setVec3("u_Colour", colour);
             // bind and draw
             glBindVertexArray(VAO);
             glDrawArrays(GL_TRIANGLES, 0, 36);
