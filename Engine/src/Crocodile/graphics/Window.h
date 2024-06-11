@@ -32,14 +32,15 @@ namespace Crocodile
 		class CROCODILE_API Window
 		{
 
+		public:
+			int m_width, m_height;
+			const int m_initialWidth, m_initialHeight;
+			glm::vec2 m_scale;
+
 		private:
-			bool resizeable;
-			int width, height;
-			int viewportWidth, viewportHeight;
-			const int initialWidth, initialHeight;
-			glm::vec2 viewportScale;
-			const char *name;
-			GLFWwindow *window;
+			bool m_resizeable;
+			const char* m_name;
+			GLFWwindow* m_window;
 
 		public:
 			Window(const char *name, bool resizeable, unsigned int width, unsigned int height);
@@ -50,13 +51,11 @@ namespace Crocodile
 			void beginRender();
 			void endRender();
 
-			inline int getWidth() const { return width; }
-			inline int getHeight() const { return height; }
-			inline int getViewportWidth() const { return viewportWidth; }
-			inline int getViewportHeight() const { return viewportHeight; }
-			inline glm::vec2 getViewportScale() const { return viewportScale; }
-			inline int getScroll() const { return scroll; }
-			inline GLFWwindow *getWindow() const { return window; }
+			inline int getWidth() const { return m_width; }
+			inline int getHeight() const { return m_height; }
+			inline glm::vec2 getScale() const { return m_scale; }
+			inline int getScroll() const { return m_scroll; }
+			inline GLFWwindow *getWindow() const { return m_window; }
 
 			static bool isKeyPressed(unsigned int keycode);
 			static bool isButtonPressed(unsigned int button);
@@ -64,14 +63,17 @@ namespace Crocodile
 
 			void setBackgroundColor(glm::vec3 color);
 
-			static int scroll;
-			static bool keys[MAX_KEYS];
-			static bool buttons[MAX_BUTTONS];
+			static int m_scroll;
+			static bool m_keys[MAX_KEYS];
+			static bool m_buttons[MAX_BUTTONS];
 
 		private:
 			bool init();
-			void updateViewport();
-			glm::vec3 color = glm::vec3(0.f);
+			bool initGLFW();
+			bool initWindow();
+			bool initGLEW();
+			void initCallbacks();
+			glm::vec3 m_color = glm::vec3(0.f);
 		};
 	}
 }

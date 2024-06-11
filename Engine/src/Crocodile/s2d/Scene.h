@@ -36,11 +36,11 @@ namespace Crocodile
 			Scene(graphics::Window *window, ResourceManager *resourceManager);
 			~Scene();
 
-			graphics::Window *window;
-			s2d::Camera *camera;
+			graphics::Window* m_window;
+			s2d::Camera* m_camera;
 
-			int windowWidth;
-			int windowHeight;
+			int m_windowWidth;
+			int m_windowHeight;
 
 			void addObject(s2d::Object *object, std::string layerName);
 			void removeObject(s2d::Object *object, std::string layerName);
@@ -52,46 +52,46 @@ namespace Crocodile
 			void scaleScene();
 
 			// tilemap (for grid based games)
-			unsigned int tilemapLayer = 0;
-			float tileSize = 0;
-			glm::vec2 tilemapSize = {0, 0};
+			unsigned int m_tilemapLayer = 0;
+			float m_tileSize = 0;
+			glm::vec2 m_tilemapSize = {0, 0};
 
 			// options
-			bool enableScaling = true;
-			bool enableLighting = true;
+			bool m_enableScaling = true;
+			bool m_enableLighting = true;
 
 			// lights
-			float ambientLighting = 1.0f;
-			LightSystem *lightSystem;
+			float m_ambientLighting = 1.0f;
+			LightSystem* m_lightSystem;
 
 			// distortion
 			float time = 0.f;
-			unsigned int distortionTexture;
+			unsigned int m_distortionTexture;
 
 			// background grid
-			BackgroundGrid *grid;
+			BackgroundGrid* m_grid;
 
 			// render layers
-			LayerStack *layerStack = nullptr;
+			LayerStack *m_layerStack = nullptr;
 
 			// rendering
-			ResourceManager *resourceManager;
+			ResourceManager *m_resourceManager;
 			virtual void renderObject(Object *obj, Layer *layer);
 
 			// text
 			void addTextRenderer(const std::string name, const std::string fontPath, unsigned int fontSize);
 
 			// render pipelines
-			SpriteRenderer *spriteRenderer;
-			ParticleRenderer *particleRenderer;
-			LineRenderer *lineRenderer;
-			CircleRenderer *circleRenderer;
-			std::map<std::string, TextRenderer*> textRenderers = {};
+			SpriteRenderer *m_spriteRenderer;
+			ParticleRenderer *m_particleRenderer;
+			LineRenderer *m_lineRenderer;
+			CircleRenderer *m_circleRenderer;
+			std::map<std::string, TextRenderer*> m_textRenderers = {};
 
 			// collisions
 			bool isTileCollideable(int x, int y);
 			col::BoundingBox getTileBoundingBox(int x, int y);
-			std::vector<std::vector<Tile>> collisionTilemap = {};
+			std::vector<std::vector<Tile>> m_collisionTilemap = {};
 			void addObjectToCollisionLayer(Object* obj, unsigned int collisionLayer);
 			void removeObjectFromCollisionLayer(Object* obj, unsigned int collisionLayer);
 
@@ -102,17 +102,17 @@ namespace Crocodile
 			std::vector<Object*> getEntityGroup(std::string group);
 
 			// particles
-			std::vector<ParticleGenerator*> particles = {};
+			std::vector<ParticleGenerator*> m_particles = {};
 			void addParticleEffect(glm::vec2 position, ParticleSettings settings, std::string layer);
 			void updateParticles(float dt);
 
 		private:
 
 			// scaling
-			glm::vec2 viewportScale = glm::vec2(1.f);
+			glm::vec2 m_scale = glm::vec2(1.f);
 
 			// collisions
-			std::map<unsigned int, std::vector<Object*>> collisionLayers = {
+			std::map<unsigned int, std::vector<Object*>> m_collisionLayers = {
 				{0, {}},
 				{1, {}},
 				{2, {}}
@@ -121,7 +121,7 @@ namespace Crocodile
 			glm::vec2 resolveCollisions(Object* obj, unsigned int collisionLayer, glm::vec2 velocity);
 
 			// entity groups
-			std::map<std::string, std::vector<Object*>> entityGroups = {};
+			std::map<std::string, std::vector<Object*>> m_entityGroups = {};
 
 			void init();
 		};

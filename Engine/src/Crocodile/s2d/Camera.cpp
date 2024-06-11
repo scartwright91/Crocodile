@@ -89,8 +89,8 @@ namespace Crocodile
 		glm::mat4 Camera::getViewMatrix(float depth)
 		{
 			glm::vec3 pos = glm::vec3(
-				depth * m_cameraScaledPosition.x - (m_window->getViewportWidth() * m_screenPos.x),
-				depth * m_cameraScaledPosition.y - (m_window->getViewportHeight() * m_screenPos.y),
+				depth * m_cameraScaledPosition.x - (m_window->getWidth() * m_screenPos.x),
+				depth * m_cameraScaledPosition.y - (m_window->getHeight() * m_screenPos.y),
 				0.0f);
 			glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f);
 			glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
@@ -101,8 +101,8 @@ namespace Crocodile
 		{
 			float width;
 			float height;
-			width = (float)m_window->getViewportWidth();
-			height = (float)m_window->getViewportHeight();
+			width = (float)m_window->getWidth();
+			height = (float)m_window->getHeight();
 			if (applyZoom)
 			{
 				width *= m_zoom;

@@ -21,7 +21,7 @@ public:
     s2d::Object* player = new s2d::Object();
     s2d::Object* box = new s2d::Object();
 
-    Sandbox() : Crocodile::Application("Sandbox", false, 1280, 720, false)
+    Sandbox() : Crocodile::Application("Sandbox", true, 1280, 720, false)
     {
         init();
         runLua();
@@ -95,7 +95,7 @@ public:
             s2d::Layer* layer = new s2d::Layer(layerName);
             if (layerName == "hud")
                 layer->m_applyCamera = false;
-            scene2d->layerStack->addLayer(layer);
+            scene2d->m_layerStack->addLayer(layer);
         }
 
         // create player
@@ -110,7 +110,7 @@ public:
 
         scene2d->addObject(player, "entities");
         scene2d->addObject(box, "entities");
-        scene2d->camera->setTarget(player, false);
+        scene2d->m_camera->setTarget(player, false);
         
     }
 

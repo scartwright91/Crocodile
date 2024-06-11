@@ -12,8 +12,8 @@ namespace Crocodile
 		bool useImGui) : window(name, resizeable, width, height), useImGui(useImGui)
 	{
 		s_Instance = this;
-		windowWidth = window.getViewportWidth();
-		windowHeight = window.getViewportHeight();
+		windowWidth = window.getWidth();
+		windowHeight = window.getHeight();
 		init();
 		loadShaders();
 		loadTextures();
@@ -51,7 +51,7 @@ namespace Crocodile
 		{
 			clock.tick();
 			window.beginRender();
-			if ((window.getViewportWidth() != windowWidth) || (window.getViewportHeight() != windowHeight))
+			if ((window.getWidth() != windowWidth) || (window.getHeight() != windowHeight))
 				resize();		
 			if (useImGui)
 			{
@@ -98,9 +98,10 @@ namespace Crocodile
 
 	void Application::resize()
 	{
-		windowWidth = window.getViewportWidth();
-		windowHeight = window.getViewportHeight();
+		windowWidth = window.getWidth();
+		windowHeight = window.getHeight();
 		postProcessing->resize(windowWidth, windowHeight);
+		scene2d->scaleScene();
 		scene3d->resize();
 	}
 

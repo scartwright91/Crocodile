@@ -14,26 +14,26 @@ namespace Crocodile
 		void mouse_button_callback(GLFWwindow *window, int button, int action, int mods);
 		void scroll_callback(GLFWwindow *window, double xoffset, double yoffset);
 
-		bool Window::keys[MAX_KEYS];
-		bool Window::buttons[MAX_BUTTONS];
-		int Window::scroll = 0;
+		bool Window::m_keys[MAX_KEYS];
+		bool Window::m_buttons[MAX_BUTTONS];
+		int Window::m_scroll = 0;
 
-		Window::Window(const char *name, bool resizeable, unsigned int width, unsigned int height) : width(width), height(height), initialWidth(width), initialHeight(height)
+		Window::Window(const char *name, bool resizeable, unsigned int width, unsigned int height) :
+			m_width(width), m_height(height), m_initialWidth(width), m_initialHeight(height)
 		{
-			this->name = name;
-			this->resizeable = resizeable;
+			m_name = name;
+			m_resizeable = resizeable;
+			m_scale = {(float)m_width / m_initialWidth, (float)m_height / m_initialHeight};
 			if (!init())
 				glfwTerminate();
-			else
-				LOG(INFO, "Window created.");
 
 			for (int i = 0; i < MAX_KEYS; i++)
 			{
-				keys[i] = false;
+				m_keys[i] = false;
 			}
 			for (int i = 0; i < MAX_BUTTONS; i++)
 			{
-				buttons[i] = false;
+				m_buttons[i] = false;
 			}
 		}
 
@@ -44,82 +44,79 @@ namespace Crocodile
 
 		bool Window::init()
 		{
-			// init
+			if (!initGLFW() || !initWindow() || !initGLEW())
+				return false;
+			initCallbacks();
+			LOG(INFO, "OpenGL version: " + std::string((const char*)glGetString(GL_VERSION)));
+			return true;
+		}
+
+		bool Window::initGLFW()
+		{
 			if (!glfwInit())
 			{
 				LOG(ERROR, "Failed to initialise GLFW");
 				return false;
 			}
-			else
-			{
-				glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-				glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-				glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-				LOG(INFO, "Initialised GLFW");
-			}
-
-			// window resizing
-			if (!resizeable)
-				glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
-			else
-				glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
-
-			glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
-
-			// create window
-			int count;
-			GLFWmonitor **monitors = glfwGetMonitors(&count);
-			window = glfwCreateWindow(width, height, name, NULL, NULL);
-
-			if (!window)
-			{
-				LOG(ERROR, "Failed to create GLFW window");
-				return false;
-			}
-
-			updateViewport();
-
-			// joystick
-			int present = glfwJoystickPresent(GLFW_JOYSTICK_1);
-			if (present)
-				LOG(INFO, "Joystick connected");
-
-			// set callbacks
-			glfwMakeContextCurrent(window);
-			glfwSetWindowSizeCallback(window, window_resize);
-			glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-			glfwSetKeyCallback(window, key_callback);
-			glfwSetMouseButtonCallback(window, mouse_button_callback);
-			glfwSetScrollCallback(window, scroll_callback);
-
-			LOG(INFO, "OpenGL version: " + std::string((const char*)glGetString(GL_VERSION)));
-
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+			LOG(INFO, "Initialised GLFW");
 			return true;
 		}
 
-		void Window::updateViewport()
+		bool Window::initWindow()
 		{
-			// viewport sizing
-			glfwGetFramebufferSize(window, &viewportWidth, &viewportHeight);
-			glViewport(0, 0, viewportWidth, viewportHeight);
-			viewportScale = glm::vec2(
-				(float)viewportWidth / initialWidth,
-				(float)viewportHeight / initialHeight);
+			// window hints
+			if (m_resizeable)
+				glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+			else
+				glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+			glfwWindowHint(GLFW_DOUBLEBUFFER, GLFW_FALSE);
+			// create window
+			m_window = glfwCreateWindow(m_width, m_height, m_name, NULL, NULL);
+			if (!m_window) {
+				LOG(ERROR, "Failed to create GLFW window");
+				return false;
+			}
+			glfwMakeContextCurrent(m_window);
+			glfwSetWindowUserPointer(m_window, this);
+			LOG(INFO, "Initialised window");
+			return true;
+		}
+
+		bool Window::initGLEW()
+		{
+			GLenum err = glewInit();
+			if (err != GLEW_OK) {
+				LOG(ERROR, "Failed to initialise GLEW");
+				return false;
+			}
+			LOG(INFO, "Initialised GLEW");
+			return true;
+		}
+
+		void Window::initCallbacks()
+		{
+			glfwMakeContextCurrent(m_window);
+			glfwSetWindowSizeCallback(m_window, window_resize);
+			glfwSetFramebufferSizeCallback(m_window, framebuffer_size_callback);
+			glfwSetKeyCallback(m_window, key_callback);
+			glfwSetMouseButtonCallback(m_window, mouse_button_callback);
+			glfwSetScrollCallback(m_window, scroll_callback);
 		}
 
 		bool Window::closed() const
 		{
-			return glfwWindowShouldClose(window) == 1;
+			return glfwWindowShouldClose(m_window) == 1;
 		}
 
 		void Window::beginRender()
 		{
-			// viewport sizing
-			updateViewport();
 			// clear buffers
-			glClearColor(color.x, color.y, color.z, 1.0f);
+			glClearColor(m_color.x, m_color.y, m_color.z, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-			glfwGetFramebufferSize(window, &width, &height);
+			glfwGetFramebufferSize(m_window, &m_width, &m_height);
 		}
 
 		void Window::endRender()
@@ -132,30 +129,34 @@ namespace Crocodile
 		{
 			if (keycode >= MAX_KEYS)
 				return false;
-			return keys[keycode];
+			return m_keys[keycode];
 		}
 
 		bool Window::isButtonPressed(unsigned int button)
 		{
 			if (button >= MAX_BUTTONS)
 				return false;
-			return buttons[button];
+			return m_buttons[button];
 		}
 
 		glm::vec2 Window::getMouseScreenPosition()
 		{
 			double x, y;
-			glfwGetCursorPos(window, &x, &y);
-			return glm::vec2(x, y) / viewportScale;
+			glfwGetCursorPos(m_window, &x, &y);
+			return glm::vec2(x, y);
 		}
 
 		void Window::setBackgroundColor(glm::vec3 color)
 		{
-			this->color = color;
+			m_color = color;
 		}
 
 		void window_resize(GLFWwindow *window, int width, int height)
 		{
+			Window *win = (Window *)glfwGetWindowUserPointer(window);
+			win->m_width = width;
+			win->m_height = height;
+			win->m_scale = {(float)width / win->m_initialWidth, (float)height / win->m_initialHeight};
 			glViewport(0, 0, width, height);
 		}
 
@@ -167,19 +168,19 @@ namespace Crocodile
 		void key_callback(GLFWwindow *window, int key, int scancode, int action, int mods)
 		{
 			Window *win = (Window *)glfwGetWindowUserPointer(window);
-			win->keys[key] = action != GLFW_RELEASE;
+			win->m_keys[key] = action != GLFW_RELEASE;
 		}
 
 		void mouse_button_callback(GLFWwindow *window, int button, int action, int mods)
 		{
 			Window *win = (Window *)glfwGetWindowUserPointer(window);
-			win->buttons[button] = action != GLFW_RELEASE;
+			win->m_buttons[button] = action != GLFW_RELEASE;
 		}
 
 		void scroll_callback(GLFWwindow *window, double xoffset, double yoffset)
 		{
 			Window *win = (Window *)glfwGetWindowUserPointer(window);
-			win->scroll += (int)yoffset;
+			win->m_scroll += (int)yoffset;
 		}
 
 	}
