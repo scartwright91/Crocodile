@@ -21,7 +21,8 @@ namespace Crocodile
         unsigned int textureID;
         float width;
         float height;
-        TextureData() : name(""), path(""), textureID(0), width(0.f), height(0.f) {}
+        bool repeat;
+        TextureData() : name(""), path(""), textureID(0), width(0.f), height(0.f), repeat(false) {}
     };
 
     enum AssetType
@@ -55,6 +56,7 @@ namespace Crocodile
         void addDirWatcher(std::string path, AssetType assetType);
     private:
         TextureData loadTextureFromFile(char const* path, std::string name, bool repeat) const;
+        void reloadTexture(std::string path);
 
     public:
         bool m_addNewShader = false;

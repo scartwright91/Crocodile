@@ -19,7 +19,6 @@ namespace Crocodile
 
     void ResourceManager::update()
     {
-        // hot reloading. definitely a better way to do this...
         if (m_shaderReloadQueue.size() > 0)
         {
             for (std::string shaderPath : m_shaderReloadQueue)
@@ -29,9 +28,7 @@ namespace Crocodile
         if (m_textureReloadQueue.size() > 0)
         {
             for (std::string texturePath : m_textureReloadQueue)
-            {
-                // reload texture
-            }
+                reloadTexture(texturePath);
             m_textureReloadQueue.clear();
         }
     }
@@ -110,6 +107,21 @@ namespace Crocodile
                 m_textureReloadQueue.push_back(normalisedPath);
             }
         });
+    }
+
+    void ResourceManager::reloadTexture(std::string path)
+    {
+        for (const auto& pair : m_textureIDs) {
+            if (path == pair.second.path)
+            {
+                m_textureIDs[pair.first] = loadTextureFromFile(
+                    path.c_str(),
+                    pair.second.name,
+                    pair.second.repeat
+                );
+                break;
+            }
+        }
     }
 
     TextureData ResourceManager::loadTextureFromFile(char const* path, std::string name, bool repeat) const
