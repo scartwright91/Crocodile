@@ -9,28 +9,28 @@ namespace Crocodile
 		bool resizeable,
 		unsigned int width,
 		unsigned int height,
-		bool useImGui) : window(name, resizeable, width, height), useImGui(useImGui)
+		bool useImGui) : m_window(name, resizeable, width, height), m_useImGui(useImGui)
 	{
 		s_Instance = this;
-		windowWidth = window.getWidth();
-		windowHeight = window.getHeight();
+		m_windowWidth = m_window.getWidth();
+		m_windowHeight = m_window.getHeight();
 		init();
 		loadShaders();
 		loadTextures();
-		postProcessing = new graphics::PostProcessing(
-			resourceManager.m_shaderManager.getShader("postprocessing"),
-			window.getWidth(),
-			window.getHeight()	
+		m_postProcessing = new graphics::PostProcessing(
+			m_resourceManager.m_shaderManager.getShader("postprocessing"),
+			m_window.getWidth(),
+			m_window.getHeight()	
 		);
-		scene2d = new s2d::Scene(&window, &resourceManager);
-		scene3d = new s3d::Scene(&window, &resourceManager);
+		m_scene2d = new s2d::Scene(&m_window, &m_resourceManager);
+		m_scene3d = new s3d::Scene(&m_window, &m_resourceManager);
 	}
 
 	Application::~Application()
 	{
-		delete postProcessing;
-		delete scene2d;
-		delete scene3d;
+		delete m_postProcessing;
+		delete m_scene2d;
+		delete m_scene3d;
 	}
 
 	void Application::run()
@@ -47,36 +47,36 @@ namespace Crocodile
 		};
 		emscripten_set_main_loop_arg(dispatch_main, &mainLoop, 0, 1);
 #else
-		while (!window.closed() && running)
+		while (!m_window.closed() && m_running)
 		{
-			clock.tick();
-			window.beginRender();
-			if ((window.getWidth() != windowWidth) || (window.getHeight() != windowHeight))
+			m_clock.tick();
+			m_window.beginRender();
+			if ((m_window.getWidth() != m_windowWidth) || (m_window.getHeight() != m_windowHeight))
 				resize();		
-			if (useImGui)
+			if (m_useImGui)
 			{
 				ImGui_ImplOpenGL3_NewFrame();
 				ImGui_ImplGlfw_NewFrame();
 				ImGui::NewFrame();
 			}
-			resourceManager.update();
-			update(clock.deltaTime);
-			fixedUpdate(clock.deltaTime);
-			scene3d->update(clock.deltaTime);
-			scene2d->update(clock.deltaTime);
-			if (enablePostprocessing)
-				postProcessing->update(clock.deltaTime);
+			m_resourceManager.update();
+			update(m_clock.deltaTime);
+			fixedUpdate(m_clock.deltaTime);
+			m_scene3d->update(m_clock.deltaTime);
+			m_scene2d->update(m_clock.deltaTime);
+			if (m_enablePostprocessing)
+				m_postProcessing->update(m_clock.deltaTime);
 			render();
-			if (useImGui)
+			if (m_useImGui)
 			{
 				renderImGui();
 				ImGuiIO &io = ImGui::GetIO();
-				io.DisplaySize = ImVec2((float)window.getWidth(), (float)window.getHeight());
-				io.FontGlobalScale = fontImGuiScale;
-				mouseOnImGuiWindow = io.WantCaptureMouse;
+				io.DisplaySize = ImVec2((float)m_window.getWidth(), (float)m_window.getHeight());
+				io.FontGlobalScale = m_fontImGuiScale;
+				m_mouseOnImGuiWindow = io.WantCaptureMouse;
 				ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 			}
-			window.endRender();
+			m_window.endRender();
 		}
 #endif
 	}
@@ -84,44 +84,44 @@ namespace Crocodile
 	void Application::render()
 	{
 		// start postprocessing scene capture
-		if (enablePostprocessing)
-			postProcessing->beginRender();
-		scene3d->render();
-		scene2d->render();
+		if (m_enablePostprocessing)
+			m_postProcessing->beginRender();
+		m_scene3d->render();
+		m_scene2d->render();
 		// finish and render postprocessing
-		if (enablePostprocessing)
+		if (m_enablePostprocessing)
 		{
-			postProcessing->endRender();
-			postProcessing->render((float)glfwGetTime());
+			m_postProcessing->endRender();
+			m_postProcessing->render((float)glfwGetTime());
 		}
 	}
 
 	void Application::resize()
 	{
-		windowWidth = window.getWidth();
-		windowHeight = window.getHeight();
-		postProcessing->resize(windowWidth, windowHeight);
-		scene2d->scaleScene();
-		scene3d->resize();
+		m_windowWidth = m_window.getWidth();
+		m_windowHeight = m_window.getHeight();
+		m_postProcessing->resize(m_windowWidth, m_windowHeight);
+		m_scene2d->scaleScene();
+		m_scene3d->resize();
 	}
 
 	void Application::setCurrentScene2d(s2d::Scene *scene)
 	{
-		delete this->scene2d;
-		this->scene2d = scene;
+		delete this->m_scene2d;
+		this->m_scene2d = scene;
 	}
 
 	void Application::setCurrentScene3d(s3d::Scene *scene)
 	{
-		delete this->scene3d;
-		this->scene3d = scene;
+		delete this->m_scene3d;
+		this->m_scene3d = scene;
 	}
 
 	void Application::init() const
 	{
 
 #ifndef CROCODILE_EMSCRIPTEN
-		if (useImGui)
+		if (m_useImGui)
 		{
 			IMGUI_CHECKVERSION();
 			ImGui::CreateContext();
@@ -130,7 +130,7 @@ namespace Crocodile
 			io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
 			// ImGui::CustomStyle();
 			ImGui::StyleColorsDark();
-			ImGui_ImplGlfw_InitForOpenGL(window.getWindow(), true);
+			ImGui_ImplGlfw_InitForOpenGL(m_window.getWindow(), true);
 			ImGui_ImplOpenGL3_Init("#version 330");
 		}
 		glewInit();
@@ -147,34 +147,34 @@ namespace Crocodile
 	{
 		// 2d shaders
 #ifdef CROCODILE_EMSCRIPTEN
-		resourceManager.m_shaderManager.addShader("sprite", "assets/shaders/s2d/webgl/sprite_vertex.vs", "assets/shaders/s2d/webgl/sprite_fragment.fs");
-		resourceManager.m_shaderManager.addShader("particle", "assets/shaders/s2d/webgl/particles_vertex.vs", "assets/shaders/s2d/webgl/particles_fragment.fs");
-		resourceManager.m_shaderManager.addShader("text", "assets/shaders/s2d/webgl/text_vertex.vs", "assets/shaders/s2d/webgl/text_fragment.fs");
-		resourceManager.m_shaderManager.addShader("postprocessing", "assets/shaders/s2d/webgl/postprocessing_vertex.vs", "assets/shaders/s2d/webgl/postprocessing_fragment.fs");
-		resourceManager.m_shaderManager.addShader("grid", "assets/shaders/s2d/webgl/grid_vertex.vs", "assets/shaders/s2d/webgl/grid_fragment.fs");
-		resourceManager.m_shaderManager.addShader("line", "assets/shaders/s2d/webgl/line_vertex.vs", "assets/shaders/s2d/webgl/line_fragment.fs");
-		resourceManager.m_shaderManager.addShader("circle", "assets/shaders/s2d/webgl/circle_vertex.vs", "assets/shaders/s2d/webgl/circle_fragment.fs");
-		resourceManager.m_shaderManager.addShader("batch_sprite", "assets/shaders/s2d/webgl/batch_sprite_vertex.vs", "assets/shaders/s2d/webgl/batch_sprite_fragment.fs");
+		m_resourceManager.m_shaderManager.addShader("sprite", "assets/shaders/s2d/webgl/sprite_vertex.vs", "assets/shaders/s2d/webgl/sprite_fragment.fs");
+		m_resourceManager.m_shaderManager.addShader("particle", "assets/shaders/s2d/webgl/particles_vertex.vs", "assets/shaders/s2d/webgl/particles_fragment.fs");
+		m_resourceManager.m_shaderManager.addShader("text", "assets/shaders/s2d/webgl/text_vertex.vs", "assets/shaders/s2d/webgl/text_fragment.fs");
+		m_resourceManager.m_shaderManager.addShader("postprocessing", "assets/shaders/s2d/webgl/postprocessing_vertex.vs", "assets/shaders/s2d/webgl/postprocessing_fragment.fs");
+		m_resourceManager.m_shaderManager.addShader("grid", "assets/shaders/s2d/webgl/grid_vertex.vs", "assets/shaders/s2d/webgl/grid_fragment.fs");
+		m_resourceManager.m_shaderManager.addShader("line", "assets/shaders/s2d/webgl/line_vertex.vs", "assets/shaders/s2d/webgl/line_fragment.fs");
+		m_resourceManager.m_shaderManager.addShader("circle", "assets/shaders/s2d/webgl/circle_vertex.vs", "assets/shaders/s2d/webgl/circle_fragment.fs");
+		m_resourceManager.m_shaderManager.addShader("batch_sprite", "assets/shaders/s2d/webgl/batch_sprite_vertex.vs", "assets/shaders/s2d/webgl/batch_sprite_fragment.fs");
 
 #else
-		resourceManager.m_shaderManager.addShader("sprite", "assets/shaders/s2d/opengl/sprite_vertex.vs", "assets/shaders/s2d/opengl/sprite_fragment.fs");
-		resourceManager.m_shaderManager.addShader("particle", "assets/shaders/s2d/opengl/particles_vertex.vs", "assets/shaders/s2d/opengl/particles_fragment.fs");
-		resourceManager.m_shaderManager.addShader("text", "assets/shaders/s2d/opengl/text_vertex.vs", "assets/shaders/s2d/opengl/text_fragment.fs");
-		resourceManager.m_shaderManager.addShader("postprocessing", "assets/shaders/s2d/opengl/postprocessing_vertex.vs", "assets/shaders/s2d/opengl/postprocessing_fragment.fs");
-		resourceManager.m_shaderManager.addShader("grid", "assets/shaders/s2d/opengl/grid_vertex.vs", "assets/shaders/s2d/opengl/grid_fragment.fs");
-		resourceManager.m_shaderManager.addShader("line", "assets/shaders/s2d/opengl/line_vertex.vs", "assets/shaders/s2d/opengl/line_fragment.fs");
-		resourceManager.m_shaderManager.addShader("circle", "assets/shaders/s2d/opengl/circle_vertex.vs", "assets/shaders/s2d/opengl/circle_fragment.fs");
-		resourceManager.m_shaderManager.addShader("batch_sprite", "assets/shaders/s2d/opengl/batch_sprite_vertex.vs", "assets/shaders/s2d/opengl/batch_sprite_fragment.fs");
+		m_resourceManager.m_shaderManager.addShader("sprite", "assets/shaders/s2d/opengl/sprite_vertex.vs", "assets/shaders/s2d/opengl/sprite_fragment.fs");
+		m_resourceManager.m_shaderManager.addShader("particle", "assets/shaders/s2d/opengl/particles_vertex.vs", "assets/shaders/s2d/opengl/particles_fragment.fs");
+		m_resourceManager.m_shaderManager.addShader("text", "assets/shaders/s2d/opengl/text_vertex.vs", "assets/shaders/s2d/opengl/text_fragment.fs");
+		m_resourceManager.m_shaderManager.addShader("postprocessing", "assets/shaders/s2d/opengl/postprocessing_vertex.vs", "assets/shaders/s2d/opengl/postprocessing_fragment.fs");
+		m_resourceManager.m_shaderManager.addShader("grid", "assets/shaders/s2d/opengl/grid_vertex.vs", "assets/shaders/s2d/opengl/grid_fragment.fs");
+		m_resourceManager.m_shaderManager.addShader("line", "assets/shaders/s2d/opengl/line_vertex.vs", "assets/shaders/s2d/opengl/line_fragment.fs");
+		m_resourceManager.m_shaderManager.addShader("circle", "assets/shaders/s2d/opengl/circle_vertex.vs", "assets/shaders/s2d/opengl/circle_fragment.fs");
+		m_resourceManager.m_shaderManager.addShader("batch_sprite", "assets/shaders/s2d/opengl/batch_sprite_vertex.vs", "assets/shaders/s2d/opengl/batch_sprite_fragment.fs");
 #endif
 		// 3d shaders
-		resourceManager.m_shaderManager.addShader("shader", "assets/shaders/s3d/opengl/shader.vs", "assets/shaders/s3d/opengl/shader.fs");
-		resourceManager.m_shaderManager.addShader("surface_shader", "assets/shaders/s3d/opengl/surface_shader.vs", "assets/shaders/s3d/opengl/surface_shader.fs");
+		m_resourceManager.m_shaderManager.addShader("shader", "assets/shaders/s3d/opengl/shader.vs", "assets/shaders/s3d/opengl/shader.fs");
+		m_resourceManager.m_shaderManager.addShader("surface_shader", "assets/shaders/s3d/opengl/surface_shader.vs", "assets/shaders/s3d/opengl/surface_shader.fs");
 	}
 
 	void Application::loadTextures()
 	{
-		resourceManager.loadTexture("assets/textures/dudv.png", "dudv", true);
-		resourceManager.loadTexture("assets/textures/normal_map.png", "normal_map", true);
+		m_resourceManager.loadTexture("assets/textures/dudv.png", "dudv", true);
+		m_resourceManager.loadTexture("assets/textures/normal_map.png", "normal_map", true);
 	}
 
 	void Application::loadAudio()

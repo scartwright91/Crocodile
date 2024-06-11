@@ -1,7 +1,6 @@
 
 ## TODO
 
-* Rewrite Window class
 * LUA scripting (2 weeks)
 * Check web build
 * 3d models and animations (2 weeks)

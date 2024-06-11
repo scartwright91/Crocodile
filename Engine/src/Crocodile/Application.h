@@ -43,20 +43,20 @@ namespace Crocodile
 			bool useImGui);
 		virtual ~Application();
 
-		ResourceManager resourceManager;
-		SoundManager soundManager;
+		ResourceManager m_resourceManager;
+		SoundManager m_soundManager;
 
-		bool running = true;
-		graphics::Window window;
-		graphics::PostProcessing* postProcessing = nullptr;
-		s2d::Scene *scene2d;
-		s3d::Scene *scene3d;
-		Clock clock;
+		bool m_running = true;
+		graphics::Window m_window;
+		graphics::PostProcessing* m_postProcessing = nullptr;
+		s2d::Scene *m_scene2d;
+		s3d::Scene *m_scene3d;
+		Clock m_clock;
 
 		// imgui variables
-		float fontImGuiScale = 1.f;
-		bool mouseOnImGuiWindow = false;
-		bool enablePostprocessing = true;
+		float m_fontImGuiScale = 1.f;
+		bool m_mouseOnImGuiWindow = false;
+		bool m_enablePostprocessing = true;
 
 	private:
 		void loadShaders();
@@ -80,8 +80,8 @@ namespace Crocodile
 
 	private:
 		static Application *s_Instance;
-		bool useImGui = false;
-		unsigned int windowWidth, windowHeight;
+		bool m_useImGui = false;
+		unsigned int m_windowWidth, m_windowHeight;
 
 	};
 
