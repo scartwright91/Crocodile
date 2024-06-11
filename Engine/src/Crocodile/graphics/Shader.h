@@ -49,12 +49,12 @@ namespace Crocodile
 			std::string readShaderSource(const std::string& path);
 
 			GLuint m_id;
-			GLuint vertexShader;
-			GLuint fragmentShader;
 
 		public:
 			std::string m_vertexPath, m_fragmentPath;
 			std::vector<std::string> m_textures = {};
+			GLuint m_vertexShader;
+			GLuint m_fragmentShader;
 
 		};
 	}

@@ -19,10 +19,10 @@ namespace Crocodile
                 FrameBuffer(unsigned int width, unsigned int height);
                 ~FrameBuffer();
 
-                unsigned int textureColorbuffer;
-                unsigned int width, height;
-                unsigned int framebuffer, RBO;
-                unsigned int VAO;
+                unsigned int m_textureColorbuffer;
+                unsigned int m_width, m_height;
+                unsigned int m_framebuffer, m_RBO;
+                unsigned int m_VAO;
 
                 void bind();
                 void unbind();

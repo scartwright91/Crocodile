@@ -18,7 +18,7 @@ namespace Crocodile
 		loadShaders();
 		loadTextures();
 		postProcessing = new graphics::PostProcessing(
-			resourceManager.shaderManager.getShader("postprocessing"),
+			resourceManager.m_shaderManager.getShader("postprocessing"),
 			window.getWidth(),
 			window.getHeight()	
 		);
@@ -146,28 +146,28 @@ namespace Crocodile
 	{
 		// 2d shaders
 #ifdef CROCODILE_EMSCRIPTEN
-		resourceManager.shaderManager.addShader("sprite", "assets/shaders/s2d/webgl/sprite_vertex.vs", "assets/shaders/s2d/webgl/sprite_fragment.fs");
-		resourceManager.shaderManager.addShader("particle", "assets/shaders/s2d/webgl/particles_vertex.vs", "assets/shaders/s2d/webgl/particles_fragment.fs");
-		resourceManager.shaderManager.addShader("text", "assets/shaders/s2d/webgl/text_vertex.vs", "assets/shaders/s2d/webgl/text_fragment.fs");
-		resourceManager.shaderManager.addShader("postprocessing", "assets/shaders/s2d/webgl/postprocessing_vertex.vs", "assets/shaders/s2d/webgl/postprocessing_fragment.fs");
-		resourceManager.shaderManager.addShader("grid", "assets/shaders/s2d/webgl/grid_vertex.vs", "assets/shaders/s2d/webgl/grid_fragment.fs");
-		resourceManager.shaderManager.addShader("line", "assets/shaders/s2d/webgl/line_vertex.vs", "assets/shaders/s2d/webgl/line_fragment.fs");
-		resourceManager.shaderManager.addShader("circle", "assets/shaders/s2d/webgl/circle_vertex.vs", "assets/shaders/s2d/webgl/circle_fragment.fs");
-		resourceManager.shaderManager.addShader("batch_sprite", "assets/shaders/s2d/webgl/batch_sprite_vertex.vs", "assets/shaders/s2d/webgl/batch_sprite_fragment.fs");
+		resourceManager.m_shaderManager.addShader("sprite", "assets/shaders/s2d/webgl/sprite_vertex.vs", "assets/shaders/s2d/webgl/sprite_fragment.fs");
+		resourceManager.m_shaderManager.addShader("particle", "assets/shaders/s2d/webgl/particles_vertex.vs", "assets/shaders/s2d/webgl/particles_fragment.fs");
+		resourceManager.m_shaderManager.addShader("text", "assets/shaders/s2d/webgl/text_vertex.vs", "assets/shaders/s2d/webgl/text_fragment.fs");
+		resourceManager.m_shaderManager.addShader("postprocessing", "assets/shaders/s2d/webgl/postprocessing_vertex.vs", "assets/shaders/s2d/webgl/postprocessing_fragment.fs");
+		resourceManager.m_shaderManager.addShader("grid", "assets/shaders/s2d/webgl/grid_vertex.vs", "assets/shaders/s2d/webgl/grid_fragment.fs");
+		resourceManager.m_shaderManager.addShader("line", "assets/shaders/s2d/webgl/line_vertex.vs", "assets/shaders/s2d/webgl/line_fragment.fs");
+		resourceManager.m_shaderManager.addShader("circle", "assets/shaders/s2d/webgl/circle_vertex.vs", "assets/shaders/s2d/webgl/circle_fragment.fs");
+		resourceManager.m_shaderManager.addShader("batch_sprite", "assets/shaders/s2d/webgl/batch_sprite_vertex.vs", "assets/shaders/s2d/webgl/batch_sprite_fragment.fs");
 
 #else
-		resourceManager.shaderManager.addShader("sprite", "assets/shaders/s2d/opengl/sprite_vertex.vs", "assets/shaders/s2d/opengl/sprite_fragment.fs");
-		resourceManager.shaderManager.addShader("particle", "assets/shaders/s2d/opengl/particles_vertex.vs", "assets/shaders/s2d/opengl/particles_fragment.fs");
-		resourceManager.shaderManager.addShader("text", "assets/shaders/s2d/opengl/text_vertex.vs", "assets/shaders/s2d/opengl/text_fragment.fs");
-		resourceManager.shaderManager.addShader("postprocessing", "assets/shaders/s2d/opengl/postprocessing_vertex.vs", "assets/shaders/s2d/opengl/postprocessing_fragment.fs");
-		resourceManager.shaderManager.addShader("grid", "assets/shaders/s2d/opengl/grid_vertex.vs", "assets/shaders/s2d/opengl/grid_fragment.fs");
-		resourceManager.shaderManager.addShader("line", "assets/shaders/s2d/opengl/line_vertex.vs", "assets/shaders/s2d/opengl/line_fragment.fs");
-		resourceManager.shaderManager.addShader("circle", "assets/shaders/s2d/opengl/circle_vertex.vs", "assets/shaders/s2d/opengl/circle_fragment.fs");
-		resourceManager.shaderManager.addShader("batch_sprite", "assets/shaders/s2d/opengl/batch_sprite_vertex.vs", "assets/shaders/s2d/opengl/batch_sprite_fragment.fs");
+		resourceManager.m_shaderManager.addShader("sprite", "assets/shaders/s2d/opengl/sprite_vertex.vs", "assets/shaders/s2d/opengl/sprite_fragment.fs");
+		resourceManager.m_shaderManager.addShader("particle", "assets/shaders/s2d/opengl/particles_vertex.vs", "assets/shaders/s2d/opengl/particles_fragment.fs");
+		resourceManager.m_shaderManager.addShader("text", "assets/shaders/s2d/opengl/text_vertex.vs", "assets/shaders/s2d/opengl/text_fragment.fs");
+		resourceManager.m_shaderManager.addShader("postprocessing", "assets/shaders/s2d/opengl/postprocessing_vertex.vs", "assets/shaders/s2d/opengl/postprocessing_fragment.fs");
+		resourceManager.m_shaderManager.addShader("grid", "assets/shaders/s2d/opengl/grid_vertex.vs", "assets/shaders/s2d/opengl/grid_fragment.fs");
+		resourceManager.m_shaderManager.addShader("line", "assets/shaders/s2d/opengl/line_vertex.vs", "assets/shaders/s2d/opengl/line_fragment.fs");
+		resourceManager.m_shaderManager.addShader("circle", "assets/shaders/s2d/opengl/circle_vertex.vs", "assets/shaders/s2d/opengl/circle_fragment.fs");
+		resourceManager.m_shaderManager.addShader("batch_sprite", "assets/shaders/s2d/opengl/batch_sprite_vertex.vs", "assets/shaders/s2d/opengl/batch_sprite_fragment.fs");
 #endif
 		// 3d shaders
-		resourceManager.shaderManager.addShader("shader", "assets/shaders/s3d/opengl/shader.vs", "assets/shaders/s3d/opengl/shader.fs");
-		resourceManager.shaderManager.addShader("surface_shader", "assets/shaders/s3d/opengl/surface_shader.vs", "assets/shaders/s3d/opengl/surface_shader.fs");
+		resourceManager.m_shaderManager.addShader("shader", "assets/shaders/s3d/opengl/shader.vs", "assets/shaders/s3d/opengl/shader.fs");
+		resourceManager.m_shaderManager.addShader("surface_shader", "assets/shaders/s3d/opengl/surface_shader.vs", "assets/shaders/s3d/opengl/surface_shader.fs");
 	}
 
 	void Application::loadTextures()

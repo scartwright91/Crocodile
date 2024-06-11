@@ -12,27 +12,27 @@ namespace Crocodile
 
     ResourceManager::~ResourceManager()
     {
-        for (DirectoryWatcher* dirWatcher : dirWatchers)
+        for (DirectoryWatcher* dirWatcher : m_dirWatchers)
             delete dirWatcher;
-        dirWatchers.clear();
+        m_dirWatchers.clear();
     }
 
     void ResourceManager::update()
     {
         // hot reloading. definitely a better way to do this...
-        if (shaderReloadQueue.size() > 0)
+        if (m_shaderReloadQueue.size() > 0)
         {
-            for (std::string shaderPath : shaderReloadQueue)
-                shaderManager.reloadShader(shaderPath);
-            shaderReloadQueue.clear();
+            for (std::string shaderPath : m_shaderReloadQueue)
+                m_shaderManager.reloadShader(shaderPath);
+            m_shaderReloadQueue.clear();
         }
-        if (textureReloadQueue.size() > 0)
+        if (m_textureReloadQueue.size() > 0)
         {
-            for (std::string texturePath : textureReloadQueue)
+            for (std::string texturePath : m_textureReloadQueue)
             {
                 // reload texture
             }
-            textureReloadQueue.clear();
+            m_textureReloadQueue.clear();
         }
     }
 
@@ -102,12 +102,12 @@ namespace Crocodile
             if (assetType == SHADER)
             {
                 LOG(INFO, "Shader modified: " + normalisedPath);
-                shaderReloadQueue.push_back(normalisedPath);
+                m_shaderReloadQueue.push_back(normalisedPath);
             }
             else if (assetType == TEXTURE)
             {
                 LOG(INFO, "Texture modified: " + normalisedPath);
-                textureReloadQueue.push_back(normalisedPath);
+                m_textureReloadQueue.push_back(normalisedPath);
             }
         });
     }

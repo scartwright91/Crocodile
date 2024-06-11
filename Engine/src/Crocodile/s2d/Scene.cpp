@@ -478,7 +478,7 @@ namespace Crocodile
 
 		void Scene::addTextRenderer(const std::string name, const std::string fontPath, unsigned int fontSize)
 		{
-			textRenderers[name] = new s2d::TextRenderer(fontPath, fontSize, resourceManager->shaderManager.getShader("text")); 
+			textRenderers[name] = new s2d::TextRenderer(fontPath, fontSize, resourceManager->m_shaderManager.getShader("text")); 
 		}
 
 		void Scene::addParticleEffect(glm::vec2 position, ParticleSettings settings, std::string layer)
@@ -510,12 +510,12 @@ namespace Crocodile
 			distortionTexture = resourceManager->getTexture("distortion_texture").textureID;
 			layerStack = new LayerStack();
 			// renderers
-			spriteRenderer = new s2d::SpriteRenderer(resourceManager->shaderManager.getShader("sprite"));
-			particleRenderer = new s2d::ParticleRenderer(resourceManager->shaderManager.getShader("particle"));
-			lineRenderer = new s2d::LineRenderer(resourceManager->shaderManager.getShader("line"));
-			circleRenderer = new s2d::CircleRenderer(resourceManager->shaderManager.getShader("circle"));
-			grid = new s2d::BackgroundGrid(resourceManager->shaderManager.getShader("grid"));
-			textRenderers["default"] = new s2d::TextRenderer("assets/fonts/OpenSans-Regular.ttf", 48, resourceManager->shaderManager.getShader("text"));
+			spriteRenderer = new s2d::SpriteRenderer(resourceManager->m_shaderManager.getShader("sprite"));
+			particleRenderer = new s2d::ParticleRenderer(resourceManager->m_shaderManager.getShader("particle"));
+			lineRenderer = new s2d::LineRenderer(resourceManager->m_shaderManager.getShader("line"));
+			circleRenderer = new s2d::CircleRenderer(resourceManager->m_shaderManager.getShader("circle"));
+			grid = new s2d::BackgroundGrid(resourceManager->m_shaderManager.getShader("grid"));
+			textRenderers["default"] = new s2d::TextRenderer("assets/fonts/OpenSans-Regular.ttf", 48, resourceManager->m_shaderManager.getShader("text"));
 		}
 
 	}

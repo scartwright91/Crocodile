@@ -60,7 +60,7 @@ namespace Crocodile
 
         void Scene::init()
         {
-            m_renderer = new Renderer(m_resourceManager->shaderManager.getShader("shader"));
+            m_renderer = new Renderer(m_resourceManager->m_shaderManager.getShader("shader"));
         }
     }
 }

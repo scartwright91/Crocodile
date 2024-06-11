@@ -33,7 +33,7 @@ namespace Crocodile
 			PostProcessing(graphics::Shader *shader, unsigned int width, unsigned int height);
 			~PostProcessing();
 
-			FrameBuffer* fb = nullptr;
+			FrameBuffer* m_fb = nullptr;
 			
 			void beginRender();
 			void endRender();
@@ -56,19 +56,19 @@ namespace Crocodile
 			void setTransitionType(graphics::TransitionEffect effect);
 
 		private:
-			Shader *shader = nullptr;
+			Shader *m_shader = nullptr;
 
 			// postprocessing
-			bool greyscale = false;
-			bool wavey = false;
-			bool blur = false;
-			bool screenShake = false;
+			bool m_greyscale = false;
+			bool m_wavey = false;
+			bool m_blur = false;
+			bool m_screenShake = false;
 
 			// transitions
-			TransitionEffect transitionEffect = NO_TRANSITION;
-			float transitionCounter = 1.0;
-			bool fadeinTransition = false;
-			bool fadeoutTransition = false;
+			TransitionEffect m_transitionEffect = NO_TRANSITION;
+			float m_transitionCounter = 1.0;
+			bool m_fadeinTransition = false;
+			bool m_fadeoutTransition = false;
 
 		};
 	}

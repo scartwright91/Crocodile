@@ -57,17 +57,17 @@ namespace Crocodile
         TextureData loadTextureFromFile(char const* path, std::string name, bool repeat) const;
 
     public:
-        bool addNewShader = false;
+        bool m_addNewShader = false;
         // shaders
-        graphics::ShaderManager shaderManager;
+        graphics::ShaderManager m_shaderManager;
         // true will use nearest pixel when loading textures; false will use linear
         bool m_pixelArt = false;
 
     private:
         // hot reloading
-        std::vector<std::string> shaderReloadQueue = {};
-        std::vector<std::string> textureReloadQueue = {};
-        std::vector<DirectoryWatcher*> dirWatchers = {};
+        std::vector<std::string> m_shaderReloadQueue = {};
+        std::vector<std::string> m_textureReloadQueue = {};
+        std::vector<DirectoryWatcher*> m_dirWatchers = {};
         // textures
         std::map<std::string, TextureData> m_textureIDs = {};
         // animations

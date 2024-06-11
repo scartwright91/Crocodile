@@ -40,12 +40,12 @@ namespace Crocodile
             std::string vertexCode = readShaderSource(m_vertexPath);
             std::string fragmentCode = readShaderSource(m_fragmentPath);
 
-            vertexShader = compileShader(vertexCode, GL_VERTEX_SHADER);
-            fragmentShader = compileShader(fragmentCode, GL_FRAGMENT_SHADER);
+            m_vertexShader = compileShader(vertexCode, GL_VERTEX_SHADER);
+            m_fragmentShader = compileShader(fragmentCode, GL_FRAGMENT_SHADER);
 
             m_id = glCreateProgram();
-            glAttachShader(m_id, vertexShader);
-            glAttachShader(m_id, fragmentShader);
+            glAttachShader(m_id, m_vertexShader);
+            glAttachShader(m_id, m_fragmentShader);
             glLinkProgram(m_id);
 
             GLint isLinked = 0;
@@ -58,15 +58,15 @@ namespace Crocodile
                 glGetProgramInfoLog(m_id, maxLength, &maxLength, &errorLog[0]);
 
                 glDeleteProgram(m_id);
-                glDeleteShader(vertexShader);
-                glDeleteShader(fragmentShader);
+                glDeleteShader(m_vertexShader);
+                glDeleteShader(m_fragmentShader);
                 LOG(ERROR, "Program linking error: " + errorLog);
             }
 
-            glDetachShader(m_id, vertexShader);
-            glDetachShader(m_id, fragmentShader);
-            glDeleteShader(vertexShader);
-            glDeleteShader(fragmentShader);
+            glDetachShader(m_id, m_vertexShader);
+            glDetachShader(m_id, m_fragmentShader);
+            glDeleteShader(m_vertexShader);
+            glDeleteShader(m_fragmentShader);
         }
 
         GLuint Shader::compileShader(const std::string& source, GLenum shaderType) {
