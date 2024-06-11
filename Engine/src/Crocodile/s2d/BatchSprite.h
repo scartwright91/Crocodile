@@ -34,11 +34,11 @@ namespace Crocodile
 
             void createRenderer(graphics::Shader *shader);
 
-            BatchRenderer *renderer = nullptr;
-            std::vector<glm::vec2> positions = {};
-            std::vector<glm::vec2> tilesetPositions = {};
-            float tilesetWidth;
-            float tilesetHeight;
+            BatchRenderer* m_renderer = nullptr;
+            std::vector<glm::vec2> m_positions = {};
+            std::vector<glm::vec2> m_tilesetPositions = {};
+            float m_tilesetWidth;
+            float m_tilesetHeight;
         };
     }
 }

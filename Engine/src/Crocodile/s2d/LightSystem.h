@@ -21,16 +21,18 @@ namespace Crocodile
 		{
 
 		public:
-			bool lightsEnabled = true;
-			std::vector<Light*> lights = {};
+			bool m_lightsEnabled = true;
 
 			LightSystem();
 
+			std::vector<Light*> inline getLights() const { return m_lights; };
+			std::vector<Light*> getScaledLights(glm::vec2 scale);
 			void addLight(Light* light);
 			void removeLight(Light* light);
 			void clear();
 
-			std::vector<Light*> getScaledLights(glm::vec2 scale);
+		private:
+			std::vector<Light*> m_lights = {};
 
 		};
 	}

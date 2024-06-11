@@ -27,13 +27,13 @@ namespace Crocodile
 			void removeAllLayers();
 			std::vector<std::string> getLayerNames();
 			Layer *getLayer(std::string name);
+			std::vector<Layer*> inline getLayers() const { return m_layers; };
 
 			unsigned int getLayerPosition(std::string name);
-			unsigned int inline getLayerNumber() { return (unsigned int)layers.size(); }
-
-			std::vector<Layer *> layers = {};
+			unsigned int inline getLayerNumber() { return (unsigned int)m_layers.size(); }
 
 		private:
+			std::vector<Layer *> m_layers = {};
 			bool layerExists(Layer *layer);
 		};
 	}

@@ -5,7 +5,7 @@ namespace Crocodile
 	namespace s2d
 	{
 
-		Object::Object() : renderMethod("sprite")
+		Object::Object() : m_renderMethod("sprite")
 		{
 		}
 
@@ -15,8 +15,8 @@ namespace Crocodile
 
 		void Object::addChildObject(Object* obj)
 		{
-			obj->setPosition(position + obj->getPosition());
-			children.push_back(obj);
+			obj->setPosition(m_position + obj->getPosition());
+			m_children.push_back(obj);
 		}
 
 		glm::mat4 Object::calculateModelMatrix(glm::vec2 pos, float layerDepth)
@@ -30,89 +30,89 @@ namespace Crocodile
 
 		void Object::move(float dx, float dy)
 		{
-			position += glm::vec2(dx, dy);
-			for (Object* obj : children)
+			m_position += glm::vec2(dx, dy);
+			for (Object* obj : m_children)
 				obj->move(dx, dy);
 		}
 
 		void Object::moveTowards(glm::vec2 targetPosition, float distance)
 		{
-			float theta = std::atan2(targetPosition.y - position.y, targetPosition.x - position.x);
-			velocity.x = std::cos(theta) * distance;
-			velocity.y = std::sin(theta) * distance;
-			for (Object* obj : children)
-				obj->velocity = velocity;
+			float theta = std::atan2(targetPosition.y - m_position.y, targetPosition.x - m_position.x);
+			m_velocity.x = std::cos(theta) * distance;
+			m_velocity.y = std::sin(theta) * distance;
+			for (Object* obj : m_children)
+				obj->m_velocity = m_velocity;
 		}
 
 		void Object::scale(glm::vec2 s)
 		{
-			modelScale = glm::vec3(s, 1.0f);
+			m_modelScale = glm::vec3(s, 1.0f);
 		}
 
 		void Object::rotate(float v)
 		{
-			rotation += v;
-			if (rotation > 2 * 3.14159265358979323846f)
-				rotation -= (2 * 3.14159265358979323846f);
+			m_rotation += v;
+			if (m_rotation > 2 * 3.14159265358979323846f)
+				m_rotation -= (2 * 3.14159265358979323846f);
 		}
 
 		glm::mat4 Object::applyRotation(glm::mat4 model) const
 		{
-			model = glm::translate(model, glm::vec3(size.x * modelScale.x / 2, size.y * modelScale.y / 2, 0.0f));
-			model = glm::rotate(model, rotation, glm::vec3(0.0f, 0.0f, 1.0f));
-			model = glm::translate(model, glm::vec3(-size.x * modelScale.x / 2, -size.y * modelScale.y / 2, 0.0f));
+			model = glm::translate(model, glm::vec3(m_size.x * m_modelScale.x / 2, m_size.y * m_modelScale.y / 2, 0.0f));
+			model = glm::rotate(model, m_rotation, glm::vec3(0.0f, 0.0f, 1.0f));
+			model = glm::translate(model, glm::vec3(-m_size.x * m_modelScale.x / 2, -m_size.y * m_modelScale.y / 2, 0.0f));
 			return model;
 		}
 
 		glm::vec2 Object::getScaledSize()
 		{
-			glm::vec2 scaledSize = glm::vec2(size.x * modelScale.x, size.y * modelScale.y);
+			glm::vec2 scaledSize = glm::vec2(m_size.x * m_modelScale.x, m_size.y * m_modelScale.y);
 			return scaledSize;
 		}
 
 		glm::vec2 Object::getScaledPosition()
 		{
-			glm::vec2 scaledPosition = glm::vec2(position.x * modelScale.x, position.y * modelScale.y);
+			glm::vec2 scaledPosition = glm::vec2(m_position.x * m_modelScale.x, m_position.y * m_modelScale.y);
 			return scaledPosition;
 		}
 
 		glm::vec2 Object::getPosition() const
 		{
-			return position;
+			return m_position;
 		}
 
 		glm::vec2 Object::getCenteredPosition()
 		{
-			glm::vec2 centeredPos = glm::vec2(position.x + size.x / 2, position.y + size.y / 2);
+			glm::vec2 centeredPos = glm::vec2(m_position.x + m_size.x / 2, m_position.y + m_size.y / 2);
 			return centeredPos;
 		}
 
 		glm::vec2 Object::getScaledCenteredPosition()
 		{
-			glm::vec2 scaledCenteredPosition = glm::vec2((position.x + size.x / 2) * modelScale.x, (position.y + size.y / 2) * modelScale.y);
+			glm::vec2 scaledCenteredPosition = glm::vec2((m_position.x + m_size.x / 2) * m_modelScale.x, (m_position.y + m_size.y / 2) * m_modelScale.y);
 			return scaledCenteredPosition;
 		}
 
 		float Object::getDistanceFrom(glm::vec2 targetPosition) const
 		{
-			float sqDifference = (float)std::pow(targetPosition.x - position.x, 2) + (float)std::pow(targetPosition.y - position.y, 2);
+			float sqDifference = (float)std::pow(targetPosition.x - m_position.x, 2) + (float)std::pow(targetPosition.y - m_position.y, 2);
 			return std::sqrt(sqDifference);
 		}
 
 		float Object::getYSortValue() const
 		{
-			return getPosition().y + size.y;
+			return getPosition().y + m_size.y;
 		}
 
 		void Object::setPosition(glm::vec2 pos)
 		{
-			position = pos;
+			m_position = pos;
 		}
 
 		void Object::setTexture(TextureData texture)
 		{
-			this->texture = texture;
-			useTexture = true;
+			this->m_texture = texture;
+			m_useTexture = true;
 		}
 
 		void Object::setTileMapTexture(
@@ -121,63 +121,63 @@ namespace Crocodile
 			unsigned int x,
 			unsigned int y)
 		{
-			this->texture = texture;
-			useTexture = true;
-			numberOfRows = texture.height / gridSize;
-			numberOfCols = texture.width / gridSize;
-			textureOffset = glm::vec2((int)x / texture.width, (int)y / texture.height);
+			this->m_texture = texture;
+			m_useTexture = true;
+			m_numberOfRows = texture.height / gridSize;
+			m_numberOfCols = texture.width / gridSize;
+			m_textureOffset = glm::vec2((int)x / texture.width, (int)y / texture.height);
 		}
 
 		void Object::updateAnimation(float dt)
 		{
-			if (animated)
+			if (m_animated)
 			{
-				animation->updateAnimation(dt);
-				if (animation->spritesheetAnimation)
-					textureOffset = animation->getTextureOffset();
+				m_animation->updateAnimation(dt);
+				if (m_animation->m_spritesheetAnimation)
+					m_textureOffset = m_animation->getTextureOffset();
 				else
-					texture = animation->textures[animation->currentFrame];
+					m_texture = m_animation->m_textures[m_animation->m_currentFrame];
 			}
 		}
 
 		void Object::setAnimation(Animation *animation)
 		{
-			animated = true;
-			useTexture = true;
-			this->animation = animation;
-			if (animation->spritesheetAnimation)
+			m_animated = true;
+			m_useTexture = true;
+			m_animation = animation;
+			if (animation->m_spritesheetAnimation)
 			{
-				this->texture = this->animation->spritesheet;
-				numberOfRows = 1.0f;
-				numberOfCols = (float)this->animation->totalFrames;
-				textureOffset = this->animation->getTextureOffset();
+				m_texture = m_animation->m_spritesheet;
+				m_numberOfRows = 1.0f;
+				m_numberOfCols = (float)m_animation->m_totalFrames;
+				m_textureOffset = m_animation->getTextureOffset();
 			}
 			else
 			{
-				this->texture = this->animation->textures[animation->currentFrame];
+				m_texture = m_animation->m_textures[animation->m_currentFrame];
 			}
 		}
 
 		void Object::resetCollisionData(unsigned int layer)
 		{
-			collisionData[layer].reset();
+			m_collisionData[layer].reset();
 		}
 
 		void Object::setDistortionProperties(bool useDistortion, bool scrollX, bool scrollY, float distortionSpeed)
 		{
-			this->useDistortion = useDistortion;
-			this->scrollDistortionX = scrollX;
-			this->scrollDistortionY = scrollY;
-			this->distortionSpeed = distortionSpeed;
+			m_useDistortion = useDistortion;
+			m_scrollDistortionX = scrollX;
+			m_scrollDistortionY = scrollY;
+			m_distortionSpeed = distortionSpeed;
 		}
 
 		void Object::setSqueezeEffect(glm::vec2 maxDeformation, float squeezeDuration)
 		{
-			if (!useSqueeze)
+			if (!m_useSqueeze)
 			{
-				this->maxDeformation = maxDeformation;
-				this->squeezeDuration = squeezeDuration;
-				useSqueeze = true;
+				m_maxDeformation = maxDeformation;
+				m_squeezeDuration = squeezeDuration;
+				m_useSqueeze = true;
 			}
 		}
 
@@ -191,7 +191,7 @@ namespace Crocodile
 
 		glm::vec2 Object::getShiftedScreenPosition(glm::vec2 offset, glm::mat4 view, glm::mat4 projection, float width, float height, float layerDepth)
 		{
-			glm::mat4 model = calculateModelMatrix(position + offset, layerDepth);
+			glm::mat4 model = calculateModelMatrix(m_position + offset, layerDepth);
 			glm::mat4 mvp = projection * view * model;
 			glm::vec2 pos = mvp * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 			return glm::vec2((pos.x * 0.5 + 0.5) * width, height - (pos.y * 0.5 + 0.5) * height);
@@ -199,7 +199,7 @@ namespace Crocodile
 
 		s2d::col::BoundingBox Object::getScreenBoundingBox(glm::mat4 view, glm::mat4 projection, float zoom, float width, float height, float layerDepth)
 		{
-			glm::mat4 model = calculateModelMatrix(position, layerDepth);
+			glm::mat4 model = calculateModelMatrix(m_position, layerDepth);
 			glm::mat4 mvp = projection * view * model;
 			glm::vec2 pos = mvp * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 			glm::vec2 scaledSize = getScaledSize();
@@ -208,7 +208,7 @@ namespace Crocodile
 				height - (pos.y * 0.5f + 0.5f) * height,
 				scaledSize.x / zoom,
 				scaledSize.y / zoom,
-				rotation);
+				m_rotation);
 			return bbox;
 		}
 
@@ -220,40 +220,40 @@ namespace Crocodile
 		s2d::col::BoundingBox Object::getBoundingBox()
 		{
 			// Returns a bounding box with the same position and size as the entity in world coordinates
-			return s2d::col::BoundingBox(position.x, position.y, size.x, size.y, rotation);
+			return s2d::col::BoundingBox(m_position.x, m_position.y, m_size.x, m_size.y, m_rotation);
 		}
 
 		s2d::col::BoundingBox Object::getShiftedBoundingBox(float dx, float dy)
 		{
-			return s2d::col::BoundingBox(position.x + dx, position.y + dy, size.x, size.y, rotation);
+			return s2d::col::BoundingBox(m_position.x + dx, m_position.y + dy, m_size.x, m_size.y, m_rotation);
 		}
 
 		void Object::updateSqueezeEffect(float dt)
 		{
-			if (!useSqueeze)
+			if (!m_useSqueeze)
 				return;
 
-			if (squeezeOut)
+			if (m_squeezeOut)
 			{
-				currentSqueezeElapsed += dt;
-				if (currentSqueezeElapsed > squeezeDuration)
+				m_currentSqueezeElapsed += dt;
+				if (m_currentSqueezeElapsed > m_squeezeDuration)
 				{
-					squeezeOut = false;
+					m_squeezeOut = false;
 				}
 			}
 			else
 			{
-				currentSqueezeElapsed -= dt;
-				if (currentSqueezeElapsed < 0.0f)
+				m_currentSqueezeElapsed -= dt;
+				if (m_currentSqueezeElapsed < 0.0f)
 				{
-					useSqueeze = false;
-					squeezeOut = true;
-					currentSqueezeElapsed = 0.0f;
+					m_useSqueeze = false;
+					m_squeezeOut = true;
+					m_currentSqueezeElapsed = 0.0f;
 				}
 			}
-			float r =  currentSqueezeElapsed / squeezeDuration;
-			deformationMagnitude.x = maxDeformation.x * r;
-			deformationMagnitude.y = maxDeformation.y * r;
+			float r =  m_currentSqueezeElapsed / m_squeezeDuration;
+			m_deformationMagnitude.x = m_maxDeformation.x * r;
+			m_deformationMagnitude.y = m_maxDeformation.y * r;
 		}
 
 	}

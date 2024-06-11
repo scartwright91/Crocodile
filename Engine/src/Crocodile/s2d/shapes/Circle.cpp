@@ -8,8 +8,8 @@ namespace Crocodile
         {
             Circle::Circle(float radius) : radius(radius)
             {
-                renderMethod = "circle";
-                size = glm::vec2(2 * radius);
+                m_renderMethod = "circle";
+                m_size = glm::vec2(2 * radius);
             }
         }
     }

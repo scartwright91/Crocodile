@@ -21,12 +21,12 @@ namespace Crocodile
 
             Text() : fontName("default")
             {
-                renderMethod = "text";
+                m_renderMethod = "text";
             }
 
             Text(std::string fontName) : fontName(fontName)
             {
-                renderMethod = "text";
+                m_renderMethod = "text";
             }
 
             ~Text()
@@ -59,13 +59,13 @@ namespace Crocodile
                     this->text = text;
                 else
                     this->text = "";
-                this->size = font.getTextSize(fullText, textScale);
+                m_size = font.getTextSize(fullText, textScale);
             }
 
             void setScale(glm::vec2 scale)
             {
                 this->textScale = scale;
-                this->size = font.getTextSize(fullText, textScale);
+                m_size = font.getTextSize(fullText, textScale);
             }
 
             glm::vec2 getScale()

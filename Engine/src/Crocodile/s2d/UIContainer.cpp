@@ -6,7 +6,7 @@ namespace Crocodile
 	{
 		UIContainer::UIContainer() : padding(0.f)
 		{
-			renderMethod = "sprite";
+			m_renderMethod = "sprite";
 			// default settings
 			alignment = TOP;
 			layout = VERTICAL;
@@ -15,7 +15,7 @@ namespace Crocodile
 
 		UIContainer::UIContainer(glm::vec2 padding) : padding(padding)
 		{
-			renderMethod = "sprite";
+			m_renderMethod = "sprite";
 			// default settings
 			alignment = TOP;
 			layout = VERTICAL;
@@ -25,12 +25,12 @@ namespace Crocodile
 
 		UIContainer::UIContainer(glm::vec2 padding, glm::vec2 size) : padding(padding)
 		{
-			renderMethod = "sprite";
+			m_renderMethod = "sprite";
 			// default settings
 			alignment = TOP;
 			layout = VERTICAL;
 			transition = NONE;
-			this->size = size;
+			m_size = size;
 			currentElementPosition = padding;
 		}
 
@@ -42,9 +42,9 @@ namespace Crocodile
 		{
 			obj->setPosition(getPosition());
 			obj->move(currentElementPosition.x, currentElementPosition.y);
-			updateCurrentElementPosition(obj->size.x, obj->size.y);
+			updateCurrentElementPosition(obj->m_size.x, obj->m_size.y);
 			if (!staticSize)
-				updateContainer(obj->size.x, obj->size.y);
+				updateContainer(obj->m_size.x, obj->m_size.y);
 		}
 
 		void UIContainer::updateCurrentElementPosition(float width, float height)
@@ -63,15 +63,15 @@ namespace Crocodile
 		{
 			if (layout == VERTICAL)
 			{
-				size.y += (height + padding.y);
-				if (width + padding.x > size.x)
-					size.x = width + 2 * padding.x;
+				m_size.y += (height + padding.y);
+				if (width + padding.x > m_size.x)
+					m_size.x = width + 2 * padding.x;
 			}
 			else if (layout == HORIZONTAL)
 			{
-				size.x += (width + padding.x);
-				if (height + padding.y > size.y)
-					size.y = height + 2 * padding.y;
+				m_size.x += (width + padding.x);
+				if (height + padding.y > m_size.y)
+					m_size.y = height + 2 * padding.y;
 			}
 		}
 	}

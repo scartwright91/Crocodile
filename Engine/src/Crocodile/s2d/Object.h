@@ -48,60 +48,60 @@ namespace Crocodile
 			virtual ~Object();
 
 			// label
-			std::string label = "";
-			std::string layer = "";
-			double id = glfwGetTime();
+			std::string m_label = "";
+			std::string m_layer = "";
+			double m_id = glfwGetTime();
 
 			// movement
-			glm::vec2 velocity = glm::vec2(0.f);
+			glm::vec2 m_velocity = glm::vec2(0.f);
 
 			// vertex
-			glm::vec2 size = glm::vec2(0.0f);
-			glm::vec3 modelScale = glm::vec3(1.0f);
-			float rotation = 0.0f;
+			glm::vec2 m_size = glm::vec2(0.0f);
+			glm::vec3 m_modelScale = glm::vec3(1.0f);
+			float m_rotation = 0.0f;
 
 			// fragment
-			glm::vec3 color = glm::vec3(0.0f);
-			float alpha = 1.0f;
-			TextureData texture = {};
-			bool useTexture = false;
-			bool useColorTexture = false;
-			float numberOfRows = 1.f;
-			float numberOfCols = 1.f;
-			glm::vec2 textureOffset = glm::vec2(0.0f);
-			bool useDistortion = false;
-			bool scrollDistortionX = false;
-			bool scrollDistortionY = false;
-			float distortionSpeed = 0.02f;
-			bool flipX = false;
-			bool flipY = false;
+			glm::vec3 m_color = glm::vec3(0.0f);
+			float m_alpha = 1.0f;
+			TextureData m_texture = {};
+			bool m_useTexture = false;
+			bool m_useColorTexture = false;
+			float m_numberOfRows = 1.f;
+			float m_numberOfCols = 1.f;
+			glm::vec2 m_textureOffset = glm::vec2(0.0f);
+			bool m_useDistortion = false;
+			bool m_scrollDistortionX = false;
+			bool m_scrollDistortionY = false;
+			float m_distortionSpeed = 0.02f;
+			bool m_flipX = false;
+			bool m_flipY = false;
 
 			// rendering
-			std::string renderMethod = "";
+			std::string m_renderMethod = "";
 
 			// filters
-			bool outline = false;
-			bool showBoundingBox = false;
-			bool showAxes = false;
+			bool m_outline = false;
+			bool m_showBoundingBox = false;
+			bool m_showAxes = false;
 
 			// animation
-			Animation *animation = nullptr;
+			Animation* m_animation = nullptr;
 
 			// collisions
 			void resetCollisionData(unsigned int layer);
-			std::vector<unsigned int> collisionLayers = {};
-			std::map<unsigned int, CollisionData> collisionData = {
+			std::vector<unsigned int> m_collisionLayers = {};
+			std::map<unsigned int, CollisionData> m_collisionData = {
 				{0, CollisionData()},
 				{1, CollisionData()},
 				{2, CollisionData()}
 			};
 
 		private:
-			glm::vec2 position = glm::vec2(0.0f);
-			bool animated = false;
+			glm::vec2 m_position = glm::vec2(0.0f);
+			bool m_animated = false;
 
 		public:
-			std::vector<Object*> children = {};
+			std::vector<Object*> m_children = {};
 			void addChildObject(Object* obj);
 
 			glm::mat4 calculateModelMatrix(glm::vec2 pos, float layerDepth);
@@ -134,12 +134,12 @@ namespace Crocodile
 			// squeeze & stretch vfx
 			void setSqueezeEffect(glm::vec2 maxDeformation, float squeezeDuration);
 			void updateSqueezeEffect(float dt);
-			float currentSqueezeElapsed = 0.0f;
-			float squeezeDuration = 0.0f;
-			bool useSqueeze = false;
-			bool squeezeOut = true;
-			glm::vec2 deformationMagnitude = glm::vec2(0.f);
-			glm::vec2 maxDeformation = glm::vec2(0.f);
+			float m_currentSqueezeElapsed = 0.0f;
+			float m_squeezeDuration = 0.0f;
+			bool m_useSqueeze = false;
+			bool m_squeezeOut = true;
+			glm::vec2 m_deformationMagnitude = glm::vec2(0.f);
+			glm::vec2 m_maxDeformation = glm::vec2(0.f);
 
 			bool intersects(Object* obj);
 			s2d::col::BoundingBox getScreenBoundingBox(glm::mat4 view, glm::mat4 projection, float zoom, float width, float height, float layerDepth);

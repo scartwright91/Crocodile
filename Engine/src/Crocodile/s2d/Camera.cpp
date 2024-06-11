@@ -4,7 +4,7 @@ namespace Crocodile
 {
 	namespace s2d
 	{
-		Camera::Camera(graphics::Window *win) : window(win)
+		Camera::Camera(graphics::Window *win) : m_window(win)
 		{
 			setTargetScreenPosition(0.5f, 0.5f);
 		}
@@ -15,48 +15,48 @@ namespace Crocodile
 
 		void Camera::setTargetScreenPosition(float x, float y)
 		{
-			screenPos = glm::vec2(x * zoom, y * zoom);
+			m_screenPos = glm::vec2(x * m_zoom, y * m_zoom);
 		}
 
 		glm::vec2 Camera::getTargetScreenPosition(bool pixels) const
 		{
 			if (pixels)
-				return glm::vec2(screenPos.x * window->getWidth(), screenPos.y * window->getHeight());
-			return screenPos;
+				return glm::vec2(m_screenPos.x * m_window->getWidth(), m_screenPos.y * m_window->getHeight());
+			return m_screenPos;
 		}
 
 		void Camera::setTarget(Object *t, bool transition)
 		{
-			target = t;
-			transitioning = transition;
-			if (transitioning)
+			m_target = t;
+			m_transitioning = transition;
+			if (m_transitioning)
 			{
-				glm::vec2 pos = target->getScaledCenteredPosition();
-				distance = sqrt(pow(pos.x - cameraScaledPosition.x, 2) + pow(pos.y - cameraScaledPosition.y, 2));
+				glm::vec2 pos = m_target->getScaledCenteredPosition();
+				m_distance = sqrt(pow(pos.x - m_cameraScaledPosition.x, 2) + pow(pos.y - m_cameraScaledPosition.y, 2));
 			}
 		}
 
 		void Camera::setLevelBounds(glm::vec2 levelBounds, bool clampX, bool clampY)
 		{
-			this->clampX = clampX;
-			this->clampY = clampY;
-			this->levelBounds = levelBounds;
+			m_clampX = clampX;
+			m_clampY = clampY;
+			m_levelBounds = levelBounds;
 		}
 
 		void Camera::removeLevelBounds()
 		{
-			clampX = false;
-			clampY = false;
-			levelBounds = glm::vec2(0.f);
+			m_clampX = false;
+			m_clampY = false;
+			m_levelBounds = glm::vec2(0.f);
 		}
 
 		void Camera::setZoom(float z)
 		{
-			if (capMinimumZoom)
+			if (m_capMinimumZoom)
 			{
 				if (z > 0.f)
 				{
-					zoom = z;
+					m_zoom = z;
 					setTargetScreenPosition(0.5f, 0.5f);
 				}
 			}
@@ -64,11 +64,11 @@ namespace Crocodile
 
 		void Camera::changeZoom(float z)
 		{
-			if (capMinimumZoom)
+			if (m_capMinimumZoom)
 			{
-				if (zoom + z > 0.f)
+				if (m_zoom + z > 0.f)
 				{
-					zoom += z;
+					m_zoom += z;
 					setTargetScreenPosition(0.5f, 0.5f);
 				}
 			}
@@ -89,24 +89,24 @@ namespace Crocodile
 		glm::mat4 Camera::getViewMatrix(float depth)
 		{
 			glm::vec3 pos = glm::vec3(
-				depth * cameraScaledPosition.x - (window->getViewportWidth() * screenPos.x),
-				depth * cameraScaledPosition.y - (window->getViewportHeight() * screenPos.y),
+				depth * m_cameraScaledPosition.x - (m_window->getViewportWidth() * m_screenPos.x),
+				depth * m_cameraScaledPosition.y - (m_window->getViewportHeight() * m_screenPos.y),
 				0.0f);
 			glm::vec3 front = glm::vec3(0.0f, 0.0f, -1.0f);
 			glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
-			return glm::lookAt(pos - glm::vec3(v), pos + front, up);
+			return glm::lookAt(pos - glm::vec3(m_v), pos + front, up);
 		}
 
 		glm::mat4 Camera::getProjectionMatrix(bool applyZoom)
 		{
 			float width;
 			float height;
-			width = (float)window->getViewportWidth();
-			height = (float)window->getViewportHeight();
+			width = (float)m_window->getViewportWidth();
+			height = (float)m_window->getViewportHeight();
 			if (applyZoom)
 			{
-				width *= zoom;
-				height *= zoom;
+				width *= m_zoom;
+				height *= m_zoom;
 			}
 			float aspectRatio = (float)width / height;
 			glm::mat4 projection = glm::ortho(0.0f, (float)width, (float)height, 0.0f, -1.0f, 1.0f);
@@ -115,70 +115,68 @@ namespace Crocodile
 
 		glm::vec2 Camera::getDifferenceFromTarget(glm::vec2 pos) const
 		{
-			if (target == NULL)
+			if (m_target == NULL)
 				return glm::vec3(0.0f);
-			return glm::vec3(target->getScaledCenteredPosition() - pos, 0.f);
+			return glm::vec3(m_target->getScaledCenteredPosition() - pos, 0.f);
 		}
 
 		void Camera::update(glm::vec2 viewportScale)
 		{
-			scaledLevelBounds = levelBounds * viewportScale;
+			m_scaledLevelBounds = m_levelBounds * viewportScale;
 			// set camera position
-			if (transitioning)
+			if (m_transitioning)
 			{
 				glm::vec2 pos;
-				if (centreOnTarget)
-					pos = target->getScaledCenteredPosition();
+				if (m_centreOnTarget)
+					pos = m_target->getScaledCenteredPosition();
 				else
-					pos = target->getScaledCenteredPosition();
+					pos = m_target->getScaledCenteredPosition();
 				glm::vec2 transition = calculateTransition(pos);
-				float dx = (pos.x - cameraScaledPosition.x);
-				float dy = (pos.y - cameraScaledPosition.y);
-				cameraScaledPosition.x += transition.x;
-				cameraScaledPosition.y += transition.y;
-				if ((abs(dx) < 0.01 * distance) && (abs(dy) < 0.01 * distance))
-				{
-					transitioning = false;
-				}
+				float dx = (pos.x - m_cameraScaledPosition.x);
+				float dy = (pos.y - m_cameraScaledPosition.y);
+				m_cameraScaledPosition.x += transition.x;
+				m_cameraScaledPosition.y += transition.y;
+				if ((abs(dx) < 0.01 * m_distance) && (abs(dy) < 0.01 * m_distance))
+					m_transitioning = false;
 			}
-			else if (target != NULL)
+			else if (m_target != NULL)
 			{
 				glm::vec2 pos;
-				if (centreOnTarget)
-					pos = target->getScaledCenteredPosition();
+				if (m_centreOnTarget)
+					pos = m_target->getScaledCenteredPosition();
 				else
-					pos = target->getScaledCenteredPosition();
-				cameraScaledPosition = glm::vec3(pos, 0.0f);
+					pos = m_target->getScaledCenteredPosition();
+				m_cameraScaledPosition = glm::vec3(pos, 0.0f);
 			}
 
-			if (clampX || clampY)
+			if (m_clampX || m_clampY)
 				clamp();
 		}
 
 		glm::vec2 Camera::calculateTransition(glm::vec2 pos)
 		{
-			float theta = atan2(pos.y - cameraScaledPosition.y, pos.x - cameraScaledPosition.x);
-			double currentDistance = sqrt(pow(pos.x - cameraScaledPosition.x, 2) + pow(pos.y - cameraScaledPosition.y, 2));
-			float transitionDistance = (float)std::max(0.05 * currentDistance, 0.01 * distance);
+			float theta = atan2(pos.y - m_cameraScaledPosition.y, pos.x - m_cameraScaledPosition.x);
+			double currentDistance = sqrt(pow(pos.x - m_cameraScaledPosition.x, 2) + pow(pos.y - m_cameraScaledPosition.y, 2));
+			float transitionDistance = (float)std::max(0.05 * currentDistance, 0.01 * m_distance);
 			return glm::vec2(transitionDistance * cos(theta), transitionDistance * sin(theta));
 		}
 
 		void Camera::clamp()
 		{
 			glm::vec2 targetScreenPos = getTargetScreenPosition(true);
-			if (clampX)
+			if (m_clampX)
 			{
-				if (cameraScaledPosition.x - targetScreenPos.x < 0)
-					cameraScaledPosition.x = targetScreenPos.x;
-				if (cameraScaledPosition.x + targetScreenPos.x > scaledLevelBounds.x)
-					cameraScaledPosition.x = scaledLevelBounds.x - targetScreenPos.x;
+				if (m_cameraScaledPosition.x - targetScreenPos.x < 0)
+					m_cameraScaledPosition.x = targetScreenPos.x;
+				if (m_cameraScaledPosition.x + targetScreenPos.x > m_scaledLevelBounds.x)
+					m_cameraScaledPosition.x = m_scaledLevelBounds.x - targetScreenPos.x;
 			}
-			if (clampY)
+			if (m_clampY)
 			{
-				if (cameraScaledPosition.y - targetScreenPos.y < 0)
-					cameraScaledPosition.y = targetScreenPos.y;
-				if (cameraScaledPosition.y + targetScreenPos.y > scaledLevelBounds.y)
-					cameraScaledPosition.y = scaledLevelBounds.y - targetScreenPos.y;
+				if (m_cameraScaledPosition.y - targetScreenPos.y < 0)
+					m_cameraScaledPosition.y = targetScreenPos.y;
+				if (m_cameraScaledPosition.y + targetScreenPos.y > m_scaledLevelBounds.y)
+					m_cameraScaledPosition.y = m_scaledLevelBounds.y - targetScreenPos.y;
 			}
 		}
 

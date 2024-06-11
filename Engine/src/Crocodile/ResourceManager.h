@@ -28,7 +28,8 @@ namespace Crocodile
     {
         TEXTURE,
         SHADER,
-        AUDIO
+        AUDIO,
+        SCRIPT
     };
 
     class CROCODILE_API ResourceManager

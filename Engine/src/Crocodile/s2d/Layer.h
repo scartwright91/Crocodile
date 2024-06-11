@@ -17,24 +17,27 @@ namespace Crocodile
 			Layer(std::string name);
 			~Layer();
 
+			std::vector<Object*> inline getObjects() const { return m_objects; };
 			void addObject(Object *obj);
 			void removeObject(Object *obj);
 			void sort();
+			void inline clear() { m_objects.clear(); };
 
 			// layer characteristics
-			std::string name = "";
+			std::string m_name = "";
 			// depth > 1.f: closer to camera, depth < 1.f: further from camera
-			float depth = 1.f;
+			float m_depth = 1.f;
 			// layer transparency
-			float alpha = 1.f;
+			float m_alpha = 1.f;
 			// layer will sort all objects by increasing y-position at render time
-			bool ySort = false;
+			bool m_ySort = false;
 			// layer will be moved by camera zoom / scrolling
-			bool applyCamera = true;
+			bool m_applyCamera = true;
 			// layer visibility
-			bool hide = false;
+			bool m_hide = false;
 
-			std::vector<Object *> objects = {};
+		private:
+			std::vector<Object *> m_objects = {};
 		};
 	}
 }

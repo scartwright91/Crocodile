@@ -33,7 +33,7 @@ namespace Crocodile
 			if (layer != NULL)
 			{
 				layer->addObject(object);
-				object->layer = layerName;
+				object->m_layer = layerName;
 			}
 			else
 				LOG(ERROR, "Layer " + layerName + " does not exist in layerstack");
@@ -47,7 +47,7 @@ namespace Crocodile
 				if (object != NULL)
 				{
 					layer->removeObject(object);
-					object->layer = "";
+					object->m_layer = "";
 				}
 			}
 			else
@@ -76,21 +76,21 @@ namespace Crocodile
 
 		void Scene::updateObjects(float dt)
 		{
-			for (Layer *layer : layerStack->layers)
+			for (Layer *layer : layerStack->getLayers())
 			{
-				if (layer->ySort)
+				if (layer->m_ySort)
 					layer->sort();
-				for (Object *obj : layer->objects)
+				for (Object *obj : layer->getObjects())
 				{
 					if (obj == NULL)
-						removeObject(obj, layer->name);
+						removeObject(obj, layer->m_name);
 					else
 					{
 						obj->updateAnimation(dt);
 						obj->updateSqueezeEffect(dt);
-						obj->modelScale = glm::vec3(viewportScale, 1.f);
-						glm::vec2 velocity = obj->velocity * glm::vec2(dt);
-						if (obj->collisionLayers.size() > 0)
+						obj->m_modelScale = glm::vec3(viewportScale, 1.f);
+						glm::vec2 velocity = obj->m_velocity * glm::vec2(dt);
+						if (obj->m_collisionLayers.size() > 0)
 						{
 							// static tile-based collisions
 							velocity = resolveTilemapCollisions(obj, velocity);
@@ -111,16 +111,16 @@ namespace Crocodile
 				grid->render(
 					(float)windowWidth,
 					(float)windowHeight,
-					camera->cameraScaledPosition.x,
-					camera->cameraScaledPosition.y,
-					camera->zoom);
+					camera->m_cameraScaledPosition.x,
+					camera->m_cameraScaledPosition.y,
+					camera->m_zoom);
 			// render scene objects
-			for (Layer *layer : layerStack->layers)
-				if (!layer->hide)
-					for (Object *obj : layer->objects)
+			for (Layer *layer : layerStack->getLayers())
+				if (!layer->m_hide)
+					for (Object *obj : layer->getObjects())
 					{
 						renderObject(obj, layer);
-						for (Object* childObject : obj->children)
+						for (Object* childObject : obj->m_children)
 							renderObject(childObject, layer);
 					}
 		}
@@ -129,54 +129,54 @@ namespace Crocodile
 		{
 			// calculating view matrix
 			glm::mat4 view;
-			if (!layer->applyCamera)
+			if (!layer->m_applyCamera)
 				view = glm::mat4(1.0f);
 			else
-				view = camera->getViewMatrix(layer->depth);
+				view = camera->getViewMatrix(layer->m_depth);
 
 			// calculating projection matrix
-			glm::mat4 projection = camera->getProjectionMatrix(layer->applyCamera);
+			glm::mat4 projection = camera->getProjectionMatrix(layer->m_applyCamera);
 			// get object position
 			glm::vec2 pos = obj->getScaledPosition();
 
 			std::vector<Light *> lights;
 			if (enableLighting)
-				lights = lightSystem->getScaledLights(obj->modelScale);
+				lights = lightSystem->getScaledLights(obj->m_modelScale);
 			else
 				lights = {};
 				
-			if (obj->renderMethod == "sprite")
+			if (obj->m_renderMethod == "sprite")
 			{
 				spriteRenderer->render(
 					time,
 					obj->calculateModelMatrix(pos, 1.f),
 					view,
 					projection,
-					obj->texture,
-					obj->useTexture,
-					obj->useColorTexture,
-					obj->numberOfRows,
-					obj->numberOfCols,
-					obj->textureOffset,
-					obj->color,
-					obj->alpha,
+					obj->m_texture,
+					obj->m_useTexture,
+					obj->m_useColorTexture,
+					obj->m_numberOfRows,
+					obj->m_numberOfCols,
+					obj->m_textureOffset,
+					obj->m_color,
+					obj->m_alpha,
 					ambientLighting,
 					lights,
-					obj->outline,
-					obj->size.x / obj->size.y,
+					obj->m_outline,
+					obj->m_size.x / obj->m_size.y,
 					distortionTexture,
-					obj->useDistortion,
-					obj->scrollDistortionX,
-					obj->scrollDistortionY,
-					obj->distortionSpeed,
-					obj->flipX,
-					obj->flipY,
-					layer->alpha,
-					obj->useSqueeze,
-					obj->deformationMagnitude
+					obj->m_useDistortion,
+					obj->m_scrollDistortionX,
+					obj->m_scrollDistortionY,
+					obj->m_distortionSpeed,
+					obj->m_flipX,
+					obj->m_flipY,
+					layer->m_alpha,
+					obj->m_useSqueeze,
+					obj->m_deformationMagnitude
 					);
 			}
-			else if (obj->renderMethod == "particles")
+			else if (obj->m_renderMethod == "particles")
 			{
 				ParticleGenerator *pg = (ParticleGenerator *)obj;
 				particleRenderer->render(
@@ -184,16 +184,16 @@ namespace Crocodile
 					pg->calculateModelMatrix(pos, 1.f),
 					view,
 					projection,
-					pg->texture.textureID,
-					pg->useTexture,
-					pg->color,
-					pg->alpha,
-					layer->alpha,
+					pg->m_texture.textureID,
+					pg->m_useTexture,
+					pg->m_color,
+					pg->m_alpha,
+					layer->m_alpha,
 					ambientLighting,
 					lights
 					);
 			}
-			else if (obj->renderMethod == "text")
+			else if (obj->m_renderMethod == "text")
 			{
 				Text *text = (Text *)obj;
 				textRenderers[text->fontName]->render(
@@ -201,12 +201,12 @@ namespace Crocodile
 					text->calculateModelMatrix(pos, 1.f),
 					view,
 					projection,
-					text->color,
-					text->alpha,
-					text->getScale() * glm::vec2(text->modelScale.x, text->modelScale.y),
-					layer->alpha);
+					text->m_color,
+					text->m_alpha,
+					text->getScale() * glm::vec2(text->m_modelScale.x, text->m_modelScale.y),
+					layer->m_alpha);
 			}
-			else if (obj->renderMethod == "line")
+			else if (obj->m_renderMethod == "line")
 			{
 				shapes::Line *line = (shapes::Line *)obj;
 				lineRenderer->render(
@@ -214,11 +214,11 @@ namespace Crocodile
 					line->p2,
 					view,
 					projection,
-					line->color,
-					line->alpha,
-					layer->alpha);
+					line->m_color,
+					line->m_alpha,
+					layer->m_alpha);
 			}
-			else if (obj->renderMethod == "circle")
+			else if (obj->m_renderMethod == "circle")
 			{
 				shapes::Circle *circle = (shapes::Circle *)obj;
 				circleRenderer->render(
@@ -227,19 +227,19 @@ namespace Crocodile
 					obj->calculateModelMatrix(pos, 1.f),
 					view,
 					projection,
-					circle->color,
-					circle->alpha,
-					layer->alpha);
+					circle->m_color,
+					circle->m_alpha,
+					layer->m_alpha);
 			}
-			else if (obj->renderMethod == "batch_sprite")
+			else if (obj->m_renderMethod == "batch_sprite")
 			{
 				BatchSprite *batchSprite = (BatchSprite *)obj;
 				batchSprite->render(
 					viewportScale,
 					view,
 					projection,
-					batchSprite->texture,
-					batchSprite->alpha,
+					batchSprite->m_texture,
+					batchSprite->m_alpha,
 					ambientLighting,
 					lights
 					);
@@ -251,7 +251,7 @@ namespace Crocodile
 
 			col::BoundingBox bbox = obj->getBoundingBox();
 			// render axis lines
-			if (obj->showAxes)
+			if (obj->m_showAxes)
 			{
 				// axes lines
 				for (glm::vec2 v : bbox.getDebugAxes())
@@ -263,11 +263,11 @@ namespace Crocodile
 						projection,
 						glm::vec3(0.f, 0.f, 1.f),
 						0.5f,
-						layer->alpha);
+						layer->m_alpha);
 				}
 			}
 			// render lines to display object's bounding box
-			if (obj->showBoundingBox)
+			if (obj->m_showBoundingBox)
 			{
 				// connect bbox vertices
 				std::vector<glm::vec2> vertices = bbox.vertices;
@@ -278,26 +278,26 @@ namespace Crocodile
 						vertices[i] * viewportScale,
 						view,
 						projection,
-						obj->color,
-						obj->alpha,
-						layer->alpha);
+						obj->m_color,
+						obj->m_alpha,
+						layer->m_alpha);
 				}
 				lineRenderer->render(
 					vertices[3] * viewportScale,
 					vertices[0] * viewportScale,
 					view,
 					projection,
-					obj->color,
-					obj->alpha,
-					layer->alpha);
+					obj->m_color,
+					obj->m_alpha,
+					layer->m_alpha);
 			}
 		}
 
 		void Scene::clear()
 		{
 			lightSystem->clear();
-			for (Layer *layer : layerStack->layers)
-				layer->objects.clear();
+			for (Layer *layer : layerStack->getLayers())
+				layer->clear();
 			collisionLayers.clear();
 		}
 
@@ -374,13 +374,13 @@ namespace Crocodile
 							if (velocity.y >= 0)
 							{
 								velocity.y = d;
-								obj->velocity.y = 0.f;
-								obj->collisionData[tilemapLayer].on_floor = true;
+								obj->m_velocity.y = 0.f;
+								obj->m_collisionData[tilemapLayer].on_floor = true;
 							}
 							else
 							{
 								velocity.y = -d;
-								obj->collisionData[tilemapLayer].on_ceiling = true;
+								obj->m_collisionData[tilemapLayer].on_ceiling = true;
 							}
 						}
 						// x-axis collision
@@ -391,12 +391,12 @@ namespace Crocodile
 							if (velocity.x >= 0)
 							{
 								velocity.x = d;
-								obj->collisionData[tilemapLayer].on_wall_right = true;
+								obj->m_collisionData[tilemapLayer].on_wall_right = true;
 							}
 							else
 							{
 								velocity.x = -d;
-								obj->collisionData[tilemapLayer].on_wall_left = true;
+								obj->m_collisionData[tilemapLayer].on_wall_left = true;
 							}
 						}
 					}
@@ -420,13 +420,13 @@ namespace Crocodile
 					if (velocity.y >= 0)
 					{
 						velocity.y = d;
-						obj->velocity.y = 0.f;
-						obj->collisionData[collisionLayer].on_floor = true;
+						obj->m_velocity.y = 0.f;
+						obj->m_collisionData[collisionLayer].on_floor = true;
 					}
 					else
 					{
 						velocity.y = -d;
-						obj->collisionData[collisionLayer].on_ceiling = true;
+						obj->m_collisionData[collisionLayer].on_ceiling = true;
 					}
 				}
 				// x-axis collision
@@ -437,12 +437,12 @@ namespace Crocodile
 					if (velocity.x >= 0)
 					{
 						velocity.x = d;
-						obj->collisionData[collisionLayer].on_wall_right = true;
+						obj->m_collisionData[collisionLayer].on_wall_right = true;
 					}
 					else
 					{
 						velocity.x = -d;
-						obj->collisionData[collisionLayer].on_wall_left = true;
+						obj->m_collisionData[collisionLayer].on_wall_left = true;
 					}
 				}
 			}
@@ -496,7 +496,7 @@ namespace Crocodile
 				pg->update(dt);
 				if (pg->finished)
 				{
-					removeObject(pg, pg->layer);
+					removeObject(pg, pg->m_layer);
 					particles.erase(std::remove(particles.begin(), particles.end(), pg), particles.end());
 					delete pg;
 				}

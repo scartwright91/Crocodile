@@ -20,29 +20,29 @@ namespace Crocodile
 			Animation(std::vector<TextureData> textures, float frameDuration);
 			~Animation();
 
-			bool spritesheetAnimation = false;
+			bool m_spritesheetAnimation = false;
 
 			// animation variables
-			bool freezeAnimation = false;
-			bool repeat = true;
-			bool finished = false;
-			float delayBetweenAnimations = 0.f;
+			bool m_freezeAnimation = false;
+			bool m_repeat = true;
+			bool m_finished = false;
+			float m_delayBetweenAnimations = 0.f;
 
 			// spritesheet variables
-			TextureData spritesheet = {};
-			unsigned int gridSize;
+			TextureData m_spritesheet = {};
+			unsigned int m_gridSize;
 
-			float frameDuration;
-			float width;
-			std::vector<TextureData> textures = {};
-			unsigned int totalFrames, currentFrame;
+			float m_frameDuration;
+			float m_width;
+			std::vector<TextureData> m_textures = {};
+			unsigned int m_totalFrames, m_currentFrame;
 
 			glm::vec2 getTextureOffset();
 			void updateAnimation(float dt);
 
 		private:
-			float timer = 0.0f;
-			float finishTimer = 0.0f;
+			float m_timer = 0.0f;
+			float m_finishTimer = 0.0f;
 		};
 	}
 }

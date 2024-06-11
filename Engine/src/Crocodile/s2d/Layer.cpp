@@ -7,7 +7,7 @@ namespace Crocodile
 
 		Layer::Layer(std::string name)
 		{
-			this->name = name;
+			m_name = name;
 		}
 
 		Layer::~Layer()
@@ -16,16 +16,16 @@ namespace Crocodile
 
 		void Layer::addObject(Object *obj)
 		{
-			objects.push_back(obj);
+			m_objects.push_back(obj);
 		}
 
 		void Layer::removeObject(Object *obj)
 		{
-			for (unsigned int i = 0; i < objects.size(); i++)
+			for (unsigned int i = 0; i < m_objects.size(); i++)
 			{
-				if (objects[i]->id == obj->id)
+				if (m_objects[i]->m_id == obj->m_id)
 				{
-					objects.erase(objects.begin() + i);
+					m_objects.erase(m_objects.begin() + i);
 					break;
 				}
 			}
@@ -33,7 +33,7 @@ namespace Crocodile
 
 		void Layer::sort()
 		{
-			std::sort(objects.begin(), objects.end(), [](s2d::Object *o1, s2d::Object *o2)
+			std::sort(m_objects.begin(), m_objects.end(), [](s2d::Object *o1, s2d::Object *o2)
 					  { return o1->getYSortValue() < o2->getYSortValue(); });
 		}
 

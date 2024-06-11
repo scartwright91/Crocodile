@@ -7,11 +7,11 @@ namespace Crocodile
 
 		ParticleGenerator::ParticleGenerator(ParticleSettings settings) : settings(settings)
 		{
-			this->size = glm::vec2(1.f);
-			this->color = settings.colour;
+			m_size = glm::vec2(1.f);
+			m_color = settings.colour;
 			if (settings.texture.name != "")
 				setTexture(settings.texture);
-			renderMethod = "particles";
+			m_renderMethod = "particles";
 			createParticles();
 		}
 

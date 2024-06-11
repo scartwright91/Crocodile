@@ -11,16 +11,16 @@ namespace Crocodile
             std::vector<glm::vec2> tilesetPositions,
             glm::vec2 size,
             float tilesetWidth,
-            float tilesetHeight) : positions(positions), tilesetPositions(tilesetPositions), tilesetWidth(tilesetWidth), tilesetHeight(tilesetHeight)
+            float tilesetHeight) : m_positions(positions), m_tilesetPositions(tilesetPositions), m_tilesetWidth(tilesetWidth), m_tilesetHeight(tilesetHeight)
         {
-            renderMethod = "batch_sprite";
-            this->size = size;
+            m_renderMethod = "batch_sprite";
+            m_size = size;
             createRenderer(shader);
         }
 
         BatchSprite::~BatchSprite()
         {
-            delete renderer;
+            delete m_renderer;
         }
 
         void BatchSprite::render(
@@ -33,18 +33,18 @@ namespace Crocodile
             std::vector<Light *> lights
             )
         {
-            renderer->render(viewportScale, view, projection, texture, alpha, ambientLighting, lights);
+            m_renderer->render(viewportScale, view, projection, texture, alpha, ambientLighting, lights);
         }
 
         void BatchSprite::createRenderer(graphics::Shader *shader)
         {
-            renderer = new BatchRenderer(
+            m_renderer = new BatchRenderer(
                 shader,
-                positions,
-                tilesetPositions,
-                size,
-                tilesetWidth,
-                tilesetHeight);
+                m_positions,
+                m_tilesetPositions,
+                m_size,
+                m_tilesetWidth,
+                m_tilesetHeight);
         }
 
     }

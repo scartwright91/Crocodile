@@ -14,19 +14,19 @@ namespace Crocodile
 			Camera(graphics::Window *win);
 			~Camera();
 
-			Object *target = nullptr;
+			Object *m_target = nullptr;
 
-			glm::vec3 cameraScaledPosition = glm::vec3(0.0f);
-			glm::vec2 screenPos = glm::vec2(0.0f);
+			glm::vec3 m_cameraScaledPosition = glm::vec3(0.0f);
+			glm::vec2 m_screenPos = glm::vec2(0.0f);
 
-			bool capMinimumZoom = true;
-			bool transitioning = false;
-			bool centreOnTarget = true;
+			bool m_capMinimumZoom = true;
+			bool m_transitioning = false;
+			bool m_centreOnTarget = true;
 
-			double distance = 0.0f;
-			float v = 0.f;
+			double m_distance = 0.0f;
+			float m_v = 0.f;
 
-			float zoom = 1.0f;
+			float m_zoom = 1.0f;
 			void setZoom(float z);
 			void changeZoom(float z);
 
@@ -46,16 +46,16 @@ namespace Crocodile
 			void update(glm::vec2 viewportScale);
 
 		private:
-			bool clampX = false;
-			bool clampY = false;
-			glm::vec2 levelBounds = glm::vec2(0.f);
-			glm::vec2 scaledLevelBounds = glm::vec2(0.f);
+			bool m_clampX = false;
+			bool m_clampY = false;
+			glm::vec2 m_levelBounds = glm::vec2(0.f);
+			glm::vec2 m_scaledLevelBounds = glm::vec2(0.f);
 
 			void clamp();
 
-			glm::vec2 viewportScale = glm::vec2(1.f);
+			glm::vec2 m_viewportScale = glm::vec2(1.f);
 
-			graphics::Window *window;
+			graphics::Window *m_window;
 			glm::vec2 calculateTransition(glm::vec2 pos);
 		};
 	}
