@@ -4,6 +4,7 @@
 #include <string>
 #include <filesystem>
 #include <vector>
+#include <sol/sol.hpp>
 
 #include "Core.h"
 #include "graphics/ShaderManager.h"
@@ -54,6 +55,8 @@ namespace Crocodile
         std::vector<TextureData> getAnimationData(std::string name);
 
         void addDirWatcher(std::string path, AssetType assetType);
+        void addLuaBindings(sol::state &lua);
+        
     private:
         TextureData loadTextureFromFile(char const* path, std::string name, bool repeat) const;
         void reloadTexture(std::string path);

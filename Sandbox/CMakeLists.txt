@@ -43,4 +43,8 @@ if (NOT EMSCRIPTEN)
     target_include_directories(${PROJECT_NAME} PRIVATE ${LUA_INCLUDE_DIR})
     target_link_libraries(${PROJECT_NAME} PRIVATE ${LUA_LIBRARIES})
 
+    # Sol    
+    find_package(sol2 CONFIG REQUIRED)
+    target_link_libraries(${PROJECT_NAME} PRIVATE sol2)
+
 endif()

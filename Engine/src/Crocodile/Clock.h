@@ -1,44 +1,34 @@
 #pragma once
 
-#include <cmath>
-#include <GLFW/glfw3.h>
-#include "Core.h"
+#include <iostream>
+#include <chrono>
+#include <thread>
 
 namespace Crocodile
 {
-	class CROCODILE_API Clock
-	{
+	class Clock {
+		public:
+			Clock() : m_lastFrameTime(std::chrono::high_resolution_clock::now()) {}
 
-	public:
-
-		Clock() {}
-
-		void tick()
-		{
-			float currentFrame = (float)glfwGetTime();
-			if (firstFrame)
-			{
-				deltaTime = 0.f;
-				firstFrame = false;
-				return;
+			void tick() {
+				auto currentTime = std::chrono::high_resolution_clock::now();
+				std::chrono::duration<float> delta = currentTime - m_lastFrameTime;
+				m_lastFrameTime = currentTime;
+				if (m_firstFrame)
+				{
+					m_deltaTime = 0.0f;
+					m_firstFrame = false;
+					return;
+				}
+				m_deltaTime = delta.count();
 			}
-			deltaTime = currentFrame - lastFrame;
-			if (deltaTime > 0.1)
-				deltaTime = 0.0;
-			lastFrame = currentFrame;
-		}
 
-		int getFPS() const
-		{
-			return (int)floor(1 / deltaTime);
-		}
+			float inline getDeltaTime() { return (float)m_deltaTime; };
+			float inline getFPS() { return 1.f / m_deltaTime; };
 
-	private:
-		float lastFrame = 0.0f;
-		bool firstFrame = true;
-
-	public:
-		float deltaTime = 0.0f;
-
+		private:
+			bool m_firstFrame = true;
+			float m_deltaTime;
+			std::chrono::time_point<std::chrono::high_resolution_clock> m_lastFrameTime;
 	};
 }

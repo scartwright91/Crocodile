@@ -7,6 +7,8 @@ out vec4 color;
 
 uniform float u_Alpha;
 uniform sampler2D u_Texture;
+uniform bool u_UseTexture;
+uniform vec3 u_Colour;
 
 struct Light {
 	vec3 position;
@@ -21,7 +23,10 @@ void main() {
 
     vec4 result;
 
-    result = texture(u_Texture, vec2(TexCoords.x, TexCoords.y)) * vec4(1, 1, 1, u_Alpha);
+	if (u_UseTexture)
+    	result = texture(u_Texture, vec2(TexCoords.x, TexCoords.y)) * vec4(1, 1, 1, u_Alpha);
+	else
+		result = vec4(u_Colour, u_Alpha);
 
 	// apply lighting
 	if (u_EnableLighting)

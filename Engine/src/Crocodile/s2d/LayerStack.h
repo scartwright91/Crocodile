@@ -31,6 +31,7 @@ namespace Crocodile
 
 			unsigned int getLayerPosition(std::string name);
 			unsigned int inline getLayerNumber() { return (unsigned int)m_layers.size(); }
+			unsigned int getNumberOfObjects();
 
 		private:
 			std::vector<Layer *> m_layers = {};

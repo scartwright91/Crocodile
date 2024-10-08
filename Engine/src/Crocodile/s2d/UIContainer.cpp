@@ -30,7 +30,7 @@ namespace Crocodile
 			alignment = TOP;
 			layout = VERTICAL;
 			transition = NONE;
-			m_size = size;
+			setSize(size);
 			currentElementPosition = padding;
 		}
 
@@ -42,9 +42,10 @@ namespace Crocodile
 		{
 			obj->setPosition(getPosition());
 			obj->move(currentElementPosition.x, currentElementPosition.y);
-			updateCurrentElementPosition(obj->m_size.x, obj->m_size.y);
+			glm::vec2 size = obj->getSize();
+			updateCurrentElementPosition(size.x, size.y);
 			if (!staticSize)
-				updateContainer(obj->m_size.x, obj->m_size.y);
+				updateContainer(size.x, size.y);
 		}
 
 		void UIContainer::updateCurrentElementPosition(float width, float height)
@@ -61,17 +62,18 @@ namespace Crocodile
 
 		void UIContainer::updateContainer(float width, float height)
 		{
+			glm::vec2 size = getSize();
 			if (layout == VERTICAL)
 			{
-				m_size.y += (height + padding.y);
-				if (width + padding.x > m_size.x)
-					m_size.x = width + 2 * padding.x;
+				size.y += (height + padding.y);
+				if (width + padding.x > size.x)
+					size.x = width + 2 * padding.x;
 			}
 			else if (layout == HORIZONTAL)
 			{
-				m_size.x += (width + padding.x);
-				if (height + padding.y > m_size.y)
-					m_size.y = height + 2 * padding.y;
+				size.x += (width + padding.x);
+				if (height + padding.y > size.y)
+					size.y = height + 2 * padding.y;
 			}
 		}
 	}

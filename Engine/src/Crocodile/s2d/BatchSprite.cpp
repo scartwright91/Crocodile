@@ -10,11 +10,23 @@ namespace Crocodile
             std::vector<glm::vec2> positions,
             std::vector<glm::vec2> tilesetPositions,
             glm::vec2 size,
-            float tilesetWidth,
-            float tilesetHeight) : m_positions(positions), m_tilesetPositions(tilesetPositions), m_tilesetWidth(tilesetWidth), m_tilesetHeight(tilesetHeight)
+            TextureData tileset) : m_positions(positions), m_tilesetPositions(tilesetPositions)
         {
             m_renderMethod = "batch_sprite";
-            m_size = size;
+            setSize(size);
+            setTexture(tileset);
+            createRenderer(shader);
+        }
+
+        BatchSprite::BatchSprite(
+            graphics::Shader *shader,
+            std::vector<glm::vec2> positions,
+            glm::vec2 size,
+            glm::vec3 colour) : m_positions(positions)
+        {
+            m_renderMethod = "batch_sprite";
+            m_color = colour;
+            setSize(size);
             createRenderer(shader);
         }
 
@@ -33,18 +45,38 @@ namespace Crocodile
             std::vector<Light *> lights
             )
         {
-            m_renderer->render(viewportScale, view, projection, texture, alpha, ambientLighting, lights);
+            m_renderer->render(
+                viewportScale,
+                view,
+                projection,
+                texture,
+                m_color,
+                alpha,
+                ambientLighting,
+                lights
+            );
         }
 
         void BatchSprite::createRenderer(graphics::Shader *shader)
         {
-            m_renderer = new BatchRenderer(
-                shader,
-                m_positions,
-                m_tilesetPositions,
-                m_size,
-                m_tilesetWidth,
-                m_tilesetHeight);
+            if (m_useTexture)
+            {
+                m_renderer = new BatchRenderer(
+                    shader,
+                    m_positions,
+                    m_tilesetPositions,
+                    getSize(),
+                    m_texture.width,
+                    m_texture.height);
+            }
+            else
+            {
+                m_renderer = new BatchRenderer(
+                    shader,
+                    m_positions,
+                    getSize()
+                );
+            }
         }
 
     }

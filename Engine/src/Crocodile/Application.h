@@ -16,6 +16,8 @@
 #include "graphics/PostProcessing.h"
 #include "ResourceManager.h"
 #include "audio/SoundManager.h"
+#include "scripting/ScriptingSystem.h"
+#include "s2d/LevelParser.h"
 
 #include "s2d/Scene.h"
 #include "s3d/Scene.h"
@@ -40,16 +42,24 @@ namespace Crocodile
 			bool resizeable,
 			unsigned int width,
 			unsigned int height,
-			bool useImGui);
+			bool useImGui,
+			bool useLua
+		);
 		virtual ~Application();
 
 		ResourceManager m_resourceManager;
 		SoundManager m_soundManager;
+		scripting::ScriptingSystem m_scriptSystem;
 
 		bool m_running = true;
 		graphics::Window m_window;
 		graphics::PostProcessing* m_postProcessing = nullptr;
+
+		// 2d
 		s2d::Scene *m_scene2d;
+		s2d::LevelParser *m_levelParser;
+
+		// 3d
 		s3d::Scene *m_scene3d;
 		Clock m_clock;
 
@@ -75,7 +85,6 @@ namespace Crocodile
 		void setCurrentScene2d(s2d::Scene *scene);
 		void setCurrentScene3d(s3d::Scene *scene);
 		virtual void update(float dt){};
-		virtual void fixedUpdate(float dt){};
 		virtual void renderImGui(){};
 
 	private:

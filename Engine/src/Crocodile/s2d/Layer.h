@@ -22,6 +22,7 @@ namespace Crocodile
 			void removeObject(Object *obj);
 			void sort();
 			void inline clear() { m_objects.clear(); };
+			unsigned int inline getNumberOfObjects() { return (int)m_objects.size(); };
 
 			// layer characteristics
 			std::string m_name = "";

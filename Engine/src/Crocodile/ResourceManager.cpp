@@ -186,4 +186,25 @@ namespace Crocodile
         return td;
     }
 
+    void ResourceManager::addLuaBindings(sol::state &lua)
+    {
+        lua.new_usertype<TextureData>(
+            "texture_data",
+            sol::no_constructor,
+            "name", &TextureData::name,
+            "path", &TextureData::path,
+            "texture", &TextureData::textureID,
+            "width", &TextureData::width,
+            "height", &TextureData::height,
+            "repeat", &TextureData::repeat
+        );
+        lua.new_usertype<ResourceManager>(
+            "resource_manager",
+            sol::no_constructor,
+            "load_texture", &ResourceManager::loadTexture,
+            "load_animation", &ResourceManager::loadAnimation,
+            "get_texture", &ResourceManager::getTexture
+        );
+    }
+
 }

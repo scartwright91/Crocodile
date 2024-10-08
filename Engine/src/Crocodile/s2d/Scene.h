@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <algorithm>
+#include <sol/sol.hpp>
 
 #include "../Core.h"
 #include "../ResourceManager.h"
@@ -36,20 +37,28 @@ namespace Crocodile
 			Scene(graphics::Window *window, ResourceManager *resourceManager);
 			~Scene();
 
-			graphics::Window* m_window;
-			s2d::Camera* m_camera;
-
-			int m_windowWidth;
-			int m_windowHeight;
-
-			void addObject(s2d::Object *object, std::string layerName);
-			void removeObject(s2d::Object *object, std::string layerName);
-
 			void update(float dt);
 			void updateObjects(float dt);
 			void render();
 			void clear();
 			void scaleScene();
+
+			Object* addSprite(std::string layerName);
+			// Text* addText(std::string layerName);
+			// ParticleGenerator* addParticles(ParticleSettings settings, std::string layerName);
+			// BatchSprite* addBatchSprite(std::string )
+
+			void addObject(Object *object, std::string layerName);
+			void removeObject(Object *object, std::string layerName);
+			void addLayer(const std::string &layerName, bool applyCamera);
+
+			unsigned int inline numberOfObjectsInScene() { return m_layerStack->getNumberOfObjects(); };
+
+			graphics::Window* m_window;
+			Camera* m_camera;
+
+			int m_windowWidth;
+			int m_windowHeight;
 
 			// tilemap (for grid based games)
 			unsigned int m_tilemapLayer = 0;
@@ -105,6 +114,9 @@ namespace Crocodile
 			std::vector<ParticleGenerator*> m_particles = {};
 			void addParticleEffect(glm::vec2 position, ParticleSettings settings, std::string layer);
 			void updateParticles(float dt);
+
+			// lua
+			void addLuaBindings(sol::state &lua);
 
 		private:
 

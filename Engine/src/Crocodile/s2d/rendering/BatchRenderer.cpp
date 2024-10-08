@@ -4,6 +4,7 @@ namespace Crocodile
 {
     namespace s2d
     {
+
         BatchRenderer::BatchRenderer(
             graphics::Shader *shader,
             std::vector<glm::vec2> positions,
@@ -15,7 +16,20 @@ namespace Crocodile
                                    tilesetPositions(tilesetPositions),
                                    size(size),
                                    tilesetWidth(tilesetWidth),
-                                   tilesetHeight(tilesetHeight)
+                                   tilesetHeight(tilesetHeight),
+                                   m_useTexture(true)
+        {
+            init();
+            initShader();
+        }
+
+        BatchRenderer::BatchRenderer(
+            graphics::Shader *shader,
+            std::vector<glm::vec2> positions,
+            glm::vec2 size) : shader(shader),
+                              positions(positions),
+                              size(size),
+                              m_useTexture(false)
         {
             init();
             initShader();
@@ -33,48 +47,82 @@ namespace Crocodile
 
             std::vector<float> vertices = {};
 
-            unsigned int ncols = (unsigned int)(tilesetWidth / size.x);
-            unsigned int nrows = (unsigned int)(tilesetHeight / size.y);
-            for (unsigned int idx = 0; idx < positions.size(); idx++)
+            if (m_useTexture)
             {
-                glm::vec2 pos = positions[idx];
-                glm::vec2 tilesetPos = tilesetPositions[idx];
+                unsigned int ncols = (unsigned int)(tilesetWidth / size.x);
+                unsigned int nrows = (unsigned int)(tilesetHeight / size.y);
+                for (unsigned int idx = 0; idx < positions.size(); idx++)
+                {
+                    glm::vec2 pos = positions[idx];
+                    glm::vec2 tilesetPos = tilesetPositions[idx];
 
-                // v1
-                vertices.push_back(pos.x);
-                vertices.push_back(pos.y + size.y);
-                vertices.push_back(0.f / ncols + tilesetPos.x);
-                vertices.push_back(1.f / nrows + tilesetPos.y);
+                    // v1
+                    vertices.push_back(pos.x);
+                    vertices.push_back(pos.y + size.y);
+                    vertices.push_back(0.f / ncols + tilesetPos.x);
+                    vertices.push_back(1.f / nrows + tilesetPos.y);
 
-                // v2
-                vertices.push_back(pos.x + size.x);
-                vertices.push_back(pos.y);
-                vertices.push_back(1.f / ncols + tilesetPos.x);
-                vertices.push_back(0.f / nrows + tilesetPos.y);
+                    // v2
+                    vertices.push_back(pos.x + size.x);
+                    vertices.push_back(pos.y);
+                    vertices.push_back(1.f / ncols + tilesetPos.x);
+                    vertices.push_back(0.f / nrows + tilesetPos.y);
 
-                // v3
-                vertices.push_back(pos.x);
-                vertices.push_back(pos.y);
-                vertices.push_back(0.f / ncols + tilesetPos.x);
-                vertices.push_back(0.f / nrows + tilesetPos.y);
+                    // v3
+                    vertices.push_back(pos.x);
+                    vertices.push_back(pos.y);
+                    vertices.push_back(0.f / ncols + tilesetPos.x);
+                    vertices.push_back(0.f / nrows + tilesetPos.y);
 
-                // v4
-                vertices.push_back(pos.x);
-                vertices.push_back(pos.y + size.y);
-                vertices.push_back(0.f / ncols + tilesetPos.x);
-                vertices.push_back(1.f / nrows + tilesetPos.y);
+                    // v4
+                    vertices.push_back(pos.x);
+                    vertices.push_back(pos.y + size.y);
+                    vertices.push_back(0.f / ncols + tilesetPos.x);
+                    vertices.push_back(1.f / nrows + tilesetPos.y);
 
-                // v5
-                vertices.push_back(pos.x + size.x);
-                vertices.push_back(pos.y + size.y);
-                vertices.push_back(1.f / ncols + tilesetPos.x);
-                vertices.push_back(1.f / nrows + tilesetPos.y);
+                    // v5
+                    vertices.push_back(pos.x + size.x);
+                    vertices.push_back(pos.y + size.y);
+                    vertices.push_back(1.f / ncols + tilesetPos.x);
+                    vertices.push_back(1.f / nrows + tilesetPos.y);
 
-                // v6
-                vertices.push_back(pos.x + size.x);
-                vertices.push_back(pos.y);
-                vertices.push_back(1.f / ncols + tilesetPos.x);
-                vertices.push_back(0.f / nrows + tilesetPos.y);
+                    // v6
+                    vertices.push_back(pos.x + size.x);
+                    vertices.push_back(pos.y);
+                    vertices.push_back(1.f / ncols + tilesetPos.x);
+                    vertices.push_back(0.f / nrows + tilesetPos.y);
+                }
+            }
+            else
+            {
+                for (unsigned int idx = 0; idx < positions.size(); idx++)
+                {
+                    glm::vec2 pos = positions[idx];
+
+                    // v1
+                    vertices.push_back(pos.x);
+                    vertices.push_back(pos.y + size.y);
+
+                    // v2
+                    vertices.push_back(pos.x + size.x);
+                    vertices.push_back(pos.y);
+
+                    // v3
+                    vertices.push_back(pos.x);
+                    vertices.push_back(pos.y);
+
+                    // v4
+                    vertices.push_back(pos.x);
+                    vertices.push_back(pos.y + size.y);
+
+                    // v5
+                    vertices.push_back(pos.x + size.x);
+                    vertices.push_back(pos.y + size.y);
+
+                    // v6
+                    vertices.push_back(pos.x + size.x);
+                    vertices.push_back(pos.y);
+                }
             }
 
             glGenVertexArrays(1, &this->VAO);
@@ -84,9 +132,12 @@ namespace Crocodile
             glBufferData(GL_ARRAY_BUFFER, vertices.size() * sizeof(float), vertices.data(), GL_STATIC_DRAW);
 
             glBindVertexArray(this->VAO);
-            // position and tex coords attribute
+
             glEnableVertexAttribArray(0);
-            glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)0);
+            if (m_useTexture)
+                glVertexAttribPointer(0, 4, GL_FLOAT, GL_FALSE, 4 * sizeof(float), (void *)0);
+            else
+                glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0);
 
             glBindBuffer(GL_ARRAY_BUFFER, 0);
             glBindVertexArray(0);
@@ -97,6 +148,7 @@ namespace Crocodile
             glm::mat4 view,
             glm::mat4 projection,
             TextureData texture,
+            glm::vec3 colour,
             float alpha,
             float ambientLighting,
             std::vector<Light *> lights
@@ -107,8 +159,13 @@ namespace Crocodile
             shader->setMat4("u_Model", glm::scale(glm::mat4(1.f), glm::vec3(viewportScale, 1.0f)));
             shader->setMat4("u_View", view);
             shader->setMat4("u_Projection", projection);
-            glActiveTexture(GL_TEXTURE0);
-            glBindTexture(GL_TEXTURE_2D, texture.textureID);
+            shader->setBool("u_UseTexture", m_useTexture);
+            if (m_useTexture)
+            {
+                glActiveTexture(GL_TEXTURE0);
+                glBindTexture(GL_TEXTURE_2D, texture.textureID);
+            }
+            shader->setVec3("u_Colour", colour);
             shader->setFloat("u_Alpha", alpha);
             // lighting
             shader->setBool("u_EnableLighting", true);

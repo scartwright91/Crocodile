@@ -27,7 +27,31 @@ namespace Crocodile
 			delete m_layerStack;
 		}
 
-		void Scene::addObject(s2d::Object *object, std::string layerName)
+		Object* Scene::addSprite(std::string layerName)
+		{
+			Object* object = new Object();
+			Layer *layer = m_layerStack->getLayer(layerName); 
+			if (layer != NULL)
+			{
+				layer->addObject(object);
+				object->m_layer = layerName;
+			}
+			else
+				LOG(ERROR, "'" + layerName + "' does not exist in layerstack");
+			return object;
+		}
+
+		// Text* Scene::addText(std::string layerName)
+		// {
+
+		// }
+
+		// ParticleGenerator* Scene::addParticles(ParticleSettings settings, std::string layerName)
+		// {
+
+		// }
+
+		void Scene::addObject(Object *object, std::string layerName)
 		{
 			Layer *layer = m_layerStack->getLayer(layerName);
 			if (layer != NULL)
@@ -36,10 +60,10 @@ namespace Crocodile
 				object->m_layer = layerName;
 			}
 			else
-				LOG(ERROR, "Layer " + layerName + " does not exist in layerstack");
+				LOG(ERROR, "'" + layerName + "' does not exist in layerstack");
 		}
 
-		void Scene::removeObject(s2d::Object *object, std::string layerName)
+		void Scene::removeObject(Object *object, std::string layerName)
 		{
 			Layer *layer = m_layerStack->getLayer(layerName);
 			if (layer != NULL)
@@ -52,6 +76,13 @@ namespace Crocodile
 			}
 			else
 				LOG(ERROR, "Layer " + layerName + " does not exist in layerstack");
+		}
+
+		void Scene::addLayer(const std::string &layerName, bool applyCamera)
+		{
+			Layer* layer = new Layer(layerName);
+			layer->m_applyCamera = applyCamera;
+			m_layerStack->addLayer(layer);
 		}
 
 		void Scene::update(float dt)
@@ -85,14 +116,13 @@ namespace Crocodile
 						obj->updateSqueezeEffect(dt);
 						obj->m_modelScale = glm::vec3(m_scale, 1.f);
 						glm::vec2 velocity = obj->m_velocity * glm::vec2(dt);
-						if (obj->m_collisionLayers.size() > 0)
-						{
-							// static tile-based collisions
+						// static tile-based collisions
+						if (obj->m_enableTilemapCollisions)
 							velocity = resolveTilemapCollisions(obj, velocity);
-							// dynamic entitiy collisions
+						// dynamic entitiy collisions
+						if (obj->m_collisionLayers.size() > 0)
 							for (unsigned int collisionLayer = 1; collisionLayer <= 3; collisionLayer++)
 								velocity = resolveCollisions(obj, collisionLayer, velocity);
-						}
 						obj->move(velocity.x, velocity.y);
 					}
 				}
@@ -158,7 +188,7 @@ namespace Crocodile
 					m_ambientLighting,
 					lights,
 					obj->m_outline,
-					obj->m_size.x / obj->m_size.y,
+					obj->getSize().x / obj->getSize().y,
 					m_distortionTexture,
 					obj->m_useDistortion,
 					obj->m_scrollDistortionX,
@@ -291,8 +321,14 @@ namespace Crocodile
 		void Scene::clear()
 		{
 			m_lightSystem->clear();
+			// object and layer cleanup
 			for (Layer *layer : m_layerStack->getLayers())
+			{
+				for (Object* obj : layer->getObjects())
+					delete obj;
 				layer->clear();
+				delete layer;
+			}
 			m_collisionLayers.clear();
 		}
 
@@ -357,7 +393,7 @@ namespace Crocodile
 			{
 				for (int y = std::max(tileY - 3, 0); y < std::min(tileY + 3, (int)m_tilemapSize.y); y++)
 				{
-					s2d::Tile tile = m_collisionTilemap[y][x];
+					Tile tile = m_collisionTilemap[y][x];
 					if (tile.collideable)
 					{
 						col::BoundingBox tb = tile.getBoundingBox();
@@ -397,7 +433,6 @@ namespace Crocodile
 					}
 				}
 			}
-
 			return velocity;
 		}
 
@@ -405,7 +440,7 @@ namespace Crocodile
 		{
 			obj->resetCollisionData(collisionLayer);
 			float d = 0.f;
-			for (s2d::Object *e : m_collisionLayers[collisionLayer])
+			for (Object *e : m_collisionLayers[collisionLayer])
 			{
 				// y-axis collision
 				bool yCollision = obj->getShiftedBoundingBox(0.0f, velocity.y).intersectsBounds(e->getBoundingBox());
@@ -473,7 +508,7 @@ namespace Crocodile
 
 		void Scene::addTextRenderer(const std::string name, const std::string fontPath, unsigned int fontSize)
 		{
-			m_textRenderers[name] = new s2d::TextRenderer(fontPath, fontSize, m_resourceManager->m_shaderManager.getShader("text")); 
+			m_textRenderers[name] = new TextRenderer(fontPath, fontSize, m_resourceManager->m_shaderManager.getShader("text")); 
 		}
 
 		void Scene::addParticleEffect(glm::vec2 position, ParticleSettings settings, std::string layer)
@@ -498,19 +533,57 @@ namespace Crocodile
 			}
 		}
 
+		void Scene::addLuaBindings(sol::state &lua)
+		{
+			// scene bindings
+			lua.new_usertype<s2d::Scene>(
+				"s2d_scene",
+				sol::no_constructor,
+				"number_of_objects_in_scene", [&]() {
+					return numberOfObjectsInScene();
+				},
+				"get_window_width", [&]() {
+					return m_windowWidth;
+				},
+				"get_window_height", [&]() {
+					return m_windowHeight;
+				},
+				"add_layer", &s2d::Scene::addLayer,
+				"add_sprite", &s2d::Scene::addSprite
+			);
+			// object bindings
+			lua.new_usertype<s2d::Object>(
+				"s2d_object",
+				sol::no_constructor,
+				"get_position", &s2d::Object::getPosition,
+				"set_position", &s2d::Object::setPosition,
+				"set_size", &s2d::Object::setSize,
+				"get_size", &s2d::Object::getSize,
+				"set_colour", &s2d::Object::setColour,
+				"set_alpha", &s2d::Object::setAlpha,
+				"set_texture", &s2d::Object::setTexture
+			);
+			// camera bindings
+			lua.new_usertype<s2d::Camera>(
+				"camera",
+				sol::no_constructor,
+				"set_target", &s2d::Camera::setTarget
+			);
+		}
+
 		void Scene::init()
 		{
-			m_camera = new s2d::Camera(m_window);
-			m_lightSystem = new s2d::LightSystem();
+			m_camera = new Camera(m_window);
+			m_lightSystem = new LightSystem();
 			m_distortionTexture = m_resourceManager->getTexture("distortion_texture").textureID;
 			m_layerStack = new LayerStack();
 			// renderers
-			m_spriteRenderer = new s2d::SpriteRenderer(m_resourceManager->m_shaderManager.getShader("sprite"));
-			m_particleRenderer = new s2d::ParticleRenderer(m_resourceManager->m_shaderManager.getShader("particle"));
-			m_lineRenderer = new s2d::LineRenderer(m_resourceManager->m_shaderManager.getShader("line"));
-			m_circleRenderer = new s2d::CircleRenderer(m_resourceManager->m_shaderManager.getShader("circle"));
-			m_grid = new s2d::BackgroundGrid(m_resourceManager->m_shaderManager.getShader("grid"));
-			m_textRenderers["default"] = new s2d::TextRenderer("assets/fonts/OpenSans-Regular.ttf", 48, m_resourceManager->m_shaderManager.getShader("text"));
+			m_spriteRenderer = new SpriteRenderer(m_resourceManager->m_shaderManager.getShader("sprite"));
+			m_particleRenderer = new ParticleRenderer(m_resourceManager->m_shaderManager.getShader("particle"));
+			m_lineRenderer = new LineRenderer(m_resourceManager->m_shaderManager.getShader("line"));
+			m_circleRenderer = new CircleRenderer(m_resourceManager->m_shaderManager.getShader("circle"));
+			m_grid = new BackgroundGrid(m_resourceManager->m_shaderManager.getShader("grid"));
+			m_textRenderers["default"] = new TextRenderer("assets/fonts/OpenSans-Regular.ttf", 48, m_resourceManager->m_shaderManager.getShader("text"));
 		}
 
 	}

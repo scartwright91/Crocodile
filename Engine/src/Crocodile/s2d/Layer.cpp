@@ -16,6 +16,15 @@ namespace Crocodile
 
 		void Layer::addObject(Object *obj)
 		{
+			// check if object already exists in layer
+			for (unsigned int i = 0; i < m_objects.size(); i++)
+			{
+				if (m_objects[i]->m_id == obj->m_id)
+				{
+					LOG(WARNING, "Object (" + obj->m_label + ") already exists in layer");
+					return;
+				}
+			}
 			m_objects.push_back(obj);
 		}
 

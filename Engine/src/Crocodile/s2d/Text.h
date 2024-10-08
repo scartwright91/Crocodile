@@ -59,13 +59,13 @@ namespace Crocodile
                     this->text = text;
                 else
                     this->text = "";
-                m_size = font.getTextSize(fullText, textScale);
+                setSize(font.getTextSize(fullText, textScale));
             }
 
             void setScale(glm::vec2 scale)
             {
                 this->textScale = scale;
-                m_size = font.getTextSize(fullText, textScale);
+                setSize(font.getTextSize(fullText, textScale));
             }
 
             glm::vec2 getScale()

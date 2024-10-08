@@ -6,7 +6,7 @@ extern Crocodile::Application *Crocodile::CreateApplication();
 
 int main(int argc, char *argv[])
 {
-	printf("\n----- Crocodile Engine -----\n");
+	printf("----- Crocodile Engine -----\n");
 	auto app = Crocodile::CreateApplication();
 	app->run();
 	delete app;

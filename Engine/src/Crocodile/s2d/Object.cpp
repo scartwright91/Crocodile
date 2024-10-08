@@ -104,11 +104,6 @@ namespace Crocodile
 			return getPosition().y + m_size.y;
 		}
 
-		void Object::setPosition(glm::vec2 pos)
-		{
-			m_position = pos;
-		}
-
 		void Object::setTexture(TextureData texture)
 		{
 			this->m_texture = texture;

@@ -13,6 +13,11 @@ namespace Crocodile
         class CROCODILE_API BatchRenderer
         {
         public:
+            
+            BatchRenderer(
+                graphics::Shader *shader,
+                std::vector<glm::vec2> positions,
+                glm::vec2 size);
             BatchRenderer(
                 graphics::Shader *shader,
                 std::vector<glm::vec2> positions,
@@ -27,6 +32,7 @@ namespace Crocodile
                 glm::mat4 view,
                 glm::mat4 projection,
                 TextureData texture,
+                glm::vec3 colour,
                 float alpha,
                 float ambientLighting,
                 std::vector<Light *> lights);
@@ -37,6 +43,7 @@ namespace Crocodile
 
         private:
             void init();
+            bool m_useTexture;
             std::vector<glm::vec2> positions;
             std::vector<glm::vec2> tilesetPositions;
             glm::vec2 size;

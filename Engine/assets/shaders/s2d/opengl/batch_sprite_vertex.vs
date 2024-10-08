@@ -5,7 +5,7 @@ layout (location = 0) in vec4 vertex; // <vec2 position, vec2 texCoords>
 out vec2 TexCoords;
 out vec3 FragPos;
 
-// vertix position calculation
+// vertex position calculation
 uniform mat4 u_Model;
 uniform mat4 u_View;
 uniform mat4 u_Projection;

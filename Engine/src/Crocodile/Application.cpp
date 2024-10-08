@@ -9,7 +9,9 @@ namespace Crocodile
 		bool resizeable,
 		unsigned int width,
 		unsigned int height,
-		bool useImGui) : m_window(name, resizeable, width, height), m_useImGui(useImGui)
+		bool useImGui,
+		bool useLua
+	) : m_window(name, resizeable, width, height), m_useImGui(useImGui)
 	{
 		s_Instance = this;
 		m_windowWidth = m_window.getWidth();
@@ -24,6 +26,24 @@ namespace Crocodile
 		);
 		m_scene2d = new s2d::Scene(&m_window, &m_resourceManager);
 		m_scene3d = new s3d::Scene(&m_window, &m_resourceManager);
+
+		m_scriptSystem.enabled = useLua;
+		if (useLua)
+		{
+			// Lua bindings
+			m_scriptSystem.lua.set_function("is_key_pressed", &m_window.isKeyPressed);
+			m_scriptSystem.lua.set_function("is_mouse_pressed", &m_window.isButtonPressed);
+			m_scene2d->addLuaBindings(m_scriptSystem.lua);
+			m_resourceManager.addLuaBindings(m_scriptSystem.lua);
+
+			// add scene to lua
+			m_scriptSystem.lua["scene2d"] = m_scene2d;
+			m_scriptSystem.lua["resource_manager"] = m_resourceManager;
+
+			// load main script
+			m_scriptSystem.loadMainScript();
+		}
+
 	}
 
 	Application::~Application()
@@ -60,12 +80,12 @@ namespace Crocodile
 				ImGui::NewFrame();
 			}
 			m_resourceManager.update();
-			update(m_clock.deltaTime);
-			fixedUpdate(m_clock.deltaTime);
-			m_scene3d->update(m_clock.deltaTime);
-			m_scene2d->update(m_clock.deltaTime);
+			m_scriptSystem.update();
+			update(m_clock.getDeltaTime());
+			m_scene3d->update(m_clock.getDeltaTime());
+			m_scene2d->update(m_clock.getDeltaTime());
 			if (m_enablePostprocessing)
-				m_postProcessing->update(m_clock.deltaTime);
+				m_postProcessing->update(m_clock.getDeltaTime());
 			render();
 			if (m_useImGui)
 			{
@@ -86,7 +106,9 @@ namespace Crocodile
 		// start postprocessing scene capture
 		if (m_enablePostprocessing)
 			m_postProcessing->beginRender();
+		glEnable(GL_DEPTH_TEST);
 		m_scene3d->render();
+		glDisable(GL_DEPTH_TEST);
 		m_scene2d->render();
 		// finish and render postprocessing
 		if (m_enablePostprocessing)
@@ -137,8 +159,6 @@ namespace Crocodile
 #endif
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-		// NOTE we might want to disable this for 2d games for correct render ordering
-		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_TEXTURE_2D);
     	glEnable(GL_CLIP_DISTANCE0);
 	}

@@ -13,13 +13,19 @@ namespace Crocodile
         class CROCODILE_API BatchSprite : public Object
         {
         public:
+
             BatchSprite(
                 graphics::Shader *shader,
                 std::vector<glm::vec2> positions,
                 std::vector<glm::vec2> tilesetPositions,
                 glm::vec2 size,
-                float tilesetWidth,
-                float tilesetHeight);
+                TextureData tileset);
+            BatchSprite(
+                graphics::Shader *shader,
+                std::vector<glm::vec2> positions,
+                glm::vec2 size,
+                glm::vec3 colour
+            );
             ~BatchSprite();
 
             void render(
@@ -37,8 +43,7 @@ namespace Crocodile
             BatchRenderer* m_renderer = nullptr;
             std::vector<glm::vec2> m_positions = {};
             std::vector<glm::vec2> m_tilesetPositions = {};
-            float m_tilesetWidth;
-            float m_tilesetHeight;
+
         };
     }
 }

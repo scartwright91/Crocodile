@@ -9,6 +9,7 @@
 #include <math.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <sol/sol.hpp>
 
 #include "../Core.h"
 #include "col/BoundingBox.h"
@@ -55,10 +56,7 @@ namespace Crocodile
 			// movement
 			glm::vec2 m_velocity = glm::vec2(0.f);
 
-			// vertex
-			glm::vec2 m_size = glm::vec2(0.0f);
 			glm::vec3 m_modelScale = glm::vec3(1.0f);
-			float m_rotation = 0.0f;
 
 			// fragment
 			glm::vec3 m_color = glm::vec3(0.0f);
@@ -88,8 +86,11 @@ namespace Crocodile
 			Animation* m_animation = nullptr;
 
 			// collisions
+			bool m_enableTilemapCollisions = true;
 			void resetCollisionData(unsigned int layer);
 			std::vector<unsigned int> m_collisionLayers = {};
+			// 0 is currently reserved for tilemap collisions
+			// TODO - improve this logic
 			std::map<unsigned int, CollisionData> m_collisionData = {
 				{0, CollisionData()},
 				{1, CollisionData()},
@@ -97,6 +98,9 @@ namespace Crocodile
 			};
 
 		private:
+			// vertex
+			glm::vec2 m_size = glm::vec2(0.0f);
+			float m_rotation = 0.0f;
 			glm::vec2 m_position = glm::vec2(0.0f);
 			bool m_animated = false;
 
@@ -109,18 +113,23 @@ namespace Crocodile
 			void moveTowards(glm::vec2 targetPosition, float distance);
 			void scale(glm::vec2 s);
 			void rotate(float v);
+			glm::vec2 getPosition() const;
 			glm::vec2 getScaledSize();
 			glm::vec2 getScaledPosition();
-			glm::vec2 getPosition() const;
 			glm::vec2 getCenteredPosition();
 			glm::vec2 getScaledCenteredPosition();
 			glm::vec2 getScreenPosition(bool centre, glm::mat4 view, glm::mat4 projection, float width, float height, float layerDepth);
 			glm::vec2 getShiftedScreenPosition(glm::vec2 offset, glm::mat4 view, glm::mat4 projection, float width, float height, float layerDepth);
+			glm::vec2 inline getSize() { return m_size; };
 			float getDistanceFrom(glm::vec2 targetPosition) const;
 			float getYSortValue() const;
-			void setPosition(glm::vec2 pos);
+
+			void inline setPosition(glm::vec2 pos) { m_position = pos; };
+			void inline setSize(glm::vec2 size) { m_size = size; };
 
 			// textures, animations, vfx
+			void inline setColour(glm::vec3 col) { m_color = col; };
+			void inline setAlpha(float alpha) { m_alpha = alpha; };
 			void setTexture(TextureData texture);
 			void setTileMapTexture(
 				TextureData texture,

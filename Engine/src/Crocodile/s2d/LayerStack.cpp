@@ -45,7 +45,7 @@ namespace Crocodile
 			for (Layer *layer : m_layers)
 				if (layer->m_name == name)
 					return layer;
-			LOG(ERROR, "ERROR: " + name + " not found in layer stack.");
+			LOG(ERROR, name + " not found in layer stack.");
 			return NULL;
 		}
 
@@ -93,6 +93,14 @@ namespace Crocodile
 				}
 			}
 			return pos;
+		}
+
+		unsigned int LayerStack::getNumberOfObjects()
+		{
+			unsigned int counter = 0;
+			for (Layer *layer : m_layers)
+				counter += layer->getNumberOfObjects();
+			return counter;
 		}
 
 		bool LayerStack::layerExists(Layer *layer)
