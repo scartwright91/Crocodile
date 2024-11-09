@@ -91,7 +91,7 @@ namespace Crocodile
 
     void ResourceManager::addDirWatcher(std::string path, AssetType assetType)
     {
-        DirectoryWatcher* dirWatcher = new DirectoryWatcher("res/shaders", std::chrono::milliseconds(2000));
+        DirectoryWatcher* dirWatcher = new DirectoryWatcher(path, std::chrono::milliseconds(2000));
         dirWatcher->start([&](const std::string& path)
         {
             std::string normalisedPath = path;

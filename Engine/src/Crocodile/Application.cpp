@@ -29,20 +29,7 @@ namespace Crocodile
 
 		m_scriptSystem.enabled = useLua;
 		if (useLua)
-		{
-			// Lua bindings
-			m_scriptSystem.lua.set_function("is_key_pressed", &m_window.isKeyPressed);
-			m_scriptSystem.lua.set_function("is_mouse_pressed", &m_window.isButtonPressed);
-			m_scene2d->addLuaBindings(m_scriptSystem.lua);
-			m_resourceManager.addLuaBindings(m_scriptSystem.lua);
-
-			// add scene to lua
-			m_scriptSystem.lua["scene2d"] = m_scene2d;
-			m_scriptSystem.lua["resource_manager"] = m_resourceManager;
-
-			// load main script
-			m_scriptSystem.loadMainScript();
-		}
+			createLuaBindings();
 
 	}
 
@@ -199,6 +186,22 @@ namespace Crocodile
 
 	void Application::loadAudio()
 	{
+	}
+
+	void Application::createLuaBindings()
+	{
+		// Lua bindings
+		m_scriptSystem.lua.set_function("is_key_pressed", &m_window.isKeyPressed);
+		m_scriptSystem.lua.set_function("is_mouse_pressed", &m_window.isButtonPressed);
+		m_scene2d->addLuaBindings(m_scriptSystem.lua);
+		m_resourceManager.addLuaBindings(m_scriptSystem.lua);
+
+		// add scene to lua
+		m_scriptSystem.lua["scene2d"] = m_scene2d;
+		m_scriptSystem.lua["resource_manager"] = m_resourceManager;
+
+		// load main script
+		m_scriptSystem.loadMainScript();
 	}
 
 }

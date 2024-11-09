@@ -56,5 +56,5 @@ if (NOT EMSCRIPTEN)
     # Sol    
     find_package(sol2 CONFIG REQUIRED)
     target_link_libraries(${PROJECT_NAME} PRIVATE sol2)
-    
+
 endif()

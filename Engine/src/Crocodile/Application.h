@@ -72,6 +72,7 @@ namespace Crocodile
 		void loadShaders();
 		void loadTextures();
 		void loadAudio();
+		void createLuaBindings();
 
 		void resize();
 
