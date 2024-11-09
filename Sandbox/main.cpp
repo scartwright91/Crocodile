@@ -7,6 +7,10 @@
 
 #include "Crocodile.h"
 
+#include "assimp/Importer.hpp"
+#include "assimp/scene.h"
+#include "assimp/postprocess.h"
+
 using namespace Crocodile;
 
 
@@ -14,6 +18,9 @@ class Sandbox : public Crocodile::Application
 {
 
 public:
+
+    // Initialize the Assimp importer
+    Assimp::Importer importer;
 
     s2d::Text* fps = new s2d::Text();
 

@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.5)
 
 project(Sandbox)
 
-add_executable(${PROJECT_NAME} 
+add_executable(${PROJECT_NAME}
     main.cpp
 )
 
@@ -43,8 +43,12 @@ if (NOT EMSCRIPTEN)
     target_include_directories(${PROJECT_NAME} PRIVATE ${LUA_INCLUDE_DIR})
     target_link_libraries(${PROJECT_NAME} PRIVATE ${LUA_LIBRARIES})
 
-    # Sol    
+    # Sol
     find_package(sol2 CONFIG REQUIRED)
     target_link_libraries(${PROJECT_NAME} PRIVATE sol2)
+
+    # Assimp
+    find_package(assimp REQUIRED)   
+    target_link_libraries(${PROJECT_NAME} PRIVATE assimp::assimp)
 
 endif()

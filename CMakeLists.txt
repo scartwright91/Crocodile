@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.5)
 project(Project)
 
 set(CMAKE_CXX_STANDARD 17)
+set(ASSIMP_DIR "C:/Program Files/Assimp")  # Set this to the path where Assimp is installed
+set(CMAKE_PREFIX_PATH ${CMAKE_PREFIX_PATH} ${ASSIMP_DIR})
 
 if (EMSCRIPTEN)
     # Set emscripten flags
@@ -22,8 +24,8 @@ if (MSVC)
     file(COPY Sandbox/res DESTINATION ${CMAKE_BINARY_DIR}/Sandbox/Release)
     file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Sandbox/Debug)
     file(COPY Sandbox/res DESTINATION ${CMAKE_BINARY_DIR}/Sandbox/Debug)
-    file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Sandbox)
-    file(COPY Sandbox/res DESTINATION ${CMAKE_BINARY_DIR}/Sandbox)
+    file(COPY ${ASSIMP_DIR}/bin DESTINATION ${CMAKE_BINARY_DIR}/Sandbox/Release)
+    file(COPY ${ASSIMP_DIR}/bin DESTINATION ${CMAKE_BINARY_DIR}/Sandbox/Debug)
 else()
     file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Sandbox)
     file(COPY Sandbox/res DESTINATION ${CMAKE_BINARY_DIR}/Sandbox)

@@ -57,4 +57,8 @@ if (NOT EMSCRIPTEN)
     find_package(sol2 CONFIG REQUIRED)
     target_link_libraries(${PROJECT_NAME} PRIVATE sol2)
 
+    # Assimp
+    find_package(assimp REQUIRED)   
+    target_link_libraries(${PROJECT_NAME} PRIVATE assimp::assimp)
+
 endif()
