@@ -45,7 +45,14 @@ namespace Crocodile
                     m_camera->getProjectionMatrix(),
                     obj->m_colour
                 );
-                
+            for (Mesh* mesh : m_meshes)
+                mesh->render(
+                    glm::mat4(1.f),
+                    m_camera->getViewMatrix(),
+                    m_camera->getProjectionMatrix(),
+                    m_camera->getPosition(),
+                    m_ambientLighting
+                );
         };
 
         void Scene::addObject(Object* obj)
@@ -55,7 +62,7 @@ namespace Crocodile
 
         void Scene::removeObject(Object* obj)
         {
-            //TODO - remove object from vector
+            m_objects.erase(std::remove(m_objects.begin(), m_objects.end(), obj), m_objects.end());
         }
 
         void Scene::init()

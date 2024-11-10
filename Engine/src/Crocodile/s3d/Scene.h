@@ -7,6 +7,7 @@
 
 #include "Object.h"
 #include "Surface.h"
+#include "Mesh.h"
 #include "rendering/Renderer.h"
 #include "Camera.h"
 
@@ -36,6 +37,7 @@ namespace Crocodile
 
                 std::vector<Object*> m_objects = {};
                 std::vector<Surface*> m_surfaces = {};
+                std::vector<Mesh*> m_meshes = {};
                 Renderer* m_renderer = nullptr;
 
             protected:
