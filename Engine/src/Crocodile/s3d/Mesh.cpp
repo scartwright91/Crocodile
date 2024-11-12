@@ -4,7 +4,11 @@ namespace Crocodile
 {
     namespace s3d
     {
-        Mesh::Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices) : m_vertices(vertices), m_indices(indices)
+        Mesh::Mesh(
+            std::vector<Vertex> vertices,
+            std::vector<unsigned int> indices,
+            std::vector<Texture> textures
+        ) : m_vertices(vertices), m_indices(indices), m_textures(textures)
         {
             createMesh();
         }
@@ -15,6 +19,7 @@ namespace Crocodile
         }
 
         void Mesh::render(
+            graphics::Shader* shader,
             glm::mat4 model,
             glm::mat4 view,
             glm::mat4 projection,
@@ -22,7 +27,15 @@ namespace Crocodile
             float ambientLighting
         )
         {
-
+            shader->use();
+            shader->setMat4("u_Model", model);
+            shader->setMat4("u_View", view);
+            shader->setMat4("u_Projection", projection);
+            shader->setVec3("u_CameraPosition", cameraPosition);
+            shader->setFloat("u_AmbientLighting", ambientLighting);
+            glBindVertexArray(m_VAO);
+            glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_indices.size()), GL_UNSIGNED_INT, 0);
+            glBindVertexArray(0);
         }
 
         void Mesh::createMesh()

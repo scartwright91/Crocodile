@@ -6,10 +6,7 @@
 #include <string>
 
 #include "Crocodile.h"
-
-#include "assimp/Importer.hpp"
-#include "assimp/scene.h"
-#include "assimp/postprocess.h"
+// #include "Crocodile/s3d/Model.h"
 
 using namespace Crocodile;
 
@@ -18,9 +15,6 @@ class Sandbox : public Crocodile::Application
 {
 
 public:
-
-    // Initialize the Assimp importer
-    Assimp::Importer importer;
 
     s2d::Text* fps = new s2d::Text();
 
@@ -51,6 +45,9 @@ public:
 
         fps->m_color = glm::vec3(1.0f);
         m_scene2d->addObject(fps, "HUD");
+
+        // s3d::Model* model = new s3d::Model("assets/models/survival-guitar-backpack/source/Survival_BackPack_2/Survival_BackPack_2.fbx");
+        // m_scene3d->addObject(model);
     }
 
 };

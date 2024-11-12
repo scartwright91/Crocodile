@@ -45,14 +45,16 @@ namespace Crocodile
                     m_camera->getProjectionMatrix(),
                     obj->m_colour
                 );
-            for (Mesh* mesh : m_meshes)
-                mesh->render(
-                    glm::mat4(1.f),
-                    m_camera->getViewMatrix(),
-                    m_camera->getProjectionMatrix(),
-                    m_camera->getPosition(),
-                    m_ambientLighting
-                );
+            graphics::Shader* meshShader = m_resourceManager->m_shaderManager.getShader("mesh_shader");
+            // for (Mesh* mesh : m_meshes)
+            //     mesh->render(
+            //         meshShader,
+            //         glm::mat4(1.f),
+            //         m_camera->getViewMatrix(),
+            //         m_camera->getProjectionMatrix(),
+            //         m_camera->getPosition(),
+            //         m_ambientLighting
+            //     );
         };
 
         void Scene::addObject(Object* obj)
