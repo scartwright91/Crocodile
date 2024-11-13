@@ -45,16 +45,16 @@ namespace Crocodile
                     m_camera->getProjectionMatrix(),
                     obj->m_colour
                 );
-            graphics::Shader* meshShader = m_resourceManager->m_shaderManager.getShader("mesh_shader");
-            // for (Mesh* mesh : m_meshes)
-            //     mesh->render(
-            //         meshShader,
-            //         glm::mat4(1.f),
-            //         m_camera->getViewMatrix(),
-            //         m_camera->getProjectionMatrix(),
-            //         m_camera->getPosition(),
-            //         m_ambientLighting
-            //     );
+            graphics::Shader* modelShader = m_resourceManager->m_shaderManager.getShader("model_shader");
+            for (Model* model : m_models)
+                model->render(
+                    modelShader,
+                    glm::mat4(1.f),
+                    m_camera->getViewMatrix(),
+                    m_camera->getProjectionMatrix(),
+                    m_camera->getPosition(),
+                    m_ambientLighting
+                );
         };
 
         void Scene::addObject(Object* obj)
@@ -65,6 +65,16 @@ namespace Crocodile
         void Scene::removeObject(Object* obj)
         {
             m_objects.erase(std::remove(m_objects.begin(), m_objects.end(), obj), m_objects.end());
+        }
+
+        void Scene::addModel(Model* model)
+        {
+            m_models.push_back(model);
+        }
+
+        void Scene::removeModel(Model* model)
+        {
+            m_models.erase(std::remove(m_models.begin(), m_models.end(), model), m_models.end());
         }
 
         void Scene::init()

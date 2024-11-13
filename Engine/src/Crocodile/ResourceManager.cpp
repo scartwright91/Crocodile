@@ -91,6 +91,11 @@ namespace Crocodile
 
     void ResourceManager::addDirWatcher(std::string path, AssetType assetType)
     {
+        if (!fs::is_directory(path))
+        {
+            LOG(ERROR, "Invalid directory path: " + path);
+            return;
+        }
         DirectoryWatcher* dirWatcher = new DirectoryWatcher(path, std::chrono::milliseconds(2000));
         dirWatcher->start([&](const std::string& path)
         {

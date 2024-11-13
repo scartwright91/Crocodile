@@ -7,7 +7,7 @@
 
 #include "Object.h"
 #include "Surface.h"
-#include "Mesh.h"
+#include "Model.h"
 #include "rendering/Renderer.h"
 #include "Camera.h"
 
@@ -26,7 +26,9 @@ namespace Crocodile
                 void resize();
                 
                 void addObject(Object* obj);
+                void addModel(Model* model);
                 void removeObject(Object* obj);
+                void removeModel(Model* model);
 
                 CameraController* m_camera = nullptr;
 
@@ -37,7 +39,7 @@ namespace Crocodile
 
                 std::vector<Object*> m_objects = {};
                 std::vector<Surface*> m_surfaces = {};
-                std::vector<Mesh*> m_meshes = {};
+                std::vector<Model*> m_models = {};
                 Renderer* m_renderer = nullptr;
 
             protected:

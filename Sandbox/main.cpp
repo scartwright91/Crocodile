@@ -6,7 +6,7 @@
 #include <string>
 
 #include "Crocodile.h"
-// #include "Crocodile/s3d/Model.h"
+#include "Crocodile/s3d/Model.h"
 
 using namespace Crocodile;
 
@@ -46,8 +46,10 @@ public:
         fps->m_color = glm::vec3(1.0f);
         m_scene2d->addObject(fps, "HUD");
 
-        // s3d::Model* model = new s3d::Model("assets/models/survival-guitar-backpack/source/Survival_BackPack_2/Survival_BackPack_2.fbx");
-        // m_scene3d->addObject(model);
+        s3d::Model* model = new s3d::Model("assets/models/survival-guitar-backpack/source/Survival_BackPack_2/Survival_BackPack_2.fbx");
+        model->m_colour = glm::vec3(1.0f, 1.0f, 0.0f);
+        // m_scene3d->addModel(model);
+        m_scene3d->addObject(model);
     }
 
 };
