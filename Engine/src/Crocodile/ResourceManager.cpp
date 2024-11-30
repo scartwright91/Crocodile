@@ -96,6 +96,7 @@ namespace Crocodile
             LOG(ERROR, "Invalid directory path: " + path);
             return;
         }
+        LOG(INFO, "Adding directory watcher for: " + path);
         DirectoryWatcher* dirWatcher = new DirectoryWatcher(path, std::chrono::milliseconds(2000));
         dirWatcher->start([&](const std::string& path)
         {
@@ -112,6 +113,7 @@ namespace Crocodile
                 m_textureReloadQueue.push_back(normalisedPath);
             }
         });
+        m_dirWatchers.push_back(dirWatcher);
     }
 
     void ResourceManager::reloadTexture(std::string path)

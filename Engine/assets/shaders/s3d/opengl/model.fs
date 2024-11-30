@@ -3,6 +3,7 @@
 // Input from vertex shader
 in vec3 FragPos;
 in vec3 Normal;
+in vec2 TexCoords;
 
 // Output color
 out vec4 FragColor;
@@ -13,6 +14,9 @@ uniform vec3 u_LightColour;
 uniform vec3 u_LightPosition;
 uniform vec3 u_CameraPosition;
 uniform float u_AmbientLighting;
+
+// textures
+uniform sampler2D u_Texture;
 
 void main()
 {
@@ -33,7 +37,9 @@ void main()
     vec3 specular = specularStrength * spec * u_LightColour;
     
     // Combine results
-    vec3 result = (ambient + diffuse + specular) * u_ObjectColour;
+    vec3 textureColor = texture(u_Texture, TexCoords).rgb;
+    vec3 result = (ambient + diffuse + specular) * textureColor;
     FragColor = vec4(result, 1.0);
-    FragColor = vec4(1.0, 0.0, 0.0, 1.0);
+    // FragColor = vec4(textureColor, 1.0);
+
 }

@@ -39,7 +39,7 @@ public:
 
     void processCommands(float dt)
     {
-        float speed = .01f * dt;
+        float speed = .05f * dt;
 
         // moving camera
         if (m_window.isKeyPressed(GLFW_KEY_A))
@@ -52,7 +52,7 @@ public:
             m_scene3d->m_camera->move(s3d::BACKWARD, speed);
 
         // rotating camera
-        float rot = 50.f * dt;
+        float rot = 100.f * dt;
         if (m_window.isKeyPressed(GLFW_KEY_LEFT))
             m_scene3d->m_camera->rotateYaw(rot);
         if (m_window.isKeyPressed(GLFW_KEY_RIGHT))
@@ -66,6 +66,7 @@ public:
     void init()
     {
         m_resourceManager.addDirWatcher("res/shaders", AssetType::SHADER);
+        // m_resourceManager.addDirWatcher("assets/shaders/s3d/opengl", AssetType::SHADER);
 
         s2d::Layer* layer = new s2d::Layer("HUD");
         layer->m_applyCamera = false;
@@ -74,7 +75,7 @@ public:
         fps->m_color = glm::vec3(1.0f);
         m_scene2d->addObject(fps, "HUD");
 
-        s3d::Model* model = new s3d::Model("assets/models/tower-round-top-a.fbx");
+        s3d::Model* model = new s3d::Model("assets/models/tower-round-top-a.fbx", m_resourceManager.m_shaderManager.getShader("model_shader"));
         // model->m_colour = glm::vec3(1.0f, 1.0f, 0.0f);
         m_scene3d->addModel(model);
         // m_scene3d->addObject(model);

@@ -48,11 +48,12 @@ namespace Crocodile
             graphics::Shader* modelShader = m_resourceManager->m_shaderManager.getShader("model_shader");
             for (Model* model : m_models)
                 model->render(
-                    modelShader,
                     glm::mat4(1.f),
                     m_camera->getViewMatrix(),
                     m_camera->getProjectionMatrix(),
                     m_camera->getPosition(),
+                    m_lightPosition,
+                    m_lightColour,
                     m_ambientLighting
                 );
         };

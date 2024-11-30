@@ -33,7 +33,7 @@ namespace Crocodile
                 CameraController* m_camera = nullptr;
 
                 // lighting
-                float m_ambientLighting = .4f;
+                float m_ambientLighting = .8f;
                 glm::vec3 m_lightPosition = glm::vec3(50.f);
                 glm::vec3 m_lightColour = glm::vec3(1.f);
 

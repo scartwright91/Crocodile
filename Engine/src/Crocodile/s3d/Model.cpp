@@ -5,9 +5,10 @@ namespace Crocodile
 {
     namespace s3d
     {
-        Model::Model(const std::string& filePath)
+        Model::Model(const std::string& filePath, graphics::Shader* shader) : m_shader(shader)
         {
             loadModel(filePath);
+            m_shader->use();
         };
 
         Model::~Model()
@@ -16,16 +17,26 @@ namespace Crocodile
         }
 
         void Model::render(
-            graphics::Shader* shader,
             glm::mat4 model,
             glm::mat4 view,
             glm::mat4 projection,
             glm::vec3 cameraPosition,
+            glm::vec3 lightPosition,
+            glm::vec3 lightColour,
             float ambientLighting
         )
         {
             for (Mesh& mesh : m_meshes)
-                mesh.render(shader, model, view, projection, cameraPosition, ambientLighting);
+                mesh.render(
+                    m_shader,
+                    model,
+                    view,
+                    projection,
+                    cameraPosition,
+                    lightPosition,
+                    lightColour,
+                    ambientLighting
+                );
         }
 
         void Model::loadModel(const std::string& filePath)
@@ -86,6 +97,14 @@ namespace Crocodile
                     vertex.normal = vector;
                 }
                 vertices.push_back(vertex);
+                // texture coordinates
+                if(mesh->mTextureCoords[0]) // does the mesh contain texture coordinates?
+                {
+                    glm::vec2 vec;
+                    vec.x = mesh->mTextureCoords[0][i].x; 
+                    vec.y = mesh->mTextureCoords[0][i].y;
+                    vertex.texCoords = vec;
+                }
             }
             // now wak through each of the mesh's faces (a face is a mesh its triangle) and retrieve the corresponding vertex indices.
             for(unsigned int i = 0; i < mesh->mNumFaces; i++)

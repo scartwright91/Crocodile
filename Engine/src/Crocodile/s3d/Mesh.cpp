@@ -24,6 +24,8 @@ namespace Crocodile
             glm::mat4 view,
             glm::mat4 projection,
             glm::vec3 cameraPosition,
+            glm::vec3 lightPosition,
+            glm::vec3 lightColour,
             float ambientLighting
         )
         {
@@ -32,7 +34,16 @@ namespace Crocodile
             shader->setMat4("u_View", view);
             shader->setMat4("u_Projection", projection);
             shader->setVec3("u_CameraPosition", cameraPosition);
+            shader->setVec3("u_LightPosition", lightPosition);
+            shader->setVec3("u_LightColour", lightColour);
             shader->setFloat("u_AmbientLighting", ambientLighting);
+
+            for(unsigned int i = 0; i < m_textures.size(); i++)
+            {
+                glActiveTexture(GL_TEXTURE0 + i);
+                glBindTexture(GL_TEXTURE_2D, m_textures[i].id);
+            }
+
             glBindVertexArray(m_VAO);
             glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(m_indices.size()), GL_UNSIGNED_INT, 0);
             glBindVertexArray(0);

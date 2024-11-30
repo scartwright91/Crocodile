@@ -15,18 +15,20 @@ namespace Crocodile
         class CROCODILE_API Model
         {
             public:
-                Model(const std::string& filePath);
+                Model(const std::string& filePath, graphics::Shader* shader);
                 ~Model();
                 void render(
-                    graphics::Shader* shader,
                     glm::mat4 model,
                     glm::mat4 view,
                     glm::mat4 projection,
                     glm::vec3 cameraPosition,
+                    glm::vec3 lightPosition,
+                    glm::vec3 lightColour,
                     float ambientLighting
                 );
 
             private:
+                graphics::Shader* m_shader;
                 std::vector<Mesh> m_meshes;
                 std::string m_directory;
 
