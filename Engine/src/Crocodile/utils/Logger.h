@@ -17,6 +17,15 @@ namespace Crocodile
         ERROR
     };
 
+    static const char* getColorCode(LoggerLevel level) {
+        switch (level) {
+            case INFO:    return "\033[32m"; // Green
+            case WARNING: return "\033[33m"; // Yellow 
+            case ERROR:   return "\033[31m"; // Red
+            default:      return "\033[0m";  // Reset
+        }
+    }
+
     static std::string getLevelString(LoggerLevel level) {
         switch (level) {
             case INFO:    return "INFO";
@@ -41,6 +50,8 @@ namespace Crocodile
     static void CROCODILE_API LOG(LoggerLevel level, const std::string& message) {
         std::string timestamp = getCurrentTimestamp();
         std::string levelStr = getLevelString(level);
-        std::cout << "[" << timestamp << "] [" << levelStr << "] " << message << std::endl;
+        std::cout << "[" << timestamp << "] " 
+                 << getColorCode(level) << "[" << levelStr << "]" << "\033[0m" 
+                 << " " << message << std::endl;
     }
 }

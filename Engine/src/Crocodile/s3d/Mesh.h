@@ -8,8 +8,6 @@
 #include "../Core.h"
 #include "../graphics/Shader.h"
 
-#define MAX_BONE_INFLUENCE 4
-
 namespace Crocodile
 {
     namespace s3d
@@ -19,10 +17,6 @@ namespace Crocodile
             glm::vec3 position;
             glm::vec3 normal;
             glm::vec2 texCoords;
-            glm::vec3 tangent;
-            glm::vec3 bitangent;
-            int boneIDs[MAX_BONE_INFLUENCE];
-            float weights[MAX_BONE_INFLUENCE];
         };
 
         struct Texture {

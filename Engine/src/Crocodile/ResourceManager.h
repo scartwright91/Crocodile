@@ -49,6 +49,7 @@ namespace Crocodile
         void addTexture(unsigned int texture, unsigned int width, unsigned int height, std::string name);
         TextureData getTexture(std::string name);
         bool textureExists(std::string name) const;
+        TextureData loadTextureFromFile(char const* path, std::string name, bool repeat) const;
 
         // animations
         void loadAnimation(const char* dir, std::string name);
@@ -58,7 +59,6 @@ namespace Crocodile
         void addLuaBindings(sol::state &lua);
         
     private:
-        TextureData loadTextureFromFile(char const* path, std::string name, bool repeat) const;
         void reloadTexture(std::string path);
 
     public:

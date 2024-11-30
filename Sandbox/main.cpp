@@ -33,6 +33,34 @@ public:
         fps->text = std::to_string((int)m_clock.getFPS());
         if (m_window.isKeyPressed(GLFW_KEY_ESCAPE))
             m_running = false;
+
+        processCommands(dt);
+    }
+
+    void processCommands(float dt)
+    {
+        float speed = .01f * dt;
+
+        // moving camera
+        if (m_window.isKeyPressed(GLFW_KEY_A))
+            m_scene3d->m_camera->move(s3d::LEFT, speed);
+        if (m_window.isKeyPressed(GLFW_KEY_D))
+            m_scene3d->m_camera->move(s3d::RIGHT, speed);
+        if (m_window.isKeyPressed(GLFW_KEY_W))
+            m_scene3d->m_camera->move(s3d::FORWARD, speed);
+        if (m_window.isKeyPressed(GLFW_KEY_S))
+            m_scene3d->m_camera->move(s3d::BACKWARD, speed);
+
+        // rotating camera
+        float rot = 50.f * dt;
+        if (m_window.isKeyPressed(GLFW_KEY_LEFT))
+            m_scene3d->m_camera->rotateYaw(rot);
+        if (m_window.isKeyPressed(GLFW_KEY_RIGHT))
+            m_scene3d->m_camera->rotateYaw(-rot);
+        if (m_window.isKeyPressed(GLFW_KEY_UP))
+            m_scene3d->m_camera->rotatePitch(rot);
+        if (m_window.isKeyPressed(GLFW_KEY_DOWN))
+            m_scene3d->m_camera->rotatePitch(-rot);
     }
 
     void init()
@@ -46,10 +74,10 @@ public:
         fps->m_color = glm::vec3(1.0f);
         m_scene2d->addObject(fps, "HUD");
 
-        s3d::Model* model = new s3d::Model("assets/models/survival-guitar-backpack/source/Survival_BackPack_2/Survival_BackPack_2.fbx");
-        model->m_colour = glm::vec3(1.0f, 1.0f, 0.0f);
-        // m_scene3d->addModel(model);
-        m_scene3d->addObject(model);
+        s3d::Model* model = new s3d::Model("assets/models/tower-round-top-a.fbx");
+        // model->m_colour = glm::vec3(1.0f, 1.0f, 0.0f);
+        m_scene3d->addModel(model);
+        // m_scene3d->addObject(model);
     }
 
 };

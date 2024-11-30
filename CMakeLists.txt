@@ -20,10 +20,14 @@ add_subdirectory(Engine)
 add_subdirectory(Sandbox)
 
 if (MSVC)
+    # Visual studio code
     file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Sandbox/Release)
     file(COPY Sandbox/res DESTINATION ${CMAKE_BINARY_DIR}/Sandbox/Release)
     file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Sandbox/Debug)
     file(COPY Sandbox/res DESTINATION ${CMAKE_BINARY_DIR}/Sandbox/Debug)
+    # Visual studio
+    file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Sandbox)
+    file(COPY Sandbox/res DESTINATION ${CMAKE_BINARY_DIR}/Sandbox)
 else()
     file(COPY Engine/assets DESTINATION ${CMAKE_BINARY_DIR}/Sandbox)
     file(COPY Sandbox/res DESTINATION ${CMAKE_BINARY_DIR}/Sandbox)

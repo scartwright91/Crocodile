@@ -4,7 +4,6 @@
 #include <assimp/scene.h>
 #include <assimp/postprocess.h>
 
-#include "Object.h"
 #include "Mesh.h"
 #include "../Core.h"
 #include "../Graphics/Shader.h"
@@ -13,7 +12,7 @@ namespace Crocodile
 {
     namespace s3d
     {
-        class CROCODILE_API Model : public Object
+        class CROCODILE_API Model
         {
             public:
                 Model(const std::string& filePath);
@@ -34,6 +33,9 @@ namespace Crocodile
                 void loadModel(const std::string& filePath);
                 void processNode(aiNode* node, const aiScene* scene);
                 Mesh processMesh(aiMesh* mesh, const aiScene* scene);
+
+                std::vector<Texture> loadMaterialTextures(aiMaterial *mat, aiTextureType type, std::string typeName) const;
+
         };
     }
 }

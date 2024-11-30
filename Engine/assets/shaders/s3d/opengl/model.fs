@@ -16,25 +16,24 @@ uniform float u_AmbientLighting;
 
 void main()
 {
-
-    FragColor = vec4(u_ObjectColour, 1.0);
-    // // Ambient lighting
-    // vec3 ambient = u_AmbientLighting * u_LightColour;
+    // Ambient lighting
+    vec3 ambient = u_AmbientLighting * u_LightColour;
     
-    // // Diffuse lighting
-    // vec3 norm = normalize(Normal);
-    // vec3 lightDir = normalize(u_LightPosition - FragPos);
-    // float diff = max(dot(norm, lightDir), 0.0);
-    // vec3 diffuse = diff * u_LightColour;
+    // Diffuse lighting
+    vec3 norm = normalize(Normal);
+    vec3 lightDir = normalize(u_LightPosition - FragPos);
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = diff * u_LightColour;
     
-    // // Specular lighting
-    // float specularStrength = 0.5;
-    // vec3 viewDir = normalize(u_CameraPosition - FragPos);
-    // vec3 reflectDir = reflect(-lightDir, norm);
-    // float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
-    // vec3 specular = specularStrength * spec * u_LightColour;
+    // Specular lighting
+    float specularStrength = 0.5;
+    vec3 viewDir = normalize(u_CameraPosition - FragPos);
+    vec3 reflectDir = reflect(-lightDir, norm);
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), 32);
+    vec3 specular = specularStrength * spec * u_LightColour;
     
-    // // Combine results
-    // vec3 result = (ambient + diffuse + specular) * u_ObjectColour;
-    // FragColor = vec4(result, 1.0);
+    // Combine results
+    vec3 result = (ambient + diffuse + specular) * u_ObjectColour;
+    FragColor = vec4(result, 1.0);
+    FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 }
