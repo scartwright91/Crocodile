@@ -6,11 +6,11 @@ namespace Crocodile
 
 	Application::Application(
 		const char *name,
-		bool resizeable,
-		unsigned int width,
-		unsigned int height,
-		bool useImGui,
-		bool useLua
+		bool resizeable = true,
+		unsigned int width = 1280,
+		unsigned int height = 720,
+		bool useImGui = false,
+		bool useLua = false
 	) : m_window(name, resizeable, width, height), m_useImGui(useImGui)
 	{
 		s_Instance = this;

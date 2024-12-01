@@ -18,7 +18,7 @@ public:
 
     s2d::Text* fps = new s2d::Text();
 
-    Sandbox() : Crocodile::Application("Sandbox", true, 1280, 720, false, false)
+    Sandbox() : Crocodile::Application("Sandbox")
     {
         init();
     }

@@ -39,11 +39,11 @@ namespace Crocodile
 	public:
 		Application(
 			const char *name,
-			bool resizeable,
-			unsigned int width,
-			unsigned int height,
-			bool useImGui,
-			bool useLua
+			bool resizeable = true,
+			unsigned int width = 1280,
+			unsigned int height = 720,
+			bool useImGui = false,
+			bool useLua = false
 		);
 		virtual ~Application();
 
