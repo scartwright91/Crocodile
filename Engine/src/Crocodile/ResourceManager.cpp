@@ -7,14 +7,19 @@ namespace Crocodile
 
 	ResourceManager::ResourceManager()
 	{
-
+        m_dirWatcher = new DirectoryWatcher("res/shaders", std::chrono::milliseconds(2000));
+        m_dirWatcher->start([&](const std::string& path)
+        {
+            std::string normalisedPath = path;
+            std::replace(normalisedPath.begin(), normalisedPath.end(), '\\', '/');
+            LOG(INFO, "Shader modified: " + normalisedPath);
+            m_shaderReloadQueue.push_back(normalisedPath);
+        });
 	}
 
     ResourceManager::~ResourceManager()
     {
-        for (DirectoryWatcher* dirWatcher : m_dirWatchers)
-            delete dirWatcher;
-        m_dirWatchers.clear();
+        delete m_dirWatcher;
     }
 
     void ResourceManager::update()
@@ -24,12 +29,6 @@ namespace Crocodile
             for (std::string shaderPath : m_shaderReloadQueue)
                 m_shaderManager.reloadShader(shaderPath);
             m_shaderReloadQueue.clear();
-        }
-        if (m_textureReloadQueue.size() > 0)
-        {
-            for (std::string texturePath : m_textureReloadQueue)
-                reloadTexture(texturePath);
-            m_textureReloadQueue.clear();
         }
     }
 
@@ -88,33 +87,6 @@ namespace Crocodile
 			animation.push_back(getTexture(animImageName));
 		return animation;
 	}
-
-    void ResourceManager::addDirWatcher(std::string path, AssetType assetType)
-    {
-        if (!fs::is_directory(path))
-        {
-            LOG(ERROR, "Invalid directory path: " + path);
-            return;
-        }
-        LOG(INFO, "Adding directory watcher for: " + path);
-        DirectoryWatcher* dirWatcher = new DirectoryWatcher(path, std::chrono::milliseconds(2000));
-        dirWatcher->start([&](const std::string& path)
-        {
-            std::string normalisedPath = path;
-            std::replace(normalisedPath.begin(), normalisedPath.end(), '\\', '/');
-            if (assetType == SHADER)
-            {
-                LOG(INFO, "Shader modified: " + normalisedPath);
-                m_shaderReloadQueue.push_back(normalisedPath);
-            }
-            else if (assetType == TEXTURE)
-            {
-                LOG(INFO, "Texture modified: " + normalisedPath);
-                m_textureReloadQueue.push_back(normalisedPath);
-            }
-        });
-        m_dirWatchers.push_back(dirWatcher);
-    }
 
     void ResourceManager::reloadTexture(std::string path)
     {

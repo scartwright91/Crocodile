@@ -46,7 +46,7 @@ namespace Crocodile
                         }
                     }
                 }
-            });
+                });
         }
 
         void stop() {
@@ -60,7 +60,7 @@ namespace Crocodile
         std::unordered_map<std::string, fs::file_time_type> paths_;
         std::string path_to_watch;
         std::chrono::duration<int, std::milli> delay;
-        std::atomic<bool> running_{false};
+        std::atomic<bool> running_{ false };
         std::thread watcher_thread;
 
         bool contains(const std::string& key) const {

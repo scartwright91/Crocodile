@@ -65,8 +65,8 @@ public:
 
     void init()
     {
-        m_resourceManager.addDirWatcher("res/shaders", AssetType::SHADER);
-        // m_resourceManager.addDirWatcher("assets/shaders/s3d/opengl", AssetType::SHADER);
+
+        m_enablePostprocessing = false;
 
         s2d::Layer* layer = new s2d::Layer("HUD");
         layer->m_applyCamera = false;
@@ -75,10 +75,21 @@ public:
         fps->m_color = glm::vec3(1.0f);
         m_scene2d->addObject(fps, "HUD");
 
-        s3d::Model* model = new s3d::Model("assets/models/tower-round-top-a.fbx", m_resourceManager.m_shaderManager.getShader("model_shader"));
-        // model->m_colour = glm::vec3(1.0f, 1.0f, 0.0f);
+        // add shader
+        m_resourceManager.m_shaderManager.addShader(
+            "model_shader_test",
+            "res/shaders/test.vs",
+            "res/shaders/test.fs"
+        );
+
+        // setup model shader
+        graphics::Shader* shader = m_resourceManager.m_shaderManager.getShader("model_shader_test");
+        shader->use();
+        shader->setTexture("u_Texture");
+
+        // load model
+        s3d::Model* model = new s3d::Model("assets/models/tower-round-top-a.fbx");
         m_scene3d->addModel(model);
-        // m_scene3d->addObject(model);
     }
 
 };

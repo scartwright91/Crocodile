@@ -40,5 +40,7 @@ void main()
     vec3 textureColor = texture(u_Texture, TexCoords).rgb;
     vec3 result = (ambient + diffuse + specular) * textureColor;
     FragColor = vec4(result, 1.0);
+    //FragColor = vec4(textureColor, 1.0);
+    //FragColor = vec4(1.0, 0.0, 0.0, 1.0);
 
 }

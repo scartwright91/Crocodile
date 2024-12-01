@@ -5,10 +5,9 @@ namespace Crocodile
 {
     namespace s3d
     {
-        Model::Model(const std::string& filePath, graphics::Shader* shader) : m_shader(shader)
+        Model::Model(const std::string& filePath)
         {
             loadModel(filePath);
-            m_shader->use();
         };
 
         Model::~Model()
@@ -17,6 +16,7 @@ namespace Crocodile
         }
 
         void Model::render(
+            graphics::Shader* shader,
             glm::mat4 model,
             glm::mat4 view,
             glm::mat4 projection,
@@ -28,7 +28,7 @@ namespace Crocodile
         {
             for (Mesh& mesh : m_meshes)
                 mesh.render(
-                    m_shader,
+                    shader,
                     model,
                     view,
                     projection,

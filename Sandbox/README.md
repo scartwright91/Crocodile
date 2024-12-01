@@ -6,4 +6,6 @@
 
 ## Bugs
 
-1. DirectoryWatcher doesn't work for shaders.
+DirectoryWatcher doesn't work for shaders.
+	* Does not work on assets/shaders
+	* Does not work with postprocessing enabled

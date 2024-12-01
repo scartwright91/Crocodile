@@ -55,7 +55,6 @@ namespace Crocodile
         void loadAnimation(const char* dir, std::string name);
         std::vector<TextureData> getAnimationData(std::string name);
 
-        void addDirWatcher(std::string path, AssetType assetType);
         void addLuaBindings(sol::state &lua);
         
     private:
@@ -71,8 +70,7 @@ namespace Crocodile
     private:
         // hot reloading
         std::vector<std::string> m_shaderReloadQueue = {};
-        std::vector<std::string> m_textureReloadQueue = {};
-        std::vector<DirectoryWatcher*> m_dirWatchers = {};
+        DirectoryWatcher* m_dirWatcher = nullptr;
         // textures
         std::map<std::string, TextureData> m_textureIDs = {};
         // animations
