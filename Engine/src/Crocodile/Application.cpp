@@ -6,11 +6,11 @@ namespace Crocodile
 
 	Application::Application(
 		const char *name,
-		bool resizeable = true,
-		unsigned int width = 1280,
-		unsigned int height = 720,
-		bool useImGui = false,
-		bool useLua = false
+		bool resizeable,
+		unsigned int width,
+		unsigned int height,
+		bool useImGui,
+		bool useLua
 	) : m_window(name, resizeable, width, height), m_useImGui(useImGui)
 	{
 		s_Instance = this;
@@ -176,6 +176,9 @@ namespace Crocodile
 		m_resourceManager.m_shaderManager.addShader("shader", "assets/shaders/s3d/opengl/shader.vs", "assets/shaders/s3d/opengl/shader.fs");
 		m_resourceManager.m_shaderManager.addShader("surface_shader", "assets/shaders/s3d/opengl/surface_shader.vs", "assets/shaders/s3d/opengl/surface_shader.fs");
 		m_resourceManager.m_shaderManager.addShader("model_shader", "assets/shaders/s3d/opengl/model.vs", "assets/shaders/s3d/opengl/model.fs");
+		graphics::Shader* modelShader = m_resourceManager.m_shaderManager.getShader("model_shader");
+		modelShader->use();
+		modelShader->setTexture("u_Texture");
 #endif
 	}
 

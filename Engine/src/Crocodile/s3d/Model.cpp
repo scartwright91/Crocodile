@@ -16,7 +16,6 @@ namespace Crocodile
         }
 
         void Model::render(
-            graphics::Shader* shader,
             glm::mat4 model,
             glm::mat4 view,
             glm::mat4 projection,
@@ -28,7 +27,7 @@ namespace Crocodile
         {
             for (Mesh& mesh : m_meshes)
                 mesh.render(
-                    shader,
+                    m_shader,
                     model,
                     view,
                     projection,
@@ -39,6 +38,11 @@ namespace Crocodile
                 );
         }
 
+        void Model::setShader(graphics::Shader* shader)
+        {
+            m_shader = shader;
+        }
+
         void Model::loadModel(const std::string& filePath)
         {
             Assimp::Importer importer;
@@ -46,8 +50,29 @@ namespace Crocodile
 
             if (!scene || scene->mFlags & AI_SCENE_FLAGS_INCOMPLETE || !scene->mRootNode)
             {
-                std::cerr << "Error loading model: " << importer.GetErrorString() << std::endl;
+                LOG(LoggerLevel::WARNING, "Error loading model: " + std::string(importer.GetErrorString()));
                 return;
+            }
+
+            // Debug: List all textures in all materials
+            for (unsigned int matIdx = 0; matIdx < scene->mNumMaterials; matIdx++) {
+                aiMaterial* material = scene->mMaterials[matIdx];
+                LOG(LoggerLevel::INFO, "Material " + std::to_string(matIdx) + ":");
+                
+                for (aiTextureType type = aiTextureType_NONE; type <= aiTextureType_UNKNOWN; type = static_cast<aiTextureType>(type + 1))
+                {
+                    unsigned int textureCount = material->GetTextureCount(type);
+                    if (textureCount > 0)
+                    {
+                        LOG(LoggerLevel::INFO, "  Found " + std::to_string(textureCount) + " textures of type " + std::to_string(type));
+                        for (unsigned int i = 0; i < textureCount; i++)
+                        {
+                            aiString path;
+                            material->GetTexture(type, i, &path);
+                            LOG(LoggerLevel::INFO, "    Texture " + std::to_string(i) + ": " + path.C_Str());
+                        }
+                    }
+                }
             }
 
             // retrieve the directory path of the filepath
@@ -55,10 +80,12 @@ namespace Crocodile
 
             // process ASSIMP's root node recursively
             processNode(scene->mRootNode, scene);
+
         }
 
         void Model::processNode(aiNode* node, const aiScene* scene)
         {
+            LOG(LoggerLevel::INFO, "Node name: " + std::string(node->mName.C_Str()));
             // process all the node's meshes (if any)
             for (unsigned int i = 0; i < node->mNumMeshes; i++)
             {
@@ -115,13 +142,35 @@ namespace Crocodile
                     indices.push_back(face.mIndices[j]);        
             }
             
+            LOG(LoggerLevel::INFO, std::to_string(mesh->mMaterialIndex));
+
             // process material
             if (mesh->mMaterialIndex >= 0)
             {
                 aiMaterial* material = scene->mMaterials[mesh->mMaterialIndex];
+                
+                // Load diffuse textures
                 std::vector<Texture> diffuseMaps = loadMaterialTextures(material, aiTextureType_DIFFUSE, "texture_diffuse");
                 textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+                
+                // Load specular textures
+                std::vector<Texture> specularMaps = loadMaterialTextures(material, aiTextureType_SPECULAR, "texture_specular");
+                textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+                
+                // Load normal maps
+                std::vector<Texture> normalMaps = loadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal");
+                textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
+                
+                // Load height maps
+                std::vector<Texture> heightMaps = loadMaterialTextures(material, aiTextureType_HEIGHT, "texture_height");
+                textures.insert(textures.end(), heightMaps.begin(), heightMaps.end());
+                
+                // Load ambient occlusion maps
+                std::vector<Texture> aoMaps = loadMaterialTextures(material, aiTextureType_AMBIENT_OCCLUSION, "texture_ao");
+                textures.insert(textures.end(), aoMaps.begin(), aoMaps.end());
             }
+
+            // LOG(LoggerLevel::INFO, "N textures: " + std::to_string(textures.size()));
 
             // return a mesh object created from the extracted mesh data
             return Mesh(vertices, indices, textures);

@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -39,7 +38,7 @@ public:
 
     void processCommands(float dt)
     {
-        float speed = .05f * dt;
+        float speed = .01f * dt;
 
         // moving camera
         if (m_window.isKeyPressed(GLFW_KEY_A))
@@ -75,21 +74,10 @@ public:
         fps->m_color = glm::vec3(1.0f);
         m_scene2d->addObject(fps, "HUD");
 
-        // add shader
-        m_resourceManager.m_shaderManager.addShader(
-            "model_shader_test",
-            "res/shaders/test.vs",
-            "res/shaders/test.fs"
-        );
-
-        // setup model shader
-        graphics::Shader* shader = m_resourceManager.m_shaderManager.getShader("model_shader_test");
-        shader->use();
-        shader->setTexture("u_Texture");
-
         // load model
         s3d::Model* model = new s3d::Model("assets/models/tower-round-top-a.fbx");
         m_scene3d->addModel(model);
+        model->setShader(m_resourceManager.m_shaderManager.getShader("model_shader"));
     }
 
 };
